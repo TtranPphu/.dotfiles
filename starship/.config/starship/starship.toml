@@ -1,0 +1,271 @@
+# version: 1.0.0
+"$schema" = "https://starship.rs/config-schema.json"
+
+# palette = "tokio-night"
+add_newline = true
+
+format = """
+$os\
+$shell\
+$directory\
+${custom.git_remote}\
+$git_branch\
+$git_status\
+$fill\
+$c\
+$cmake\
+$cpp\
+$java\
+$kotlin\
+$lua\
+$python\
+$rust\
+$cmd_duration\
+${custom.clock}\
+${custom.battery_high}\
+${custom.battery_mid}\
+${custom.battery_low}\
+$line_break\
+$character\
+"""
+
+right_format = """
+$username\
+$hostname\
+${custom.docker_host}\
+"""
+
+
+[shell]
+disabled = false
+style = "bold bright-black"
+format = "with [$indicator]($style) "
+unknown_indicator = "unknown-shell"
+bash_indicator = " bash"
+cmd_indicator = " cmd"
+fish_indicator = "󰈺 fish"
+nu_indicator = " nu"
+powershell_indicator = " powershell"
+zsh_indicator = " zsh"
+
+[os]
+disabled = false
+style = "bold"
+format = "[$symbol]($style)  "
+
+[os.symbols]
+Alpine = ""
+Amazon = ""
+Android = ""
+AOSC = ""
+Arch = "󰣇"
+Artix = "󰣇"
+CentOS = ""
+Debian = "󰣚"
+Fedora = "󰣛"
+Gentoo = "󰣨"
+Linux = "󰌽"
+Macos = "󰀵"
+Manjaro = ""
+Mint = "󰣭"
+NixOS = " "
+Raspbian = "󰐿"
+Redhat = "󱄛"
+RedHatEnterprise = "󱄛"
+SUSE = ""
+Ubuntu = ""
+Windows = ""
+
+[directory]
+style = "bold bright-blue"
+format = "in [$path]($style) "
+truncation_length = 7
+truncation_symbol = "…/"
+truncate_to_repo = false
+read_only = "󰉐 "
+
+
+[git_branch]
+symbol = ""
+style = "green"
+format = "[$branch]($style) "
+
+[custom.git_remote]
+command = """
+remote=$(git remote get-url origin 2>/dev/null);
+case "$remote" in
+  *github*)
+    echo ""
+    ;;
+  *gitlab*)
+    echo ""
+    ;;
+  *bitbucket*)
+    echo ""
+    ;;
+  *)
+    echo "󰊢"
+    ;;
+esac
+"""
+shell = ["bash"]
+when = "git rev-parse --is-inside-work-tree 2>/dev/null"
+style = "bold white"
+format = "[on $output]($style) "
+
+[git_status]
+style = "bright-yellow"
+format = "[$all_status$ahead_behind]($style)"
+ahead = "↑${count} "
+behind = "↓${count} "
+diverged = "↑${ahead_count} ↓${behind_count} "
+conflicted = "~${count} "
+deleted = "✗${count} "
+renamed = "→${count} "
+modified = "!${count} "
+staged = "✓${count} "
+untracked = "?${count} "
+
+
+[fill]
+symbol = "·"
+style = "dimmed bright-black"
+
+
+[c]
+symbol = " "
+format = " [$symbol($version)]($style)"
+
+[cmake]
+disabled = false
+symbol = " "
+format = " [$symbol($version)]($style)"
+
+[cpp]
+disabled = false
+symbol = " "
+format = " [$symbol($version)]($style)"
+
+[java]
+symbol = "󰬷 "
+format = " [$symbol($version)]($style)"
+
+[kotlin]
+symbol = "󱈙 "
+format = " [$symbol($version)]($style)"
+
+[lua]
+symbol = "󰢱 "
+format = " [$symbol($version)]($style)"
+
+[python]
+symbol = "󰌠 "
+format = " [$symbol($version)($virtualenv)]($style)"
+
+[rust]
+symbol = "󱘗 "
+format = " [$symbol($version)]($style)"
+
+[cmd_duration]
+min_time = 1000
+format = " took [$duration]($style)"
+style = "yellow"
+
+
+[time]
+disabled = true
+
+[custom.clock]
+command = """
+icons=("" "" "" "" "" "" "" "" "" "" "" "" "")
+echo "${icons[$(date +%-I)]} $(date +'%I:%M %p')"
+"""
+when = "true"
+shell = ["bash"]
+style = "dimmed bright-cyan"
+format = " at [$output]($style)"
+
+
+[battery]
+disabled = true
+
+[custom.battery_high]
+command = 'config_dir="${STARSHIP_CONFIG%/*}"; ${config_dir:-$HOME/.config/starship}/battery/status.sh'
+when = 'config_dir="${STARSHIP_CONFIG%/*}"; ${config_dir:-$HOME/.config/starship}/battery/high.sh'
+shell = ["bash"]
+style = "bold green"
+format = " [$output]($style)"
+
+[custom.battery_mid]
+command = 'config_dir="${STARSHIP_CONFIG%/*}"; ${config_dir:-$HOME/.config/starship}/battery/status.sh'
+when = 'config_dir="${STARSHIP_CONFIG%/*}"; ${config_dir:-$HOME/.config/starship}/battery/mid.sh'
+shell = ["bash"]
+style = "bold yellow"
+format = " [$output]($style)"
+
+[custom.battery_low]
+command = 'config_dir="${STARSHIP_CONFIG%/*}"; ${config_dir:-$HOME/.config/starship}/battery/status.sh'
+when = 'config_dir="${STARSHIP_CONFIG%/*}"; ${config_dir:-$HOME/.config/starship}/battery/low.sh'
+shell = ["bash"]
+style = "bold red"
+format = " [$output]($style)"
+
+
+[character]
+success_symbol = "[](bold green)"
+error_symbol = "[](bold red)"
+
+
+[username]
+show_always = true
+style_user = "bold cyan"
+style_root = "bold purple"
+format = "as [$user]($style)"
+
+[hostname]
+format = " on [󰢹 $hostname]($style)"
+
+
+[custom.docker_host]
+command = 'echo "${CONTAINER_NAME:-${COMPOSE_SERVICE}}"'
+when = "test -f /.dockerenv"
+shell = ["bash"]
+style = "bold dimmed green"
+format = " on [󰡨 $output]($style)"
+
+
+[palettes.p10k]
+black = "#303030"
+red = "#D70000"
+yellow = "#878700"
+green = "#5FD700"
+blue = "#005FFF"
+cyan = "#5F8787"
+purple = "#AF00AF"
+white = "#D0D0D0"
+bright-black = "#808080"
+bright-red = "#FF5F5F"
+bright-yellow = "#D7AF00"
+bright-green = "#87FF5F"
+bright-blue = "#00AFFF"
+bright-cyan = "#5FAFFF"
+bright-purple = "#FF5FFF"
+bright-white = "#FFFFFF"
+
+[palettes."tokio-night"]
+black = "#1A1B26"
+red = "#F7768E"
+yellow = "#E0AF68"
+green = "#9ECE6A"
+blue = "#7AA2F7"
+cyan = "#7DCFFF"
+purple = "#BB9AF7"
+white = "#C0CAF5"
+bright-black = "#414868"
+bright-red = "#FF899D"
+bright-yellow = "#E9C880"
+bright-green = "#B9F27C"
+bright-blue = "#8DB0FF"
+bright-cyan = "#A4DAFF"
+bright-purple = "#C7A9FF"
+bright-white = "#D5DFFF"
