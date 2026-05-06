@@ -13,8 +13,6 @@ $git_branch\
 $git_status\
 $fill\
 $c\
-$cmake\
-$cpp\
 $java\
 $kotlin\
 $lua\
@@ -57,7 +55,6 @@ format = "[$symbol]($style)  "
 Alpine = ""
 Amazon = ""
 Android = ""
-AOSC = ""
 Arch = "󰣇"
 Artix = "󰣇"
 CentOS = ""
@@ -72,6 +69,7 @@ NixOS = " "
 Raspbian = "󰐿"
 Redhat = "󱄛"
 RedHatEnterprise = "󱄛"
+RockyLinux = " "
 SUSE = ""
 Ubuntu = ""
 Windows = ""
@@ -135,16 +133,8 @@ style = "dimmed bright-black"
 [c]
 symbol = " "
 format = " [$symbol($version)]($style)"
-
-[cmake]
-disabled = false
-symbol = " "
-format = " [$symbol($version)]($style)"
-
-[cpp]
-disabled = false
-symbol = " "
-format = " [$symbol($version)]($style)"
+detect_files = ["CMakeLists.txt"]
+detect_extensions = ["c", "h", "cpp", "hpp"]
 
 [java]
 symbol = "󰬷 "
