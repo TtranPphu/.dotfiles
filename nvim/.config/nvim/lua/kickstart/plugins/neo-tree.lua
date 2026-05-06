@@ -11,7 +11,8 @@ return {
   },
   lazy = false,
   keys = {
-    { '\\', ':Neotree reveal<CR>', desc = 'NeoTree reveal', silent = true },
+    { '\\', ':Neotree reveal<CR>', desc = 'NeoTree open/focus', silent = true },
+    { '<C-\\><C-\\>', ':Neotree close<CR>', desc = 'NeoTree close', silent = false },
   },
   opts = {
     -- window = {
@@ -22,6 +23,9 @@ return {
         mappings = {
           ['\\'] = function()
             vim.cmd ':wincmd l'
+          end,
+          ['<C-\\><C-\\>'] = function()
+            vim.cmd ':q'
           end,
         },
       },
