@@ -109,3 +109,7 @@ export STARSHIP_CONFIG=~/.config/starship/starship.toml
 
 # Citrix Workspace - ICAClient
 export ICAROOT=~/ICAClient/linuxx64/
+
+if [ -z "$TMUX" ]; then
+  exec bash -c "tmux attach || tmux new -s Default"
+fi
