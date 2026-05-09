@@ -122,6 +122,7 @@ deleted = "✗${count} "
 renamed = "→${count} "
 modified = "!${count} "
 staged = "✓${count} "
+stashed = "≡${count} "
 untracked = "?${count} "
 
 
