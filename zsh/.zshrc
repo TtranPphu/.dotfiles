@@ -111,5 +111,5 @@ export STARSHIP_CONFIG=~/.config/starship/starship.toml
 export ICAROOT=~/ICAClient/linuxx64/
 
 if [ -z "$TMUX" ]; then
-  exec bash -c "tmux attach || tmux new -s Default"
+  exec bash -c "tmux attach >/dev/null 2>&1 || tmux new -s Default"
 fi
