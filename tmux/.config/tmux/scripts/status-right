@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+
+socket_path="$1"
+current_session="$2"
+pane_in_mode="$3"
+client_prefix="$4"
+window_zoomed_flag="$5"
+host_name="$6"
+script_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+
+prev_sessions="$("$script_dir/session-info" "$socket_path" "$current_session" prev)"
+
+if [[ -n "$prev_sessions" ]]; then
+  printf '#[fg=brightblack]%s ' "$prev_sessions"
+fi
+
+printf '#[fg=blue]'
+if [[ "$pane_in_mode" == "1" ]]; then
+  printf 'COPY '
+fi
+if [[ "$client_prefix" == "1" ]]; then
+  printf 'PREFIX '
+fi
+if [[ "$window_zoomed_flag" == "1" ]]; then
+  printf 'ZOOM '
+fi
+
+printf '#[fg=brightblack]%s ' "$host_name"
