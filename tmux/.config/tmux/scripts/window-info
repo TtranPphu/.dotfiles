@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+
+tty="$1"
+default_app="$2"
+
+foreground_args="$(
+  ps -t "$tty" -o stat= -o args= 2>/dev/null |
+    awk '/\+/ { $1 = ""; sub(/^ /, ""); print; exit }'
+)"
+
+if [[ "$foreground_args" == *copilot* ]]; then
+  printf 'copilot'
+else
+  printf '%s' "$default_app"
+fi
