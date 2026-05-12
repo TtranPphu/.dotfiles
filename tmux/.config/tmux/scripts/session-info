@@ -36,8 +36,8 @@ if (( ${#selected[@]} > 0 )); then
     reversed+=("${selected[$index]}")
   done
 
-  printf ' %s' "${reversed[0]}"
+  printf ' %s' "${reversed[0]}"
   for session in "${reversed[@]:1}"; do
-    printf '  %s' "$session"
+    printf '  %s' "$session"
   done
 fi
