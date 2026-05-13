@@ -8,8 +8,19 @@ foreground_args="$(
     awk '/\+/ { $1 = ""; sub(/^ /, ""); print; exit }'
 )"
 
-if [[ "$foreground_args" == *copilot* ]]; then
-  printf 'copilot'
-else
-  printf '%s' "$default_app"
-fi
+app_name_rules=(
+  'claude:claude'
+  'copilot:copilot'
+)
+
+for rule in "${app_name_rules[@]}"; do
+  pattern="${rule%%:*}"
+  name="${rule#*:}"
+
+  if [[ "$foreground_args" == *"$pattern"* ]]; then
+    printf '%s' "$name"
+    exit 0
+  fi
+done
+
+printf '%s' "$default_app"
