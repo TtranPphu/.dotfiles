@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+
+line="$1"
+pane_mode="$2"
+
+copy_line_1='#[fg=blue]h/j/k/l#[fg=brightblack]: move       #[fg=blue]Space/v#[fg=brightblack]: select  #[fg=blue]Esc#[fg=brightblack]: clear   #[fg=blue]q#[fg=brightblack]: quit'
+copy_line_2='#[fg=blue]C-u/C-d#[fg=brightblack]: half page  #[fg=blue]Enter/y#[fg=brightblack]: copy    #[fg=blue]/ ?#[fg=brightblack]: search'
+tree_line_1='#[fg=blue]Up/Down#[fg=brightblack]: move   #[fg=blue]Enter#[fg=brightblack]: choose  #[fg=blue]+/-#[fg=brightblack]: expand/collapse  #[fg=blue]v#[fg=brightblack]: preview            #[fg=blue]q#[fg=brightblack]: quit'
+tree_line_2='#[fg=blue]t/T#[fg=brightblack]: tag/clear  #[fg=blue]C-t#[fg=brightblack]: tag all   #[fg=blue]x/X#[fg=brightblack]: kill one/tagged  #[fg=blue]C-s/n#[fg=brightblack]: search/repeat'
+
+if [[ "$pane_mode" == 'copy-mode' ]]; then
+  case "$line" in
+    1) printf '%s' "$copy_line_1" ;;
+    2) printf '%s' "$copy_line_2" ;;
+  esac
+  exit 0
+fi
+
+if [[ "$pane_mode" == 'tree-mode' ]]; then
+  case "$line" in
+    1) printf '%s' "$tree_line_1" ;;
+    2) printf '%s' "$tree_line_2" ;;
+  esac
+  exit 0
+fi
