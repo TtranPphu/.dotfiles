@@ -16,7 +16,6 @@ if [[ -n "$prev_sessions" ]]; then
 fi
 
 printf '#[fg=blue]'
-printf ' #[fg=brightblack]%s ' "${pane_id#%}"
 if [[ "$pane_mode" == "copy-mode" ]]; then
   printf 'COPY '
 fi
@@ -30,3 +29,5 @@ fi
 if [[ -n "${SSH_CONNECTION-}" || -n "${SSH_CLIENT-}" ]]; then
   printf '#[fg=brightblack]%s ' "$host_name"
 fi
+
+printf '#[fg=blue,bg=brightblack,bold]  #[fg=blue,bg=brightblack,bold]%s ' "${pane_id#%}"
