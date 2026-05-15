@@ -2,10 +2,11 @@
 
 socket_path="$1"
 current_session="$2"
-pane_mode="$3"
-client_prefix="$4"
-window_zoomed_flag="$5"
-host_name="$6"
+pane_id="$3"
+pane_mode="$4"
+client_prefix="$5"
+window_zoomed_flag="$6"
+host_name="$7"
 script_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 
 prev_sessions="$("$script_dir/session-info" "$socket_path" "$current_session" prev)"
@@ -15,6 +16,7 @@ if [[ -n "$prev_sessions" ]]; then
 fi
 
 printf '#[fg=blue]'
+printf ' #[fg=brightblack]%s ' "${pane_id#%}"
 if [[ "$pane_mode" == "copy-mode" ]]; then
   printf 'COPY '
 fi
@@ -25,4 +27,6 @@ if [[ "$window_zoomed_flag" == "1" ]]; then
   printf 'ZOOM '
 fi
 
-printf '#[fg=brightblack]%s ' "$host_name"
+if [[ -n "${SSH_CONNECTION-}" || -n "${SSH_CLIENT-}" ]]; then
+  printf '#[fg=brightblack]%s ' "$host_name"
+fi
