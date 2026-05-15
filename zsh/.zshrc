@@ -107,9 +107,6 @@ source $ZSH/oh-my-zsh.sh
 eval "$(starship init zsh)"
 export STARSHIP_CONFIG=~/.config/starship/starship.toml
 
-# Citrix Workspace - ICAClient
-export ICAROOT=~/ICAClient/linuxx64/
-
 if [ -z "$TMUX" ]; then
   exec bash -c "tmux attach >/dev/null 2>&1 || tmux new -s Default"
 fi
