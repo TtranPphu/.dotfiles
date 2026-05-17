@@ -41,3 +41,18 @@ zsh -n zsh/.zshrc
 - The Neovim Lua style is defined in `nvim/.config/nvim/.stylua.toml`: 2-space indentation, Unix line endings, and a preference for single quotes with omitted call parentheses where valid.
 - The Neovim config expects modern external tooling from the Kickstart setup, especially `git`, `make`, `rg`, `fd`, a clipboard tool, and current Neovim.
 - Shell helpers in this repo are Bash scripts referenced directly from configs. Preserve their shebangs and the paths their callers expect rather than relocating them.
+- Shell scripts use 2-space indentation.
+
+# Commit message convention
+
+Use this format for commit messages:
+
+```text
+<Component>: <Brief description>
+
+<Optional detailed explanation>
+```
+
+- Use a title-case component prefix such as `Tmux`, `Nvim`, or `Zsh`.
+- Keep the first line concise and sentence-style rather than title-casing every word.
+- Add a short body when it helps explain the change.
