@@ -10,4 +10,4 @@ if [[ -n "$next_sessions" ]]; then
   printf '#[fg=brightblack]%s ' "$next_sessions"
 fi
 
-printf '#[fg=black,bg=blue,bold]  %s #[bg=default]' "$current_session"
+printf '#[fg=black,bg=blue,dim,bold]  %s #[bg=default]' "$current_session"
