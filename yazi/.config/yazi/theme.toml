@@ -61,12 +61,12 @@ syntect_theme = ""
 # : Tabs {{{
 
 [tabs]
-active   = { bg = "blue", bold = true }
-inactive = { fg = "blue", bg = "gray" }
+active   = { fg = "black", bg = "blue", bold = true }
+inactive = { fg = "black", bg = "gray" }
 
 # Separator
-sep_inner = { open = "", close = "" }
-sep_outer = { open = "", close = "" }
+sep_inner = { open = "", close = "" }
+sep_outer = { open = "", close = "" }
 
 # : }}}
 
@@ -74,16 +74,16 @@ sep_outer = { open = "", close = "" }
 # : Mode {{{
 
 [mode]
-normal_main = { bg = "blue", bold = true }
-normal_alt  = { fg = "blue", bg = "gray" }
+normal_main = { fg = "black", bg = "blue", bold = true }
+normal_alt  = { fg = "black", bg = "gray" }
 
 # Select mode
-select_main = { bg = "red", bold = true }
-select_alt  = { fg = "red", bg = "gray" }
+select_main = { fg = "black", bg = "yellow", bold = true }
+select_alt  = { fg = "black", bg = "gray" }
 
 # Unset mode
-unset_main = { bg = "red", bold = true }
-unset_alt  = { fg = "red", bg = "gray" }
+unset_main = { fg = "black", bg = "red", bold = true }
+unset_alt  = { fg = "black", bg = "gray" }
 
 # : }}}
 
@@ -108,10 +108,10 @@ sep_right = { open = "▐", close = "▌" }
 
 # Permissions
 perm_sep   = { fg = "darkgray" }
-perm_type  = { fg = "green" }
-perm_read  = { fg = "yellow" }
-perm_write = { fg = "red" }
-perm_exec  = { fg = "cyan" }
+perm_type  = { fg = "darkgray" }
+perm_read  = { fg = "darkgray" }
+perm_write = { fg = "darkgray" }
+perm_exec  = { fg = "darkgray" }
 
 # Progress
 progress_label  = { bold = true }
