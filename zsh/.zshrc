@@ -105,6 +105,25 @@ source $ZSH/oh-my-zsh.sh
 
 unsetopt autocd
 
+# Alias bat/batcat to cat if available
+if command -v bat &> /dev/null; then
+  alias cat=bat
+elif command -v batcat &> /dev/null; then
+  alias cat=batcat
+fi
+
+# Alias eza to ls if available
+if command -v eza &> /dev/null; then
+  # Oh-my-zsh
+  alias ls='eza -ah --icons'
+  alias la='eza -lah --icons'
+  # Omarchy
+  alias lt='eza -lah --tree --icons'
+  alias ld='eza -lah --only-dirs --icons'
+  alias lf='eza -lah --only-files --icons'
+  alias lh='eza -lad .* --icons'
+fi
+
 # Initialize starship
 eval "$(starship init zsh)"
 export STARSHIP_CONFIG=~/.config/starship/starship.toml
