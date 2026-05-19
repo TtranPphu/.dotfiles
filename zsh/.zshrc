@@ -123,23 +123,8 @@ elif command -v batcat &> /dev/null; then
   alias cat=batcat
 fi
 
-# Alias eza to ls if available
-if command -v eza &> /dev/null; then
-  # Oh-my-zsh
-  alias ls='eza -ah --icons'
-  alias la='eza -lah --icons'
-  # Omarchy
-  alias lt='eza -lah --tree --icons --ignore-glob=.git'
-  alias ld='eza -lah --only-dirs --icons'
-  alias lf='eza -lah --only-files --icons'
-  alias lh='eza -lad .* --icons'
-  # Pager variants
-  alias lap='eza -lah --icons --color=always | $PAGER'
-  alias ltp='eza -lah --tree --icons --ignore-glob=.git --color=always | $PAGER'
-  alias ldp='eza -lah --only-dirs --icons --color=always | $PAGER'
-  alias lfp='eza -lah --only-files --icons --color=always | $PAGER'
-  alias lhp='eza -lad .* --icons --color=always | $PAGER'
-fi
+# Source eza configuration
+[ -f ~/.config/zsh/eza.zsh ] && source ~/.config/zsh/eza.zsh
 
 # Initialize starship
 eval "$(starship init zsh)"
