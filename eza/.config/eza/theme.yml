@@ -1,0 +1,81 @@
+# Eza theme configuration
+# Tokyo Night inspired color scheme
+
+filekinds:
+  normal:
+    foreground: White
+  directory:
+    foreground: Blue
+  symlink:
+    foreground: Cyan
+  executable:
+    foreground: Green
+  broken-symlink:
+    foreground: Red
+  missing-symlink:
+    foreground: Red
+  device-block:
+    foreground: Magenta
+  device-char:
+    foreground: Magenta
+  socket:
+    foreground: Magenta
+  pipe:
+    foreground: Magenta
+  special:
+    foreground: Magenta
+
+perms:
+  user_read:
+    foreground: Yellow
+  user_write:
+    foreground: Red
+  user_execute_file:
+    foreground: Green
+  user_execute_other:
+    foreground: Green
+  group_read:
+    foreground: Yellow
+  group_write:
+    foreground: Red
+  group_execute:
+    foreground: Green
+  other_read:
+    foreground: Yellow
+  other_write:
+    foreground: Red
+  other_execute:
+    foreground: Green
+
+# Git status colors
+git_status:
+  conflicted:
+    foreground: Red
+  ignored:
+    foreground: BrightBlack
+  modified:
+    foreground: Yellow
+  new:
+    foreground: Green
+  renamed:
+    foreground: Cyan
+  typechange:
+    foreground: Magenta
+
+# Size colors
+size:
+  major:
+    foreground: Blue
+  minor:
+    foreground: BrightBlack
+
+# Date/time colors
+date:
+  locale_timestamp:
+    foreground: Cyan
+  locale_year:
+    foreground: Cyan
+  iso_timestamp:
+    foreground: Cyan
+  iso_year:
+    foreground: Cyan
