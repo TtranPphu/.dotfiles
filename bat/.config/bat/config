@@ -6,6 +6,9 @@
 # Set the style
 --style=grid,numbers,snip
 
+# Set tab width
+--tabs=2
+
 # Enable paging for long output
 --paging=auto
 
