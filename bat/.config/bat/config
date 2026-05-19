@@ -1,0 +1,21 @@
+# Bat configuration file
+
+# Set the theme
+--theme="ansi"
+
+# Set the style
+--style=grid,numbers,snip
+
+# Enable paging for long output
+--paging=auto
+
+# Set the language for syntax highlighting
+# --language=bash
+
+# Map custom file types to syntax highlighters
+# --map-syntax="*.gradle:Groovy"
+# --map-syntax="*.config:TOML"
+
+# Show all supported themes/syntax languages
+# bat --list-themes
+# bat --list-languages
