@@ -105,6 +105,17 @@ source $ZSH/oh-my-zsh.sh
 
 unsetopt autocd
 
+# Set pager with fallback chain
+if command -v bat &> /dev/null; then
+  export PAGER=bat
+elif command -v batcat &> /dev/null; then
+  export PAGER=batcat
+elif command -v most &> /dev/null; then
+  export PAGER=most
+else
+  export PAGER=less
+fi
+
 # Alias bat/batcat to cat if available
 if command -v bat &> /dev/null; then
   alias cat=bat
@@ -118,10 +129,16 @@ if command -v eza &> /dev/null; then
   alias ls='eza -ah --icons'
   alias la='eza -lah --icons'
   # Omarchy
-  alias lt='eza -lah --tree --icons'
+  alias lt='eza -lah --tree --icons --ignore-glob=.git'
   alias ld='eza -lah --only-dirs --icons'
   alias lf='eza -lah --only-files --icons'
   alias lh='eza -lad .* --icons'
+  # Pager variants
+  alias lap='eza -lah --icons --color=always | $PAGER'
+  alias ltp='eza -lah --tree --icons --ignore-glob=.git --color=always | $PAGER'
+  alias ldp='eza -lah --only-dirs --icons --color=always | $PAGER'
+  alias lfp='eza -lah --only-files --icons --color=always | $PAGER'
+  alias lhp='eza -lad .* --icons --color=always | $PAGER'
 fi
 
 # Initialize starship
