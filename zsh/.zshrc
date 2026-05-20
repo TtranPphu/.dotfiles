@@ -129,6 +129,9 @@ fi
 # Source zoxide configuration
 [ -f ~/.config/zsh/zoxide.zsh ] && source ~/.config/zsh/zoxide.zsh
 
+# Source ripgrep configuration
+[ -f ~/.config/zsh/ripgrep.zsh ] && source ~/.config/zsh/ripgrep.zsh
+
 # Initialize starship
 eval "$(starship init zsh)"
 export STARSHIP_CONFIG=~/.config/starship/starship.toml
