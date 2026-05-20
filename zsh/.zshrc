@@ -105,17 +105,11 @@ source $ZSH/oh-my-zsh.sh
 
 unsetopt autocd
 
-# Source bat configuration
-[ -f ~/.config/zsh/bat.zsh ] && source ~/.config/zsh/bat.zsh
-
-# Source eza configuration
-[ -f ~/.config/zsh/eza.zsh ] && source ~/.config/zsh/eza.zsh
-
-# Source zoxide configuration
-[ -f ~/.config/zsh/zoxide.zsh ] && source ~/.config/zsh/zoxide.zsh
-
-# Source ripgrep configuration
-[ -f ~/.config/zsh/ripgrep.zsh ] && source ~/.config/zsh/ripgrep.zsh
+# Source all zsh configuration files from ~/.config/zsh/
+for config in ~/.config/zsh/*.zsh; do
+  [ -f "$config" ] && source "$config"
+done
+unset config
 
 # Initialize starship
 eval "$(starship init zsh)"
