@@ -105,23 +105,8 @@ source $ZSH/oh-my-zsh.sh
 
 unsetopt autocd
 
-# Set pager with fallback chain
-if command -v bat &> /dev/null; then
-  export PAGER=bat
-elif command -v batcat &> /dev/null; then
-  export PAGER=batcat
-elif command -v most &> /dev/null; then
-  export PAGER=most
-else
-  export PAGER=less
-fi
-
-# Alias bat/batcat to cat if available
-if command -v bat &> /dev/null; then
-  alias cat=bat
-elif command -v batcat &> /dev/null; then
-  alias cat=batcat
-fi
+# Source bat configuration
+[ -f ~/.config/zsh/bat.zsh ] && source ~/.config/zsh/bat.zsh
 
 # Source eza configuration
 [ -f ~/.config/zsh/eza.zsh ] && source ~/.config/zsh/eza.zsh
