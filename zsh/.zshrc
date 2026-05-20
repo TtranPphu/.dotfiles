@@ -126,6 +126,9 @@ fi
 # Source eza configuration
 [ -f ~/.config/zsh/eza.zsh ] && source ~/.config/zsh/eza.zsh
 
+# Source zoxide configuration
+[ -f ~/.config/zsh/zoxide.zsh ] && source ~/.config/zsh/zoxide.zsh
+
 # Initialize starship
 eval "$(starship init zsh)"
 export STARSHIP_CONFIG=~/.config/starship/starship.toml
