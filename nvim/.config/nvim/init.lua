@@ -107,6 +107,17 @@ do
   -- Enable break indent
   vim.o.breakindent = true
 
+  -- [[ Indentation settings ]]
+  -- Use spaces instead of tabs (expand tabs to spaces)
+  vim.o.expandtab = true
+  -- Number of spaces for indentation (affects <>, >>, <<, ==)
+  vim.o.shiftwidth = 2
+  -- Number of spaces a <Tab> counts for when editing
+  vim.o.softtabstop = 2
+  -- Number of spaces a <Tab> counts for (display/navigation)
+  -- Set to 8 so actual tab characters are easily visible and identifiable
+  vim.o.tabstop = 8
+
   -- Enable undo/redo changes even after closing and reopening a file
   vim.o.undofile = true
 
