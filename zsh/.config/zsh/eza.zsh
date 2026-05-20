@@ -2,21 +2,20 @@
 
 # Configure eza if available
 if command -v eza &> /dev/null; then
-  # Aliases (put on top for easy reference)
-  alias ls='eza -ah --icons --color=always'
-  alias l='eza -lah --icons'
-  # Omarchy
-  alias lt='eza -lah --tree --icons --ignore-glob=.git'
-  alias ld='eza -lah --only-dirs --icons'
-  alias lf='eza -lah --only-files --icons'
-  alias lh='eza -lad .* --icons'
+  alias ls='eza -ah --icons'
+
+  alias la='eza -lah --icons --group'
+  alias lt='eza -lah --tree --icons --ignore-glob=.git --group'
+  alias ld='eza -lah --only-dirs --icons --group'
+  alias lf='eza -lah --only-files --icons --group'
+  alias lh='eza -lad .* --icons --group'
   
   # Pager variants as functions (to accept path arguments)
-  lap() { eza -lah --icons --color=always "$@" | $PAGER; }
-  ltp() { eza -lah --tree --icons --ignore-glob=.git --color=always "$@" | $PAGER; }
-  ldp() { eza -lah --only-dirs --icons --color=always "$@" | $PAGER; }
-  lfp() { eza -lah --only-files --icons --color=always "$@" | $PAGER; }
-  lhp() { eza -lad .* --icons --color=always "$@" | $PAGER; }
+  lap() { eza -lah --icons --group --color=always "$@" | $PAGER; }
+  ltp() { eza -lah --tree --icons --ignore-glob=.git --group --color=always "$@" | $PAGER; }
+  ldp() { eza -lah --only-dirs --icons --group --color=always "$@" | $PAGER; }
+  lfp() { eza -lah --only-files --icons --group --color=always "$@" | $PAGER; }
+  lhp() { eza -lad .* --icons --group --color=always "$@" | $PAGER; }
 
   # Set eza colors with ANSI codes for consistent piped output (Tokyo Night inspired)
   # All codes from: https://github.com/eza-community/eza/blob/main/man/eza_colors.5.md
