@@ -1,0 +1,155 @@
+# Lazydocker config
+# yaml-language-server: $schema=https://json.schemastore.org/lazydocker.json
+
+gui:
+  # Number of lines to scroll
+  scrollHeight: 2
+
+  # Language: 'auto' | 'en' | 'pl' | 'nl' | 'de' | 'tr'
+  language: "auto"
+
+  # Border style: 'rounded' | 'single' | 'double' | 'hidden'
+  border: "rounded"
+
+  theme:
+    # Active border color
+    activeBorderColor:
+      - green
+      - bold
+
+    # Inactive border color
+    inactiveBorderColor:
+      - white
+
+    # Selected line background color
+    selectedLineBgColor:
+      - blue
+
+    # Options text color (keybindings)
+    optionsTextColor:
+      - blue
+
+  # Return immediately after opening app
+  returnImmediately: false
+
+  # Wrap main panel content
+  wrapMainPanel: true
+
+  # Side panel width (ratio)
+  sidePanelWidth: 0.333
+
+  # Show bottom line with keybindings
+  showBottomLine: true
+
+  # Expand focused side panel
+  expandFocusedSidePanel: false
+
+  # Default screen mode: 'normal' | 'half' | 'fullscreen'
+  screenMode: "normal"
+
+  # Container status/health display style
+  # 'long' (full words) | 'short' (one/two chars) | 'icon' (emoji)
+  containerStatusHealthStyle: "long"
+
+# Logging configuration
+logs:
+  # Show timestamps in logs
+  timestamps: false
+
+  # Show logs since: '60m' for 60 minutes, '' for all
+  since: '60m'
+
+  # Show last N lines: '' for all
+  tail: ''
+
+# Docker Compose command templates
+commandTemplates:
+  # Docker Compose command
+  dockerCompose: docker compose
+
+  # Service restart
+  restartService: '{{ .DockerCompose }} restart {{ .Service.Name }}'
+
+  # Start containers
+  up:  '{{ .DockerCompose }} up -d'
+
+  # Stop containers
+  down: '{{ .DockerCompose }} down'
+
+  # Stop with volumes
+  downWithVolumes: '{{ .DockerCompose }} down --volumes'
+
+  # Start specific service
+  upService:  '{{ .DockerCompose }} up -d {{ .Service.Name }}'
+
+  # Start service (if already created)
+  startService: '{{ .DockerCompose }} start {{ .Service.Name }}'
+
+  # Stop service
+  stopService: '{{ .DockerCompose }} stop {{ .Service.Name }}'
+
+  # View service logs with tail
+  serviceLogs: '{{ .DockerCompose }} logs --since=60m --follow {{ .Service.Name }}'
+
+  # View service logs (full)
+  viewServiceLogs: '{{ .DockerCompose }} logs --follow {{ .Service.Name }}'
+
+  # Rebuild service
+  rebuildService: '{{ .DockerCompose }} up -d --build {{ .Service.Name }}'
+
+  # Recreate service
+  recreateService: '{{ .DockerCompose }} up -d --force-recreate {{ .Service.Name }}'
+
+  # All logs (live)
+  allLogs: '{{ .DockerCompose }} logs --tail=300 --follow'
+
+  # View all logs (static)
+  viewAlLogs: '{{ .DockerCompose }} logs'
+
+  # Show docker-compose config
+  dockerComposeConfig: '{{ .DockerCompose }} config'
+
+  # Check docker-compose config validity
+  checkDockerComposeConfig: '{{ .DockerCompose }} config --quiet'
+
+  # Show running processes in service
+  serviceTop: '{{ .DockerCompose }} top {{ .Service.Name }}'
+
+# OS specific configuration
+oS:
+  # Command to open a file
+  openCommand: open {{filename}}
+
+  # Command to open a link
+  openLinkCommand: open {{link}}
+
+# Stats graphs
+stats:
+  graphs:
+    # CPU percentage graph
+    - caption: CPU (%)
+      statPath: DerivedStats.CPUPercentage
+      color: blue
+
+    # Memory percentage graph
+    - caption: Memory (%)
+      statPath: DerivedStats.MemoryPercentage
+      color: green
+
+# Custom commands
+# Example:
+# customCommands:
+#   containers:
+#     - name: bash
+#       attach: true
+#       command: 'docker exec -it {{ .Container.ID }} bash'
+#       serviceNames: []
+customCommands: {}
+
+# Replacements for shortening image names
+# Example:
+# replacements:
+#   imageNamePrefixes:
+#     '123456789012.dkr.ecr.us-east-1.amazonaws.com': '<prod>'
+#     '923456789999.dkr.ecr.us-east-1.amazonaws.com': '<dev>'
+replacements: {}
