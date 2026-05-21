@@ -1,0 +1,360 @@
+# Lazygit config
+
+gui:
+  # Number of lines to scroll by when scrolling the main window
+  scrollHeight: 2
+
+  # Allow scrolling past the bottom of content
+  scrollPastBottom: true
+
+  # Scroll off margin for smoother scrolling
+  scrollOffMargin: 2
+
+  # Scroll behavior: 'margin' or 'jump'
+  scrollOffBehavior: margin
+
+  # Tab width for displaying diffs
+  tabWidth: 4
+
+  # Enable mouse events
+  mouseEvents: true
+
+  # Skip warning when amending commits
+  skipAmendWarning: false
+
+  # Skip warning when discarding changes
+  skipDiscardChangeWarning: false
+
+  # Skip warning when stashing
+  skipStashWarning: false
+
+  # Don't warn when committing without staged files
+  skipNoStagedFilesWarning: false
+
+  # Skip reword warning in external editor
+  skipRewordInEditorWarning: false
+
+  # Side panel width (fraction of screen)
+  sidePanelWidth: 0.3333
+
+  # Expand focused side panel
+  expandFocusedSidePanel: false
+
+  # Weight of expanded side panel
+  expandedSidePanelWeight: 2
+
+  # Main window split mode: 'horizontal', 'vertical', or 'flexible'
+  mainPanelSplitMode: flexible
+
+  # Side view location in half screen mode: 'left' or 'top'
+  enlargedSideViewLocation: left
+
+  # Wrap lines in staging view
+  wrapLinesInStagingView: true
+
+  # Enable hunk mode in staging view
+  useHunkModeInStagingView: true
+
+  # Language: 'auto', 'en', 'zh-CN', 'zh-TW', 'pl', 'nl', 'ja', 'ko', 'ru', 'pt'
+  language: auto
+
+  # Time format
+  timeFormat: 02 Jan 06
+
+  # Short time format (less than 24 hours ago)
+  shortTimeFormat: 3:04PM
+
+  # Theme configuration
+  theme:
+    # Border color of focused window
+    activeBorderColor:
+      - green
+      - bold
+
+    # Border color of non-focused windows
+    inactiveBorderColor:
+      - default
+
+    # Border color when searching
+    searchingActiveBorderColor:
+      - cyan
+      - bold
+
+    # Keybindings help text color
+    optionsTextColor:
+      - blue
+
+    # Selected line background color
+    selectedLineBgColor:
+      - blue
+
+    # Selected line background in inactive view
+    inactiveViewSelectedLineBgColor:
+      - bold
+
+    # Copied commit foreground color
+    cherryPickedCommitFgColor:
+      - blue
+
+    # Copied commit background color
+    cherryPickedCommitBgColor:
+      - cyan
+
+    # Marked base commit foreground color (rebase)
+    markedBaseCommitFgColor:
+      - blue
+
+    # Marked base commit background color (rebase)
+    markedBaseCommitBgColor:
+      - yellow
+
+    # Unstaged changes color
+    unstagedChangesColor:
+      - red
+
+    # Default foreground color
+    defaultFgColor:
+      - default
+
+  # Commit length indicator
+  commitLength:
+    show: true
+
+  # Show list footer (e.g. "5 of 20")
+  showListFooter: true
+
+  # Show files as tree structure
+  showFileTree: true
+
+  # Show root item in file tree
+  showRootItemInFileTree: true
+
+  # File tree sort order: 'mixed', 'filesFirst', 'foldersFirst'
+  fileTreeSortOrder: mixed
+
+  # Case-sensitive file tree sorting
+  fileTreeSortCaseSensitive: true
+
+  # Show line count changes per file
+  showNumstatInFilesView: false
+
+  # Show random tip on startup
+  showRandomTip: true
+
+  # Show command log
+  showCommandLog: true
+
+  # Show bottom line with keybindings
+  showBottomLine: true
+
+  # Show panel jump keybindings in window titles
+  showPanelJumps: true
+
+  # Nerd font version: '2', '3', or '' (empty = no icons)
+  nerdFontsVersion: ""
+
+  # Show file icons
+  showFileIcons: true
+
+  # Author name length in commits view
+  commitAuthorShortLength: 2
+
+  # Author name length in expanded commits view
+  commitAuthorLongLength: 17
+
+  # Commit hash length
+  commitHashLength: 8
+
+  # Show commit hashes with branch names
+  showBranchCommitHash: false
+
+  # Show divergence from base branch: 'none', 'onlyArrow', 'arrowAndNumber'
+  showDivergenceFromBaseBranch: none
+
+  # Height of command log view
+  commandLogSize: 8
+
+  # Split diff mode: 'auto', 'always'
+  splitDiff: auto
+
+  # Default focused window size: 'normal', 'half', 'full'
+  screenMode: normal
+
+  # Window border style: 'rounded', 'single', 'double', 'hidden', 'bold'
+  border: rounded
+
+  # Animate explosion when nuking working tree
+  animateExplosion: true
+
+  # Stack UI components: 'auto', 'always', 'never'
+  portraitMode: auto
+
+  # Portrait mode width threshold
+  portraitModeAutoMaxWidth: 84
+
+  # Portrait mode height threshold
+  portraitModeAutoMinHeight: 46
+
+  # Filter mode: 'substring' or 'fuzzy'
+  filterMode: substring
+
+  # Spinner configuration
+  spinner:
+    frames:
+      - '|'
+      - /
+      - '-'
+      - \
+    rate: 50
+
+  # Status panel view: 'dashboard' or 'allBranchesLog'
+  statusPanelView: dashboard
+
+  # Jump to Files panel after stash pop
+  switchToFilesAfterStashPop: true
+
+  # Jump to Files panel after stash apply
+  switchToFilesAfterStashApply: true
+
+  # Switch tabs with panel jump keys
+  switchTabsWithPanelJumpKeys: false
+
+# Git configuration
+git:
+  # Pagers configuration (for diffs)
+  pagers: []
+
+  # Commit configuration
+  commit:
+    # Sign off commits
+    signOff: false
+
+    # Auto wrap commit messages
+    autoWrapCommitMessage: true
+
+    # Auto wrap width
+    autoWrapWidth: 72
+
+  # Merge configuration
+  merging:
+    # Manual commit mode
+    manualCommit: false
+
+    # Extra merge args
+    args: ""
+
+    # Squash merge message
+    squashMergeMessage: Squash merge {{selectedRef}} into {{currentBranch}}
+
+  # Main branches
+  mainBranches:
+    - master
+    - main
+
+  # Prefix for skipping hooks
+  skipHookPrefix: WIP
+
+  # Periodically fetch from remote
+  autoFetch: true
+
+  # Periodically refresh files
+  autoRefresh: true
+
+  # Auto forward branches: 'none', 'onlyMainBranches', 'allBranches'
+  autoForwardBranches: onlyMainBranches
+
+  # Fetch all branches
+  fetchAll: true
+
+  # Auto stage resolved conflicts
+  autoStageResolvedConflicts: true
+
+  # Branch log command
+  branchLogCmd: git log --graph --color=always --abbrev-commit --decorate --date=relative --pretty=medium {{branchName}} --
+
+  # All branches log commands
+  allBranchesLogCmds:
+    - git log --graph --all --color=always --abbrev-commit --decorate --date=relative --pretty=medium
+
+  # Ignore whitespace in diff view
+  ignoreWhitespaceInDiffView: false
+
+  # Diff context size
+  diffContextSize: 3
+
+  # Rename similarity threshold
+  renameSimilarityThreshold: 50
+
+  # Override GPG
+  overrideGpg: false
+
+  # Disable force pushing
+  disableForcePushing: false
+
+  # Parse emoji in commit messages
+  parseEmoji: false
+
+  # Log configuration
+  log:
+    # Log order: 'date-order', 'author-date-order', 'topo-order', 'default'
+    order: topo-order
+
+    # Show git graph: 'always', 'never', 'when-maximised'
+    showGraph: always
+
+    # Show whole graph
+    showWholeGraph: false
+
+  # Local branch sort order: 'date', 'recency', 'alphabetical'
+  localBranchSortOrder: date
+
+  # Remote branch sort order: 'date', 'alphabetical'
+  remoteBranchSortOrder: date
+
+  # Truncate copied commit hashes to this length
+  truncateCopiedCommitHashesTo: 12
+
+# Update checks
+update:
+  # Update check method: 'prompt', 'background', 'never'
+  method: prompt
+
+  # Days between update checks
+  days: 14
+
+# Background refreshes
+refresher:
+  # File/submodule refresh interval (seconds)
+  refreshInterval: 10
+
+  # Re-fetch interval (seconds)
+  fetchInterval: 60
+
+# Confirm on quit
+confirmOnQuit: false
+
+# Quit on top level return
+quitOnTopLevelReturn: false
+
+# OS specific configuration
+os:
+  # Command for editing files
+  edit: ""
+
+  # Command for editing at line number
+  editAtLine: ""
+
+  # Command for editing at line and wait
+  editAtLineAndWait: ""
+
+  # Edit in terminal
+  editInTerminal: false
+
+  # Command for opening directory in editor
+  openDirInEditor: ""
+
+  # Copy command
+  copyToClipboardCmd: ""
+
+  # Open link command
+  openLinkCommand: ""
