@@ -2,7 +2,11 @@
 
 set -euo pipefail
 
-plugin_dir="${HOME}/.tmux/plugins"
+plugin_dir="$(tmux show-environment -g TMUX_PLUGIN_MANAGER_PATH 2>/dev/null | cut -d= -f2- || true)"
+plugin_dir="${plugin_dir:-${HOME}/.tmux/plugins/}"
+plugin_dir="${plugin_dir/#\~/$HOME}"
+plugin_dir="${plugin_dir/#\$HOME/$HOME}"
+plugin_dir="${plugin_dir%/}"
 tpm_dir="${plugin_dir}/tpm"
 
 if [[ ! -d "$tpm_dir" ]]; then
