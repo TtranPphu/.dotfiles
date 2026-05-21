@@ -336,6 +336,9 @@ confirmOnQuit: false
 # Quit on top level return
 quitOnTopLevelReturn: false
 
+# When opened outside a git repo, exit instead of showing the recent repo picker
+notARepository: quit
+
 # OS specific configuration
 os:
   # Command for editing files
