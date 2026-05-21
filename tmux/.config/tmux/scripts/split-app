@@ -1,0 +1,15 @@
+#!/bin/bash
+
+APP="$1"
+PANE_PATH=$(tmux display-message -p '#{pane_current_path}')
+
+CLIENT_WIDTH=$(tmux display-message -p '#{client_width}')
+CLIENT_HEIGHT=$(tmux display-message -p '#{client_height}')
+
+if [ "$CLIENT_WIDTH" -gt $((CLIENT_HEIGHT * 2)) ]; then
+  # Landscape: split horizontally (left/right)
+  tmux split-window -h -c "$PANE_PATH" "$APP"
+else
+  # Portrait: split vertically (top/bottom)
+  tmux split-window -v -c "$PANE_PATH" "$APP"
+fi
