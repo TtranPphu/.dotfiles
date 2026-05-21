@@ -4,13 +4,32 @@ PANE_PATH=$(tmux display-message -p '#{pane_current_path}')
 
 PANE_WIDTH=$(tmux display-message -p '#{pane_width}')
 PANE_HEIGHT=$(tmux display-message -p '#{pane_height}')
+UNIQUE_TOPS=$(tmux list-panes -F '#{pane_top}' | sort -u | wc -l | tr -d '[:space:]')
+UNIQUE_LEFTS=$(tmux list-panes -F '#{pane_left}' | sort -u | wc -l | tr -d '[:space:]')
+REBALANCE=0
 
 if [ "$PANE_WIDTH" -gt $((PANE_HEIGHT * 2)) ]; then
   # Landscape: split horizontally (left/right)
   PANE=$(tmux split-window -h -c "$PANE_PATH" -P -F '#{pane_id}')
+  LAYOUT=even-horizontal
+
+  if [ "$UNIQUE_TOPS" -eq 1 ]; then
+    REBALANCE=1
+  fi
 else
   # Portrait: split vertically (top/bottom)
   PANE=$(tmux split-window -v -c "$PANE_PATH" -P -F '#{pane_id}')
+  LAYOUT=even-vertical
+
+  if [ "$UNIQUE_LEFTS" -eq 1 ]; then
+    REBALANCE=1
+  fi
+fi
+
+WINDOW_PANES=$(tmux display-message -p -t "$PANE" '#{window_panes}')
+
+if [ "$REBALANCE" -eq 1 ] && [ "$WINDOW_PANES" -gt 2 ]; then
+  tmux select-layout -t "$PANE" "$LAYOUT"
 fi
 
 # Send exec command with all parameters to the new pane (pane will exit when app exits)
