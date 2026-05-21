@@ -166,6 +166,8 @@ cat ghostty/.config/ghostty/config >/dev/null
 - Helper scripts in `scripts/` (e.g., `scripts/status-left`, `scripts/pane-log`, `scripts/status-hint`).
 - Status hint scripts load keybinding help into variables like `@status-hint-prefix-1` and `@status-hint-prefix-2`.
 - Pane output is logged by default to `~/.local/state/tmux/pane-logs/<pane_id>.log` and cleaned up on pane exit/kill.
+  - To check warnings or output from a specific pane: `cat ~/.local/state/tmux/pane-logs/<pane_id>.log`
+  - Example: `cat ~/.local/state/tmux/pane-logs/77.log` to check pane 77
 - Gate extended-keys-format behind tmux >= 3.5; tmux 3.4 only supports extended-keys without the format flag.
 
 ## Zsh (`zsh/`)
