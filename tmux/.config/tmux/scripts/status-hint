@@ -7,8 +7,8 @@ copy_line_1='#[fg=blue]h/j/k/l#[fg=brightblack]: move       #[fg=blue]Space/v#[f
 copy_line_2='#[fg=blue]C-u/C-d#[fg=brightblack]: half page  #[fg=blue]Enter/y#[fg=brightblack]: copy    #[fg=blue]/ ?#[fg=brightblack]: search'
 tree_line_1='#[fg=blue]Up/Down#[fg=brightblack]: move   #[fg=blue]Enter#[fg=brightblack]: choose  #[fg=blue]+/-#[fg=brightblack]: expand/collapse  #[fg=blue]v#[fg=brightblack]: preview            #[fg=blue]q#[fg=brightblack]: quit'
 tree_line_2='#[fg=blue]t/T#[fg=brightblack]: tag/clear  #[fg=blue]C-t#[fg=brightblack]: tag all   #[fg=blue]x/X#[fg=brightblack]: kill one/tagged  #[fg=blue]C-s/n#[fg=brightblack]: search/repeat'
-prefix_line_1='#[fg=blue]h#[fg=brightblack]:   #[fg=blue]x#[fg=brightblack]: kill   #[fg=blue]c#[fg=brightblack]: new   #[fg=blue]r#[fg=brightblack]: rename   #[fg=blue]k#[fg=brightblack]: kill   #[fg=blue]n/p#[fg=brightblack]: next/prev   #[fg=blue]s#[fg=brightblack]: tree  #[fg=blue]d#[fg=brightblack]: detach'
-prefix_line_2='#[fg=blue]v#[fg=brightblack]:   #[fg=blue]z#[fg=brightblack]: zoom   #[fg=blue]C#[fg=brightblack]: new   #[fg=blue]R#[fg=brightblack]: rename   #[fg=blue]K#[fg=brightblack]: kill   #[fg=blue]N/P#[fg=brightblack]: next/prev   #[fg=blue]e#[fg=brightblack]: copy  #[fg=blue]q#[fg=brightblack]: reload'
+prefix_line_1='#[fg=blue]x#[fg=brightblack]: kill   #[fg=blue]c#[fg=brightblack]: new   #[fg=blue]r#[fg=brightblack]: rename   #[fg=blue]k#[fg=brightblack]: kill   #[fg=blue]n/p#[fg=brightblack]: next/prev   #[fg=blue]s#[fg=brightblack]: tree  #[fg=blue]d#[fg=brightblack]: detach'
+prefix_line_2='#[fg=blue]z#[fg=brightblack]: zoom   #[fg=blue]C#[fg=brightblack]: new   #[fg=blue]R#[fg=brightblack]: rename   #[fg=blue]K#[fg=brightblack]: kill   #[fg=blue]N/P#[fg=brightblack]: next/prev   #[fg=blue]e#[fg=brightblack]: copy  #[fg=blue]q#[fg=brightblack]: reload'
 
 strip_tmux() {
   printf '%s' "$1" | sed -E 's/#\[[^]]*\]//g'
