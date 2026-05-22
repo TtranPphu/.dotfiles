@@ -3,14 +3,35 @@
 line="$1"
 pane_mode="$2"
 
-copy_line_1='#[fg=blue]h#[fg=brightblack]|#[fg=blue]j#[fg=brightblack]|#[fg=blue]k#[fg=brightblack]|#[fg=blue]l#[fg=brightblack]: move  #[fg=blue]v#[fg=brightblack]|#[fg=blue]󱁐 #[fg=brightblack]: select  #[fg=blue]/#[fg=brightblack]|#[fg=blue]?#[fg=brightblack]: '
-copy_line_2='#[fg=blue]C-u#[fg=brightblack]|#[fg=blue]C-d#[fg=brightblack]: page  #[fg=blue]y#[fg=brightblack]|#[fg=blue]󰌑 #[fg=brightblack]: copy    #[fg=blue] q #[fg=brightblack]: '
+p1s_man='#[fg=brightblack]󰧮 #[fg=blue]M#[fg=brightblack]anual'
+p1s_cnf=' #[fg=blue]q#[fg=brightblack]: 󱑠 '
+p1s_dth=' 󰛉 #[fg=blue]d#[fg=brightblack]etach'
+p1_sys="$p1s_man  $p1s_cnf  $p1s_dth"
+p2_pan='#[fg=brightblack] #[fg=blue]Szx#[fg=brightblack]: splitzoomkill pane'
+p1_win=' #[fg=blue]crknp#[fg=brightblack]: createrenamekillnextprevious window '
+p2_ses=' #[fg=blue]CRKNP#[fg=brightblack]: createrenamekillnextprevious session'
+p1_tre='󰙅 #[fg=blue]s#[fg=brightblack]: TREE'
+p2_cpy=' #[fg=blue]e#[fg=brightblack]: COPY'
+prefix_line_1="$p1_sys  $p1_win  $p1_tre"
+prefix_line_2="$p2_pan  $p2_ses  $p2_cpy"
 
-tree_line_1='#[fg=blue]j#[fg=brightblack]|#[fg=blue]k#[fg=brightblack]: move    #[fg=blue]h#[fg=brightblack]|#[fg=blue]l#[fg=brightblack]: expand|collapse  #[fg=blue]t#[fg=brightblack]|#[fg=blue]T#[fg=brightblack]: tag|clear  #[fg=blue]v#[fg=brightblack]: '
-tree_line_2='#[fg=blue] 󰌑 #[fg=brightblack]: choose  #[fg=blue]x#[fg=brightblack]|#[fg=blue]X#[fg=brightblack]: kill one|tagged  #[fg=blue]C-t#[fg=brightblack]: tag all    #[fg=blue]q#[fg=brightblack]: '
+c1_nav='#[fg=blue]hjkl#[fg=brightblack]: move'
+c2_nav='#[fg=blue]C-uC-d#[fg=brightblack]: page'
+c1_act='#[fg=blue]v󱁐 #[fg=brightblack]: select'
+c2_act='#[fg=blue]y󰌑 #[fg=brightblack]: copy  '
+c1_srh='#[fg=blue]/?#[fg=brightblack]: '
+c2_bck='#[fg=blue] q #[fg=brightblack]: '
+copy_line_1="$c1_nav  $c1_act  $c1_srh"
+copy_line_2="$c2_nav  $c2_act  $c2_bck"
 
-prefix_line_1='#[fg=brightblack]󰧮 #[fg=blue]M#[fg=brightblack]anual │  #[fg=blue]q#[fg=brightblack]: 󱑠  │  󰛉 #[fg=blue]d#[fg=brightblack]etach │  #[fg=blue]c#[fg=brightblack]|#[fg=blue]r#[fg=brightblack]|#[fg=blue]k#[fg=brightblack]|#[fg=blue]n#[fg=brightblack]|#[fg=blue]p#[fg=brightblack]: create|rename|kill|next|previous window  │ 󰙅 #[fg=blue]s#[fg=brightblack]: TREE'
-prefix_line_2='#[fg=brightblack] #[fg=blue]S#[fg=brightblack]|#[fg=blue]z#[fg=brightblack]|#[fg=blue]x#[fg=brightblack]: split|zoom|kill pane │  #[fg=blue]C#[fg=brightblack]|#[fg=blue]R#[fg=brightblack]|#[fg=blue]K#[fg=brightblack]|#[fg=blue]N#[fg=brightblack]|#[fg=blue]P#[fg=brightblack]: create|rename|kill|next|previous session │  #[fg=blue]e#[fg=brightblack]: COPY'
+t1_nav='#[fg=blue]jk#[fg=brightblack]: move  '
+t2_sel='#[fg=blue] 󰌑 #[fg=brightblack]: choose'
+t1_tag='#[fg=blue]hl#[fg=brightblack]: expandcollapse  #[fg=blue]tT#[fg=brightblack]: tagclear'
+t2_tag='#[fg=blue]xX#[fg=brightblack]: kill onetagged  #[fg=blue]C-t#[fg=brightblack]: tag all  '
+t1_prv='#[fg=blue]v#[fg=brightblack]: '
+t2_bck='#[fg=blue]q#[fg=brightblack]: '
+tree_line_1="$t1_nav  $t1_tag  $t1_prv"
+tree_line_2="$t2_sel  $t2_tag  $t2_bck"
 
 strip_tmux() {
   printf '%s' "$1" | sed -E 's/#\[[^]]*\]//g'
