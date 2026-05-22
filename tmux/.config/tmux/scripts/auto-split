@@ -6,14 +6,11 @@ PANE_WIDTH=$(tmux display-message -p '#{pane_width}')
 PANE_HEIGHT=$(tmux display-message -p '#{pane_height}')
 
 if [ "$PANE_WIDTH" -gt $((PANE_HEIGHT * 2)) ]; then
-  # Landscape: split horizontally (left/right)
   PANE=$(tmux split-window -h -c "$PANE_PATH" -P -F '#{pane_id}')
 else
-  # Portrait: split vertically (top/bottom)
   PANE=$(tmux split-window -v -c "$PANE_PATH" -P -F '#{pane_id}')
 fi
 
-# Send exec command with all parameters to the new pane (pane will exit when app exits)
 if [ $# -gt 0 ]; then
-  tmux send-keys -t "$PANE" "exec $@" Enter
+  tmux send-keys -t "$PANE" "exec $*" Enter
 fi

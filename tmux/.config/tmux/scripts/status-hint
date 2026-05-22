@@ -3,12 +3,14 @@
 line="$1"
 pane_mode="$2"
 
-copy_line_1='#[fg=blue]h/j/k/l#[fg=brightblack]: move       #[fg=blue]Space/v#[fg=brightblack]: select  #[fg=blue]Esc#[fg=brightblack]: clear   #[fg=blue]q#[fg=brightblack]: quit'
-copy_line_2='#[fg=blue]C-u/C-d#[fg=brightblack]: half page  #[fg=blue]Enter/y#[fg=brightblack]: copy    #[fg=blue]/ ?#[fg=brightblack]: search'
-tree_line_1='#[fg=blue]Up/Down#[fg=brightblack]: move   #[fg=blue]Enter#[fg=brightblack]: choose  #[fg=blue]+/-#[fg=brightblack]: expand/collapse  #[fg=blue]v#[fg=brightblack]: preview            #[fg=blue]q#[fg=brightblack]: quit'
-tree_line_2='#[fg=blue]t/T#[fg=brightblack]: tag/clear  #[fg=blue]C-t#[fg=brightblack]: tag all   #[fg=blue]x/X#[fg=brightblack]: kill one/tagged  #[fg=blue]C-s/n#[fg=brightblack]: search/repeat'
-prefix_line_1='#[fg=blue]x#[fg=brightblack]: kill   #[fg=blue]c#[fg=brightblack]: new   #[fg=blue]r#[fg=brightblack]: rename   #[fg=blue]k#[fg=brightblack]: kill   #[fg=blue]n/p#[fg=brightblack]: next/prev   #[fg=blue]s#[fg=brightblack]: tree  #[fg=blue]d#[fg=brightblack]: detach'
-prefix_line_2='#[fg=blue]z#[fg=brightblack]: zoom   #[fg=blue]C#[fg=brightblack]: new   #[fg=blue]R#[fg=brightblack]: rename   #[fg=blue]K#[fg=brightblack]: kill   #[fg=blue]N/P#[fg=brightblack]: next/prev   #[fg=blue]e#[fg=brightblack]: copy  #[fg=blue]q#[fg=brightblack]: reload   #[fg=blue]M#[fg=brightblack]: manual'
+copy_line_1='#[fg=blue]h|j|k|l#[fg=brightblack]: move  #[fg=blue]v|󱁐 #[fg=brightblack]: select  #[fg=blue]/|?#[fg=brightblack]: '
+copy_line_2='#[fg=blue]C-u|C-d#[fg=brightblack]: page  #[fg=blue]y|󰌑 #[fg=brightblack]: copy    #[fg=blue] q #[fg=brightblack]: '
+
+tree_line_1='#[fg=blue]j|k#[fg=brightblack]: move    #[fg=blue]h|l#[fg=brightblack]: expand|collapse  #[fg=blue]t|T#[fg=brightblack]: tag|clear  #[fg=blue]v#[fg=brightblack]: '
+tree_line_2='#[fg=blue] 󰌑 #[fg=brightblack]: choose  #[fg=blue]x|X#[fg=brightblack]: kill one|tagged  #[fg=blue]C-t#[fg=brightblack]: tag all    #[fg=blue]q#[fg=brightblack]: '
+
+prefix_line_1='#[fg=brightblack]󰧮 #[fg=blue]M#[fg=brightblack]anual  #[fg=blue]d#[fg=brightblack]etach  #[fg=blue]q#[fg=brightblack]: 󱑠 │  #[fg=blue]c#[fg=brightblack]reate/#[fg=blue]r#[fg=brightblack]ename/#[fg=blue]k#[fg=brightblack]ill/#[fg=blue]n#[fg=brightblack]ext/#[fg=blue]p#[fg=brightblack]revious │ 󰙅 #[fg=blue]s#[fg=brightblack]: TREE'
+prefix_line_2='#[fg=brightblack] #[fg=blue]S#[fg=brightblack]plit   #[fg=blue]z#[fg=brightblack]oom    #[fg=blue]x#[fg=brightblack]: 󰛉 │  #[fg=blue]C#[fg=brightblack]reate/#[fg=blue]R#[fg=brightblack]ename/#[fg=blue]K#[fg=brightblack]ill/#[fg=blue]N#[fg=brightblack]ext/#[fg=blue]P#[fg=brightblack]revious │  #[fg=blue]e#[fg=brightblack]: COPY'
 
 strip_tmux() {
   printf '%s' "$1" | sed -E 's/#\[[^]]*\]//g'
@@ -24,7 +26,7 @@ pair_width() {
   left_width="$(visible_width "$left")"
   right_width="$(visible_width "$right")"
 
-  if (( left_width > right_width )); then
+  if ((left_width > right_width)); then
     printf '%s' "$left_width"
   else
     printf '%s' "$right_width"
@@ -35,9 +37,9 @@ pad_to_width() {
   text="$1"
   width="$2"
   text_width="$(visible_width "$text")"
-  padding=$(( width - text_width ))
+  padding=$((width - text_width))
 
-  if (( padding < 0 )); then
+  if ((padding < 0)); then
     padding=0
   fi
 
@@ -67,8 +69,8 @@ fi
 if [[ "$pane_mode" == 'copy-mode' ]]; then
   copy_width="$(pair_width "$copy_line_1" "$copy_line_2")"
   case "$line" in
-    1) box_top "$copy_line_1" "$copy_width" ;;
-    2) box_bottom "$copy_line_2" "$copy_width" ;;
+  1) box_top "$copy_line_1" "$copy_width" ;;
+  2) box_bottom "$copy_line_2" "$copy_width" ;;
   esac
   exit 0
 fi
@@ -76,8 +78,8 @@ fi
 if [[ "$pane_mode" == 'tree-mode' ]]; then
   tree_width="$(pair_width "$tree_line_1" "$tree_line_2")"
   case "$line" in
-    1) box_top "$tree_line_1" "$tree_width" ;;
-    2) box_bottom "$tree_line_2" "$tree_width" ;;
+  1) box_top "$tree_line_1" "$tree_width" ;;
+  2) box_bottom "$tree_line_2" "$tree_width" ;;
   esac
   exit 0
 fi
