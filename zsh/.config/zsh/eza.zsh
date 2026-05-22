@@ -1,7 +1,7 @@
 # Eza configuration and aliases
 
 # Configure eza if available
-if command -v eza &> /dev/null; then
+if command -v eza &>/dev/null; then
   alias ls='eza -ah --icons'
 
   alias la='eza -lah --icons --group'
@@ -9,7 +9,7 @@ if command -v eza &> /dev/null; then
   alias ld='eza -lah --only-dirs --icons --group'
   alias lf='eza -lah --only-files --icons --group'
   alias lh='eza -lad .* --icons --group'
-  
+
   # Pager variants as functions (to accept path arguments)
   lap() { eza -lah --icons --group --color=always "$@" | $PAGER; }
   ltp() { eza -lah --tree --icons --ignore-glob=.git --group --color=always "$@" | $PAGER; }
