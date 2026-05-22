@@ -1,7 +1,7 @@
 # Pager alias
 alias pg="$PAGER"
 
-# Configure eza if available
+# Alias eza -> ls if available
 if command -v eza &>/dev/null; then
   alias ls='eza -ah --icons'
 
@@ -16,4 +16,21 @@ if command -v eza &>/dev/null; then
   ldp() { eza -lah --only-dirs --icons --group --color=always "$@" | $PAGER; }
   lfp() { eza -lah --only-files --icons --group --color=always "$@" | $PAGER; }
   lhp() { eza -lad .* --icons --group --color=always "$@" | $PAGER; }
+fi
+
+# Alias cat -> batcat/bat if available
+if command -v batcat &>/dev/null; then
+  alias cat=batcat
+elif command -v bat &>/dev/null; then
+  alias cat=bat
+fi
+
+# Alias grep -> ripgrep if available
+if command -v rg &>/dev/null; then
+  alias grep='rg'
+fi
+
+# Alias cd -> zoxide if available
+if command -v zoxide &>/dev/null; then
+  alias cd='z'
 fi

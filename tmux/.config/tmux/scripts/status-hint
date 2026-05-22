@@ -9,7 +9,7 @@ copy_line_2='#[fg=blue]C-u#[fg=brightblack]|#[fg=blue]C-d#[fg=brightblack]: page
 tree_line_1='#[fg=blue]j#[fg=brightblack]|#[fg=blue]k#[fg=brightblack]: move    #[fg=blue]h#[fg=brightblack]|#[fg=blue]l#[fg=brightblack]: expand|collapse  #[fg=blue]t#[fg=brightblack]|#[fg=blue]T#[fg=brightblack]: tag|clear  #[fg=blue]v#[fg=brightblack]: '
 tree_line_2='#[fg=blue] 󰌑 #[fg=brightblack]: choose  #[fg=blue]x#[fg=brightblack]|#[fg=blue]X#[fg=brightblack]: kill one|tagged  #[fg=blue]C-t#[fg=brightblack]: tag all    #[fg=blue]q#[fg=brightblack]: '
 
-prefix_line_1='#[fg=brightblack]󰧮 #[fg=blue]M#[fg=brightblack]anual  󰛉 #[fg=blue]d#[fg=brightblack]etach  #[fg=blue]q#[fg=brightblack]: 󱑠      │  #[fg=blue]c#[fg=brightblack]|#[fg=blue]r#[fg=brightblack]|#[fg=blue]k#[fg=brightblack]|#[fg=blue]n#[fg=brightblack]|#[fg=blue]p#[fg=brightblack]: create|rename|kill|next|previous window  │ 󰙅 #[fg=blue]s#[fg=brightblack]: TREE'
+prefix_line_1='#[fg=brightblack]󰧮 #[fg=blue]M#[fg=brightblack]anual │  #[fg=blue]q#[fg=brightblack]: 󱑠  │  󰛉 #[fg=blue]d#[fg=brightblack]etach │  #[fg=blue]c#[fg=brightblack]|#[fg=blue]r#[fg=brightblack]|#[fg=blue]k#[fg=brightblack]|#[fg=blue]n#[fg=brightblack]|#[fg=blue]p#[fg=brightblack]: create|rename|kill|next|previous window  │ 󰙅 #[fg=blue]s#[fg=brightblack]: TREE'
 prefix_line_2='#[fg=brightblack] #[fg=blue]S#[fg=brightblack]|#[fg=blue]z#[fg=brightblack]|#[fg=blue]x#[fg=brightblack]: split|zoom|kill pane │  #[fg=blue]C#[fg=brightblack]|#[fg=blue]R#[fg=brightblack]|#[fg=blue]K#[fg=brightblack]|#[fg=blue]N#[fg=brightblack]|#[fg=blue]P#[fg=brightblack]: create|rename|kill|next|previous session │  #[fg=blue]e#[fg=brightblack]: COPY'
 
 strip_tmux() {
