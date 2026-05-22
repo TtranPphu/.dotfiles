@@ -11,9 +11,9 @@ fi
 
 # Set $PAGER with priority: bat/batcat > less > more
 if command -v batcat &>/dev/null; then
-  export PAGER='batcat --paging=auto'
+  export PAGER=batcat
 elif command -v bat &>/dev/null; then
-  export PAGER='bat --paging=auto'
+  export PAGER=bat
 elif command -v less &>/dev/null; then
   export PAGER=less
 else
