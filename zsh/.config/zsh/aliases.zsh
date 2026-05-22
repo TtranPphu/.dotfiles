@@ -11,11 +11,11 @@ if command -v eza &>/dev/null; then
   alias lf='eza -lah --only-files --icons --group'
   alias lh='eza -lad .* --icons --group'
 
-  lap() { eza -lah --icons --group --color=always "$@" | $PAGER; }
-  ltp() { eza -lah --tree --icons --ignore-glob=.git --group --color=always "$@" | $PAGER; }
-  ldp() { eza -lah --only-dirs --icons --group --color=always "$@" | $PAGER; }
-  lfp() { eza -lah --only-files --icons --group --color=always "$@" | $PAGER; }
-  lhp() { eza -lad .* --icons --group --color=always "$@" | $PAGER; }
+  lap() { eza -lah --icons --group --color=always "$@" | eval $PAGER; }
+  ltp() { eza -lah --tree --icons --ignore-glob=.git --group --color=always "$@" | eval $PAGER; }
+  ldp() { eza -lah --only-dirs --icons --group --color=always "$@" | eval $PAGER; }
+  lfp() { eza -lah --only-files --icons --group --color=always "$@" | eval $PAGER; }
+  lhp() { eza -lad .* --icons --group --color=always "$@" | eval $PAGER; }
 fi
 
 # Alias cat -> batcat/bat if available
