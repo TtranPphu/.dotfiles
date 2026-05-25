@@ -115,6 +115,11 @@ unset config
 eval "$(starship init zsh)"
 export STARSHIP_CONFIG=~/.config/starship/starship.toml
 
+# Check for missing dotfiles dependencies on shell startup
+if [ -x "$HOME/.local/share/zsh/install.sh" ]; then
+  "$HOME/.local/share/zsh/install.sh" 2>/dev/null || true
+fi
+
 if [ -z "$TMUX" ]; then
   exec bash -c "tmux attach >/dev/null 2>&1 || tmux new -s Default"
 fi
