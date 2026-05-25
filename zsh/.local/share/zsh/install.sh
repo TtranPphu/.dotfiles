@@ -186,10 +186,21 @@ has_sudo() {
 
 # Ask user to enable sudo
 ask_sudo() {
+  echo ""
   echo -e "${YELLOW}This operation requires sudo for package installation.${NC}"
-  echo -e "Please run: ${BLUE}sudo -v${NC}"
-  echo "This will cache your sudo credentials for the next 15 minutes."
-  exit 1
+  echo -e "Please provide your password: ${NC}"
+  if sudo -v; then
+    echo -e "${GREEN}Sudo credentials cached.${NC}"
+    echo ""
+    return 0
+  else
+    echo -e "${RED}Failed to obtain sudo credentials.${NC}"
+    echo ""
+    echo -e "${YELLOW}To install missing tools manually, run:${NC}"
+    echo -e "  ${BLUE}\$HOME/.local/share/zsh/install.sh${NC}"
+    echo ""
+    return 1
+  fi
 }
 
 # Prompt user for installation
@@ -376,7 +387,9 @@ main() {
 
   # Check sudo availability for non-brew package managers
   if [ "$pm" != "brew" ] && ! has_sudo; then
-    ask_sudo
+    if ! ask_sudo; then
+      return 1
+    fi
   fi
 
   echo -e "${GREEN}Detected package manager:${NC} $pm"
@@ -408,10 +421,12 @@ main() {
     echo ""
     echo -e "${YELLOW}To manually install missing tools, run:${NC}"
     echo -e "  ${BLUE}\$HOME/.local/share/zsh/install.sh${NC}"
+    sudo -k 2>/dev/null || true
     return 1
   fi
 
   echo -e "${GREEN}All missing tools installed!${NC}"
+  sudo -k 2>/dev/null || true
   return 0
 }
 
