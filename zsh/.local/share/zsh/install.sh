@@ -7,15 +7,19 @@
 set -e
 
 # Colors for output
-RED='\033[0;31m'
-GREEN='\033[0;32m'
-YELLOW='\033[1;33m'
-BLUE='\033[0;34m'
-NC='\033[0m' # No Color
+RED=$'\033[0;31m'
+GREEN=$'\033[0;32m'
+YELLOW=$'\033[1;33m'
+BLUE=$'\033[0;34m'
+NC=$'\033[0m' # No Color
 
 # State file to track user preferences
-STATE_FILE="${XDG_CACHE_HOME:-$HOME/.cache}/dotfiles/install-state.json"
+STATE_FILE="$HOME/.local/state/dotfiles/install-state.json"
 STATE_DIR="$(dirname "$STATE_FILE")"
+
+# Log file for installation output
+LOG_FILE="$HOME/.local/state/dotfiles/install.log"
+LOG_DIR="$(dirname "$LOG_FILE")"
 
 # Tools mapping: tool_name -> package_name
 declare -A TOOLS=(
@@ -38,6 +42,22 @@ declare -A TOOLS=(
   [lazydocker]="lazydocker"
   [stow]="gnu-stow"
 )
+
+# Alternative command names for tools on different systems
+declare -A TOOL_ALIASES=(
+  [bat]="batcat"
+)
+
+# Get command name(s) for a tool
+get_command_names() {
+  local tool=$1
+  local alias=${TOOL_ALIASES[$tool]}
+  if [ -n "$alias" ]; then
+    echo "$tool $alias"
+  else
+    echo "$tool"
+  fi
+}
 
 # Initialize state file
 init_state() {
@@ -147,7 +167,16 @@ get_package_name() {
 
 # Check if tool is installed
 is_installed() {
-  command -v "$1" &> /dev/null
+  local tool=$1
+  local commands
+  commands=$(get_command_names "$tool")
+
+  for cmd in $commands; do
+    if command -v "$cmd" &> /dev/null; then
+      return 0
+    fi
+  done
+  return 1
 }
 
 # Check if sudo is available
@@ -158,7 +187,7 @@ has_sudo() {
 # Ask user to enable sudo
 ask_sudo() {
   echo -e "${YELLOW}This operation requires sudo for package installation.${NC}"
-  echo "Please run: ${BLUE}sudo -v${NC}"
+  echo -e "Please run: ${BLUE}sudo -v${NC}"
   echo "This will cache your sudo credentials for the next 15 minutes."
   exit 1
 }
@@ -167,6 +196,7 @@ ask_sudo() {
 prompt_install() {
   local pref
   pref=$(get_preference)
+  local missing=$1
 
   case "$pref" in
     always)
@@ -176,31 +206,34 @@ prompt_install() {
       return 1
       ;;
     ask)
-      echo -e "${BLUE}Missing packages detected for this dotfiles repository.${NC}"
-      echo "Install missing tools?"
-      echo -e "  ${GREEN}yes${NC}   - Install now"
-      echo -e "  ${GREEN}no${NC}    - Skip installation"
-      echo -e "  ${GREEN}always${NC} - Install now and don't ask again"
-      echo -e "  ${GREEN}never${NC}  - Skip and don't ask again"
-      echo -n "Choice (yes/no/always/never): "
-      read -r choice
+      echo -e "${BLUE}Missing packages detected: ${NC}$missing"
+      echo -e "Install tools? (${BLUE}y${NC}es|${BLUE}n${NC}o|${BLUE}A${NC}lways|${BLUE}N${NC}ever): \c"
+
+      # Read single key without waiting for Enter
+      local choice
+      choice=$(bash -c 'read -rsn1 key; echo "$key"')
 
       case "$choice" in
-        y|yes)
+        y)
+          echo "y"
           return 0
           ;;
-        n|no)
+        n)
+          echo "n"
           return 1
           ;;
-        always)
+        A)
+          echo "A"
           update_preference "always"
           return 0
           ;;
-        never)
+        N)
+          echo "N"
           update_preference "never"
           return 1
           ;;
         *)
+          echo ""
           echo "Invalid choice. Skipping installation."
           return 1
           ;;
@@ -224,7 +257,7 @@ try_install() {
 
   case "$pm" in
     apt)
-      if sudo apt-get update && sudo apt-get install -y "$package"; then
+      if sudo apt-get update >> "$LOG_FILE" 2>&1 && sudo apt-get install -y "$package" >> "$LOG_FILE" 2>&1; then
         echo -e "${GREEN}✓${NC} $tool installed"
         return 0
       else
@@ -233,7 +266,7 @@ try_install() {
       fi
       ;;
     dnf)
-      if sudo dnf install -y "$package"; then
+      if sudo dnf install -y "$package" >> "$LOG_FILE" 2>&1; then
         echo -e "${GREEN}✓${NC} $tool installed"
         return 0
       else
@@ -242,7 +275,7 @@ try_install() {
       fi
       ;;
     pacman)
-      if sudo pacman -S --noconfirm "$package"; then
+      if sudo pacman -S --noconfirm "$package" >> "$LOG_FILE" 2>&1; then
         echo -e "${GREEN}✓${NC} $tool installed"
         return 0
       else
@@ -251,7 +284,7 @@ try_install() {
       fi
       ;;
     brew)
-      if brew install "$package"; then
+      if brew install "$package" >> "$LOG_FILE" 2>&1; then
         echo -e "${GREEN}✓${NC} $tool installed"
         return 0
       else
@@ -260,7 +293,7 @@ try_install() {
       fi
       ;;
     zypper)
-      if sudo zypper install -y "$package"; then
+      if sudo zypper install -y "$package" >> "$LOG_FILE" 2>&1; then
         echo -e "${GREEN}✓${NC} $tool installed"
         return 0
       else
@@ -269,7 +302,7 @@ try_install() {
       fi
       ;;
     apk)
-      if sudo apk add "$package"; then
+      if sudo apk add "$package" >> "$LOG_FILE" 2>&1; then
         echo -e "${GREEN}✓${NC} $tool installed"
         return 0
       else
@@ -292,6 +325,9 @@ main() {
     echo -e "${RED}Error: Could not detect package manager${NC}"
     return 1
   fi
+
+  # Ensure log directory exists
+  mkdir -p "$LOG_DIR"
 
   # Check for missing tools
   local missing=()
@@ -325,11 +361,16 @@ main() {
   fi
 
   # Prompt user for installation
-  if ! prompt_install; then
+  local missing_str
+  missing_str=$(printf '%s, ' "${missing[@]}" | sed 's/, $//')
+  if ! prompt_install "$missing_str"; then
     # Mark all missing tools as attempted
     for tool in "${missing[@]}"; do
       add_attempted "$tool"
     done
+    echo ""
+    echo -e "${YELLOW}To install missing tools manually in the future, run:${NC}"
+    echo -e "  ${BLUE}\$HOME/.local/share/zsh/install.sh${NC}"
     return 0
   fi
 
@@ -359,13 +400,14 @@ main() {
 
   echo "---"
   echo -e "${GREEN}Installed: ${#installed[@]}${NC}"
+  echo -e "${YELLOW}Logs: ${LOG_FILE}${NC}"
 
   if [ ${#failed[@]} -gt 0 ]; then
     echo -e "${YELLOW}Failed: ${#failed[@]}${NC}"
     echo -e "${RED}Failed to install: ${failed[*]}${NC}"
     echo ""
     echo -e "${YELLOW}To manually install missing tools, run:${NC}"
-    echo "  ${BLUE}./.scripts/install${NC}"
+    echo -e "  ${BLUE}\$HOME/.local/share/zsh/install.sh${NC}"
     return 1
   fi
 
