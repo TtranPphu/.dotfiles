@@ -176,6 +176,7 @@ cat ghostty/.config/ghostty/config >/dev/null
 - Modular configs in `zsh/.config/zsh/` (e.g., `eza.zsh` for eza aliases).
 - Oh My Zsh theme is disabled; Starship is the primary prompt.
 - **Shell script style:** 2-space indentation, Bash shebang.
+- **Note on `bat` vs `batcat`:** On some systems (e.g., Debian/Ubuntu), the command is `batcat` instead of `bat`. When using `bat` in scripts or fzf preview commands, always check for both commands or use the alias fallback.
 
 ## Starship (`starship/`)
 
