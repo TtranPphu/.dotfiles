@@ -34,3 +34,9 @@ fi
 if command -v zoxide &>/dev/null; then
   alias cd='z'
 fi
+
+# Alias vi and vim -> nvim if available
+if command -v nvim &>/dev/null; then
+  alias vi='nvim'
+  alias vim='nvim'
+fi
