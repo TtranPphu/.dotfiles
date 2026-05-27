@@ -31,4 +31,8 @@ if command -v fzf &> /dev/null; then
 
   # Bind Ctrl+S to mirror Ctrl+R for history search
   bindkey '^S' fzf-history-widget
+
+  # Replace Ctrl+T with Ctrl+F for file completion
+  bindkey '^F' fzf-file-widget
+  bindkey -r '^T'
 fi
