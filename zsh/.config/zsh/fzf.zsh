@@ -19,7 +19,7 @@ if command -v fzf &> /dev/null; then
   local fzf_file_preview="if [ -d {} ]; then eza -lah --icons --group --color=always {} 2>/dev/null || ls -lah {}; else $bat_cmd {} 2>/dev/null || cat {}; fi"
 
   # fzf options with smart preview for files/dirs
-  export FZF_DEFAULT_OPTS="--height 60% --reverse --multi --wrap-sign='' --ellipsis='··' --preview '$fzf_file_preview' --preview-window down:40%,wrap --preview-wrap-sign='' --bind 'ctrl-d:half-page-down,ctrl-u:half-page-up'"
+  export FZF_DEFAULT_OPTS="--height 60% --reverse --multi --wrap-sign='' --ellipsis='··' --preview '$fzf_file_preview' --preview-window down:40%,wrap --preview-wrap-sign='' --bind 'ctrl-d:preview-down,ctrl-u:preview-up'"
 
   export FZF_COMPLETION_TRIGGER='~~'
 
