@@ -28,7 +28,7 @@ if command -v fzf &> /dev/null; then
   zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
 
   # FZF options - consistent with FZF_DEFAULT_OPTS
-  zstyle ':fzf-tab:*' fzf-flags --height=60% --reverse --multi --wrap-sign='' --ellipsis='··' --preview-window=down:40%,wrap --preview-wrap-sign='' --bind=ctrl-d:preview-down,ctrl-u:preview-up
+  zstyle ':fzf-tab:*' fzf-flags --popup 60%,60% --reverse --multi --wrap-sign='' --ellipsis='··' --preview-window=down:40%,wrap --preview-wrap-sign='' --bind=ctrl-d:preview-down,ctrl-u:preview-up
 
   # Git previews
   zstyle ':fzf-tab:complete:git-add:*' fzf-preview 'git diff --no-color HEAD -- $realpath 2>/dev/null'
