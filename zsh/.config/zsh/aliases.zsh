@@ -1,6 +1,8 @@
 # Pager alias
 alias pg="$PAGER"
 
+alias gs='git status' # What the f*ck is GhostScript, anyway?
+
 # Alias eza -> ls if available
 if command -v eza &>/dev/null; then
   alias ls='eza -ah --icons'
