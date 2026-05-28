@@ -70,13 +70,13 @@ pad_to_width() {
 box_top() {
   text="$1"
   width="$2"
-  printf '#[align=centre]#[fg=blue,dim]╭─#[default] %s #[fg=blue,dim]─╮' "$(pad_to_width "$text" "$width")"
+  printf '#[align=centre]#[fg=blue,dim]┌─#[default] %s #[fg=blue,dim]─┐' "$(pad_to_width "$text" "$width")"
 }
 
 box_bottom() {
   text="$1"
   width="$2"
-  printf '#[align=centre]#[fg=blue,dim]╰─#[default] %s #[fg=blue,dim]─╯' "$(pad_to_width "$text" "$width")"
+  printf '#[align=centre]#[fg=blue,dim]└─#[default] %s #[fg=blue,dim]─┘' "$(pad_to_width "$text" "$width")"
 }
 
 if [[ "$line" == 'init' ]]; then
