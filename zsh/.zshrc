@@ -123,3 +123,5 @@ fi
 if [ -z "$TMUX" ]; then
   exec bash -c "tmux attach >/dev/null 2>&1 || tmux new -s Default"
 fi
+
+export PATH="$HOME/.local/bin:$PATH"
