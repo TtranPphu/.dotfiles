@@ -11,6 +11,7 @@ $directory\
 ${custom.git_remote}\
 $git_branch\
 $git_status\
+${custom.deepseek_balance}\
 $fill\
 $c\
 $java\
@@ -201,6 +202,13 @@ shell = ["bash"]
 style = "bold red"
 format = " [$output]($style)"
 
+
+[custom.deepseek_balance]
+command = 'config_dir="${STARSHIP_CONFIG%/*}"; ${config_dir:-$HOME/.config/starship}/deepseek-balance.sh'
+when = "true"
+shell = ["bash"]
+style = "bold bright-cyan"
+format = " [$output]($style)"
 
 [character]
 success_symbol = "[](bold green)"
