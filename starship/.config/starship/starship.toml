@@ -210,27 +210,27 @@ error_symbol = "[](bold red)"
 
 [custom.deepseek_balance]
 command = 'config_dir="${STARSHIP_CONFIG%/*}"; ${config_dir:-$HOME/.config/starship}/deepseek-balance.sh'
-when = "true"
+when = "test -f $HOME/.claude/settings.json"
 shell = ["bash"]
 style = "bright-blue"
-format = " [ $output]($style) |"
+format = " [ $output]($style)"
 
 [username]
 show_always = true
 style_user = "bold cyan"
 style_root = "bold purple"
-format = " [$user]($style)"
+format = " [ $user]($style)"
 
 [hostname]
-format = " | [󰢹 $hostname]($style)"
+format = " [󰢹 $hostname]($style)"
 
 
 [custom.docker_host]
 command = 'echo "${CONTAINER_NAME:-${COMPOSE_SERVICE}}"'
 when = "test -f /.dockerenv"
 shell = ["bash"]
-style = "bold dimmed green"
-format = " | [󰡨 $output]($style)"
+style = "bold dimmed blue"
+format = " [󰡨 $output]($style)"
 
 
 [palettes.p10k]
