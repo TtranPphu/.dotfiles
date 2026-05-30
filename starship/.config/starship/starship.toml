@@ -11,7 +11,6 @@ $directory\
 ${custom.git_remote}\
 $git_branch\
 $git_status\
-${custom.deepseek_balance}\
 $fill\
 $c\
 $java\
@@ -29,6 +28,7 @@ $character\
 """
 
 right_format = """
+${custom.deepseek_balance}\
 $username\
 $hostname\
 ${custom.docker_host}\
@@ -38,7 +38,7 @@ ${custom.docker_host}\
 [shell]
 disabled = false
 style = "bold bright-black"
-format = "with [$indicator]($style) "
+format = "[$indicator]($style) "
 unknown_indicator = "unknown-shell"
 bash_indicator = " bash"
 cmd_indicator = " cmd"
@@ -77,7 +77,7 @@ Windows = ""
 
 [directory]
 style = "bold bright-blue"
-format = "in [$path]($style) "
+format = "[$path]($style) "
 truncation_length = 7
 truncation_symbol = "…/"
 truncate_to_repo = false
@@ -110,7 +110,7 @@ esac
 shell = ["bash"]
 when = "git rev-parse --is-inside-work-tree 2>/dev/null"
 style = "bold white"
-format = "[on $output]($style) "
+format = "[$output]($style) "
 
 [git_status]
 style = "bright-yellow"
@@ -160,7 +160,7 @@ format = " [$symbol($version)]($style)"
 
 [cmd_duration]
 min_time = 1000
-format = " took [$duration]($style)"
+format = " [󰦖 $duration]($style)"
 style = "yellow"
 
 
@@ -175,7 +175,7 @@ echo "${icons[$(date +%-I)]} $(date +'%I:%M %p')"
 when = "true"
 shell = ["bash"]
 style = "dimmed bright-cyan"
-format = " at [$output]($style)"
+format = " [$output]($style)"
 
 
 [battery]
@@ -203,26 +203,26 @@ style = "bold red"
 format = " [$output]($style)"
 
 
-[custom.deepseek_balance]
-command = 'config_dir="${STARSHIP_CONFIG%/*}"; ${config_dir:-$HOME/.config/starship}/deepseek-balance.sh'
-when = "true"
-shell = ["bash"]
-style = "bold bright-cyan"
-format = " [$output]($style)"
-
 [character]
 success_symbol = "[](bold green)"
 error_symbol = "[](bold red)"
 
 
+[custom.deepseek_balance]
+command = 'config_dir="${STARSHIP_CONFIG%/*}"; ${config_dir:-$HOME/.config/starship}/deepseek-balance.sh'
+when = "true"
+shell = ["bash"]
+style = "bright-blue"
+format = " [ $output]($style) |"
+
 [username]
 show_always = true
 style_user = "bold cyan"
 style_root = "bold purple"
-format = "as [$user]($style)"
+format = " [$user]($style)"
 
 [hostname]
-format = " on [󰢹 $hostname]($style)"
+format = " | [󰢹 $hostname]($style)"
 
 
 [custom.docker_host]
@@ -230,7 +230,7 @@ command = 'echo "${CONTAINER_NAME:-${COMPOSE_SERVICE}}"'
 when = "test -f /.dockerenv"
 shell = ["bash"]
 style = "bold dimmed green"
-format = " on [󰡨 $output]($style)"
+format = " | [󰡨 $output]($style)"
 
 
 [palettes.p10k]
