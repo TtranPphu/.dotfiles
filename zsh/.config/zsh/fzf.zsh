@@ -21,7 +21,7 @@ if command -v fzf &> /dev/null; then
   # fzf options with smart preview for files/dirs
   export FZF_DEFAULT_OPTS="--popup 60%,60% --reverse --multi --wrap-sign='' --ellipsis='··' --preview '$fzf_file_preview' --preview-window down:40%,wrap --preview-wrap-sign='' --bind 'ctrl-d:preview-down,ctrl-u:preview-up'"
 
-  export FZF_COMPLETION_TRIGGER='~~'
+  export FZF_COMPLETION_TRIGGER='**'
 
   # For history search - use sed inline to strip line numbers and leading spaces
   export FZF_CTRL_R_OPTS="--preview 'echo {} | sed \"s/^[[:space:]]*[0-9]*[[:space:]]*//\"' --with-nth 2.."
