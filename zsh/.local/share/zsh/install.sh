@@ -379,9 +379,11 @@ main() {
     for tool in "${missing[@]}"; do
       add_attempted "$tool"
     done
-    echo ""
-    echo -e "${YELLOW}To install missing tools manually in the future, run:${NC}"
-    echo -e "  ${BLUE}\$HOME/.local/share/zsh/install.sh${NC}"
+    if [ "$(get_preference)" != "never" ]; then
+      echo ""
+      echo -e "${YELLOW}To install missing tools manually in the future, run:${NC}"
+      echo -e "  ${BLUE}\$HOME/.local/share/zsh/install.sh${NC}"
+    fi
     return 0
   fi
 
