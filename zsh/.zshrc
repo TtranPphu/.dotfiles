@@ -120,8 +120,21 @@ if [ -x "$HOME/.local/share/zsh/install.sh" ]; then
   "$HOME/.local/share/zsh/install.sh" 2>/dev/null || true
 fi
 
-if [ -z "$TMUX" ]; then
-  exec bash -c "tmux attach >/dev/null 2>&1 || tmux new -s Default"
+if [ -z "$TMUX" ] && [ -z "$ZELLIJ" ]; then
+  if command -v tmux >/dev/null 2>&1 && ! command -v zellij >/dev/null 2>&1; then
+    exec tmux new -A -s Default
+  elif ! command -v tmux >/dev/null 2>&1 && command -v zellij >/dev/null 2>&1; then
+    exec zellij attach -c Default
+  elif command -v tmux >/dev/null 2>&1 && command -v zellij >/dev/null 2>&1; then
+    BLUE=$'\033[0;34m' NC=$'\033[0m'
+    echo -n "Pick multiplexer - (${BLUE}T${NC}mux | ${BLUE}Z${NC}ellij | ${BLUE}N${NC}one): "
+    read -r -k1 choice
+    echo
+    case "$choice" in
+      t|T) exec tmux new -A -s Default ;;
+      z|Z) exec zellij attach -c Default ;;
+    esac
+  fi
 fi
 
 export PATH="$HOME/.local/bin:$PATH"
