@@ -204,6 +204,7 @@ cat ghostty/.config/ghostty/config >/dev/null
 - Each component may have inline comments in config files explaining non-obvious settings, but avoid over-commenting.
 - When editing a package, verify syntax with the tool's own validation commands before committing.
 - Breaking changes to Omarchy integration (e.g., replacing a theme) should be noted in the commit body.
+- **Never auto-commit.** Only make commits when explicitly asked by the user. Do not invoke the commit skill or create commits as part of implementing changes — wait for a clear "make commit" or "commit" instruction.
 
 # Commit Message Convention
 
