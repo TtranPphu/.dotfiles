@@ -40,8 +40,8 @@ Keep edits in local override files, not in Omarchy-owned paths. App-specific Hyp
 
 **Neovim** (`nvim/`) is a Kickstart-based distribution, not fully custom:
 - Core behavior lives in `nvim/.config/nvim/init.lua`
-- `lazy.nvim` imports plugin specs from `nvim/.config/nvim/lua/custom/plugins/*.lua`
-- Plugin versions are pinned in `lazy-lock.json`
+- `vim.pack` imports plugin specs from `nvim/.config/nvim/lua/custom/plugins/*.lua`
+- Plugin versions are pinned in `nvim-pack-lock.json`
 - Prefer new files in `lua/custom/plugins/` for custom behavior; edit `init.lua` only for shared core behavior
 
 **Bat** (`bat/`) is a syntax-highlighting pager. Simple config in `bat/.config/bat/config`.
@@ -144,9 +144,9 @@ cat ghostty/.config/ghostty/config >/dev/null
 ## Neovim (`nvim/`)
 
 - **Kickstart-based**, not a full distribution. Most setup is intentionally minimal.
-- Core behavior lives in `init.lua`; `lazy.nvim` manages plugins.
-- **Modularize custom plugins** under `lua/custom/plugins/*.lua`. Each file is imported via `{ import = 'custom.plugins' }` in `init.lua`.
-- Plugin versions are pinned in `lazy-lock.json`; update via `:Lazy sync` inside Nvim.
+- Core behavior lives in `init.lua`; `vim.pack` manages plugins.
+- **Modularize custom plugins** under `lua/custom/plugins/*.lua`. Each file is loaded via `require 'custom.plugins'` in `init.lua`.
+- Plugin versions are pinned in `nvim-pack-lock.json`; update via `:lua vim.pack.update()` inside Nvim.
 - **Indentation defaults to 2 spaces** globally (via `expandtab`, `shiftwidth=2`, `softtabstop=2` in `init.lua`).
   - **Tab display width:** Set to 8 spaces so actual tab characters are immediately visible and identifiable (helps catch accidental tabs).
   - **Language-specific overrides** in `lua/custom/plugins/language-indent.lua`:
@@ -287,10 +287,10 @@ When modifying components that integrate with Omarchy (Hyprland, Waybar, Walker,
 ## Adding a Neovim Plugin
 
 1. Create a new file in `nvim/.config/nvim/lua/custom/plugins/<plugin-name>.lua`.
-2. Define the plugin spec following `lazy.nvim` conventions (return a table or list).
+2. Define the plugin spec following `vim.pack` conventions (return a table or URL string).
 3. Use `.stylua.toml` style: 2-space indents, single quotes, omitted call parens.
 4. Validate syntax: `luac -p nvim/.config/nvim/lua/custom/plugins/<plugin-name>.lua`.
-5. Test in Nvim: `:Lazy load <plugin-name>` or `:Lazy sync`.
+5. Test in Nvim: `:lua vim.pack.update(nil, { offline = true })` to inspect state, or `:lua vim.pack.update()` to fetch updates.
 6. Commit with `[Nvim] - Add <plugin-name> plugin`.
 
 ## Adding a Shell Script
@@ -347,7 +347,7 @@ After making changes:
 2. If changes span multiple components, validate each one.
 3. For UI changes (Hypr, Waybar, Yazi, etc.), test in the running environment when possible.
 4. For shell changes (Zsh, Starship, scripts), source or reload the configuration.
-5. For Nvim, use `:Lazy sync` to ensure plugins are updated and validated.
+5. For Nvim, use `:lua vim.pack.update()` to ensure plugins are updated and validated.
 6. Commit only after validation passes.
 
 Use this workflow before pushing or creating PRs to ensure the repository stays in a working state.
