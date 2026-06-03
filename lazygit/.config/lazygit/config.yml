@@ -151,7 +151,7 @@ gui:
   showPanelJumps: true
 
   # Nerd font version: '2', '3', or '' (empty = no icons)
-  nerdFontsVersion: ""
+  nerdFontsVersion: "3"
 
   # Show file icons
   showFileIcons: true
@@ -342,13 +342,13 @@ notARepository: quit
 # OS specific configuration
 os:
   # Command for editing files
-  edit: ""
+  edit: "nvim"
 
   # Command for editing at line number
-  editAtLine: ""
+  editAtLine: "nvim +{{line}} {{filename}}"
 
   # Command for editing at line and wait
-  editAtLineAndWait: ""
+  editAtLineAndWait: "nvim +{{line}} {{filename}}"
 
   # Edit in terminal
   editInTerminal: false
