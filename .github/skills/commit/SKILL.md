@@ -51,7 +51,7 @@ Examples:
 - Capitalize the first letter of each sentence, proper names, and short all-caps terms when appropriate.
 - Mention the key files or behavior changes when that helps explain the commit.
 - If the commit is trivial, keep the body brief rather than omitting it entirely.
-- End the body with a `Copilot - <model>` line identifying the agent and model that generated the commit.
+- End the body with an agent signature line: `Copilot - <model>` for Copilot CLI or `Claude - <model>` for Claude Code.
 
 ## Workflow
 

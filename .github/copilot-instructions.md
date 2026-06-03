@@ -224,6 +224,7 @@ Optional detailed explanation of the change, rationale, or context.
 - **Summary line:** Keep it concise and descriptive. Avoid redundancy (don't say "Update [Component]", just describe the change).
 - **Body:** Add 1–3 lines of explanation when helpful (e.g., rationale, side effects, interaction with other components).
 - **Length:** First line should be ~60 characters or less; keep total commit message focused.
+- **Agent signature:** End the body with a line identifying the agent that generated the commit. Copilot CLI uses `Copilot - <model>`, Claude Code uses `Claude - <model>`.
 
 ## Examples
 
