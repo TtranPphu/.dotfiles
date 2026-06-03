@@ -1,7 +1,5 @@
 #!/bin/bash
 
-set -x
-
 # Starship custom module: DeepSeek account balance
 set -euo pipefail
 
@@ -18,10 +16,10 @@ refresh_cache() {
   tmp=$(mktemp) || return 1
   curl -sfL -X GET 'https://api.deepseek.com/user/balance' \
     -H 'Accept: application/json' \
-    -H "Authorization: Bearer $TOKEN" 2>/dev/null \
-    | jq '{total_balance: (.balance_infos[0].total_balance | tonumber), last_update: (now | floor)}' > "$tmp" \
-    && mv "$tmp" "$STATE_FILE" \
-    || rm -f "$tmp"
+    -H "Authorization: Bearer $TOKEN" 2>/dev/null |
+    jq '{total_balance: (.balance_infos[0].total_balance | tonumber), last_update: (now | floor)}' >"$tmp" &&
+    mv "$tmp" "$STATE_FILE" ||
+    rm -f "$tmp"
 }
 
 if [ -f "$STATE_FILE" ]; then
@@ -30,15 +28,20 @@ if [ -f "$STATE_FILE" ]; then
   NOW=$(date +%s)
   AGE=$((NOW - CACHE_TIME))
 
-  if [ "$AGE" -ge "$CACHE_TTL" ]; then
-    refresh_cache &>/dev/null &
-  fi
-
   if [ -n "$BALANCE" ]; then
+    if [ "$AGE" -ge "$CACHE_TTL" ]; then
+      refresh_cache &>/dev/null &
+    fi
     printf "\$%.2f" "$BALANCE"
     exit 0
   fi
 fi
 
-refresh_cache &>/dev/null &
+# No valid cache — block on refresh so the module appears on first invocation
+refresh_cache 2>/dev/null || true
+BALANCE=$(jq -r '.total_balance // empty' "$STATE_FILE" 2>/dev/null) || BALANCE=""
+if [ -n "$BALANCE" ]; then
+  printf "\$%.2f" "$BALANCE"
+  exit 0
+fi
 exit 1
