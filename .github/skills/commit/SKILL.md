@@ -17,6 +17,7 @@ This repository is organized around top-level components. When making commits:
 - For files under a top-level directory, use the first path segment as the component owner.
   - Examples: `hypr/...` -> `Hypr`, `tmux/...` -> `Tmux`, `nvim/...` -> `Nvim`.
 - For `.github/...`, use `GitHub`.
+- For changes to agent configuration or documentation files (e.g., `.claude/`, `.github/skills/`, `.github/copilot-instructions.md`), use `Agent`.
 - For root-level files that are not inside a component directory, use `Repo`.
 - Prefer a human-readable component label in title case inside the commit subject.
 

@@ -219,6 +219,7 @@ Optional detailed explanation of the change, rationale, or context.
 ## Guidelines
 
 - **Component prefix** in square brackets (not angle brackets). Examples: `[Hypr]`, `[Nvim]`, `[Tmux]`, `[Zsh]`, `[Waybar]`, `[Starship]`, etc.
+- **Agent changes:** Use `[Agent]` for changes made by Copilot/Claude to agent configuration, skills, or documentation (e.g., `.claude/`, `.github/skills/`, `.github/copilot-instructions.md`).
 - **Capitalization:** Component is title-case (e.g., `[Neovim]` not `[neovim]`), summary uses sentence-style capitalization.
 - **Dash separator:** Use ` - ` (space, dash, space) between the component and summary.
 - **Summary line:** Keep it concise and descriptive. Avoid redundancy (don't say "Update [Component]", just describe the change).
