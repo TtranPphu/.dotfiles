@@ -29,7 +29,7 @@ stow <package-name>             # deploy
 
 **Shell:** Zsh is primary (`zsh/.zshrc` → Oh My Zsh → modular configs in `zsh/.config/zsh/*.zsh` → Starship). The last lines of `.zshrc` auto-attach tmux on login if not already in one. Starship config lives in `starship/` with battery helper scripts.
 
-**Editor:** Neovim is Kickstart-based (`nvim/.config/nvim/init.lua` + lazy.nvim plugins in `lua/custom/plugins/`). Plugin versions pinned in `lazy-lock.json`.
+**Editor:** Neovim is Kickstart-based (`nvim/.config/nvim/init.lua` + `vim.pack` plugins in `lua/custom/plugins/`). Plugin versions pinned in `nvim-pack-lock.json`.
 
 **Tmux** (`tmux/.config/tmux/tmux.conf`) has helper scripts in `scripts/`. Pane output auto-logs to `~/.local/state/tmux/pane-logs/`.
 
