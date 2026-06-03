@@ -22,4 +22,4 @@ local function auto_split()
 end
 
 -- Map ss to auto-split
-vim.keymap.set('n', 'ss', auto_split, { noremap = true, silent = true, desc = 'Auto split window' })
+vim.keymap.set('n', 'ss', auto_split, { silent = true, desc = 'Auto split window' })

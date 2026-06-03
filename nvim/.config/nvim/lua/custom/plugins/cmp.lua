@@ -1,7 +1,7 @@
 -- Completion framework with Copilot integration
 -- Uses blink.cmp with 'super-tab' preset (Tab accepts completions)
 
-vim.pack.add { { src = 'https://github.com/saghen/blink.cmp', version = '1.*' } }
+vim.pack.add { { src = 'https://github.com/saghen/blink.cmp', version = vim.version.range '1.*' } }
 vim.pack.add { 'https://github.com/L3MON4D3/LuaSnip' }
 
 require('luasnip').setup {}
