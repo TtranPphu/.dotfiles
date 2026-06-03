@@ -1,5 +1,5 @@
-# Pager alias
-alias pg="$PAGER"
+# Pager function (use function, not alias, since $PAGER may not be set at load time)
+pg() { "${PAGER:-less}" "$@"; }
 
 alias gs='git status' # What the f*ck is GhostScript, anyway?
 
@@ -13,11 +13,11 @@ if command -v eza &>/dev/null; then
   alias lf='eza -lah --only-files --icons --group'
   alias lh='eza -lad .* --icons --group'
 
-  lap() { eza -lah --icons --group --color=always "$@" | eval $PAGER; }
-  ltp() { eza -lah --tree --icons --ignore-glob=.git --group --color=always "$@" | eval $PAGER; }
-  ldp() { eza -lah --only-dirs --icons --group --color=always "$@" | eval $PAGER; }
-  lfp() { eza -lah --only-files --icons --group --color=always "$@" | eval $PAGER; }
-  lhp() { eza -lad .* --icons --group --color=always "$@" | eval $PAGER; }
+  lap() { eza -lah --icons --group --color=always "$@" | ${PAGER:-less}; }
+  ltp() { eza -lah --tree --icons --ignore-glob=.git --group --color=always "$@" | ${PAGER:-less}; }
+  ldp() { eza -lah --only-dirs --icons --group --color=always "$@" | ${PAGER:-less}; }
+  lfp() { eza -lah --only-files --icons --group --color=always "$@" | ${PAGER:-less}; }
+  lhp() { eza -lad .* --icons --group --color=always "$@" | ${PAGER:-less}; }
 fi
 
 # Alias cat -> batcat/bat if available
@@ -32,10 +32,7 @@ if command -v rg &>/dev/null; then
   alias grep='rg'
 fi
 
-# Alias cd -> zoxide if available
-if command -v zoxide &>/dev/null; then
-  alias cd='z'
-fi
+# Alias cd -> zoxide is handled in zoxide.zsh
 
 # Alias vi and vim -> nvim if available
 if command -v nvim &>/dev/null; then
