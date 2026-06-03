@@ -118,10 +118,10 @@ commandTemplates:
 # OS specific configuration
 oS:
   # Command to open a file
-  openCommand: open {{filename}}
+  openCommand: xdg-open {{filename}}
 
   # Command to open a link
-  openLinkCommand: open {{link}}
+  openLinkCommand: xdg-open {{link}}
 
 # Stats graphs
 stats:
