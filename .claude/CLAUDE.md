@@ -40,7 +40,7 @@ stow <package-name>             # deploy
 ## Key Conventions
 
 - **Add files under the existing stow package that owns the target path.** `<package>/.config/<tool>/` → `~/.config/<tool>/`. Don't create ad-hoc relocation scripts.
-- **Commit format:** `[Component] - Summary`. Component in title-case square brackets, dash separator, sentence-style summary. Examples: `[Hypr]`, `[Nvim]`, `[Tmux]`, `[Zsh]`, `[Starship]`. Details after blank line if needed.
+- **Commit format:** `[Component] - Summary`. Component in title-case square brackets, dash separator, sentence-style summary. Examples: `[Hypr]`, `[Nvim]`, `[Tmux]`, `[Zsh]`, `[Starship]`. Details after blank line if needed. End the body with `Claude - <model>` to identify Claude Code as the agent.
 - **Hyprland:** Don't edit Omarchy-owned paths. Override by sourcing local files. Application rules go in `hypr/.config/hypr/apps/*.conf`, sourced via `app.conf`. When replacing an Omarchy keybinding, `unbind` the original first.
 - **Neovim:** Core behavior in `init.lua`. Custom plugins in `lua/custom/plugins/*.lua`. Stylua style: 2-space indent, single quotes, omit call parens where valid. Indentation: 2-space default, 4-space for Python/Go/Java/C/C++/Rust via `language-indent.lua`.
 - **Shell scripts:** Bash shebang, 2-space indentation. Format with `shfmt -i 2` before committing.
