@@ -19,6 +19,7 @@ $lua\
 $python\
 $rust\
 $cmd_duration\
+${custom.date}\
 ${custom.clock}\
 ${custom.battery_high}\
 ${custom.battery_mid}\
@@ -166,6 +167,13 @@ style = "yellow"
 
 [time]
 disabled = true
+
+[custom.date]
+command = "date +'%y/%m/%d %a'"
+when = "true"
+shell = ["bash"]
+style = "dimmed bright-cyan"
+format = " [󰃭 $output]($style)"
 
 [custom.clock]
 command = """
