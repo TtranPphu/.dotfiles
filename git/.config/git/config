@@ -32,4 +32,4 @@
 [core]
   editor = nvim
 [credential]
-	helper = "!f() { /home/tiny/.vscode-server/bin/f6cfa2ea2403534de03f069bdf160d06451ed282/node /tmp/vscode-remote-containers-5e5d9f92-4be7-48bf-ab54-9f6a5986f573.js git-credential-helper $*; }; f"
+	helper = libsecret
