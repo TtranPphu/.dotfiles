@@ -52,6 +52,7 @@ Examples:
 - Mention the key files or behavior changes when that helps explain the commit.
 - If the commit is trivial, keep the body brief rather than omitting it entirely.
 - End the body with a blank line followed by an agent signature: `Copilot - <model>` for Copilot CLI or `Claude - <model>` for Claude Code.
+- The `<model>` must match the full string from the system prompt exactly (e.g., `deepseek-v4-flash[1m]`).
 
 ## Workflow
 
