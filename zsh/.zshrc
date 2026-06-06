@@ -136,5 +136,3 @@ if [ -z "$TMUX" ] && [ -z "$ZELLIJ" ]; then
     esac
   fi
 fi
-
-export PATH="$HOME/.local/bin:$PATH"
