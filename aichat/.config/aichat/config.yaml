@@ -28,7 +28,7 @@ rag_template:
 left_prompt:
   '{color.light_blue}󰫢  {color.dark_gray}{?session  {session} {color.cyan}{?role 󰵰 {role}}{color.dark_gray} }{color.cyan}{!session {?role 󰵰 {role} }}{?agent  {agent} }{?rag {color.yellow} {rag} }{color.green}{color.reset} '
 right_prompt:
-  '{color.light_blue}{?session  {?consume_tokens {consume_tokens}({consume_percent}%)}{!consume_tokens {consume_tokens}}}{color.reset}'
+  '{color.light_blue}{?session  {?consume_tokens {consume_percent}%}}{color.reset}'
 
 model: deepseek:deepseek-chat
 clients:
