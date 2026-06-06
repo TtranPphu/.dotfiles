@@ -1,6 +1,36 @@
 # see https://github.com/sigoden/aichat/blob/main/config.example.yaml
 
-model: deepseek:deepseek-reasoner
+keybindings: vi
+repl_prelude: default:general
+save_session: true
+highlight: true
+
+rag_template:
+  Answer the query based on the context while respecting the rules. (user query, some textual context and rules, all inside xml tags)
+
+  <context>
+  __CONTEXT__
+  </context>
+
+  <rules>
+  - If you don't know, just say so.
+  - If you are not sure, ask for clarification.
+  - Answer in the same language as the user query.
+  - If the context appears unreadable or of poor quality, tell the user then answer as best as you can.
+  - If the answer is not in the context but you think you know the answer, explain that to the user then answer with your own knowledge.
+  - Answer directly and without using xml tags.
+  </rules>
+
+  <user_query>
+  __INPUT__
+  </user_query>
+
+left_prompt:
+  '{color.light_blue}󰫢  {color.dark_gray}{?session  {session} {color.cyan}{?role 󰵰 {role}}{color.dark_gray} }{color.cyan}{!session {?role 󰵰 {role} }}{?agent  {agent} }{?rag {color.yellow} {rag} }{color.green}{color.reset} '
+right_prompt:
+  '{color.light_blue}{?session  {?consume_tokens {consume_tokens}({consume_percent}%)}{!consume_tokens {consume_tokens}}}{color.reset}'
+
+model: deepseek:deepseek-chat
 clients:
 - type: openai-compatible
   name: deepseek
