@@ -3,6 +3,9 @@
 keybindings: vi
 repl_prelude: default:general
 save_session: true
+compress_threshold: 64000
+summarize_prompt: 'Compress the conversation into a concise recap preserving key decisions and context.'
+summary_prompt: '[Compressed session context]: '
 highlight: true
 
 rag_template:
