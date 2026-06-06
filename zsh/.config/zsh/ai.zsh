@@ -7,3 +7,7 @@ if (( $+commands[copilot] )); then
   export COPILOT_PROVIDER_MAX_PROMPT_TOKENS=840000
   export COPILOT_PROVIDER_MAX_OUTPUT_TOKENS=128000
 fi
+
+if (( $+commands[aichat] )); then
+  export DEEPSEEK_API_KEY="${$(jq -r '.env.ANTHROPIC_AUTH_TOKEN // empty' ~/.claude/settings.json 2>/dev/null):-}"
+fi
