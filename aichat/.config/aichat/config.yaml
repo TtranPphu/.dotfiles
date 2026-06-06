@@ -5,3 +5,5 @@ clients:
 - type: openai-compatible
   name: deepseek
   api_base: https://api.deepseek.com
+- type: openai
+- type: claude
