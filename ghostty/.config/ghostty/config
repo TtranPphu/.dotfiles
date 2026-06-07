@@ -7,10 +7,13 @@ font-size = 9
 
 # Window
 window-theme = ghostty
-window-padding-x = 8
-window-padding-y = 8
+window-padding-x = 2
+window-padding-y = 2
+window-padding-balance = true
 confirm-close-surface=false
 resize-overlay = never
+scrollback-limit = 0
+scrollbar = never
 gtk-toolbar-style = flat
 
 # Cursor styling
