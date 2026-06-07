@@ -25,4 +25,4 @@ else
   icon="${discharging[$idx]}"
 fi
 
-printf '%s %s%%\n' "$icon" "$bat"
+printf '%s %s\n' "$icon" "$bat"

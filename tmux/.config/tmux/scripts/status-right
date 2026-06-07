@@ -22,3 +22,6 @@ if [[ -n "${SSH_CONNECTION-}" || -n "${SSH_CLIENT-}" ]]; then
 fi
 
 printf '#[fg=blue,bg=brightblack,bold]  #[fg=blue,bg=brightblack,bold]%s ' "${pane_id#%}"
+
+# Battery indicator
+"$script_dir/battery"

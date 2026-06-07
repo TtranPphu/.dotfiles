@@ -159,11 +159,11 @@ format = " [$symbol($version)($virtualenv)]($style)"
 symbol = "󱘗 "
 format = " [$symbol($version)]($style)"
 
+
 [cmd_duration]
 min_time = 1000
 format = " [󰦖 $duration]($style)"
 style = "yellow"
-
 
 [time]
 disabled = true
@@ -184,7 +184,6 @@ when = "true"
 shell = ["bash"]
 style = "dimmed bright-cyan"
 format = " [$output]($style)"
-
 
 [battery]
 disabled = true

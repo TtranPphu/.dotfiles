@@ -114,6 +114,7 @@ unset config
 # Initialize starship
 eval "$(starship init zsh)"
 export STARSHIP_CONFIG=~/.config/starship/starship.toml
+ZLE_RPROMPT_INDENT=0
 
 # Check for missing dotfiles dependencies on shell startup
 if [ -x "$HOME/.local/share/zsh/install.sh" ]; then
