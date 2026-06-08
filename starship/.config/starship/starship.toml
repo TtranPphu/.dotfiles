@@ -217,7 +217,7 @@ error_symbol = "[](bold red)"
 
 [custom.deepseek_balance]
 command = 'config_dir="${STARSHIP_CONFIG%/*}"; ${config_dir:-$HOME/.config/starship}/deepseek-balance.sh'
-when = "grep -q deepseek.com $HOME/.claude/settings.json 2>/dev/null"
+when = 'test -z "${TMUX-}" && grep -q deepseek.com $HOME/.claude/settings.json 2>/dev/null'
 shell = ["bash"]
 style = "bright-blue"
 format = " [ $output]($style)"
