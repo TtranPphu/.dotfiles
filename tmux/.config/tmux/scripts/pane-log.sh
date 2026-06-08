@@ -15,7 +15,7 @@ attach_pipe() {
   socket_path="$1"
   pane_id="$2"
   touch "$(log_file_for "$pane_id")"
-  tmux -S "$socket_path" pipe-pane -O -t "$pane_id" "~/.config/tmux/scripts/pane-log write $pane_id"
+  tmux -S "$socket_path" pipe-pane -O -t "$pane_id" "~/.config/tmux/scripts/pane-log.sh write $pane_id"
 }
 
 case "$action" in

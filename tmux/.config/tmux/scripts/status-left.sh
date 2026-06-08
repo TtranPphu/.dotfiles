@@ -4,7 +4,7 @@ socket_path="$1"
 current_session="$2"
 script_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 
-next_sessions="$("$script_dir/session-info" "$socket_path" "$current_session" next)"
+next_sessions="$("$script_dir/session-info.sh" "$socket_path" "$current_session" next)"
 
 if [[ -n "$next_sessions" ]]; then
   printf '#[fg=brightblack]%s ' "$next_sessions"
