@@ -123,17 +123,23 @@ fi
 
 if [ -z "$TMUX" ] && [ -z "$ZELLIJ" ]; then
   if command -v tmux >/dev/null 2>&1 && ! command -v zellij >/dev/null 2>&1; then
-    exec tmux new -A -s default
+    clear && exec tmux new -A -s default
   elif ! command -v tmux >/dev/null 2>&1 && command -v zellij >/dev/null 2>&1; then
-    exec zellij attach -c default
+    clear && exec zellij attach -c default
   elif command -v tmux >/dev/null 2>&1 && command -v zellij >/dev/null 2>&1; then
     BLUE=$'\033[0;34m' NC=$'\033[0m'
-    echo -n "Pick multiplexer - (${BLUE}T${NC}mux | ${BLUE}Z${NC}ellij | ${BLUE}N${NC}one): "
+    echo "Shells:       ${BLUE}Z${NC}sh (default)"
+    echo "Multiplexers: ${BLUE}T${NC}mux | Zelli${BLUE}j${NC}"
+    echo "Applications: ${BLUE}A${NC}ichat"
+    echo -n "Pick: "
     read -r -k1 choice
     echo
     case "$choice" in
-      t|T) exec tmux new -A -s default ;;
-      z|Z) exec zellij attach -c default ;;
+      z|Z) clear ;;
+      t|T) clear && exec tmux new -A -s default ;;
+      j|J) clear && exec zellij attach -c default ;;
+      a|A) clear && exec aichat ;;
     esac
+      clear
   fi
 fi
