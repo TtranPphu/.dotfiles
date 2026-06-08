@@ -29,7 +29,7 @@ if [[ -f $cache ]]; then
     if (( age >= cache_ttl )); then
       refresh_cache &>/dev/null &
     fi
-    printf '#[fg=black,bold,bg=magenta]  $%.2f ' "$balance"
+    printf '#[fg=brightblack,bold,bg=blue]  $%.2f ' "$balance"
     exit 0
   fi
 fi
@@ -38,7 +38,7 @@ fi
 refresh_cache 2>/dev/null || true
 balance=$(jq -r '.total_balance // empty' "$cache" 2>/dev/null) || balance=""
 if [[ -n "$balance" ]]; then
-  printf '#[fg=black,bold,bg=magenta]  $%.2f ' "$balance"
+  printf '#[fg=brightblack,bold,bg=blue]  $%.2f ' "$balance"
   exit 0
 fi
 exit 1
