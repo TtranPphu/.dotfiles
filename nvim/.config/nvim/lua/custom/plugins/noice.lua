@@ -16,9 +16,9 @@ require('noice').setup({
       size = { width = '100%', height = 'auto' },
     },
     format = {
-      cmdline = { icon = ':' },
-      search_down = { icon = '/' },
-      search_up = { icon = '?' },
+      cmdline = { conceal = false, icon = false },
+      search_down = { conceal = false, icon = false },
+      search_up = { conceal = false, icon = false },
     },
   },
   -- Disable features already handled by other plugins
