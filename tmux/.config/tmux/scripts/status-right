@@ -23,5 +23,8 @@ fi
 
 printf '#[fg=blue,bg=brightblack,bold]  #[fg=blue,bg=brightblack,bold]%s ' "${pane_id#%}"
 
+# DeepSeek balance
+"$script_dir/deepseek-balance"
+
 # Battery indicator
 "$script_dir/battery"
