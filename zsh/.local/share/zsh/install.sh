@@ -21,12 +21,13 @@ STATE_DIR="$(dirname "$STATE_FILE")"
 LOG_FILE="$HOME/.local/state/dotfiles/install.log"
 LOG_DIR="$(dirname "$LOG_FILE")"
 
-# Tools mapping: tool_name -> package_name
+# Tools mapping: tool_name -> package_name (system package manager)
 declare -A TOOLS=(
   [hyprland]="hyprland"
   [tmux]="tmux"
   [nvim]="neovim"
   [zsh]="zsh"
+  [nu]="nushell"
   [starship]="starship"
   [waybar]="waybar"
   [walker]="walker"
@@ -41,11 +42,33 @@ declare -A TOOLS=(
   [lazygit]="lazygit"
   [lazydocker]="lazydocker"
   [stow]="gnu-stow"
+  [jq]="jq"
+  [zellij]="zellij"
+  [ripgrep]="ripgrep"
+)
+
+# Tools available via cargo (fallback for when system PM doesn't have them)
+declare -A CARGO_TOOLS=(
+  [nu]="nu"
+  [bat]="bat"
+  [eza]="eza"
+  [starship]="starship"
+  [zoxide]="zoxide"
+  [fd]="fd-find"
+  [ripgrep]="ripgrep"
+  [aichat]="aichat"
+  [zellij]="zellij"
+)
+
+# Tools available via npm (fallback)
+declare -A NPM_TOOLS=(
+  [neovim]="neovim"
 )
 
 # Alternative command names for tools on different systems
 declare -A TOOL_ALIASES=(
   [bat]="batcat"
+  [ripgrep]="rg"
 )
 
 # Get command name(s) for a tool
@@ -328,6 +351,52 @@ try_install() {
   esac
 }
 
+# Try installing via cargo
+try_install_cargo() {
+  local tool=$1
+  local package=${CARGO_TOOLS[$tool]}
+
+  if [ -z "$package" ]; then
+    return 1
+  fi
+
+  if ! command -v cargo &> /dev/null; then
+    return 1
+  fi
+
+  echo -e "${YELLOW}↓${NC} Installing $tool (cargo: $package)..."
+  if cargo install "$package" >> "$LOG_FILE" 2>&1; then
+    echo -e "${GREEN}✓${NC} $tool installed via cargo"
+    return 0
+  else
+    echo -e "${RED}✗${NC} Failed to install $tool via cargo"
+    return 1
+  fi
+}
+
+# Try installing via npm
+try_install_npm() {
+  local tool=$1
+  local package=${NPM_TOOLS[$tool]}
+
+  if [ -z "$package" ]; then
+    return 1
+  fi
+
+  if ! command -v npm &> /dev/null; then
+    return 1
+  fi
+
+  echo -e "${YELLOW}↓${NC} Installing $tool (npm: $package)..."
+  if npm install -g "$package" >> "$LOG_FILE" 2>&1; then
+    echo -e "${GREEN}✓${NC} $tool installed via npm"
+    return 0
+  else
+    echo -e "${RED}✗${NC} Failed to install $tool via npm"
+    return 1
+  fi
+}
+
 main() {
   local pm
   pm=$(detect_package_manager)
@@ -387,13 +456,6 @@ main() {
     return 0
   fi
 
-  # Check sudo availability for non-brew package managers
-  if [ "$pm" != "brew" ] && ! has_sudo; then
-    if ! ask_sudo; then
-      return 1
-    fi
-  fi
-
   echo -e "${GREEN}Detected package manager:${NC} $pm"
   echo "---"
 
@@ -402,12 +464,40 @@ main() {
 
   # Check and install each missing tool
   for tool in "${missing[@]}"; do
-    local package
-    package=$(get_package_name "$tool" "$pm")
+    local success=false
 
-    if try_install "$package" "$pm" "$tool"; then
+    # Try cargo first (user preference)
+    if try_install_cargo "$tool"; then
       installed+=("$tool")
-    else
+      success=true
+    fi
+
+    # Fall back to system package manager if cargo failed
+    if ! $success; then
+      # Check sudo availability for non-brew package managers
+      if [ "$pm" != "brew" ] && ! has_sudo; then
+        if ! ask_sudo; then
+          failed+=("$tool")
+          add_attempted "$tool"
+          continue
+        fi
+      fi
+
+      local package
+      package=$(get_package_name "$tool" "$pm")
+      if try_install "$package" "$pm" "$tool"; then
+        installed+=("$tool")
+        success=true
+      fi
+    fi
+
+    # Fall back to npm as a last resort
+    if ! $success && try_install_npm "$tool"; then
+      installed+=("$tool")
+      success=true
+    fi
+
+    if ! $success; then
       failed+=("$tool")
       add_attempted "$tool"
     fi
