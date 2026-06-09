@@ -45,10 +45,12 @@ declare -A TOOLS=(
   [jq]="jq"
   [zellij]="zellij"
   [ripgrep]="ripgrep"
+  [argc]="argc"
 )
 
 # Tools available via cargo (fallback for when system PM doesn't have them)
 declare -A CARGO_TOOLS=(
+  [argc]="argc"
   [nu]="nu"
   [bat]="bat"
   [eza]="eza"
@@ -406,8 +408,10 @@ main() {
     return 1
   fi
 
-  # Ensure log directory exists
+  # Ensure state and log directories exist
+  mkdir -p "$STATE_DIR"
   mkdir -p "$LOG_DIR"
+  init_state
 
   # Check for missing tools
   local missing=()
