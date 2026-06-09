@@ -11,15 +11,13 @@ source ~/.cache/nu/aliases.nu
 if ((($env.TMUX? | is-empty) and ($env.ZELLIJ? | is-empty)) and ($env.DOTFILES_SHELL_PICKED? | is-empty)) {
     let has_tmux = (which tmux | length) > 0
     let has_zellij = (which zellij | length) > 0
-    let has_aichat = (which aichat | length) > 0
-    let blue = $"(char --integer 0x1b)[34m"
+    let green = $"(char --integer 0x1b)[32m"
     let reset = $"(char --integer 0x1b)[0m"
 
     if $has_tmux and $has_zellij {
         let has_zsh = (which zsh | length) > 0
-        print ("Shells:       " + $blue + "N" + $reset + "ushell (default)" + (if $has_zsh { " | " + $blue + "Z" + $reset + "sh" } else { "" }))
-        print ("Multiplexers: " + $blue + "T" + $reset + "mux | Zelli" + $blue + "j" + $reset)
-        print ("Applications: " + $blue + "A" + $reset + "ichat")
+        print ("Shells:       " + $green + "N" + $reset + "ushell (default)" + (if $has_zsh { " | " + $green + "Z" + $reset + "sh" } else { "" }))
+        print ("Multiplexers: " + $green + "T" + $reset + "mux | Zelli" + $green + "j" + $reset)
         print -n "Pick: "
         let choice = (input --numchar 1 --suppress-output)
         $env.DOTFILES_SHELL_PICKED = "1"
@@ -28,7 +26,6 @@ if ((($env.TMUX? | is-empty) and ($env.ZELLIJ? | is-empty)) and ($env.DOTFILES_S
             "z" | "Z" => { clear; zsh; exit }
             "t" | "T" => { clear; tmux new -A -s default; exit }
             "j" | "J" => { clear; zellij attach -c default; exit }
-            "a" | "A" => { clear; aichat; exit }
             _ => { clear }
         }
     } else if $has_tmux {

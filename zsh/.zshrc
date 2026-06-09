@@ -132,14 +132,13 @@ if [ -z "$TMUX" ] && [ -z "$ZELLIJ" ] && [ -z "$DOTFILES_SHELL_PICKED" ]; then
   elif ! command -v tmux >/dev/null 2>&1 && command -v zellij >/dev/null 2>&1; then
     clear && export DOTFILES_SHELL_PICKED=1 && exec zellij attach -c default
   elif command -v tmux >/dev/null 2>&1 && command -v zellij >/dev/null 2>&1; then
-    BLUE=$'\033[0;34m' NC=$'\033[0m'
-    SHELL_OPTS="${BLUE}Z${NC}sh (default)"
+    GREEN=$'\033[0;32m' NC=$'\033[0m'
+    SHELL_OPTS="${GREEN}Z${NC}sh (default)"
     if command -v nu &>/dev/null; then
-      SHELL_OPTS="$SHELL_OPTS | ${BLUE}N${NC}ushell"
+      SHELL_OPTS="$SHELL_OPTS | ${GREEN}N${NC}ushell"
     fi
     echo "Shells:       $SHELL_OPTS"
-    echo "Multiplexers: ${BLUE}T${NC}mux | Zelli${BLUE}j${NC}"
-    echo "Applications: ${BLUE}A${NC}ichat"
+    echo "Multiplexers: ${GREEN}T${NC}mux | Zelli${GREEN}j${NC}"
     echo -n "Pick: "
     read -r -k1 choice
     echo
@@ -148,7 +147,6 @@ if [ -z "$TMUX" ] && [ -z "$ZELLIJ" ] && [ -z "$DOTFILES_SHELL_PICKED" ]; then
       n|N) clear && export DOTFILES_SHELL_PICKED=1 && exec nu ;;
       t|T) clear && export DOTFILES_SHELL_PICKED=1 && exec tmux new -A -s default ;;
       j|J) clear && export DOTFILES_SHELL_PICKED=1 && exec zellij attach -c default ;;
-      a|A) clear && export DOTFILES_SHELL_PICKED=1 && exec aichat ;;
     esac
       clear
   fi
