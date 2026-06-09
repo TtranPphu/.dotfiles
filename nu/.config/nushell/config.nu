@@ -2,9 +2,9 @@
 # Loaded after env.nu
 
 # Source generated init files
-source ~/.cache/starship/init.nu
+source ~/.cache/nu/starship.nu
 source ~/.cache/nu/zoxide.nu
-source ~/.config/nushell/aliases.nu
+source ~/.cache/nu/aliases.nu
 
 # --- Auto-start tmux/zellij ---
 
