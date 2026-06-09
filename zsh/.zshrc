@@ -4,6 +4,11 @@
 # Path to your Oh My Zsh installation.
 export ZSH="$HOME/.oh-my-zsh"
 
+# Enable aichat filesystem tools if llm-functions is installed
+if [ -f "$HOME/.local/share/aichat/llm-functions/functions.json" ]; then
+  export AICHAT_FUNCTIONS_DIR="$HOME/.local/share/aichat/llm-functions"
+fi
+
 # Set name of the theme to load --- if set to "random", it will
 # load a random theme each time Oh My Zsh is loaded, in which case,
 # to know which specific one was loaded, run: echo $RANDOM_THEME
@@ -103,7 +108,7 @@ source $ZSH/oh-my-zsh.sh
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
-unsetopt autocd
+unsetopt autocd nomatch
 
 # Source all zsh configuration files from ~/.config/zsh/
 for config in ~/.config/zsh/*.zsh; do
