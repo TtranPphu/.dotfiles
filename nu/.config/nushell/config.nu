@@ -3,48 +3,8 @@
 
 # Source generated init files
 source ~/.cache/starship/init.nu
-source ~/.cache/zoxide/init.nu
-
-# --- Aliases ---
-
-# Pager function
-def pg [] {
-    ^$env.PAGER $in
-}
-
-# Git status
-alias gs = git status
-
-# eza
-if (which eza | length) > 0 {
-    alias ls = eza -ah --icons
-    alias la = eza -lah --icons --group
-    alias lt = eza -lah --tree --icons --ignore-glob=.git --group
-    alias ld = eza -lah --only-dirs --icons --group
-    alias lf = eza -lah --only-files --icons --group
-    alias lh = eza -lad .* --icons --group
-}
-
-# cat -> bat
-if (which batcat | length) > 0 {
-    alias cat = batcat
-} else if (which bat | length) > 0 {
-    alias cat = bat
-}
-
-# grep -> ripgrep
-if (which rg | length) > 0 {
-    alias grep = rg
-}
-
-# vi/vim -> nvim
-if (which nvim | length) > 0 {
-    alias vi = nvim
-    alias vim = nvim
-}
-
-# cd -> zoxide
-alias cd = __zoxide_z
+source ~/.cache/nu/zoxide.nu
+source ~/.config/nushell/aliases.nu
 
 # --- Auto-start tmux/zellij ---
 
