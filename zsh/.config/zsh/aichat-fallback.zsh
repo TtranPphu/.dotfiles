@@ -61,20 +61,19 @@ if (( $+commands[aichat] )) || (( $+commands[claude] )); then
       local pid=$!
 
       local colors=(
-        '\033[31m' '\033[91m' '\033[31m' '\033[91m' '\033[31m' '\033[91m' '\033[31m' '\033[91m' # Reds
-        '\033[33m' '\033[93m' '\033[33m' '\033[93m' '\033[33m' '\033[93m' '\033[33m' '\033[93m' # Yellows
-        '\033[32m' '\033[92m' '\033[32m' '\033[92m' '\033[32m' '\033[92m' '\033[32m' '\033[92m' # Greens
-        '\033[34m' '\033[94m' '\033[34m' '\033[94m' '\033[34m' '\033[94m' '\033[34m' '\033[94m' # Blues
-        '\033[35m' '\033[95m' '\033[35m' '\033[95m' '\033[35m' '\033[95m' '\033[35m' '\033[95m' # Purples
-        '\033[36m' '\033[96m' '\033[36m' '\033[96m' '\033[36m' '\033[96m' '\033[36m' '\033[96m' # Cyans
-        '\033[37m' '\033[97m' '\033[37m' '\033[97m' '\033[37m' '\033[97m' '\033[37m' '\033[97m' # Whites
+        '\033[91m' '\033[31m' '\033[93m' '\033[33m' # Red & Yellow
+        '\033[94m' '\033[34m' '\033[96m' '\033[36m' # Blue & Cyan
+        '\033[92m' '\033[32m' '\033[93m' '\033[33m' # Green & Yellow
+        '\033[96m' '\033[36m' '\033[97m' '\033[37m' # Cyan & White
+        '\033[95m' '\033[35m' '\033[94m' '\033[34m' # Magenta & Blue
       )
+      local seq=(2 1 4 3)
       local spinner=('·' '✶' '✢' '✻' '✽' '✻' '✢' '✶')
-      local p=$((RANDOM % 7 + 1)) w=1 s=1 d=1
+      local p=$((RANDOM % 5 + 1)) w=1 s=1 d=1
       local next_change=$((RANDOM % 28 + 20)) tick=0
       while kill -0 $pid 2>/dev/null && [ ! -s "$tmp" ]; do
-        printf "\r${colors[(p-1)*8 + s]}%s %s…\033[0m\033[K" "$spinner[$s]" "$filler[$w]"
-        ((++tick >= next_change)) && ((w = (w % $#filler) + 1)) && p=$((RANDOM % 7 + 1)) && next_change=tick+$((RANDOM % 28 + 20))
+        printf "\r${colors[(p-1)*4 + seq[tick % 4 + 1]]}%s %s…\033[0m\033[K" "$spinner[$s]" "$filler[$w]"
+        ((++tick >= next_change)) && ((w = (w % $#filler) + 1)) && p=$((RANDOM % 5 + 1)) && next_change=tick+$((RANDOM % 28 + 20))
         ((s += d))
         ((s == $#spinner || s == 1)) && ((d *= -1))
         sleep 0.15
