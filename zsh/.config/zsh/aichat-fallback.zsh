@@ -61,19 +61,25 @@ if (( $+commands[aichat] )) || (( $+commands[claude] )); then
       local pid=$!
 
       local colors=(
-        '\033[91m' '\033[31m' '\033[93m' '\033[33m' # Red & Yellow
-        '\033[94m' '\033[34m' '\033[96m' '\033[36m' # Blue & Cyan
-        '\033[92m' '\033[32m' '\033[93m' '\033[33m' # Green & Yellow
-        '\033[96m' '\033[36m' '\033[97m' '\033[37m' # Cyan & White
-        '\033[95m' '\033[35m' '\033[94m' '\033[34m' # Magenta & Blue
+        '\033[31m' '\033[91m' '\033[33m' '\033[93m' # Red & Yellow
+        '\033[34m' '\033[94m' '\033[36m' '\033[96m' # Blue & Cyan
+        '\033[32m' '\033[92m' '\033[33m' '\033[93m' # Green & Yellow
+        '\033[36m' '\033[96m' '\033[37m' '\033[97m' # Cyan & White
+        '\033[35m' '\033[95m' '\033[34m' '\033[94m' # Magenta & Blue
       )
-      local seq=(2 1 4 3)
       local spinner=('·' '✶' '✢' '✻' '✽' '✻' '✢' '✶')
-      local p=$((RANDOM % 5 + 1)) w=1 s=1 d=1
-      local next_change=$((RANDOM % 28 + 20)) tick=0
+      local p w s=1 d=1
+      RANDOM=$(( $$ + $(date +%s) ))
+      ((p = RANDOM % 5 + 1, w = RANDOM % $#filler + 1))
+      local tick=0 next_change
+      ((next_change = RANDOM % 28 + 20))
       while kill -0 $pid 2>/dev/null && [ ! -s "$tmp" ]; do
-        printf "\r${colors[(p-1)*4 + seq[tick % 4 + 1]]}%s %s…\033[0m\033[K" "$spinner[$s]" "$filler[$w]"
-        ((++tick >= next_change)) && ((w = (w % $#filler) + 1)) && p=$((RANDOM % 5 + 1)) && next_change=tick+$((RANDOM % 28 + 20))
+        printf "\r${colors[(p-1)*4 + tick % 4 + 1]}%s %s…\033[0m\033[K" "$spinner[$s]" "$filler[$w]"
+        if ((++tick >= next_change)); then
+          w=$((RANDOM % $#filler + 1))
+          p=$((RANDOM % 5 + 1))
+          next_change=tick+$((RANDOM % 28 + 20))
+        fi
         ((s += d))
         ((s == $#spinner || s == 1)) && ((d *= -1))
         sleep 0.15
