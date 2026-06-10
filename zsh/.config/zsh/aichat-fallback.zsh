@@ -58,7 +58,13 @@ if (( $+commands[aichat] )) || (( $+commands[claude] )); then
       done
 
       printf "\r\033[K"
-      tail -n +1 -f --pid="$pid" "$tmp" 2>/dev/null
+      if (( $+commands[bat] )); then
+        tail -n +1 -f --pid="$pid" "$tmp" 2>/dev/null | bat --style=plain --paging=never -l md
+      elif (( $+commands[batcat] )); then
+        tail -n +1 -f --pid="$pid" "$tmp" 2>/dev/null | batcat --style=plain --paging=never -l md
+      else
+        tail -n +1 -f --pid="$pid" "$tmp" 2>/dev/null
+      fi
       rm -f "$tmp"
     elif (( $+commands[aichat] )); then
       aichat -r general -s default --save-session "$*"
