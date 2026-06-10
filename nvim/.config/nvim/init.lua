@@ -158,7 +158,7 @@ do
   vim.o.scrolloff = 10
 
   -- Hide command line when not in use (nvim 0.10+); shows on : or messages
-  vim.o.cmdheight = 0
+  -- vim.o.cmdheight = 0
 
   -- if performing an operation that would fail due to unsaved changes in the buffer (like `:q`),
   -- instead raise a dialog asking if you wish to save the current file(s)
