@@ -1,9 +1,19 @@
 # Command-not-found fallback: route unknown commands to AI
 if (( $+commands[aichat] )) || (( $+commands[claude] )); then
   command_not_found_handler() {
-    # Check if "claude" is mentioned in the first 3 words (case insensitive)
-    local first_three="${*: :3}"
-    if [[ "${first_three:l}" == *claude* ]] && (( $+commands[claude] )); then
+    # Per-session cache: once routed to claude, keep routing for 5min
+    local cache_file="/tmp/claude-cache-$$"
+    local to_claude=false
+    if [[ -f $cache_file ]] && (( $(date +%s) < $(<$cache_file) )) && (( $+commands[claude] )); then
+      to_claude=true
+    else
+      local first_five="${*: :5}"
+      if [[ "${first_five:l}" == *claude* ]] && (( $+commands[claude] )); then
+        echo $(( $(date +%s) + 300 )) > "$cache_file"
+        to_claude=true
+      fi
+    fi
+    if [[ $to_claude == true ]]; then
       local filler=(
         Cogitating Reticulating Synthesizing Ruminating Percolating
         Contemplating Manifesting Ideating Mulling Tinkering
@@ -37,7 +47,7 @@ if (( $+commands[aichat] )) || (( $+commands[claude] )); then
       local p=$((RANDOM % 7 + 1)) w=1 s=1 d=1
       local next_change=$((RANDOM % 28 + 20)) tick=0
       while kill -0 $pid 2>/dev/null && [ ! -s "$tmp" ]; do
-        printf "\r${colors[(p-1)*5 + s]}%s %s...\033[0m\033[K" "$spinner[$s]" "$filler[$w]"
+        printf "\r${colors[(p-1)*5 + s]}%s %s…\033[0m\033[K" "$spinner[$s]" "$filler[$w]"
         ((++tick >= next_change)) && ((w = (w % $#filler) + 1)) && p=$((RANDOM % 7 + 1)) && next_change=tick+$((RANDOM % 28 + 20))
         ((s += d))
         ((s == $#spinner || s == 1)) && ((d *= -1))
