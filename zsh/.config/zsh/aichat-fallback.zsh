@@ -2,12 +2,15 @@
 if (( $+commands[aichat] )) || (( $+commands[claude] )); then
   command_not_found_handler() {
     # Per-session cache: once routed to claude, keep routing for 5min
+    # Mention "aichat" (case insensitive) in first 5 words to opt out
     local cache_file="/tmp/claude-cache-$$"
+    local first_five="${*: :5}"
     local to_claude=false
-    if [[ -f $cache_file ]] && (( $(date +%s) < $(<$cache_file) )) && (( $+commands[claude] )); then
+    if [[ "${first_five:l}" == *aichat* ]]; then
+      rm -f "$cache_file"
+    elif [[ -f $cache_file ]] && (( $(date +%s) < $(<$cache_file) )) && (( $+commands[claude] )); then
       to_claude=true
     else
-      local first_five="${*: :5}"
       if [[ "${first_five:l}" == *claude* ]] && (( $+commands[claude] )); then
         echo $(( $(date +%s) + 300 )) > "$cache_file"
         to_claude=true
