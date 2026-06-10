@@ -128,12 +128,18 @@ if (( $+commands[aichat] )) || (( $+commands[claude] )); then
       _ai_dispatch aichat-chat "$@"
 
     else
-      [[ -f $cache_file ]] || return 1
-      local expiry route
-      IFS='|' read expiry route < "$cache_file" 2>/dev/null || return 1
-      [[ -n $route ]] || return 1
-      (( $(date +%s) < expiry )) || { rm -f "$cache_file"; return 1; }
-      _ai_dispatch "$route" "$@"
+      if [[ -f $cache_file ]]; then
+        local expiry route
+        IFS='|' read expiry route < "$cache_file" 2>/dev/null
+        if [[ -n $route ]] && (( $(date +%s) < expiry )); then
+          echo "$(( $(date +%s) + 300 ))|$route" > "$cache_file"
+          _ai_dispatch "$route" "$@"
+          return
+        fi
+        rm -f "$cache_file"
+      fi
+      (( $+commands[aichat] )) || return 1
+      _ai_dispatch aichat-chat "$@"
     fi
   }
 fi
