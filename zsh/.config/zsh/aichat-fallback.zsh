@@ -9,6 +9,7 @@ if (( $+commands[aichat] )) || (( $+commands[claude] )); then
     if [[ "${first_five:l}" == *aichat* ]]; then
       rm -f "$cache_file"
     elif [[ -f $cache_file ]] && (( $(date +%s) < $(<$cache_file) )) && (( $+commands[claude] )); then
+      echo $(( $(date +%s) + 300 )) > "$cache_file"
       to_claude=true
     else
       if [[ "${first_five:l}" == *claude* ]] && (( $+commands[claude] )); then
