@@ -18,39 +18,62 @@ if (( $+commands[aichat] )) || (( $+commands[claude] )); then
     fi
     if [[ $to_claude == true ]]; then
       local filler=(
-        Cogitating Reticulating Synthesizing Ruminating Percolating
-        Contemplating Manifesting Ideating Mulling Tinkering
-        Orchestrating Incubating Concocting Brewing Fermenting
-        Churning Forging Crystallizing Noodling Marinating
-        Simmering Stewing Processing Calculating Crunching
-        Spelunking Galumphing Discombobulating Recombobulating
-        Razzle-dazzling Prestidigitating Flibbertigibbeting
+        Accomplishing    Actioning          Actualizing     Architecting    Baking
+        Beaming          Beboppin\'         Befuddling      Billowing       Blanching
+        Bloviating       Boogieing          Boondoggling    Booping         Bootstrapping
+        Brewing          Burrowing          Calculating     Canoodling      Caramelizing
+        Cascading        Catapulting        Cerebrating     Channeling      Channelling
+        Choreographing   Churning           Clauding        Coalescing      Cogitating
+        Combobulating    Composing          Computing       Concocting      Considering
+        Contemplating    Cooking            Crafting        Creating        Crunching
+        Crystallizing    Cultivating        Deciphering     Deliberating    Determining
+        Dilly-dallying   Discombobulating   Doing           Doodling        Drizzling
+        Ebbing           Effecting          Elucidating     Embellishing    Enchanting
+        Envisioning      Evaporating        Fermenting      Fiddle-faddling Finagling
+        Flambeing        Flibbertigibbeting Flowing         Flummoxing      Fluttering
+        Forging          Forming            Frolicking      Frosting        Gallivanting
+        Galloping        Garnishing         Generating      Germinating     Gitifying
+        Grooving         Gusting            Harmonizing     Hashing         Hatching
+        Herding          Honking            Hullaballooing  Hyperspacing    Ideating
+        Imagining        Improvising        Incubating      Inferring       Infusing
+        Ionizing         Jitterbugging      Julienning      Kneading        Leavening
+        Levitating       Lollygagging       Manifesting     Marinating      Meandering
+        Metamorphosing   Misting            Moonwalking     Moseying        Mulling
+        Musing           Mustering          Nebulizing      Nesting         Newspapering
+        Noodling         Nucleating         Orbiting        Orchestrating   Osmosing
+        Perambulating    Percolating        Perusing        Philosophising  Photosynthesizing
+        Pollinating      Pondering          Pontificating   Pouncing        Precipitating
+        Prestidigitating Processing         Proofing        Propagating     Puttering
+        Puzzling         Quantumizing       Razzle-dazzling Razzmatazzing   Recombobulating
+        Reticulating     Roosting           Ruminating      Sauteing        Scampering
+        Schlepping       Scurrying          Seasoning       Shenaniganing   Shimmying
+        Simmering        Skedaddling        Sketching       Slithering      Smooshing
+        Sock-hopping     Spelunking         Spinning        Sprouting       Stewing
+        Sublimating      Swirling           Swooping        Symbioting      Synthesizing
+        Tempering        Thinking           Thundering      Tinkering       Tomfoolering
+        Topsy-turvying   Transfiguring      Transmuting     Twisting        Undulating
+        Unfurling        Unravelling        Vibing          Waddling        Wandering
+        Warping          Whatchamacalliting Whirlpooling    Whirring        Whisking
+        Wibbling         Working            Wrangling       Zesting         Zigzagging
       )
       local tmp=$(mktemp /tmp/claude-fallbak.XXXXXX)
       claude --permission-mode auto -c -p "$*" > "$tmp" 2>&1 &
       local pid=$!
 
       local colors=(
-        # Reds:           ·        ✻        ✽        ✶        ✢
-        '\033[31m' '\033[91m' '\033[38;5;196m' '\033[38;5;160m' '\033[38;5;124m'
-        # Oranges
-        '\033[38;5;202m' '\033[38;5;208m' '\033[38;5;214m' '\033[38;5;209m' '\033[38;5;215m'
-        # Yellows
-        '\033[33m' '\033[93m' '\033[38;5;226m' '\033[38;5;220m' '\033[38;5;228m'
-        # Greens
-        '\033[32m' '\033[92m' '\033[38;5;28m' '\033[38;5;34m' '\033[38;5;46m'
-        # Blues
-        '\033[34m' '\033[94m' '\033[38;5;27m' '\033[38;5;33m' '\033[38;5;51m'
-        # Purples
-        '\033[35m' '\033[95m' '\033[38;5;164m' '\033[38;5;171m' '\033[38;5;177m'
-        # Cyans
-        '\033[36m' '\033[96m' '\033[38;5;44m' '\033[38;5;50m' '\033[38;5;87m'
+        '\033[31m' '\033[91m' '\033[31m' '\033[91m' '\033[31m' '\033[91m' '\033[31m' '\033[91m' # Reds
+        '\033[33m' '\033[93m' '\033[33m' '\033[93m' '\033[33m' '\033[93m' '\033[33m' '\033[93m' # Yellows
+        '\033[32m' '\033[92m' '\033[32m' '\033[92m' '\033[32m' '\033[92m' '\033[32m' '\033[92m' # Greens
+        '\033[34m' '\033[94m' '\033[34m' '\033[94m' '\033[34m' '\033[94m' '\033[34m' '\033[94m' # Blues
+        '\033[35m' '\033[95m' '\033[35m' '\033[95m' '\033[35m' '\033[95m' '\033[35m' '\033[95m' # Purples
+        '\033[36m' '\033[96m' '\033[36m' '\033[96m' '\033[36m' '\033[96m' '\033[36m' '\033[96m' # Cyans
+        '\033[37m' '\033[97m' '\033[37m' '\033[97m' '\033[37m' '\033[97m' '\033[37m' '\033[97m' # Whites
       )
-      local spinner=('·' '✻' '✽' '✶' '✢')
+      local spinner=('·' '✶' '✢' '✻' '✽' '✻' '✢' '✶')
       local p=$((RANDOM % 7 + 1)) w=1 s=1 d=1
       local next_change=$((RANDOM % 28 + 20)) tick=0
       while kill -0 $pid 2>/dev/null && [ ! -s "$tmp" ]; do
-        printf "\r${colors[(p-1)*5 + s]}%s %s…\033[0m\033[K" "$spinner[$s]" "$filler[$w]"
+        printf "\r${colors[(p-1)*8 + s]}%s %s…\033[0m\033[K" "$spinner[$s]" "$filler[$w]"
         ((++tick >= next_change)) && ((w = (w % $#filler) + 1)) && p=$((RANDOM % 7 + 1)) && next_change=tick+$((RANDOM % 28 + 20))
         ((s += d))
         ((s == $#spinner || s == 1)) && ((d *= -1))
