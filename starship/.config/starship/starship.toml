@@ -7,7 +7,7 @@ add_newline = true
 format = """
 $os\
 $shell\
-$directory\
+${custom.compress_path}\
 ${custom.git_remote}\
 $git_branch\
 $git_status\
@@ -36,18 +36,6 @@ ${custom.docker_host}\
 """
 
 
-[shell]
-disabled = false
-style = "bold bright-black"
-format = "[$indicator]($style) "
-unknown_indicator = "unknown-shell"
-bash_indicator = " bash"
-cmd_indicator = " cmd"
-fish_indicator = "󰈺 fish"
-nu_indicator = " nu"
-powershell_indicator = " powershell"
-zsh_indicator = " zsh"
-
 [os]
 disabled = false
 style = "bold"
@@ -74,16 +62,23 @@ RedHatEnterprise = "󱄛"
 RockyLinux = ""
 SUSE = ""
 Ubuntu = ""
-Windows = ""
 
-[directory]
+[shell]
+disabled = false
+style = "bold bright-black"
+format = "[$indicator]($style) "
+unknown_indicator = "unknown-shell"
+bash_indicator = " bash"
+fish_indicator = "󰈺 fish"
+nu_indicator = " nu"
+zsh_indicator = " zsh"
+
+[custom.compress_path]
+command = 'config_dir="${STARSHIP_CONFIG%/*}"; ${config_dir:-$HOME/.config/starship}/compress-path.sh'
+when = "true"
+shell = ["bash"]
 style = "bold bright-blue"
-format = "[$path]($style) "
-truncation_length = 7
-truncation_symbol = "…/"
-truncate_to_repo = false
-read_only = "󰉐 "
-
+format = "[$output]($style) "
 
 [git_branch]
 symbol = ""
