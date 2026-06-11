@@ -94,6 +94,7 @@ if (( $+commands[aichat] )) || (( $+commands[claude] )); then
 
   _ai_dispatch() {
     local route=$1; shift
+    echo "$route" > /tmp/ai-route
     echo "$(( $(date +%s) + 300 ))|$route" > "$_ai_cache_file"
     case $route in
       claude-pro)  ANTHROPIC_MODEL=deepseek-v4-pro[1m]  _claude_fallback "$@" ;;

@@ -5,7 +5,11 @@
 add_newline = true
 
 format = """
-$os\
+${custom.ai_os}\
+${custom.ai_pro}\
+${custom.ai_flash}\
+${custom.ai_reasoner}\
+${custom.ai_chat}\
 $shell\
 ${custom.compress_path}\
 ${custom.git_remote}\
@@ -36,32 +40,40 @@ ${custom.docker_host}\
 """
 
 
-[os]
-disabled = false
+[custom.ai_os]
+command = 'config_dir="${STARSHIP_CONFIG%/*}"; ${config_dir:-$HOME/.config/starship}/ai-route.sh os'
+when = 'config_dir="${STARSHIP_CONFIG%/*}"; ${config_dir:-$HOME/.config/starship}/ai-route-when.sh os'
+shell = ["bash"]
 style = "bold"
-format = "[$symbol]($style)  "
+format = "[$output]($style)  "
 
-[os.symbols]
-Alpine = ""
-Amazon = ""
-Android = ""
-Arch = "󰣇"
-Artix = "󰣇"
-CentOS = ""
-Debian = "󰣚"
-Fedora = "󰣛"
-Gentoo = "󰣨"
-Linux = "󰌽"
-Macos = "󰀵"
-Manjaro = ""
-Mint = "󰣭"
-NixOS = ""
-Raspbian = "󰐿"
-Redhat = "󱄛"
-RedHatEnterprise = "󱄛"
-RockyLinux = ""
-SUSE = ""
-Ubuntu = ""
+[custom.ai_pro]
+command = 'config_dir="${STARSHIP_CONFIG%/*}"; ${config_dir:-$HOME/.config/starship}/ai-route.sh'
+when = 'config_dir="${STARSHIP_CONFIG%/*}"; ${config_dir:-$HOME/.config/starship}/ai-route-when.sh claude-pro'
+shell = ["bash"]
+style = "red"
+format = "[$output]($style)  "
+
+[custom.ai_flash]
+command = 'config_dir="${STARSHIP_CONFIG%/*}"; ${config_dir:-$HOME/.config/starship}/ai-route.sh'
+when = 'config_dir="${STARSHIP_CONFIG%/*}"; ${config_dir:-$HOME/.config/starship}/ai-route-when.sh claude-flash'
+shell = ["bash"]
+style = "purple"
+format = "[$output]($style)  "
+
+[custom.ai_reasoner]
+command = 'config_dir="${STARSHIP_CONFIG%/*}"; ${config_dir:-$HOME/.config/starship}/ai-route.sh'
+when = 'config_dir="${STARSHIP_CONFIG%/*}"; ${config_dir:-$HOME/.config/starship}/ai-route-when.sh aichat-reasoner'
+shell = ["bash"]
+style = "blue"
+format = "[$output]($style)  "
+
+[custom.ai_chat]
+command = 'config_dir="${STARSHIP_CONFIG%/*}"; ${config_dir:-$HOME/.config/starship}/ai-route.sh'
+when = 'config_dir="${STARSHIP_CONFIG%/*}"; ${config_dir:-$HOME/.config/starship}/ai-route-when.sh aichat-chat'
+shell = ["bash"]
+style = "cyan"
+format = "[$output]($style)  "
 
 [shell]
 disabled = false
