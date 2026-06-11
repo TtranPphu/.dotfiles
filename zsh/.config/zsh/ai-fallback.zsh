@@ -94,6 +94,7 @@ if (( $+commands[aichat] )) || (( $+commands[claude] )); then
 
   _ai_dispatch() {
     local route=$1; shift
+    echo "$(( $(date +%s) + 300 ))|$route" > "$_ai_cache_file"
     case $route in
       claude-pro)  ANTHROPIC_MODEL=deepseek-v4-pro[1m]  _claude_fallback "$@" ;;
       claude-flash) ANTHROPIC_MODEL=deepseek-v4-flash[1m] _claude_fallback "$@" ;;
@@ -104,6 +105,7 @@ if (( $+commands[aichat] )) || (( $+commands[claude] )); then
         aichat -m deepseek:deepseek-chat -s default --save-session "$*"
         _ai_setup_hint ;;
     esac
+    echo "$(( $(date +%s) + 300 ))|$route" > "$_ai_cache_file"
   }
 
   command_not_found_handler() {
@@ -112,19 +114,15 @@ if (( $+commands[aichat] )) || (( $+commands[claude] )); then
     local cache_file=$_ai_cache_file
 
     if [[ $lower == *pro* ]] && (( $+commands[claude] )); then
-      echo "$(( $(date +%s) + 300 ))|claude-pro" > "$cache_file"
       _ai_dispatch claude-pro "$@"
 
     elif [[ $lower == *claude* || $lower == *deepseek* || $lower == *flash* ]] && (( $+commands[claude] )); then
-      echo "$(( $(date +%s) + 300 ))|claude-flash" > "$cache_file"
       _ai_dispatch claude-flash "$@"
 
     elif [[ $lower == *reasoner* ]] && (( $+commands[aichat] )); then
-      echo "$(( $(date +%s) + 300 ))|aichat-reasoner" > "$cache_file"
       _ai_dispatch aichat-reasoner "$@"
 
     elif [[ $lower == *aichat* || $lower == *chat* ]] && (( $+commands[aichat] )); then
-      echo "$(( $(date +%s) + 300 ))|aichat-chat" > "$cache_file"
       _ai_dispatch aichat-chat "$@"
 
     else
