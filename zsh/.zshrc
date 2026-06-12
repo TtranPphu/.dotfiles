@@ -126,13 +126,14 @@ if [ -x "$HOME/.local/share/zsh/install.sh" ]; then
   "$HOME/.local/share/zsh/install.sh" 2>/dev/null || true
 fi
 
+# Picker — choose shell (zsh/nushell) and multiplexer (tmux/zellij) at startup
 if [ -z "$TMUX" ] && [ -z "$ZELLIJ" ] && [ -z "$DOTFILES_SHELL_PICKED" ]; then
   if command -v tmux >/dev/null 2>&1 && ! command -v zellij >/dev/null 2>&1; then
     clear && export DOTFILES_SHELL_PICKED=1 && exec tmux new -A -s default
   elif ! command -v tmux >/dev/null 2>&1 && command -v zellij >/dev/null 2>&1; then
     clear && export DOTFILES_SHELL_PICKED=1 && exec zellij attach -c default
   elif command -v tmux >/dev/null 2>&1 && command -v zellij >/dev/null 2>&1; then
-    GREEN=$'\033[0;32m' NC=$'\033[0m'
+    GREEN=$'\033[1;32m' NC=$'\033[0m'
     SHELL_OPTS="${GREEN}Z${NC}sh (default)"
     if command -v nu &>/dev/null; then
       SHELL_OPTS="$SHELL_OPTS | ${GREEN}N${NC}ushell"
