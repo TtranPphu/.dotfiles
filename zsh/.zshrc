@@ -129,7 +129,7 @@ fi
 # Picker — choose shell (zsh/nushell) and multiplexer (tmux/zellij) at startup
 if [ -z "$TMUX" ] && [ -z "$ZELLIJ" ] && [ -z "$DOTFILES_SHELL_PICKED" ]; then
   if command -v tmux >/dev/null 2>&1 && ! command -v zellij >/dev/null 2>&1; then
-    clear && export DOTFILES_SHELL_PICKED=1 && exec tmux new -A -s default
+    clear && export DOTFILES_SHELL_PICKED=1 && exec tmux new -A -s "${${${PWD##*/}#.}//./-}"
   elif ! command -v tmux >/dev/null 2>&1 && command -v zellij >/dev/null 2>&1; then
     clear && export DOTFILES_SHELL_PICKED=1 && exec zellij attach -c default
   elif command -v tmux >/dev/null 2>&1 && command -v zellij >/dev/null 2>&1; then
@@ -146,7 +146,7 @@ if [ -z "$TMUX" ] && [ -z "$ZELLIJ" ] && [ -z "$DOTFILES_SHELL_PICKED" ]; then
     case "$choice" in
       z|Z) clear && export DOTFILES_SHELL_PICKED=1 ;;
       n|N) clear && export DOTFILES_SHELL_PICKED=1 && exec nu ;;
-      t|T) clear && export DOTFILES_SHELL_PICKED=1 && exec tmux new -A -s default ;;
+      t|T) clear && export DOTFILES_SHELL_PICKED=1 && exec tmux new -A -s "${${${PWD##*/}#.}//./-}" ;;
       j|J) clear && export DOTFILES_SHELL_PICKED=1 && exec zellij attach -c default ;;
     esac
       clear
