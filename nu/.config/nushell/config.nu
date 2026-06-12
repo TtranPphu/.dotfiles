@@ -6,12 +6,11 @@ source ~/.cache/nu/starship.nu
 source ~/.cache/nu/zoxide.nu
 source ~/.cache/nu/aliases.nu
 
-# --- Auto-start tmux/zellij ---
-
+# --- Picker: choose shell (nushell/zsh) and multiplexer (tmux/zellij) at startup ---
 if ((($env.TMUX? | is-empty) and ($env.ZELLIJ? | is-empty)) and ($env.DOTFILES_SHELL_PICKED? | is-empty)) {
     let has_tmux = (which tmux | length) > 0
     let has_zellij = (which zellij | length) > 0
-    let green = $"(char --integer 0x1b)[32m"
+    let green = $"(char --integer 0x1b)[1;32m"
     let reset = $"(char --integer 0x1b)[0m"
 
     if $has_tmux and $has_zellij {
