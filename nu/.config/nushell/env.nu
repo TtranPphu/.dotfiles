@@ -29,7 +29,7 @@ $env.EZA_COLORS = (
     + ":xx=37:da=36:in=37:bl=37:hd=33:lp=36:cc=37:bO=90:ff=37:Sn=37:Su=37:Sr=37:St=37:Sl=37"
 )
 
-# AI provider environment variables
+# LLM provider environment variables
 let claude_settings = (try { open ~/.claude/settings.json } catch { null })
 let anthropic_base_url = ($claude_settings | default {} | get --optional env | default {} | get --optional ANTHROPIC_BASE_URL | default "https://api.deepseek.com/anthropic")
 let anthropic_auth_token = ($claude_settings | default {} | get --optional env | default {} | get --optional ANTHROPIC_AUTH_TOKEN | default "")
