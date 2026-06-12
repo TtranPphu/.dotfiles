@@ -273,7 +273,7 @@ $_aliases = ($_aliases | append [
     "alias gswm = git switch main",
     "alias gta = git tag -a",
     "alias gts = git tag -s",
-    "def gtv [] { git tag | sort -V }",
+    "def gtv [] { git tag | ^sort -V }",
     "alias gtl = git tag -l",
     "alias gunignore = git update-index --no-assume-unchanged",
     "alias gunwip = git reset HEAD~",
