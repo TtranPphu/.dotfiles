@@ -6,7 +6,7 @@ See [`.shared/agent/communication-style.md`](/.shared/agent/communication-style.
 
 ### Keywords
 
-- **picker** — Shell/multiplexer picker at startup: `zsh/.zshrc` (zsh) and `nu/.config/nushell/config.nu` (nushell). Chooses shell (zsh/nushell) and multiplexer (tmux/zelliji).
+See [`.shared/agent/keywords.md`](/.shared/agent/keywords.md).
 
 ### Desktop
 - **Hyprland**: Modular config: `monitors.conf`, `input.conf`, `bindings.conf`, `looknfeel.conf`, `autostart.conf`, `app.conf`. Don't edit Omarchy paths — override locally. `unbind` before replacing Omarchy binds. App rules in `apps/*.conf`.

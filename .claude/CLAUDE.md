@@ -8,7 +8,7 @@ See [`.shared/agent/communication-style.md`](/.shared/agent/communication-style.
 
 ## Keywords
 
-- **picker** — The shell/multiplexer picker at startup: `zsh/.zshrc` (zsh) and `nu/.config/nushell/config.nu` (nushell). Lets you choose between zsh/nushell shells and tmux/zellij multiplexers.
+See [`.shared/agent/keywords.md`](/.shared/agent/keywords.md).
 
 ## What This Repo Is
 
