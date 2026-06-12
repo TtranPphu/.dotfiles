@@ -4,10 +4,10 @@ socket_path="$1"
 current_session="$2"
 script_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 
-next_sessions="$("$script_dir/session-info.sh" "$socket_path" "$current_session" next)"
+adjacent_sessions="$("$script_dir/session-info.sh" "$socket_path" "$current_session" prev)"
 
-if [[ -n "$next_sessions" ]]; then
-  printf '#[fg=brightblack]%s ' "$next_sessions"
+if [[ -n "$adjacent_sessions" ]]; then
+  printf '#[fg=brightblack]%s ' "$adjacent_sessions"
 fi
 
 printf '#[fg=#000000,bg=blue,bold]  %s #[bg=default]' "$current_session"

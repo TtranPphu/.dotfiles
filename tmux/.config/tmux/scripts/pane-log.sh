@@ -14,6 +14,7 @@ log_file_for() {
 attach_pipe() {
   socket_path="$1"
   pane_id="$2"
+  rm -f "$(log_file_for "$pane_id")"
   touch "$(log_file_for "$pane_id")"
   tmux -S "$socket_path" pipe-pane -t "$pane_id" "~/.config/tmux/scripts/pane-log.sh write $pane_id"
 }

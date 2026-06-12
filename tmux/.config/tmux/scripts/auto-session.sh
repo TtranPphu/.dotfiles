@@ -16,7 +16,7 @@ target_session="${target_session#.}"
 target_session="${target_session//[^a-zA-Z0-9_-]/-}"
 [[ -z "$target_session" ]] && target_session="shell"
 
-[[ "$current_session" == "$target_session" ]] && exit 0
+[[ "$current_session" == "$target_session" ]] && { tmux display-message "Already in session \"$target_session\""; exit 0; }
 
 # Ensure target session exists
 session_created=false
