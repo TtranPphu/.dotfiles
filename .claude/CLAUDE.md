@@ -4,12 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code).
 
 ## Communication Style
 
-- Answer in one concise sentence unless the user asks for more detail.
-- If you don't know, just say so. If unsure, ask for clarification.
-- Answer in the same language as the user's query.
-- Answer directly without XML tags in your response text.
-- Don't include thinking or reasoning in the response unless asked.
-- If the user types a CLI command with typos or wrong casing, just hint the correct command.
+See [`.shared/agent/communication-style.md`](/.shared/agent/communication-style.md).
 
 ## Keywords
 
