@@ -95,7 +95,7 @@ if (( $+commands[aichat] )) || (( $+commands[claude] )); then
   _llm_dispatch() {
     local route=$1; shift
     echo "$route" > /tmp/llm-route
-    echo "$(( $(date +%s) + 300 ))|$route" > "$_ai_cache_file"
+    echo "$(( $(date +%s) + 300 ))|$route" > "$_llm_cache_file"
     case $route in
       claude-pro)  ANTHROPIC_MODEL=deepseek-v4-pro[1m]  _claude_fallback "$@" ;;
       claude-flash) ANTHROPIC_MODEL=deepseek-v4-flash[1m] _claude_fallback "$@" ;;
@@ -106,13 +106,13 @@ if (( $+commands[aichat] )) || (( $+commands[claude] )); then
         aichat -m deepseek:deepseek-chat -s default --save-session "$*"
         _llm_setup_hint ;;
     esac
-    echo "$(( $(date +%s) + 300 ))|$route" > "$_ai_cache_file"
+    echo "$(( $(date +%s) + 300 ))|$route" > "$_llm_cache_file"
   }
 
   command_not_found_handler() {
     local first_five="${*: :5}"
     local lower="${first_five:l}"
-    local cache_file=$_ai_cache_file
+    local cache_file=$_llm_cache_file
 
     if [[ $lower == *pro* ]] && (( $+commands[claude] )); then
       _llm_dispatch claude-pro "$@"
