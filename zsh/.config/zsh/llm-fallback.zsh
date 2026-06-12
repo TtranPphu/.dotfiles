@@ -1,4 +1,4 @@
-# Command-not-found fallback: route unknown commands to AI
+# Command-not-found fallback: route unknown commands to LLM
 if (( $+commands[aichat] )) || (( $+commands[claude] )); then
   _claude_fallback() {
     local filler=(
@@ -80,9 +80,9 @@ if (( $+commands[aichat] )) || (( $+commands[claude] )); then
     rm -f "$tmp"
   }
 
-  _ai_cache_file=/tmp/ai-cache-$$
+  _llm_cache_file=/tmp/llm-cache-$$
 
-  _ai_setup_hint() {
+  _llm_setup_hint() {
     if [ -z "$AICHAT_FUNCTIONS_DIR" ] || [ ! -f "$AICHAT_FUNCTIONS_DIR/functions.json" ]; then
       local setup="$HOME/.local/bin/aichat-setup"
       if [ -x "$setup" ]; then
@@ -92,19 +92,19 @@ if (( $+commands[aichat] )) || (( $+commands[claude] )); then
     fi
   }
 
-  _ai_dispatch() {
+  _llm_dispatch() {
     local route=$1; shift
-    echo "$route" > /tmp/ai-route
+    echo "$route" > /tmp/llm-route
     echo "$(( $(date +%s) + 300 ))|$route" > "$_ai_cache_file"
     case $route in
       claude-pro)  ANTHROPIC_MODEL=deepseek-v4-pro[1m]  _claude_fallback "$@" ;;
       claude-flash) ANTHROPIC_MODEL=deepseek-v4-flash[1m] _claude_fallback "$@" ;;
       aichat-reasoner)
         aichat -m deepseek:deepseek-reasoner -s default --save-session "$*"
-        _ai_setup_hint ;;
+        _llm_setup_hint ;;
       aichat-chat)
         aichat -m deepseek:deepseek-chat -s default --save-session "$*"
-        _ai_setup_hint ;;
+        _llm_setup_hint ;;
     esac
     echo "$(( $(date +%s) + 300 ))|$route" > "$_ai_cache_file"
   }
@@ -115,16 +115,16 @@ if (( $+commands[aichat] )) || (( $+commands[claude] )); then
     local cache_file=$_ai_cache_file
 
     if [[ $lower == *pro* ]] && (( $+commands[claude] )); then
-      _ai_dispatch claude-pro "$@"
+      _llm_dispatch claude-pro "$@"
 
     elif [[ $lower == *claude* || $lower == *deepseek* || $lower == *flash* ]] && (( $+commands[claude] )); then
-      _ai_dispatch claude-flash "$@"
+      _llm_dispatch claude-flash "$@"
 
     elif [[ $lower == *reasoner* ]] && (( $+commands[aichat] )); then
-      _ai_dispatch aichat-reasoner "$@"
+      _llm_dispatch aichat-reasoner "$@"
 
     elif [[ $lower == *aichat* || $lower == *chat* ]] && (( $+commands[aichat] )); then
-      _ai_dispatch aichat-chat "$@"
+      _llm_dispatch aichat-chat "$@"
 
     else
       if [[ -f $cache_file ]]; then
@@ -132,13 +132,13 @@ if (( $+commands[aichat] )) || (( $+commands[claude] )); then
         IFS='|' read expiry route < "$cache_file" 2>/dev/null
         if [[ -n $route ]] && (( $(date +%s) < expiry )); then
           echo "$(( $(date +%s) + 300 ))|$route" > "$cache_file"
-          _ai_dispatch "$route" "$@"
+          _llm_dispatch "$route" "$@"
           return
         fi
         rm -f "$cache_file"
       fi
       (( $+commands[aichat] )) || return 1
-      _ai_dispatch aichat-chat "$@"
+      _llm_dispatch aichat-chat "$@"
     fi
   }
 fi
