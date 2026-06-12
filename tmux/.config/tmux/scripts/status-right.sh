@@ -9,7 +9,7 @@ window_zoomed_flag="$6"
 host_name="$7"
 script_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 
-adjacent_sessions="$("$script_dir/session-info.sh" "$socket_path" "$current_session" next)"
+adjacent_sessions="$("$script_dir/session-info.sh" "$socket_path" "$current_session" prev)"
 
 if [[ -n "$adjacent_sessions" ]]; then
   printf '#[fg=brightblack]%s ' "$adjacent_sessions"

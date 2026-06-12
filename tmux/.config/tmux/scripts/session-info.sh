@@ -31,13 +31,8 @@ case "$direction" in
 esac
 
 if (( ${#selected[@]} > 0 )); then
-  reversed=()
-  for (( index=${#selected[@]} - 1; index >= 0; index-- )); do
-    reversed+=("${selected[$index]}")
-  done
-
-  printf ' %s' "${reversed[0]}"
-  for session in "${reversed[@]:1}"; do
+  printf ' %s' "${selected[0]}"
+  for session in "${selected[@]:1}"; do
     printf '  %s' "$session"
   done
 fi
