@@ -1,5 +1,18 @@
 GNU Stow dotfiles. Top-level dirs mirror `$HOME`. `stow <pkg>` to deploy.
 
+### Communication Style
+
+- Answer in one concise sentence unless the user asks for more detail.
+- If you don't know, just say so. If unsure, ask for clarification.
+- Answer in the same language as the user's query.
+- Answer directly without XML tags in your response text.
+- Don't include thinking or reasoning in the response unless asked.
+- If the user types a CLI command with typos or wrong casing, just hint the correct command.
+
+### Keywords
+
+- **picker** — Shell/multiplexer picker at startup: `zsh/.zshrc` (zsh) and `nu/.config/nushell/config.nu` (nushell). Chooses shell (zsh/nushell) and multiplexer (tmux/zelliji).
+
 ### Desktop
 - **Hyprland**: Modular config: `monitors.conf`, `input.conf`, `bindings.conf`, `looknfeel.conf`, `autostart.conf`, `app.conf`. Don't edit Omarchy paths — override locally. `unbind` before replacing Omarchy binds. App rules in `apps/*.conf`.
 - **Niri**: Separate compositor config in `niri/.config/niri/config.kdl`.
@@ -20,6 +33,4 @@ GNU Stow dotfiles. Top-level dirs mirror `$HOME`. `stow <pkg>` to deploy.
 - **bat** (`bat/.config/bat/config`), **eza** (`eza/.config/eza/theme.yml`), **ghostty**, **gdu**, **lazydocker**, **lazygit**.
 
 ### Conventions
-- Add files under the stow package owning the target path. No relocation scripts.
-- Shell scripts: Bash shebang, 2-space indent. `shfmt -i 2`.
-- No auto-committing.
+See [`.shared/agent/conventions.md`](/.shared/agent/conventions.md).
