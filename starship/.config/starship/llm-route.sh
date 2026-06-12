@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
-# Output AI route icon, or OS icon when called with 'os' arg and no route.
+# Output LLM route icon, or OS icon when called with 'os' arg and no route.
 set -euo pipefail
 
-rf=/tmp/ai-route
+rf=/tmp/llm-route
 valid=false
 
 if [[ -f $rf ]]; then

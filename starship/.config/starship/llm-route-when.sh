@@ -3,7 +3,7 @@
 # With 'os' arg: exit 0 when NO route is cached (show OS fallback).
 set -euo pipefail
 
-rf=/tmp/ai-route
+rf=/tmp/llm-route
 
 # OS fallback mode: show when no valid route
 if [[ ${1:-} == os ]]; then
