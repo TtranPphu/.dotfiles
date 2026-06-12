@@ -131,7 +131,7 @@ if [ -z "$TMUX" ] && [ -z "$ZELLIJ" ] && [ -z "$DOTFILES_SHELL_PICKED" ]; then
   if command -v tmux >/dev/null 2>&1 && ! command -v zellij >/dev/null 2>&1; then
     clear && export DOTFILES_SHELL_PICKED=1 && exec tmux new -A -s "${${${PWD##*/}#.}//./-}" "${SHELL##*/}"
   elif ! command -v tmux >/dev/null 2>&1 && command -v zellij >/dev/null 2>&1; then
-    clear && export DOTFILES_SHELL_PICKED=1 && exec zellij attach -c default
+    clear && export DOTFILES_SHELL_PICKED=1 && zellij attach -c "${${${PWD##*/}#.}//./-}"; clear; exit
   elif command -v tmux >/dev/null 2>&1 && command -v zellij >/dev/null 2>&1; then
     GREEN=$'\033[1;32m' NC=$'\033[0m'
     SHELL_OPTS="${GREEN}Z${NC}sh (default)"
@@ -147,7 +147,7 @@ if [ -z "$TMUX" ] && [ -z "$ZELLIJ" ] && [ -z "$DOTFILES_SHELL_PICKED" ]; then
       z|Z) clear && export DOTFILES_SHELL_PICKED=1 ;;
       n|N) clear && export DOTFILES_SHELL_PICKED=1 && exec nu ;;
       t|T) clear && export DOTFILES_SHELL_PICKED=1 && exec tmux new -A -s "${${${PWD##*/}#.}//./-}" "${SHELL##*/}" ;;
-      j|J) clear && export DOTFILES_SHELL_PICKED=1 && exec zellij attach -c default ;;
+      j|J) clear && export DOTFILES_SHELL_PICKED=1 && zellij attach -c "${${${PWD##*/}#.}//./-}"; clear; exit ;;
     esac
       clear
   fi
