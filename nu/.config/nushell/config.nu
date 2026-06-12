@@ -23,14 +23,14 @@ if ((($env.TMUX? | is-empty) and ($env.ZELLIJ? | is-empty)) and ($env.DOTFILES_S
         match $choice {
             "n" | "N" => { clear }
             "z" | "Z" => { clear; zsh; exit }
-            "t" | "T" => { clear; tmux new -A -s ($env.PWD | path basename | str replace --regex '^\.' '' | str replace --all '.' '-'); exit }
-            "j" | "J" => { clear; zellij attach -c default; exit }
+            "t" | "T" => { clear; tmux new -A -s ($env.PWD | path basename | str replace --regex '^\.' '' | str replace --all '.' '-') nu; exit }
+            "j" | "J" => { clear; $env.ZELLIJ_DEFAULT_SHELL = "nu"; zellij attach -c default; exit }
             _ => { clear }
         }
     } else if $has_tmux {
-        $env.DOTFILES_SHELL_PICKED = "1"; clear; tmux new -A -s ($env.PWD | path basename | str replace --regex '^\.' '' | str replace --all '.' '-'); exit
+        $env.DOTFILES_SHELL_PICKED = "1"; clear; tmux new -A -s ($env.PWD | path basename | str replace --regex '^\.' '' | str replace --all '.' '-') nu; exit
     } else if $has_zellij {
-        $env.DOTFILES_SHELL_PICKED = "1"; clear; zellij attach -c default; exit
+        $env.DOTFILES_SHELL_PICKED = "1"; clear; $env.ZELLIJ_DEFAULT_SHELL = "nu"; zellij attach -c default; exit
     }
 }
 
