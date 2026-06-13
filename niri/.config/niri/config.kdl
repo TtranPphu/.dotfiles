@@ -5,6 +5,11 @@
 
 prefer-no-csd
 
+cursor-theme {
+    name "capitaine-cursors"
+    size 25
+}
+
 // Input device configuration.
 // Find the full list of options on the wiki:
 // https://niri-wm.github.io/niri/Configuration:-Input
@@ -274,7 +279,12 @@ layout {
 // See the binds section below for more spawn examples.
 
 // This line starts waybar, a commonly used bar for Wayland compositors.
-spawn-at-startup "waybar"
+spawn-at-startup "waybar" "-c" "/home/ttranpphu/.config/waybar/config-niri.jsonc"
+spawn-at-startup "mako"
+spawn-at-startup "swaybg" "-i" "/home/ttranpphu/.config/omarchy/current/background" "-m" "fill"
+spawn-at-startup "fcitx5" "--disable" "notificationitem"
+spawn-at-startup "/usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1"
+spawn-at-startup "hypridle"
 
 // To run a shell command (with variables, pipes, etc.), use spawn-sh-at-startup:
 // spawn-sh-at-startup "qs -c ~/source/qs/MyAwesomeShell"
