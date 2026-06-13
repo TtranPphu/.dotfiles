@@ -1,6 +1,7 @@
 ### Important Rules
 
 - Never create git commits unless explicitly asked.
+- Always mind the changes the user made during the session before making your own.
 
 ### Communication Style
 

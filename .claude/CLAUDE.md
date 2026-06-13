@@ -3,8 +3,7 @@
 ## Important Rules
 
 - Never create git commits unless explicitly asked by the user.
-
-This file provides guidance to Claude Code (claude.ai/code).
+- Always mind the changes the user made during the session before making your own.
 
 ## Communication Style
 
@@ -14,13 +13,13 @@ See [`.shared/agent/communication-style.md`](.shared/agent/communication-style.m
 
 See [`.shared/agent/keywords.md`](.shared/agent/keywords.md).
 
-## What This Repo Is
-
-A GNU Stow-style dotfiles collection. Each top-level directory is a stow package whose internal path mirrors `$HOME`. There is no build system, tests, or CI.
-
 ## Key Conventions
 
 See [`.shared/agent/conventions.md`](.shared/agent/conventions.md).
+
+## What This Repo Is
+
+A GNU Stow-style dotfiles collection. Each top-level directory is a stow package whose internal path mirrors `$HOME`. There is no build system, tests, or CI.
 
 ## Architecture Overview
 
