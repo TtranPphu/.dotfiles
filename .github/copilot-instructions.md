@@ -1,12 +1,17 @@
-GNU Stow dotfiles. Top-level dirs mirror `$HOME`. `stow <pkg>` to deploy.
+### Important Rules
+
+- Never create git commits unless explicitly asked.
 
 ### Communication Style
 
-See [`.shared/agent/communication-style.md`](/.shared/agent/communication-style.md).
+See [`.shared/agent/communication-style.md`](.shared/agent/communication-style.md).
 
 ### Keywords
 
-See [`.shared/agent/keywords.md`](/.shared/agent/keywords.md).
+See [`.shared/agent/keywords.md`](.shared/agent/keywords.md).
+
+### Conventions
+See [`.shared/agent/conventions.md`](.shared/agent/conventions.md).
 
 ### Desktop
 - **Hyprland**: Modular config: `monitors.conf`, `input.conf`, `bindings.conf`, `looknfeel.conf`, `autostart.conf`, `app.conf`. Don't edit Omarchy paths — override locally. `unbind` before replacing Omarchy binds. App rules in `apps/*.conf`.
@@ -26,6 +31,3 @@ See [`.shared/agent/keywords.md`](/.shared/agent/keywords.md).
 - **Tmux**: `tmux.conf` > `bindings.conf` + `theme.conf`. Pane logs: `~/.local/state/tmux/pane-logs/`. Gate `extended-keys-format` behind tmux >= 3.5.
 - **Starship**: `starship.toml` + helper scripts beside it.
 - **bat** (`bat/.config/bat/config`), **eza** (`eza/.config/eza/theme.yml`), **ghostty**, **gdu**, **lazydocker**, **lazygit**.
-
-### Conventions
-See [`.shared/agent/conventions.md`](/.shared/agent/conventions.md).

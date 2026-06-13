@@ -1,14 +1,18 @@
 # CLAUDE.md
 
+## Important Rules
+
+- Never create git commits unless explicitly asked by the user.
+
 This file provides guidance to Claude Code (claude.ai/code).
 
 ## Communication Style
 
-See [`.shared/agent/communication-style.md`](/.shared/agent/communication-style.md).
+See [`.shared/agent/communication-style.md`](.shared/agent/communication-style.md).
 
 ## Keywords
 
-See [`.shared/agent/keywords.md`](/.shared/agent/keywords.md).
+See [`.shared/agent/keywords.md`](.shared/agent/keywords.md).
 
 ## What This Repo Is
 
@@ -16,7 +20,7 @@ A GNU Stow-style dotfiles collection. Each top-level directory is a stow package
 
 ## Key Conventions
 
-See [`.shared/agent/conventions.md`](/.shared/agent/conventions.md).
+See [`.shared/agent/conventions.md`](.shared/agent/conventions.md).
 
 ## Architecture Overview
 
