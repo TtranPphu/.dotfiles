@@ -355,6 +355,8 @@ window-rule {
     clip-to-geometry true
     open-maximized false
     default-column-width { proportion 0.8; }
+    open-maximized-to-edges false
+    open-fullscreen false
 }
 
 // ── Steam: float, matching Hyprland sizing ──
@@ -391,11 +393,11 @@ binds {
     Super+Ctrl+E              { spawn "walker" "-m" "symbols"; }
     Super+Slash               { spawn "1password"; }
 
-    // ── App shortcuts ──────────────────────────────────────
-    Super+Shift+F             { spawn "yazi"; }
-    Super+Shift+T             { spawn "ghostty"; }
-    Super+Shift+E             { spawn "code"; }
+    // ── App shortcuts (matching Hyprland) ───────────────────
+    Super+Shift+F             { spawn "bash" "/home/ttranpphu/.config/niri/scripts/launch-or-focus.sh" "yazi" "yazi"; }
+    Super+Shift+T             { spawn "bash" "/home/ttranpphu/.config/niri/scripts/launch-or-focus.sh" "ghostty" "ghostty"; }
     Super+Shift+N             { spawn "ghostty" "-e" "nvim"; }
+    Super+Shift+E             { spawn "code"; }
     Super+Shift+C             { spawn "code"; }
     Super+Shift+O             { spawn "obsidian"; }
     Super+Shift+M             { spawn "Telegram"; }
