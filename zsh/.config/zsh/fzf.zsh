@@ -11,9 +11,9 @@ if command -v fzf &> /dev/null; then
   # Preview commands with proper tool detection
   local bat_cmd
   if command -v batcat &>/dev/null; then
-    bat_cmd='batcat --color=always'
+    bat_cmd='batcat --color=always --style=plain'
   else
-    bat_cmd='bat --color=always'
+    bat_cmd='bat --color=always --style=plain'
   fi
 
   local fzf_file_preview

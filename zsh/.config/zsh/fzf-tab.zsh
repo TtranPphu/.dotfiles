@@ -3,9 +3,9 @@ if command -v fzf &> /dev/null; then
   # Detect bat/batcat availability
   local cat_cmd
   if command -v batcat &>/dev/null; then
-    cat_cmd='batcat --color=always'
+    cat_cmd='batcat --color=always --style=plain'
   elif command -v bat &>/dev/null; then
-    cat_cmd='bat --color=always'
+    cat_cmd='bat --color=always --style=plain'
   else
     cat_cmd='cat'
   fi
