@@ -10,6 +10,16 @@ cursor {
     xcursor-size 25
 }
 
+environment {
+    XDG_CURRENT_DESKTOP "Niri"
+    XDG_SESSION_TYPE "wayland"
+    GDK_BACKEND "wayland,x11,*"
+    QT_QPA_PLATFORM "wayland;xcb"
+    QT_STYLE_OVERRIDE "kvantum"
+    MOZ_ENABLE_WAYLAND "1"
+    ELECTRON_OZONE_PLATFORM_HINT "wayland"
+}
+
 // Input device configuration.
 // Find the full list of options on the wiki:
 // https://niri-wm.github.io/niri/Configuration:-Input
@@ -264,8 +274,11 @@ spawn-at-startup "swaybg" "-i" "/home/ttranpphu/.config/omarchy/current/backgrou
 spawn-at-startup "fcitx5" "--disable" "notificationitem"
 spawn-at-startup "/usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1"
 spawn-at-startup "hypridle"
+spawn-at-startup "swayosd-server"
 spawn-at-startup "elephant"
 spawn-at-startup "walker" "--gapplication-service"
+
+spawn-at-startup "bash" "/home/ttranpphu/.config/niri/scripts/init-env.sh"
 
 // To run a shell command (with variables, pipes, etc.), use spawn-sh-at-startup:
 // spawn-sh-at-startup "qs -c ~/source/qs/MyAwesomeShell"
@@ -336,19 +349,34 @@ window-rule {
     // block-out-from "screencast"
 }
 
-// Example: enable rounded corners for all windows.
-// (This example rule is commented out with a "/-" in front.)
+// ── General: rounded corners, default column width, suppress maximize ──
 window-rule {
     geometry-corner-radius 8
     clip-to-geometry true
+    open-maximized false
     default-column-width { proportion 0.8; }
 }
 
-// Chromium/Chrome: prevent full-width on launch (requests to open maximized)
+// ── Steam: float, matching Hyprland sizing ──
 window-rule {
-    match app-id=r#"^chromium$|^google-chrome$|^org\.chromium\.Chromium$"#
-    open-maximized false
-    default-column-width { proportion 0.8; }
+    match app-id=r#"^steam$|^Steam$"# title="^Steam$"
+    open-floating true
+    default-column-width { fixed 1100; }
+    default-window-height { fixed 700; }
+}
+window-rule {
+    match app-id=r#"^steam$|^Steam$"# title="^Friends$|^Friends List$"
+    open-floating true
+    default-column-width { fixed 460; }
+    default-window-height { fixed 800; }
+}
+
+// ── Telegram: float, matching Hyprland sizing ──
+window-rule {
+    match app-id=r#"^org\.telegram\.desktop$"#
+    open-floating true
+    default-column-width { fixed 450; }
+    default-window-height { fixed 650; }
 }
 
 binds {
@@ -471,7 +499,7 @@ binds {
     Super+Alt+Comma { spawn "makoctl" "invoke"; }
     Super+Shift+Alt+Comma { spawn "makoctl" "restore"; }
 
-    // ── Volume (active sink aware, matching Hyprland) ─────
+    // ── Volume (with swayosd OSD) ─────────────────────────
     XF86AudioRaiseVolume allow-when-locked=true { spawn "bash" "/home/ttranpphu/.config/hypr/scripts/volume-active-sink.sh" "raise"; }
     XF86AudioLowerVolume allow-when-locked=true { spawn "bash" "/home/ttranpphu/.config/hypr/scripts/volume-active-sink.sh" "lower"; }
     XF86AudioMute allow-when-locked=true { spawn "bash" "/home/ttranpphu/.config/hypr/scripts/volume-active-sink.sh" "mute-toggle"; }
