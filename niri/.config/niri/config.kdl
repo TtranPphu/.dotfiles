@@ -279,13 +279,13 @@ spawn-at-startup "elephant"
 spawn-at-startup "walker" "--gapplication-service"
 
 spawn-at-startup "bash" "/home/ttranpphu/.config/niri/scripts/init-env.sh"
+spawn-at-startup "bash" "-c" "sleep 2 && /home/ttranpphu/.config/niri/scripts/toggle-internal-display.sh"
 
 // To run a shell command (with variables, pipes, etc.), use spawn-sh-at-startup:
 // spawn-sh-at-startup "qs -c ~/source/qs/MyAwesomeShell"
 
 hotkey-overlay {
-    // Uncomment this line to disable the "Important Hotkeys" pop-up at startup.
-    // skip-at-startup
+    skip-at-startup
 }
 
 // Uncomment this line to ask the clients to omit their client-side decorations if possible.
