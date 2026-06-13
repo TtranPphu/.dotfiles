@@ -8,6 +8,6 @@ if [[ $(hyprctl monitors | grep Monitor | grep -c eDP-2) -ge 1 && $(hyprctl moni
 else
   hyprctl keyword monitor "eDP-2,preferred,auto-center-down,2"
   hyprctl keyword scrolling:column_width 0.8
-  hyprctl keyword layout:single_window_aspect_ratio "10 10"
+  hyprctl keyword layout:single_window_aspect_ratio "12 10"
   hyprctl keyword env "GDK_SCALE,2"
 fi
