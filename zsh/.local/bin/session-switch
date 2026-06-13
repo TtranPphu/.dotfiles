@@ -36,6 +36,7 @@ set_session() {
 [Autologin]
 User=ttranpphu
 Session=$target
+Timeout=10
 
 [Theme]
 Current=omarchy
@@ -45,8 +46,8 @@ EOF
     echo "Done. Session will take effect after reboot."
     echo ""
     echo "  To test without rebooting:"
-    echo "    - Log out, then press Escape at the SDDM countdown"
-    echo "    - Select '$target' from the session menu"
+    echo "    - Log out — SDDM will show a 10-second countdown"
+    echo "    - Press Escape during the countdown, then select '$target'"
   else
     echo "Error: Failed to write $SDDM_CONF" >&2
     exit 1

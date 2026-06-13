@@ -4,9 +4,9 @@
 
 Allow the user to switch between Niri and Hyprland compositors at session start. Currently SDDM auto-logins into `omarchy` (uwsm-managed Hyprland). Niri is installed with a full config but no way to select it without manually editing `/etc/sddm.conf.d/autologin.conf`.
 
-## Deliverables
+## Deliverables — Done
 
-### 1. `session-switch` script
+### 1. `session-switch` script ✅
 
 **Path:** `zsh/.local/bin/session-switch`
 
@@ -20,9 +20,9 @@ Behaviors:
 - Idempotent: no-op if already set to target
 - Preserves `[Theme] Current=omarchy` line
 - Must use `sudo tee` to write (file is root-owned, shell redirect with sudo fails)
-- Print a reminder about reboot or pressing Escape at SDDM after changing
+- **Added `Timeout=10`** to `[Autologin]` section so SDDM shows a countdown, giving time to press Escape and select a different session.
 
-### 2. Niri-specific waybar config
+### 2. Niri-specific waybar config ✅
 
 **Path:** `waybar/.config/waybar/config-niri.jsonc`
 
@@ -30,40 +30,63 @@ Copy of `config.jsonc` with two changes:
 - `modules-left`: `"hyprland/workspaces"` → `"niri/workspaces"`
 - `"hyprland/workspaces"` block → `"niri/workspaces"` block. Key difference: `"focused"` icon key instead of Hyprland's `"active"`. Niri also supports `"urgent"`.
 
-### 3. Niri config updates
+### 3. Niri config updates ✅
 
 **Path:** `niri/.config/niri/config.kdl`
 
-Three changes:
+a) **Cursor theme** — Fixed syntax from `cursor-theme { name ... size ... }` to correct `cursor { xcursor-theme "..." xcursor-size ... }` (Niri 26.04 doesn't support the former).
 
-a) **Waybar spawn** (line 277):
-   ```
-   spawn-at-startup "waybar"
-   ```
-   → 
-   ```
-   spawn-at-startup "waybar" "-c" "/home/ttranpphu/.config/waybar/config-niri.jsonc"
-   ```
-   Must use absolute path — niri's `spawn-at-startup` passes args to `execvp` without shell expansion.
+b) **Output configuration** — Both displays explicitly configured:
+   - `HDMI-A-1` (external): scale 1.6, position x=0 y=0
+   - `eDP-2` (internal): scale 2, position x=435 y=900 (centered below external)
 
-b) **Cursor theme** (after `prefer-no-csd`, around line 6):
-   ```
-   cursor-theme {
-       name "capitaine-cursors"
-       size 25
-   }
-   ```
-   Under niri (started directly by SDDM, not uwsm), `XCURSOR_THEME`/`XCURSOR_SIZE` env vars aren't available. Niri sets cursor natively in KDL.
+c) **Startup services** — Added: mako, swaybg, fcitx5, polkit-gnome, hypridle, elephant, `walker --gapplication-service`
 
-c) **Startup services** (after the waybar spawn):
-   ```
-   spawn-at-startup "mako"
-   spawn-at-startup "swaybg" "-i" "/home/ttranpphu/.config/omarchy/current/background" "-m" "fill"
-   spawn-at-startup "fcitx5" "--disable" "notificationitem"
-   spawn-at-startup "/usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1"
-   spawn-at-startup "hypridle"
-   ```
-   These match Omarchy's Hyprland autostart services that work under Niri. Skipped: `uwsm-app` wrappers (Niri doesn't use uwsm), `omarchy-hyprland-monitor-watch` (Hyprland-specific).
+d) **Keybindings** — Fully ported from Hyprland to Niri (see Keybindings section below).
+
+e) **Window rules** — Added `open-maximized false` + `default-column-width { proportion 0.8; }` for Chromium to prevent full-width on launch. General rule applies `default-column-width { proportion 0.8; }` to all windows.
+
+### 4. Display toggle script ✅
+
+**Path:** `niri/.config/niri/scripts/toggle-internal-display.sh`
+
+`Super + Ctrl + Delete` toggles the internal laptop display (eDP-2) on/off. Only toggles if another display is active (won't leave you without a screen). After turning off the internal display, focuses the first non-empty workspace (mimics Hyprland behavior).
+
+## Keybindings (Ported from Hyprland)
+
+| Category | Key | Action |
+|---|---|---|
+| Launcher | `Super+Space`, `Super+Alt+Space` | Walker (app launcher) |
+| Terminal | `Super+Return` | Ghostty |
+| Browser | `Super+Shift+Return`, `Super+Shift+B` | Chromium |
+| Browser (private) | `Super+Shift+Alt+B` | Chromium incognito |
+| File manager | `Super+Shift+F` | Yazi |
+| Editor | `Super+Shift+E`, `Super+Shift+C` | VS Code |
+| Neovim | `Super+Shift+N` | Ghostty + nvim |
+| Obsidian | `Super+Shift+O` | Obsidian |
+| Telegram | `Super+Shift+M` | Telegram |
+| GitHub | `Super+Shift+G` | Chromium → GitHub |
+| YouTube | `Super+Shift+Y` | Chromium → YouTube |
+| 1Password | `Super+Slash` | 1Password |
+| Clipboard | `Super+Ctrl+V` | Walker clipboard mode |
+| Symbols | `Super+Ctrl+E` | Walker symbols mode |
+| **Workspace nav** | `Super+W/K` | Focus workspace up |
+| | `Super+S/J` | Focus workspace down |
+| **Column nav** | `Super+A/H` | Focus column left |
+| | `Super+D/L` | Focus column right |
+| **Move window** | `Super+Shift+W/K` | Move window/or-to-workspace up |
+| | `Super+Shift+S/J` | Move window/or-to-workspace down |
+| | `Super+Shift+A/H` | Swap window left |
+| | `Super+Shift+D/L` | Swap window right |
+| Close window | `Super+Q` | Close window |
+| Toggle float | `Super+T` | Toggle window floating |
+| Fullscreen | `Super+F` | Fullscreen window |
+| Maximize column | `Super+Ctrl+F` | Maximize column |
+| Overview | `Super+O` | Toggle overview |
+| Tabbed | `Super+G` | Toggle column tabbed display |
+| Volume | `XF86AudioRaise/Lower/Mute` | `volume-active-sink.sh` (same as Hyprland) |
+| Brightness | `XF86MonBrightnessUp/Down` | `brightnessctl` |
+| Display toggle | `Super+Ctrl+Delete` | Toggle internal display |
 
 ## Deployment
 
@@ -72,6 +95,22 @@ stow zsh -d ~/.dotfiles -t ~
 stow waybar -d ~/.dotfiles -t ~
 stow niri -d ~/.dotfiles -t ~
 ```
+
+## Ongoing Issues
+
+1. **Walker desktop applications** — Walker (Super+Space) previously showed no results because the `elephant` backend was missing the `desktopapplications` provider config. Fixed by running `elephant generate config` which created `/home/ttranpphu/.config/elephant/desktopapplications.toml`. Need to verify `Super+Space` now shows apps.
+
+2. **XDG_DATA_DIRS in Niri session** — Niri started directly by SDDM (without uwsm) may not have `XDG_DATA_DIRS` properly set. The terminal shows it as empty, which may affect app detection by Walker and other tools. If issues persist, add `systemctl --user set-environment XDG_DATA_DIRS=/usr/share:/usr/local/share` to startup.
+
+3. **Missing `NIRI_SOCKET` env var** — The `NIRI_SOCKET` environment variable can get stale when switching terminal sessions. When running `niri msg` commands from a terminal that predates the current Niri instance, use `NIRI_SOCKET=$(ls -t /run/user/1000/niri* | head -1)` or find the socket manually.
+
+4. **Hyprland-specific commands** — `omarchy-menu`, `omarchy-menu-keybindings`, `omarchy-launch-walker`, and other `omarchy-*` commands are not available in Niri (uwsm-dependent). Walker replaces the launcher role.
+
+## Known Differences from Hyprland
+
+- **No `layoutmsg togglesplit`** — Niri uses columns natively, no split-toggling concept.
+- **No `hyprctl keyword env`** — Use `systemctl --user set-environment` instead for runtime env changes.
+- **No `code:61` key name** — Niri uses XKB key names, not scan codes. The key below Escape can't be bound by scan code.
 
 ## Key Findings from Exploration
 

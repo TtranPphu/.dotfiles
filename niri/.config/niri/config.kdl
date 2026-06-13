@@ -5,9 +5,9 @@
 
 prefer-no-csd
 
-cursor-theme {
-    name "capitaine-cursors"
-    size 25
+cursor {
+    xcursor-theme "capitaine-cursors"
+    xcursor-size 25
 }
 
 // Input device configuration.
@@ -87,34 +87,13 @@ input {
 // https://niri-wm.github.io/niri/Configuration:-Outputs
 // Remember to uncomment the node by removing "/-"!
 output "eDP-2" {
-    // Uncomment this line to disable this output.
-    // off
-
-    // Resolution and, optionally, refresh rate of the output.
-    // The format is "<width>x<height>" or "<width>x<height>@<refresh rate>".
-    // If the refresh rate is omitted, niri will pick the highest refresh rate
-    // for the resolution.
-    // If the mode is omitted altogether or is invalid, niri will pick one automatically.
-    // Run `niri msg outputs` while inside a niri instance to list all outputs and their modes.
-    // mode "1920x1080@120.030"
-
-    // You can use integer or fractional scale, for example use 1.5 for 150% scale.
     scale 2
+    position x=435 y=900
+}
 
-    // Transform allows to rotate the output counter-clockwise, valid values are:
-    // normal, 90, 180, 270, flipped, flipped-90, flipped-180 and flipped-270.
-    // transform "normal"
-
-    // Position of the output in the global coordinate space.
-    // This affects directional monitor actions like "focus-monitor-left", and cursor movement.
-    // The cursor can only move between directly adjacent outputs.
-    // Output scale and rotation has to be taken into account for positioning:
-    // outputs are sized in logical, or scaled, pixels.
-    // For example, a 3840×2160 output with scale 2.0 will have a logical size of 1920×1080,
-    // so to put another output directly adjacent to it on the right, set its x to 1920.
-    // If the position is unset or results in an overlap, the output is instead placed
-    // automatically.
-    // position x=1280 y=0
+output "HDMI-A-1" {
+    scale 1.6
+    position x=0 y=0
 }
 
 // Settings that influence how windows are positioned and sized.
@@ -285,6 +264,8 @@ spawn-at-startup "swaybg" "-i" "/home/ttranpphu/.config/omarchy/current/backgrou
 spawn-at-startup "fcitx5" "--disable" "notificationitem"
 spawn-at-startup "/usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1"
 spawn-at-startup "hypridle"
+spawn-at-startup "elephant"
+spawn-at-startup "walker" "--gapplication-service"
 
 // To run a shell command (with variables, pipes, etc.), use spawn-sh-at-startup:
 // spawn-sh-at-startup "qs -c ~/source/qs/MyAwesomeShell"
@@ -360,52 +341,74 @@ window-rule {
 window-rule {
     geometry-corner-radius 8
     clip-to-geometry true
+    default-column-width { proportion 0.8; }
+}
+
+// Chromium/Chrome: prevent full-width on launch (requests to open maximized)
+window-rule {
+    match app-id=r#"^chromium$|^google-chrome$|^org\.chromium\.Chromium$"#
+    open-maximized false
+    default-column-width { proportion 0.8; }
 }
 
 binds {
-    // Keep this plain for now: direct commands and built-in Niri actions only.
+    // ── Launchers ──────────────────────────────────────────
+    Super+Space               { spawn "walker"; }
+    Super+Alt+Space           { spawn "walker"; }
+    Super+Return              { spawn "ghostty"; }
+    Super+Shift+Return        { spawn "chromium"; }
+    Super+Shift+B             { spawn "chromium"; }
+    Super+Shift+Alt+B         { spawn "chromium" "--incognito"; }
+    Super+Ctrl+V              { spawn "walker" "-m" "clipboard"; }
+    Super+Ctrl+E              { spawn "walker" "-m" "symbols"; }
+    Super+Slash               { spawn "1password"; }
 
-    Super+K { show-hotkey-overlay; }
-    Super+Space { spawn "walker"; }
+    // ── App shortcuts ──────────────────────────────────────
+    Super+Shift+F             { spawn "yazi"; }
+    Super+Shift+T             { spawn "ghostty"; }
+    Super+Shift+E             { spawn "code"; }
+    Super+Shift+N             { spawn "ghostty" "-e" "nvim"; }
+    Super+Shift+C             { spawn "code"; }
+    Super+Shift+O             { spawn "obsidian"; }
+    Super+Shift+M             { spawn "Telegram"; }
+    Super+Shift+G             { spawn "chromium" "https://github.com/TtranPphu"; }
+    Super+Shift+Y             { spawn "chromium" "https://youtube.com/"; }
 
-    Super+Return { spawn "ghostty"; }
-    Super+Shift+Return { spawn "chromium"; }
-    Super+Shift+B { spawn "chromium"; }
-    Super+Shift+Alt+B { spawn "chromium" "--incognito"; }
-    Super+Shift+F { spawn "nautilus"; }
-    Super+Shift+T { spawn "ghostty"; }
-    Super+Shift+E { spawn "code"; }
-    Super+Shift+N { spawn "ghostty" "-e" "nvim"; }
-    Super+Shift+C { spawn "code"; }
-    Super+Shift+O { spawn "obsidian"; }
-    Super+Shift+Slash { spawn "1password"; }
-    Super+Slash { spawn "1password"; }
-    Super+Shift+M { spawn "Telegram"; }
-    Super+Shift+S { spawn "steam"; }
-    Super+Ctrl+V { spawn "walker" "-m" "clipboard"; }
-    Super+Ctrl+E { spawn "walker" "-m" "symbols"; }
+    // ── Directional focus ─────────────────────────────────
+    // W/S/J/K navigate workspaces (vertical axis)
+    Super+W { focus-workspace-up; }
+    Super+S { focus-workspace-down; }
+    Super+J { focus-workspace-down; }
+    Super+K { focus-workspace-up; }
+    // A/D/H/L navigate columns (horizontal axis)
+    Super+A { focus-column-left; }
+    Super+D { focus-column-right; }
+    Super+H { focus-column-left; }
+    Super+L { focus-column-right; }
 
-    Super+W repeat=false { close-window; }
-    Super+T { toggle-window-floating; }
-    Super+O repeat=false { toggle-overview; }
-    Super+F { fullscreen-window; }
-    Super+Ctrl+F { maximize-column; }
-    Super+Alt+F { expand-column-to-available-width; }
-    Super+G { toggle-column-tabbed-display; }
+    // ── Directional move (Shift + WASD / HJKL) ─────────────
+    Super+Shift+W { move-window-up-or-to-workspace-up; }
+    Super+Shift+S { move-window-down-or-to-workspace-down; }
+    Super+Shift+J { move-window-down-or-to-workspace-down; }
+    Super+Shift+K { move-window-up-or-to-workspace-up; }
+    Super+Shift+A { swap-window-left; }
+    Super+Shift+D { swap-window-right; }
+    Super+Shift+H { swap-window-left; }
+    Super+Shift+L { swap-window-right; }
 
-    Super+Left { focus-column-left; }
-    Super+Right { focus-column-right; }
-    Super+Up { focus-window-up; }
-    Super+Down { focus-window-down; }
+    // ── Window operations ─────────────────────────────────
+    Super+Q repeat=false      { close-window; }
+    Super+T                   { toggle-window-floating; }
+    Super+F                   { fullscreen-window; }
+    Super+Ctrl+F              { maximize-column; }
+    Super+Alt+F               { expand-column-to-available-width; }
+    Super+G                   { toggle-column-tabbed-display; }
+    Super+O repeat=false      { toggle-overview; }
 
-    Super+Shift+Left { swap-window-left; }
-    Super+Shift+Right { swap-window-right; }
-    Super+Shift+Up { move-window-up; }
-    Super+Shift+Down { move-window-down; }
-
-    Super+Tab { focus-workspace-down; }
-    Super+Shift+Tab { focus-workspace-up; }
-    Super+Ctrl+Tab { focus-workspace-previous; }
+    // ── Workspace navigation ──────────────────────────────
+    Super+Tab                 { focus-workspace-down; }
+    Super+Shift+Tab           { focus-workspace-up; }
+    Super+Ctrl+Tab            { focus-workspace-previous; }
 
     Super+1 { focus-workspace 1; }
     Super+2 { focus-workspace 2; }
@@ -429,52 +432,64 @@ binds {
     Super+Shift+9 { move-window-to-workspace 9; }
     Super+Shift+0 { move-window-to-workspace 10; }
 
-    Alt+Tab { focus-window-previous; }
-    Alt+Shift+Tab { focus-window-previous; }
-    Ctrl+Alt+Tab { focus-monitor-next; }
-    Ctrl+Alt+Shift+Tab { focus-monitor-previous; }
+    // ── Monitor navigation ────────────────────────────────
+    Alt+Tab                   { focus-window-previous; }
+    Alt+Shift+Tab             { focus-window-previous; }
+    Ctrl+Alt+Tab              { focus-monitor-next; }
+    Ctrl+Alt+Shift+Tab        { focus-monitor-previous; }
 
-    Super+Shift+Alt+Left { move-workspace-to-monitor-left; }
-    Super+Shift+Alt+Right { move-workspace-to-monitor-right; }
-    Super+Shift+Alt+Up { move-workspace-to-monitor-up; }
-    Super+Shift+Alt+Down { move-workspace-to-monitor-down; }
+    Super+Shift+Alt+Left      { move-workspace-to-monitor-left; }
+    Super+Shift+Alt+Right     { move-workspace-to-monitor-right; }
+    Super+Shift+Alt+Up        { move-workspace-to-monitor-up; }
+    Super+Shift+Alt+Down      { move-workspace-to-monitor-down; }
 
-    Super+Minus { set-column-width "-10%"; }
-    Super+Equal { set-column-width "+10%"; }
-    Super+Shift+Minus { set-window-height "-10%"; }
-    Super+Shift+Equal { set-window-height "+10%"; }
+    // ── Column / window sizing ────────────────────────────
+    Super+Minus               { set-column-width "-10%"; }
+    Super+Equal               { set-column-width "+10%"; }
+    Super+Shift+Minus         { set-window-height "-10%"; }
+    Super+Shift+Equal         { set-window-height "+10%"; }
 
+    // ── Wheel scroll ─────────────────────────────────────
     Super+WheelScrollDown cooldown-ms=150 { focus-workspace-down; }
     Super+WheelScrollUp cooldown-ms=150 { focus-workspace-up; }
 
-    Super+Comma { spawn "makoctl" "dismiss"; }
-    Super+Shift+Comma { spawn "makoctl" "dismiss" "--all"; }
-    Super+Alt+Comma { spawn "makoctl" "invoke"; }
-    Super+Shift+Alt+Comma { spawn "makoctl" "restore"; }
+    // ── Display toggle ────────────────────────────────────
+    Super+Ctrl+Delete         { spawn "bash" "/home/ttranpphu/.config/niri/scripts/toggle-internal-display.sh"; }
 
+    // ── Lock screen ───────────────────────────────────────
     Super+Ctrl+L allow-when-locked=true { spawn "hyprlock"; }
 
+    // ── Screenshots ───────────────────────────────────────
     Print { screenshot; }
     Ctrl+Print { screenshot-screen; }
     Alt+Print { screenshot-window; }
     Super+Print { spawn-sh "niri msg pick-color | wl-copy"; }
 
-    XF86AudioRaiseVolume allow-when-locked=true { spawn-sh "wpctl set-volume @DEFAULT_AUDIO_SINK@ 0.05+ -l 1.0"; }
-    XF86AudioLowerVolume allow-when-locked=true { spawn-sh "wpctl set-volume @DEFAULT_AUDIO_SINK@ 0.05-"; }
-    XF86AudioMute allow-when-locked=true { spawn-sh "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"; }
-    XF86AudioMicMute allow-when-locked=true { spawn-sh "wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle"; }
-    Alt+XF86AudioRaiseVolume allow-when-locked=true { spawn-sh "wpctl set-volume @DEFAULT_AUDIO_SINK@ 0.01+ -l 1.0"; }
-    Alt+XF86AudioLowerVolume allow-when-locked=true { spawn-sh "wpctl set-volume @DEFAULT_AUDIO_SINK@ 0.01-"; }
+    // ── Notification controls ─────────────────────────────
+    Super+Comma { spawn "makoctl" "dismiss"; }
+    Super+Shift+Comma { spawn "makoctl" "dismiss" "--all"; }
+    Super+Alt+Comma { spawn "makoctl" "invoke"; }
+    Super+Shift+Alt+Comma { spawn "makoctl" "restore"; }
 
+    // ── Volume (active sink aware, matching Hyprland) ─────
+    XF86AudioRaiseVolume allow-when-locked=true { spawn "bash" "/home/ttranpphu/.config/hypr/scripts/volume-active-sink.sh" "raise"; }
+    XF86AudioLowerVolume allow-when-locked=true { spawn "bash" "/home/ttranpphu/.config/hypr/scripts/volume-active-sink.sh" "lower"; }
+    XF86AudioMute allow-when-locked=true { spawn "bash" "/home/ttranpphu/.config/hypr/scripts/volume-active-sink.sh" "mute-toggle"; }
+    Alt+XF86AudioRaiseVolume allow-when-locked=true { spawn "bash" "/home/ttranpphu/.config/hypr/scripts/volume-active-sink.sh" "+1"; }
+    Alt+XF86AudioLowerVolume allow-when-locked=true { spawn "bash" "/home/ttranpphu/.config/hypr/scripts/volume-active-sink.sh" "-1"; }
+
+    // ── Media keys ────────────────────────────────────────
     XF86AudioNext allow-when-locked=true { spawn "playerctl" "next"; }
     XF86AudioPause allow-when-locked=true { spawn "playerctl" "play-pause"; }
     XF86AudioPlay allow-when-locked=true { spawn "playerctl" "play-pause"; }
     XF86AudioPrev allow-when-locked=true { spawn "playerctl" "previous"; }
 
+    // ── Brightness ────────────────────────────────────────
     XF86MonBrightnessUp allow-when-locked=true { spawn "brightnessctl" "--class=backlight" "set" "+5%"; }
     XF86MonBrightnessDown allow-when-locked=true { spawn "brightnessctl" "--class=backlight" "set" "5%-"; }
     Shift+XF86MonBrightnessUp allow-when-locked=true { spawn "brightnessctl" "--class=backlight" "set" "100%"; }
     Shift+XF86MonBrightnessDown allow-when-locked=true { spawn "brightnessctl" "--class=backlight" "set" "1%"; }
     Alt+XF86MonBrightnessUp allow-when-locked=true { spawn "brightnessctl" "--class=backlight" "set" "+1%"; }
     Alt+XF86MonBrightnessDown allow-when-locked=true { spawn "brightnessctl" "--class=backlight" "set" "1%-"; }
+
 }
