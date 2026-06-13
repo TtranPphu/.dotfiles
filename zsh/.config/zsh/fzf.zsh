@@ -16,10 +16,19 @@ if command -v fzf &> /dev/null; then
     bat_cmd='bat --color=always'
   fi
 
-  local fzf_file_preview="if [ -d {} ]; then eza -lah --icons --group --color=always {} 2>/dev/null || ls -lah {}; else $bat_cmd {} 2>/dev/null || cat {}; fi"
+  local fzf_file_preview
+  fzf_file_preview="if [ -d {} ]; then"
+  fzf_file_preview+="  eza -lah --icons --group --color=always {} 2>/dev/null || ls -lah {};"
+  fzf_file_preview+=" else"
+  fzf_file_preview+="  $bat_cmd {} 2>/dev/null || cat {};"
+  fzf_file_preview+=" fi"
 
   # fzf options with smart preview for files/dirs
-  export FZF_DEFAULT_OPTS="--popup 60%,60% --reverse --multi --wrap-sign='' --ellipsis='··' --preview '$fzf_file_preview' --preview-window down:40%,wrap --preview-wrap-sign='' --bind 'ctrl-d:preview-down,ctrl-u:preview-up'"
+  export FZF_DEFAULT_OPTS="--popup 60%,60% --reverse --multi \
+    --wrap-sign='' --ellipsis='··' \
+    --preview '$fzf_file_preview' \
+    --preview-window down:40%,wrap --preview-wrap-sign='' \
+    --bind 'ctrl-d:preview-down,ctrl-u:preview-up'"
 
   export FZF_COMPLETION_TRIGGER='**'
 
@@ -36,7 +45,9 @@ if command -v fzf &> /dev/null; then
     stty intr '^C' 2>/dev/null || true
     if selected=$(git branch --all --format='%(refname:short)' 2>/dev/null \
       | fzf --popup 60%,60% \
-          --preview 'git log --graph --pretty="%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%ar) %C(bold blue)<%an>%Creset" {} 2>/dev/null | head -30' \
+          --preview 'git log --graph \
+            --pretty="%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%ar) %C(bold blue)<%an>%Creset" \
+            {} 2>/dev/null | head -30' \
           --preview-window 'down:50%,wrap'); then
       LBUFFER="${LBUFFER}${selected} "
     fi
@@ -54,7 +65,8 @@ if command -v fzf &> /dev/null; then
     selected=$(git log --oneline --all 2>/dev/null \
       | fzf --popup 60%,60% \
           --preview 'git show --stat --color=always {1} 2>/dev/null \
-            | (batcat --color=always --paging=never --style=plain 2>/dev/null || bat --color=always --paging=never --style=plain 2>/dev/null || cat) \
+            | (batcat --color=always --paging=never --style=plain 2>/dev/null \
+              || bat --color=always --paging=never --style=plain 2>/dev/null || cat) \
             | head -60' \
           --preview-window 'down:50%,wrap' \
       | awk '{print $1}')
