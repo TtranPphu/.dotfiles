@@ -38,7 +38,7 @@ if command -v fzf &> /dev/null; then
     $fzf_layout --multi \
     --wrap-sign='' --ellipsis='··' \
     --preview '$fzf_file_preview' \
-    --preview-window 'down:40%,wrap' \
+    --preview-window down:40%,wrap \
     --preview-wrap-sign='' \
     --bind 'ctrl-d:preview-down,ctrl-u:preview-up'"
 
