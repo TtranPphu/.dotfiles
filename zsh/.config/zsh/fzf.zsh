@@ -52,20 +52,9 @@ if command -v fzf &> /dev/null; then
     --preview 'echo {} | sed \"s/^[[:space:]]*[0-9]*[[:space:]]*//\"' \
     --with-nth 2.."
 
-  # Save and restore tty state so Ctrl+G never acts as SIGINT
-  _fzf_tty_save() {
-    _fzf_saved_stty=$(stty -g 2>/dev/null || true)
-    stty intr '^C' 2>/dev/null || true
-  }
-
-  _fzf_tty_restore() {
-    stty "$_fzf_saved_stty" 2>/dev/null || true
-  }
-
   # Widget: pick a git branch (inserts branch name at cursor)
   fzf-insert-branch-name() {
     local selected
-    _fzf_tty_save
     if selected=$(
       git branch --all --format='%(refname:short)' 2>/dev/null \
       | fzf $fzf_layout \
@@ -76,7 +65,6 @@ if command -v fzf &> /dev/null; then
     ); then
       LBUFFER="${LBUFFER}${selected} "
     fi
-    _fzf_tty_restore
     zle reset-prompt
     zle -R
   }
@@ -85,7 +73,6 @@ if command -v fzf &> /dev/null; then
   # Widget: pick a git commit hash (inserts hash at cursor)
   fzf-insert-commit-hash() {
     local selected
-    _fzf_tty_save
     selected=$(
       git log --oneline --all 2>/dev/null \
       | fzf $fzf_layout \
@@ -95,7 +82,6 @@ if command -v fzf &> /dev/null; then
           --preview-window 'down:50%,wrap' \
       | awk '{print $1}'
     )
-    _fzf_tty_restore
     if [[ -n "$selected" ]]; then
       LBUFFER="${LBUFFER}${selected} "
     fi
@@ -114,8 +100,7 @@ if command -v fzf &> /dev/null; then
   # Git branch picker: Ctrl+B
   bindkey '^B' fzf-insert-branch-name
 
-  # Git commit picker: Ctrl+G (unbind first to avoid bell)
-  stty intr '^C' 2>/dev/null || true
+  # Git commit picker: Ctrl+G
   bindkey -r '^G'
   bindkey '^G' fzf-insert-commit-hash
 fi
