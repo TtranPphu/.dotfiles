@@ -9,7 +9,7 @@ window_zoomed_flag="$6"
 host_name="$7"
 script_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 
-adjacent_sessions="$("$script_dir/session-info.sh" "$socket_path" "$current_session" prev)"
+adjacent_sessions="$("$script_dir/session-list.sh" "$socket_path" "$current_session" prev)"
 
 if [[ -n "$adjacent_sessions" ]]; then
   printf '#[fg=brightblack]%s ' "$adjacent_sessions"
@@ -24,7 +24,7 @@ fi
 printf '#[fg=blue,bg=brightblack,bold]  #[fg=blue,bg=brightblack,bold]%s ' "${pane_id#%}"
 
 # DeepSeek balance
-"$script_dir/deepseek-balance.sh"
+"$script_dir/deepseek.sh"
 
 # Battery indicator
 "$script_dir/battery.sh"
