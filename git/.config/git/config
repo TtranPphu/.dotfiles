@@ -32,4 +32,10 @@
 [core]
   editor = nvim
 [credential]
+	# NOTE: This file keeps getting overwritten by VS Code Remote SSH / Dev Containers.
+	# It injects its own credential helper path to tunnel auth through the VS Code UI.
+	# To stop the override, make sure `libsecret` is installed on the remote:
+	#   sudo apt install libsecret-1-0 libsecret-1-dev
+	#   sudo make --directory=/usr/share/doc/git/contrib/credential/libsecret
+	#   git config --file ~/.config/git/config credential.helper libsecret
 	helper = libsecret
