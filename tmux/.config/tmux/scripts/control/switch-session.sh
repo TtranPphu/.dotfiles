@@ -1,15 +1,29 @@
 #!/usr/bin/env bash
 
-result=$(tmux list-sessions -F "#{session_name}" | while read -r s; do
-  windows=$(tmux list-windows -t "$s" -F "#{window_name} (#{window_panes} #{?#{==:#{window_panes},1},pane,panes})" 2>/dev/null | paste -sd " ")
-  echo "$s: $windows"
-done | \
-  fzf-tmux -p 60%,60% --reverse --print-query \
-  --wrap-sign='' --ellipsis='··' --preview-wrap-sign='' \
-  --preview='s=$(echo {} | cut -d: -f1); i=$(tmux list-windows -t "$s" -F "#{window_active} #{window_index}" 2>/dev/null | sort -k1 -rn | head -1 | cut -d" " -f2); for p in $(tmux list-panes -t "$s:$i" -F "#{pane_active} #{pane_index}" 2>/dev/null | sort -k1 -rn | cut -d" " -f2); do echo "── Pane $p ──"; tmux capture-pane -p -t "$s:$i.$p" -e -J 2>/dev/null; echo; done' \
-  --preview-window='down:60%,nowrap' \
-  --bind='ctrl-d:preview-down,ctrl-u:preview-up' \
-  --prompt="Switch/Create: ")
+win_fmt_act='-F "#{window_active} #{window_index}"'
+win_fmt_list='#{window_name} (#{window_panes} '\
+'#{?#{==:#{window_panes},1},pane,panes})'
+
+preview_cmd='s=$(echo {} | cut -d: -f1); '\
+'i=$(tmux list-windows -t "$s" '"$win_fmt_act"' '\
+'  2>/dev/null | sort -k1 -rn | head -1 | cut -d" " -f2); '\
+'tmux capture-pane -p -t "$s:$i" -e -J 2>/dev/null'
+
+result=$(
+  tmux list-sessions -F "#{session_name}" \
+  | while read -r s; do
+      windows=$(tmux list-windows -t "$s" \
+        -F "$win_fmt_list" \
+        2>/dev/null | paste -sd " ")
+      echo "$s: $windows"
+    done \
+  | fzf-tmux -p 60%,60% --reverse --print-query \
+      --wrap-sign='' --ellipsis='··' --preview-wrap-sign='' \
+      --preview "$preview_cmd" \
+      --preview-window='down:60%,nowrap' \
+      --bind='ctrl-d:preview-down,ctrl-u:preview-up' \
+      --prompt="Switch to/Create new session: "
+)
 [[ -z "$result" ]] && exit 0
 
 session=$(echo "$result" | tail -1 | cut -d: -f1)
@@ -31,5 +45,6 @@ else
   name="${name#.}"
   name="${name//[^a-zA-Z0-9_-]/-}"
   [[ -z "$name" ]] && name="shell"
-  tmux new-session -d -s "$name" -c "$dir" && tmux switch-client -t "$name"
+  tmux new-session -d -s "$name" -c "$dir" \
+    && tmux switch-client -t "$name"
 fi
