@@ -41,35 +41,35 @@ ${custom.docker_host}\
 
 [custom.llm_os]
 command = 'config_dir="${STARSHIP_CONFIG%/*}"; ${config_dir:-$HOME/.config/starship}/llm-route.sh os'
-when = 'config_dir="${STARSHIP_CONFIG%/*}"; ${config_dir:-$HOME/.config/starship}/llm-route-when.sh os'
+when = 'config_dir="${STARSHIP_CONFIG%/*}"; ${config_dir:-$HOME/.config/starship}/llm-when.sh os'
 shell = ["bash"]
 style = "bold"
 format = "[$output]($style)  "
 
 # [custom.llm_pro] temporarily disabled
 # command = 'config_dir="${STARSHIP_CONFIG%/*}"; ${config_dir:-$HOME/.config/starship}/llm-route.sh'
-# when = 'config_dir="${STARSHIP_CONFIG%/*}"; ${config_dir:-$HOME/.config/starship}/llm-route-when.sh claude-pro'
+# when = 'config_dir="${STARSHIP_CONFIG%/*}"; ${config_dir:-$HOME/.config/starship}/llm-when.sh claude-pro'
 # shell = ["bash"]
 # style = "red"
 # format = "[$output]($style)  "
 
 [custom.llm_flash]
 command = 'config_dir="${STARSHIP_CONFIG%/*}"; ${config_dir:-$HOME/.config/starship}/llm-route.sh'
-when = 'config_dir="${STARSHIP_CONFIG%/*}"; ${config_dir:-$HOME/.config/starship}/llm-route-when.sh claude-flash'
+when = 'config_dir="${STARSHIP_CONFIG%/*}"; ${config_dir:-$HOME/.config/starship}/llm-when.sh claude-flash'
 shell = ["bash"]
 style = "purple"
 format = "[$output]($style)  "
 
 [custom.llm_reasoner]
 command = 'config_dir="${STARSHIP_CONFIG%/*}"; ${config_dir:-$HOME/.config/starship}/llm-route.sh'
-when = 'config_dir="${STARSHIP_CONFIG%/*}"; ${config_dir:-$HOME/.config/starship}/llm-route-when.sh aichat-reasoner'
+when = 'config_dir="${STARSHIP_CONFIG%/*}"; ${config_dir:-$HOME/.config/starship}/llm-when.sh aichat-reasoner'
 shell = ["bash"]
 style = "blue"
 format = "[$output]($style)  "
 
 [custom.llm_chat]
 command = 'config_dir="${STARSHIP_CONFIG%/*}"; ${config_dir:-$HOME/.config/starship}/llm-route.sh'
-when = 'config_dir="${STARSHIP_CONFIG%/*}"; ${config_dir:-$HOME/.config/starship}/llm-route-when.sh aichat-chat'
+when = 'config_dir="${STARSHIP_CONFIG%/*}"; ${config_dir:-$HOME/.config/starship}/llm-when.sh aichat-chat'
 shell = ["bash"]
 style = "cyan"
 format = "[$output]($style)  "

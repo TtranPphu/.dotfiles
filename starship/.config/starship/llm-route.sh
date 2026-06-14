@@ -33,8 +33,7 @@ elif [[ ${1:-} == os ]]; then
     alpine)       echo " " ;;
     amzn)         echo " " ;;
     android)      echo " " ;;
-    arch)         echo "󰣇 " ;;
-    artix)        echo "󰣇 " ;;
+    arch|artix)   echo "󰣇 " ;;
     centos)       echo " " ;;
     darwin)       echo "󰀵 " ;;
     debian)       echo "󰣚 " ;;
@@ -49,7 +48,6 @@ elif [[ ${1:-} == os ]]; then
     rocky)        echo " " ;;
     sles)         echo " " ;;
     ubuntu)       echo " " ;;
-    void)         echo "󰌽 " ;;
     *)            echo "󰌽 " ;;
   esac
 fi
