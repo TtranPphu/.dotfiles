@@ -12,6 +12,7 @@ See [`.shared/agent/communication-style.md`](.shared/agent/communication-style.m
 See [`.shared/agent/keywords.md`](.shared/agent/keywords.md).
 
 ### Conventions
+
 See [`.shared/agent/conventions.md`](.shared/agent/conventions.md).
 
 ### Desktop
