@@ -11,8 +11,22 @@ script_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 
 adjacent_sessions="$("$script_dir/session-list.sh" "$socket_path" "$current_session" prev)"
 
+# Reverse session order so newest (bottom of session list) appears first on the status right
 if [[ -n "$adjacent_sessions" ]]; then
-  printf '#[fg=brightblack]%s ' "$adjacent_sessions"
+  reversed=$(echo "$adjacent_sessions" | awk -F'' '
+    {
+      result = ""
+      for (i = NF; i >= 1; i--) {
+        gsub(/^[ ]+|[ ]+$/, "", $i)
+        if ($i != "") {
+          if (result == "") result = " " $i
+          else result = result "  " $i
+        }
+      }
+      print result
+    }
+  ')
+  printf '#[fg=brightblack]%s ' "$reversed"
 fi
 
 printf '#[fg=blue]'
