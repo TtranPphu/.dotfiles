@@ -490,12 +490,10 @@ do
       find_files = {
         hidden = true,
         no_ignore = true,
-        file_ignore_patterns = { ".git/" },
+        file_ignore_patterns = { '.git/' },
       },
       live_grep = {
-        additional_args = function(_)
-          return { '--hidden', '--no-ignore', '-g', '!.git' }
-        end,
+        additional_args = function(_) return { '--hidden', '--no-ignore', '-g', '!.git' } end,
       },
     },
     extensions = {
