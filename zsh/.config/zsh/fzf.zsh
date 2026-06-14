@@ -27,7 +27,7 @@ if command -v fzf &> /dev/null; then
   export FZF_DEFAULT_OPTS="--popup 60%,60% --reverse --multi \
     --wrap-sign='' --ellipsis='··' \
     --preview '$fzf_file_preview' \
-    --preview-window down:40%,wrap --preview-wrap-sign='' \
+    --preview-window down:40%,nowrap --preview-wrap-sign='' \
     --bind 'ctrl-d:preview-down,ctrl-u:preview-up'"
 
   export FZF_COMPLETION_TRIGGER='**'
@@ -48,7 +48,7 @@ if command -v fzf &> /dev/null; then
           --preview 'git log --graph \
             --pretty="%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%ar) %C(bold blue)<%an>%Creset" \
             {} 2>/dev/null | head -30' \
-          --preview-window 'down:50%,wrap'); then
+          --preview-window 'down:50%,nowrap'); then
       LBUFFER="${LBUFFER}${selected} "
     fi
     stty "$saved_stty" 2>/dev/null || true
