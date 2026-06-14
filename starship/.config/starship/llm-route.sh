@@ -18,10 +18,10 @@ if [[ $valid == true ]]; then
   route=$(<"$rf")
   case $route in
     # claude-pro temporarily disabled
-    # claude-pro)    echo "󰫢 " ;;
-    claude-flash)    echo "󰫣 " ;;
-    aichat-reasoner) echo "󰫤 " ;;
-    aichat-chat)     echo "󰫥 " ;;
+    # claude-pro)    echo " " ;;
+    claude-flash)    echo " " ;;
+    aichat-reasoner) echo " " ;;
+    aichat-chat)     echo " " ;;
   esac
 elif [[ ${1:-} == os ]]; then
   if [[ -f /etc/os-release ]]; then
