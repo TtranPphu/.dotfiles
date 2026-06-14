@@ -6,7 +6,6 @@ add_newline = true
 
 format = """
 ${custom.llm_os}\
-${custom.llm_pro}\
 ${custom.llm_flash}\
 ${custom.llm_reasoner}\
 ${custom.llm_chat}\
@@ -47,12 +46,12 @@ shell = ["bash"]
 style = "bold"
 format = "[$output]($style)  "
 
-[custom.llm_pro]
-command = 'config_dir="${STARSHIP_CONFIG%/*}"; ${config_dir:-$HOME/.config/starship}/llm-route.sh'
-when = 'config_dir="${STARSHIP_CONFIG%/*}"; ${config_dir:-$HOME/.config/starship}/llm-route-when.sh claude-pro'
-shell = ["bash"]
-style = "red"
-format = "[$output]($style)  "
+# [custom.llm_pro] temporarily disabled
+# command = 'config_dir="${STARSHIP_CONFIG%/*}"; ${config_dir:-$HOME/.config/starship}/llm-route.sh'
+# when = 'config_dir="${STARSHIP_CONFIG%/*}"; ${config_dir:-$HOME/.config/starship}/llm-route-when.sh claude-pro'
+# shell = ["bash"]
+# style = "red"
+# format = "[$output]($style)  "
 
 [custom.llm_flash]
 command = 'config_dir="${STARSHIP_CONFIG%/*}"; ${config_dir:-$HOME/.config/starship}/llm-route.sh'

@@ -97,7 +97,8 @@ if (( $+commands[aichat] )) || (( $+commands[claude] )); then
     echo "$route" > /tmp/llm-route
     echo "$(( $(date +%s) + 300 ))|$route" > "$_llm_cache_file"
     case $route in
-      claude-pro)  ANTHROPIC_MODEL=deepseek-v4-pro[1m]  _claude_fallback "$@" ;;
+      # claude-pro temporarily disabled
+      # claude-pro) ANTHROPIC_MODEL=deepseek-v4-pro[1m] _claude_fallback "$@" ;;
       claude-flash) ANTHROPIC_MODEL=deepseek-v4-flash[1m] _claude_fallback "$@" ;;
       aichat-reasoner)
         aichat -m deepseek:deepseek-reasoner -s default --save-session "$*"
@@ -114,10 +115,11 @@ if (( $+commands[aichat] )) || (( $+commands[claude] )); then
     local lower="${first_five:l}"
     local cache_file=$_llm_cache_file
 
-    if [[ $lower == *pro* ]] && (( $+commands[claude] )); then
-      _llm_dispatch claude-pro "$@"
-
-    elif [[ $lower == *claude* || $lower == *deepseek* || $lower == *flash* ]] && (( $+commands[claude] )); then
+    # if [[ $lower == *pro* ]] && (( $+commands[claude] )); then
+    #   _llm_dispatch claude-pro "$@"
+    #
+    # elif
+    if [[ $lower == *claude* || $lower == *deepseek* || $lower == *flash* ]] && (( $+commands[claude] )); then
       _llm_dispatch claude-flash "$@"
 
     elif [[ $lower == *reasoner* ]] && (( $+commands[aichat] )); then

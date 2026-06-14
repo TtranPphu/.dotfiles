@@ -17,7 +17,8 @@ if [[ $valid == true ]]; then
   fi
   route=$(<"$rf")
   case $route in
-    claude-pro)      echo "󰫢 " ;;
+    # claude-pro temporarily disabled
+    # claude-pro)    echo "󰫢 " ;;
     claude-flash)    echo "󰫣 " ;;
     aichat-reasoner) echo "󰫤 " ;;
     aichat-chat)     echo "󰫥 " ;;
