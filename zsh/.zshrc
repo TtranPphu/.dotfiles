@@ -122,8 +122,8 @@ export STARSHIP_CONFIG=~/.config/starship/starship.toml
 ZLE_RPROMPT_INDENT=0
 
 # Check for missing dotfiles dependencies on shell startup
-if [ -x "$HOME/.local/share/zsh/install.sh" ]; then
-  "$HOME/.local/share/zsh/install.sh" 2>/dev/null || true
+if [ -x "$HOME/.local/share/zsh/install-dependencies.sh" ]; then
+  "$HOME/.local/share/zsh/install-dependencies.sh" 2>/dev/null || true
 fi
 
 # Picker — choose shell (zsh/nushell) and multiplexer (tmux/zellij) at startup
