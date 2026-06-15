@@ -34,3 +34,40 @@ The function at line ~760 always returns 1. It needs to implement the `pipe:` lo
 ### 5. `command -v` vs `is_installed` consistency
 
 In `install_via_cargo`, `install_via_uv`, `install_via_npm`, the check uses `command -v` directly rather than `is_installed`. This means `DETECT_COMMANDS` custom logic is bypassed for these install methods. Currently none of the cargo/uv/npm packages have custom detect entries so it doesn't matter, but worth noting.
+
+## Solutions
+
+Resolved in `install-dependencies.sh` as part of the tune-up pass.
+
+### Item 1: `install_via_script_install` implemented
+
+Added `SCRIPT_INSTALL_URLS` associative array (line ~152) and implemented `install_via_script_install` with the pipe logic from the old `install.sh` `try_install_script()`:
+- Looks up URL from `SCRIPT_INSTALL_URLS[$pkg]`
+- Resolves `{version}` placeholder from the parent tool version (strip suffix, e.g. `foo-bar` → `foo`)
+- Fetches script via `curl -fsSL` and pipes to `sh`
+- Retries with bare `{version}` (no `v` prefix) if versioned URL fails
+- Logs to `$LOG_FILE`
+
+Currently empty (`SCRIPT_INSTALL_PACKAGES` and `SCRIPT_INSTALL_URLS` are both empty) — ready for future use.
+
+### Item 2: Cargo error suppressed on failure
+
+`install_via_cargo` no longer prints a red "Failed" message on failure. It silently returns 1, allowing the fallback chain to proceed without alarming the user. Log still captures cargo details.
+
+### Item 3: Empty arrays
+
+No action — stubs for future use.
+
+### Item 4: Priority detection fixed
+
+`DETECT_COMMANDS` for `rustup` and `uv` now also check `command -v` before falling back to the install path check:
+```
+[rustup]="command -v rustup &>/dev/null || test -x \"\$HOME/.rustup/rustup-init\""
+[uv]="command -v uv &>/dev/null || test -x \"\$HOME/.local/bin/uv\""
+```
+This catches cases where the tool is already in PATH (system PM, manual install, or previously configured) but the original install path has been removed.
+
+### Item 5: Closed as not-an-issue
+
+The `command -v cargo` check in `install_via_cargo` (and similarly for npm/uv) checks whether the *install tool* is available, not the target package. This is correct — you need cargo to `cargo install`. The target package is verified via `is_installed` in the main loop. No change needed.
+

@@ -106,8 +106,8 @@ declare -A COMMAND_NAMES=(
 # Value is a command/eval string that returns 0 if installed.
 declare -A DETECT_COMMANDS=(
   [ohmyzsh]="test -d \"\$HOME/.oh-my-zsh\""
-  [rustup]="test -x \"\$HOME/.rustup/rustup-init\""
-  [uv]="test -x \"\$HOME/.local/bin/uv\""
+  [rustup]="command -v rustup &>/dev/null || test -x \"\$HOME/.rustup/rustup-init\""
+  [uv]="command -v uv &>/dev/null || test -x \"\$HOME/.local/bin/uv\""
 )
 
 # Per-package-manager package name overrides.
@@ -147,6 +147,11 @@ declare -A GIT_SOURCES=(
 # from the version of the matching parent tool (e.g. fzf-tmux → fzf).
 declare -A SCRIPT_DOWNLOAD_URLS=(
   [fzf-tmux]="https://raw.githubusercontent.com/junegunn/fzf/v{version}/bin/fzf-tmux"
+)
+
+# Script install (pipe) URLs — fetched and piped through sh.
+# Use {version} as a placeholder, resolved from the matching parent tool.
+declare -A SCRIPT_INSTALL_URLS=(
 )
 
 # ---------------------------------------------------------------------------
@@ -431,10 +436,8 @@ install_via_cargo() {
   if cargo install "$pkg" >> "$LOG_FILE" 2>&1; then
     echo -e "${GREEN}✓${NC} $pkg installed via cargo"
     return 0
-  else
-    echo -e "${RED}✗${NC} Failed to install $pkg via cargo"
-    return 1
   fi
+  return 1
 }
 
 # Try installing via system package manager
@@ -558,8 +561,32 @@ install_via_npm() {
 # Try installing via script pipe (curl | sh)
 install_via_script_install() {
   local pkg=$1
+  local url=${SCRIPT_INSTALL_URLS[$pkg]}
 
-  # Currently all SCRIPT_INSTALL_PACKAGES entries are placeholders
+  [ -z "$url" ] && return 1
+
+  # Resolve {version} placeholder from the parent tool (strip suffixes)
+  local ver=""
+  if [[ "$url" == *"{version}"* ]]; then
+    local parent="${pkg%-*}"
+    [ "$parent" = "$pkg" ] && return 1
+    ver=$("$parent" --version 2>/dev/null | awk '{print $1}')
+    [ -z "$ver" ] && return 1
+  fi
+
+  echo -e "${YELLOW}↓${NC} Installing $pkg..."
+
+  local script
+  if ! script=$(curl -fsSL "${url//\{version\}/v$ver}" 2>/dev/null); then
+    [ -n "$ver" ] && script=$(curl -fsSL "${url//\{version\}/$ver}" 2>/dev/null) || { echo -e "${RED}✗${NC} Failed to install $pkg"; return 1; }
+  fi
+
+  if echo "$script" | sh >> "$LOG_FILE" 2>&1; then
+    echo -e "${GREEN}✓${NC} $pkg installed"
+    return 0
+  fi
+
+  echo -e "${RED}✗${NC} Failed to install $pkg"
   return 1
 }
 
