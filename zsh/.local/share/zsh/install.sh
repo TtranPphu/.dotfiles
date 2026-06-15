@@ -70,14 +70,26 @@ declare -A NPM_TOOLS=(
 # Script-based tools (detected as commands, installed by downloading a script)
 # Value is the download URL. Use {version} as a placeholder — it's resolved
 # from the version of the matching parent tool (e.g. fzf-tmux → fzf).
+# Prefix with "pipe:" to pipe the script through sh instead of downloading.
 declare -A SCRIPTS_TOOLS=(
   [fzf-tmux]="https://raw.githubusercontent.com/junegunn/fzf/v{version}/bin/fzf-tmux"
+  [ohmyzsh]="pipe:https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh"
 )
 
 # Alternative command names for tools on different systems
 declare -A TOOL_ALIASES=(
   [bat]="batcat"
   [ripgrep]="rg"
+)
+
+# Priority tools that must install first (e.g. language runtimes, frameworks).
+# These have custom install logic in try_install_priority.
+PRIORITY_TOOLS=(rustup)
+
+# Custom detection commands for tools not found via command -v.
+# Value is a command/eval string that returns 0 if installed.
+declare -A TOOL_DETECT=(
+  [ohmyzsh]="test -d \"\$HOME/.oh-my-zsh\""
 )
 
 # Get command name(s) for a tool
@@ -200,6 +212,13 @@ get_package_name() {
 # Check if tool is installed
 is_installed() {
   local tool=$1
+
+  # Custom detection for non-command tools (e.g. framework directories)
+  local detect=${TOOL_DETECT[$tool]}
+  if [ -n "$detect" ]; then
+    eval "$detect" && return 0 || return 1
+  fi
+
   local commands
   commands=$(get_command_names "$tool")
 
@@ -406,12 +425,40 @@ try_install_npm() {
   fi
 }
 
-# Try installing a script-based tool (download to ~/.local/bin)
+# Try installing a priority tool (custom install logic, runs first)
+try_install_priority() {
+  local tool=$1
+
+  case "$tool" in
+    rustup)
+      echo -e "${YELLOW}↓${NC} Installing rustup..."
+      if curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y >> "$LOG_FILE" 2>&1; then
+        # Source cargo env so subsequent steps can use it
+        [ -f "$HOME/.cargo/env" ] && . "$HOME/.cargo/env"
+        echo -e "${GREEN}✓${NC} rustup installed"
+        return 0
+      fi
+      echo -e "${RED}✗${NC} Failed to install rustup"
+      return 1
+      ;;
+  esac
+  return 1
+}
+
+# Try installing a script-based tool (download to ~/.local/bin or pipe through sh)
 try_install_script() {
   local tool=$1
-  local url=${SCRIPTS_TOOLS[$tool]}
+  local spec=${SCRIPTS_TOOLS[$tool]}
 
-  [ -z "$url" ] && return 1
+  [ -z "$spec" ] && return 1
+
+  # Check for pipe: prefix (pipe the script through sh instead of saving)
+  local pipe=false
+  local url="$spec"
+  if [[ "$url" == "pipe:"* ]]; then
+    pipe=true
+    url="${url#pipe:}"
+  fi
 
   # Resolve {version} placeholder from the parent tool (strip suffixes)
   local ver=""
@@ -420,6 +467,20 @@ try_install_script() {
     [ "$parent" = "$tool" ] && return 1
     ver=$("$parent" --version 2>/dev/null | awk '{print $1}')
     [ -z "$ver" ] && return 1
+  fi
+
+  if $pipe; then
+    echo -e "${YELLOW}↓${NC} Installing $tool..."
+    local script
+    if ! script=$(curl -fsSL "${url//\{version\}/v$ver}" 2>/dev/null); then
+      [ -n "$ver" ] && script=$(curl -fsSL "${url//\{version\}/$ver}" 2>/dev/null) || { echo -e "${RED}✗${NC} Failed to install $tool"; return 1; }
+    fi
+    if echo "$script" | sh >> "$LOG_FILE" 2>&1; then
+      echo -e "${GREEN}✓${NC} $tool installed"
+      return 0
+    fi
+    echo -e "${RED}✗${NC} Failed to install $tool"
+    return 1
   fi
 
   local target="$HOME/.local/bin/$tool"
@@ -457,9 +518,9 @@ main() {
   mkdir -p "$LOG_DIR"
   init_state
 
-  # Check for missing tools (system packages + scripts)
+  # Check for missing tools (system packages + scripts + priority)
   local missing=()
-  for tool in "${!TOOLS[@]}" "${!SCRIPTS_TOOLS[@]}"; do
+  for tool in "${PRIORITY_TOOLS[@]}" "${!TOOLS[@]}" "${!SCRIPTS_TOOLS[@]}"; do
     if ! is_installed "$tool"; then
       missing+=("$tool")
     fi
@@ -509,6 +570,18 @@ main() {
 
   local failed=()
   local installed=()
+
+  # Install priority tools first (enable other install methods)
+  for tool in "${PRIORITY_TOOLS[@]}";  do
+    if ! is_installed "$tool"; then
+      if try_install_priority "$tool"; then
+        installed+=("$tool")
+      else
+        failed+=("$tool")
+        add_attempted "$tool"
+      fi
+    fi
+  done
 
   # Check and install each missing tool
   for tool in "${missing[@]}"; do
