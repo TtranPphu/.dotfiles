@@ -5,15 +5,21 @@
 
 ### Communication Style
 
-See [`.shared/agent/communication-style.md`](.shared/agent/communication-style.md).
+See [communication style guide](.shared/agent/communication-style.md).
 
 ### Keywords
 
-See [`.shared/agent/keywords.md`](.shared/agent/keywords.md).
+See [keywords reference](.shared/agent/keywords.md).
 
 ### Conventions
 
-See [`.shared/agent/conventions.md`](.shared/agent/conventions.md).
+See [conventions guide](.shared/agent/conventions.md).
+
+### Shared Agent Resources
+
+Skills and handoffs live in `.shared/agent/`:
+- **Skills** — `/commit`, `/stow-deploy`, `/pane-capture`, `/pane-logs`, `/handoff` ([skills directory](.shared/agent/skills/))
+- **Handoffs** — Context documents for multi-session tasks ([handoffs directory](.shared/agent/handoffs/))
 
 ### Desktop
 - **Hyprland**: Modular config: `monitors.conf`, `input.conf`, `bindings.conf`, `looknfeel.conf`, `autostart.conf`, `app.conf`. Don't edit Omarchy paths — override locally. `unbind` before replacing Omarchy binds. App rules in `apps/*.conf`.

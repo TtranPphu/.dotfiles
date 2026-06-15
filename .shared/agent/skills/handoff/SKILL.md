@@ -10,7 +10,7 @@ Use this skill when you need to document in-progress work so another agent can p
 
 ## Where handoffs live
 
-Handoffs go in `.shared/agent/handoffs/handoff-<topic>.md` relative to the repo root.
+Handoffs go in `.shared/agent/handoffs/<NN>-<topic>.md` relative to the repo root, where `<NN>` is the smallest available 2-digit number (01, 02, ...).
 
 ## When to write a handoff
 
@@ -44,4 +44,4 @@ Every handoff should include these sections when applicable:
 
 ## Reference
 
-See the existing handoff at `.shared/agent/handoffs/handoff-compositor-switching.md` for a complete example.
+See the existing handoff at `.shared/agent/handoffs/01-compositor-switching.md` for a complete example.

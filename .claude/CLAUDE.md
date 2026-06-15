@@ -7,15 +7,21 @@
 
 ## Communication Style
 
-See [`.shared/agent/communication-style.md`](.shared/agent/communication-style.md).
+See [communication style guide](.shared/agent/communication-style.md).
 
 ## Keywords
 
-See [`.shared/agent/keywords.md`](.shared/agent/keywords.md).
+See [keywords reference](.shared/agent/keywords.md).
 
 ## Key Conventions
 
-See [`.shared/agent/conventions.md`](.shared/agent/conventions.md).
+See [conventions guide](.shared/agent/conventions.md).
+
+## Shared Agent Resources
+
+This repo ships reusable agent resources in `.shared/agent/`:
+- **Skills** — Slash commands like `/commit`, `/stow-deploy`, `/pane-capture`, `/pane-logs`, `/handoff` ([skills directory](.shared/agent/skills/))
+- **Handoffs** — Context handoff documents for multi-session tasks ([handoffs directory](.shared/agent/handoffs/))
 
 ## What This Repo Is
 
