@@ -97,8 +97,7 @@ if (( $+commands[aichat] )) || (( $+commands[claude] )); then
     echo "$route" > /tmp/llm-route
     echo "$(( $(date +%s) + 300 ))|$route" > "$_llm_cache_file"
     case $route in
-      # claude-pro temporarily disabled
-      # claude-pro) ANTHROPIC_MODEL=deepseek-v4-pro[1m] _claude_fallback "$@" ;;
+      claude-pro) ANTHROPIC_MODEL=deepseek-v4-pro[1m] _claude_fallback "$@" ;;
       claude-flash) ANTHROPIC_MODEL=deepseek-v4-flash[1m] _claude_fallback "$@" ;;
       aichat-reasoner)
         aichat -m deepseek:deepseek-reasoner -s default --save-session "$*"
@@ -115,17 +114,23 @@ if (( $+commands[aichat] )) || (( $+commands[claude] )); then
     local lower="${first_five:l}"
     local cache_file=$_llm_cache_file
 
-    # if [[ $lower == *pro* ]] && (( $+commands[claude] )); then
-    #   _llm_dispatch claude-pro "$@"
-    #
-    # elif
-    if [[ $lower == *claude* || $lower == *deepseek* || $lower == *flash* ]] && (( $+commands[claude] )); then
+    local -a words=(${=lower})
+    local -a clean_words=()
+    local w
+    for w in ${words[@]:0:5}; do
+      clean_words+=(${w%%[^[:alpha:]]*})
+    done
+
+    if (( $clean_words[(Ie)probe] )) && (( $+commands[claude] )); then
+      _llm_dispatch claude-pro "$@"
+
+    elif (( $clean_words[(Ie)seekie] || $clean_words[(Ie)flashy] )) && (( $+commands[claude] )); then
       _llm_dispatch claude-flash "$@"
 
-    elif [[ $lower == *reasoner* ]] && (( $+commands[aichat] )); then
+    elif (( $clean_words[(Ie)thinkie] )) && (( $+commands[aichat] )); then
       _llm_dispatch aichat-reasoner "$@"
 
-    elif [[ $lower == *aichat* || $lower == *chat* ]] && (( $+commands[aichat] )); then
+    elif (( $clean_words[(Ie)talkie] )) && (( $+commands[aichat] )); then
       _llm_dispatch aichat-chat "$@"
 
     else
