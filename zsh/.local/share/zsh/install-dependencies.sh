@@ -860,4 +860,7 @@ main() {
   return 0
 }
 
-main "$@"
+# Only run main when executed directly, not when sourced (e.g. by tests)
+if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
+  main "$@"
+fi
