@@ -100,10 +100,13 @@ if (( $+commands[aichat] )) || (( $+commands[claude] )); then
       claude-pro) ANTHROPIC_MODEL=deepseek-v4-pro[1m] _claude_fallback "$@" ;;
       claude-flash) ANTHROPIC_MODEL=deepseek-v4-flash[1m] _claude_fallback "$@" ;;
       aichat-reasoner)
-        aichat -m deepseek:deepseek-reasoner -s default --save-session "$*"
+        aichat -m deepseek:deepseek-reasoner -s thinkie --save-session "$*"
         _llm_setup_hint ;;
       aichat-chat)
-        aichat -m deepseek:deepseek-chat -s default --save-session "$*"
+        aichat -m deepseek:deepseek-chat -s talkie --save-session "$*"
+        _llm_setup_hint ;;
+      aichat-qwen)
+        aichat -m ollama:qwen3.5:2b -s qwenie --save-session "$*"
         _llm_setup_hint ;;
     esac
     echo "$(( $(date +%s) + 300 ))|$route" > "$_llm_cache_file"
@@ -132,6 +135,9 @@ if (( $+commands[aichat] )) || (( $+commands[claude] )); then
 
     elif (( $clean_words[(Ie)talkie] )) && (( $+commands[aichat] )); then
       _llm_dispatch aichat-chat "$@"
+
+    elif (( $clean_words[(Ie)qwenie] )) && (( $+commands[aichat] )); then
+      _llm_dispatch aichat-qwen "$@"
 
     else
       if [[ -f $cache_file ]]; then

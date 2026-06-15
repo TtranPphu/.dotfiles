@@ -21,6 +21,7 @@ if [[ $valid == true ]]; then
     claude-flash)    echo " " ;;
     aichat-reasoner) echo " " ;;
     aichat-chat)     echo " " ;;
+    aichat-qwen)     echo " " ;;
   esac
 elif [[ ${1:-} == os ]]; then
   if [[ -f /etc/os-release ]]; then

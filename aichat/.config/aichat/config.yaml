@@ -41,5 +41,10 @@ clients:
 - type: openai-compatible
   name: deepseek
   api_base: https://api.deepseek.com
+- type: openai-compatible
+  name: ollama
+  api_base: http://localhost:11434/v1
+  models:
+    - name: qwen3.5:2b
 - type: openai
 - type: claude
