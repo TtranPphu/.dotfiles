@@ -67,6 +67,13 @@ declare -A NPM_TOOLS=(
   [neovim]="neovim"
 )
 
+# Script-based tools (detected as commands, installed by downloading a script)
+# Value is the download URL. Use {version} as a placeholder — it's resolved
+# from the version of the matching parent tool (e.g. fzf-tmux → fzf).
+declare -A SCRIPTS_TOOLS=(
+  [fzf-tmux]="https://raw.githubusercontent.com/junegunn/fzf/v{version}/bin/fzf-tmux"
+)
+
 # Alternative command names for tools on different systems
 declare -A TOOL_ALIASES=(
   [bat]="batcat"
@@ -399,6 +406,43 @@ try_install_npm() {
   fi
 }
 
+# Try installing a script-based tool (download to ~/.local/bin)
+try_install_script() {
+  local tool=$1
+  local url=${SCRIPTS_TOOLS[$tool]}
+
+  [ -z "$url" ] && return 1
+
+  # Resolve {version} placeholder from the parent tool (strip suffixes)
+  local ver=""
+  if [[ "$url" == *"{version}"* ]]; then
+    local parent="${tool%-*}"
+    [ "$parent" = "$tool" ] && return 1
+    ver=$("$parent" --version 2>/dev/null | awk '{print $1}')
+    [ -z "$ver" ] && return 1
+  fi
+
+  local target="$HOME/.local/bin/$tool"
+  mkdir -p "$HOME/.local/bin"
+
+  echo -e "${YELLOW}↓${NC} Installing $tool (script)..."
+  if curl -fsSLo "$target" "${url//\{version\}/v$ver}" 2>/dev/null; then
+    chmod +x "$target"
+    echo -e "${GREEN}✓${NC} $tool installed to $target"
+    return 0
+  fi
+
+  # Retry with bare version (no v prefix)
+  if [ -n "$ver" ] && curl -fsSLo "$target" "${url//\{version\}/$ver}" 2>/dev/null; then
+    chmod +x "$target"
+    echo -e "${GREEN}✓${NC} $tool installed to $target"
+    return 0
+  fi
+
+  echo -e "${RED}✗${NC} Failed to install $tool"
+  return 1
+}
+
 main() {
   local pm
   pm=$(detect_package_manager)
@@ -413,9 +457,9 @@ main() {
   mkdir -p "$LOG_DIR"
   init_state
 
-  # Check for missing tools
+  # Check for missing tools (system packages + scripts)
   local missing=()
-  for tool in "${!TOOLS[@]}"; do
+  for tool in "${!TOOLS[@]}" "${!SCRIPTS_TOOLS[@]}"; do
     if ! is_installed "$tool"; then
       missing+=("$tool")
     fi
@@ -497,6 +541,12 @@ main() {
 
     # Fall back to npm as a last resort
     if ! $success && try_install_npm "$tool"; then
+      installed+=("$tool")
+      success=true
+    fi
+
+    # Fall back to script download (for tools not in system package repos)
+    if ! $success && try_install_script "$tool"; then
       installed+=("$tool")
       success=true
     fi
