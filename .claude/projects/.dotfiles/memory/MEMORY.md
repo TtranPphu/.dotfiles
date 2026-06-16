@@ -1,0 +1,1 @@
+- [dont-dismiss-issues](feedback_dont_dismiss_issues.md) — Fix bugs regardless of source, don't dismiss
