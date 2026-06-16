@@ -1,1 +1,3 @@
+- [No auto-commits](feedback_no_auto_commits.md) — Never create git commits unless explicitly asked
+- [Respect user changes](feedback_respect_user_changes.md) — Never overwrite user modifications during the session
 - [dont-dismiss-issues](feedback_dont_dismiss_issues.md) — Fix bugs regardless of source, don't dismiss
