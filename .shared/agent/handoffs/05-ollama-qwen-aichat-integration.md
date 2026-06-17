@@ -6,7 +6,7 @@ aichat currently uses only remote API providers (DeepSeek, OpenAI, Claude). The 
 
 ## Plan File
 
-Full implementation plan at `.claude/plans/help-me-integrate-ollama-robust-toast.md`
+Full implementation plan at `.claude/plans/help-me-integrate-ollama-robust-toast.md` (tracked in the repo via symlink from `~/.claude/plans/`)
 
 ## Key Decisions
 
