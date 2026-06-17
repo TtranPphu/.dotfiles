@@ -45,6 +45,6 @@ clients:
   name: ollama
   api_base: http://localhost:11434/v1
   models:
-    - name: qwen3.5:2b
+    - name: qwen3:4b-instruct
 - type: openai
 - type: claude

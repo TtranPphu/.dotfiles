@@ -2,7 +2,7 @@
 
 ## Context
 
-aichat currently uses only remote API providers (DeepSeek, OpenAI, Claude). The user has Ollama running locally with Qwen models — already configured for `gh copilot` in `llm.zsh` (`http://localhost:11434/v1` + `qwen3.5:2b`). This task adds Ollama as an aichat client, creates a `qwenie` dispatch route in the command-not-found fallback, and adds a Starship indicator for it.
+aichat currently uses only remote API providers (DeepSeek, OpenAI, Claude). The user has Ollama running locally with Qwen models — already configured for `gh copilot` in `llm.zsh` (`http://localhost:11434/v1` + `qwen3:4b-instruct`). This task adds Ollama as an aichat client, creates a `qwenie` dispatch route in the command-not-found fallback, and adds a Starship indicator for it.
 
 ## Plan File
 
@@ -31,12 +31,12 @@ Full implementation plan at `.claude/plans/help-me-integrate-ollama-robust-toast
 
 ## Verification
 
-1. `aichat -m ollama:qwen3.5:2b` — should connect to local Ollama
+1. `aichat -m ollama:qwen3:4b-instruct` — should connect to local Ollama
 2. `qwenie <some-query>` — should dispatch to `aichat-qwen`
 3. Check `~/.config/aichat/sessions/qwenie.yaml`, `talkie.yaml`, `thinkie.yaml` — each with its model
 4. Old `~/.config/aichat/sessions/default.yaml` — no longer used by dispatch (can be cleaned up)
 
 ## Related Files
 
-- `zsh/.config/zsh/llm.zsh` — already has `COPILOT_PROVIDER_BASE_URL=http://localhost:11434/v1` + `COPILOT_MODEL=qwen3.5:2b`
+- `zsh/.config/zsh/llm.zsh` — already has `COPILOT_PROVIDER_BASE_URL=http://localhost:11434/v1` + `COPILOT_MODEL=qwen3:4b-instruct`
 - `.claude/settings.local.json` — has `Bash(ollama rm *)` permission

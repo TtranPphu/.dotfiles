@@ -106,7 +106,7 @@ if (( $+commands[aichat] )) || (( $+commands[claude] )); then
         aichat -m deepseek:deepseek-chat -s talkie --save-session "$*"
         _llm_setup_hint ;;
       aichat-qwen)
-        aichat -m ollama:qwen3.5:2b -s qwenie --save-session "$*"
+        aichat -m ollama:qwen3:4b-instruct -s qwenie --save-session "$*"
         _llm_setup_hint ;;
     esac
     echo "$(( $(date +%s) + 300 ))|$route" > "$_llm_cache_file"
