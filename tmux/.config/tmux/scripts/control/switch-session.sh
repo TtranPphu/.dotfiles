@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
 win_fmt_act='-F "#{window_active} #{window_index}"'
-win_fmt_list='#{window_name} (#{window_panes} '\
-'#{?#{==:#{window_panes},1},pane,panes})'
+win_fmt_list='#{?window_bell_flag,󰅸,} #{window_name}'\
+'#{?#{>:#{window_panes},1}, (#{window_panes} panes),}'
 
 preview_cmd='s=$(echo {} | awk "{print \$2}" | cut -d: -f1); '\
 'i=$(tmux list-windows -t "$s" '"$win_fmt_act"' '\
@@ -14,7 +14,7 @@ result=$(
   | while read -r s; do
       windows=$(tmux list-windows -t "$s" \
         -F "$win_fmt_list" \
-        2>/dev/null | paste -sd " ")
+        2>/dev/null | paste -sd '|' | sed 's/|/ | /g')
       if tmux list-windows -t "$s" -F '#{window_bell_flag}' 2>/dev/null | grep -q 1; then
         icon="󰅸"
       else

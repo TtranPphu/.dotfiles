@@ -5,14 +5,11 @@ preview_cmd='key=$(echo {} | cut -d" " -f1); '\
 'i=$(echo "$key" | cut -d: -f2); '\
 'tmux capture-pane -p -t "$s:$i" -e -J 2>/dev/null'
 
-win_fmt='#{session_name}:#{window_index} '\
-'#{?window_bell_flag,󰅸,} '\
-'#{session_name} - #{window_name}: '\
-'#{window_panes} #{?#{==:#{window_panes},1},pane,panes}'
-
 result=$(
-  tmux list-windows -a \
-    -F "$win_fmt" \
+  while read -r s; do
+    win_fmt="#{session_name}:#{window_index}  #{session_name} - #{?window_bell_flag,󰅸,} #{window_name}#{?#{>:#{window_panes},1},: #{window_panes} panes,}"
+    tmux list-windows -t "$s" -F "$win_fmt" 2>/dev/null
+  done < <(tmux list-sessions -F '#{session_name}') \
   | fzf-tmux -p 60%,60% --reverse --print-query \
       --wrap-sign='' --ellipsis='··' --preview-wrap-sign='' \
       --preview "$preview_cmd" \
