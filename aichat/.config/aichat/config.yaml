@@ -41,10 +41,11 @@ clients:
 - type: openai-compatible
   name: deepseek
   api_base: https://api.deepseek.com
+  models:
+    - name: deepseek:deepseek-chat
+    - name: deepseek:deepseek-reasoner
 - type: openai-compatible
   name: ollama
   api_base: http://localhost:11434/v1
   models:
     - name: qwen3:4b-instruct
-- type: openai
-- type: claude
