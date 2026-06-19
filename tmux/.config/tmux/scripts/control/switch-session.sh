@@ -4,7 +4,7 @@ win_fmt_act='-F "#{window_active} #{window_index}"'
 win_fmt_list='#{window_name} (#{window_panes} '\
 '#{?#{==:#{window_panes},1},pane,panes})'
 
-preview_cmd='s=$(echo {} | cut -d: -f1); '\
+preview_cmd='s=$(echo {} | awk "{print \$2}" | cut -d: -f1); '\
 'i=$(tmux list-windows -t "$s" '"$win_fmt_act"' '\
 '  2>/dev/null | sort -k1 -rn | head -1 | cut -d" " -f2); '\
 'tmux capture-pane -p -t "$s:$i" -e -J 2>/dev/null'
@@ -15,7 +15,12 @@ result=$(
       windows=$(tmux list-windows -t "$s" \
         -F "$win_fmt_list" \
         2>/dev/null | paste -sd " ")
-      echo "$s: $windows"
+      if tmux list-windows -t "$s" -F '#{window_bell_flag}' 2>/dev/null | grep -q 1; then
+        icon="󰅸"
+      else
+        icon=""
+      fi
+      echo "$icon $s: $windows"
     done \
   | fzf-tmux -p 60%,60% --reverse --print-query \
       --wrap-sign='' --ellipsis='··' --preview-wrap-sign='' \
@@ -26,7 +31,7 @@ result=$(
 )
 [[ -z "$result" ]] && exit 0
 
-session=$(echo "$result" | tail -1 | cut -d: -f1)
+session=$(echo "$result" | tail -1 | awk '{print $2}' | cut -d: -f1)
 session="${session/#\~/$HOME}"
 
 if tmux has-session -t "$session" 2>/dev/null; then

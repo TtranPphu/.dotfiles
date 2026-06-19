@@ -9,23 +9,18 @@ window_zoomed_flag="$6"
 host_name="$7"
 script_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 
-adjacent_sessions="$("$script_dir/session-list.sh" "$socket_path" "$current_session" prev)"
+# Build reversed list of sessions before current (newest first on status right)
+reversed=""
+while read -r s; do
+  [[ "$s" == "$current_session" ]] && break
+  if tmux -S "$socket_path" list-windows -t "$s" -F '#{window_bell_flag}' 2>/dev/null | grep -q 1; then
+    reversed="#[fg=green]󰅸 $s $reversed"
+  else
+    reversed=" $s $reversed"
+  fi
+done < <(tmux -S "$socket_path" list-sessions -F '#{session_name}')
 
-# Reverse session order so newest (bottom of session list) appears first on the status right
-if [[ -n "$adjacent_sessions" ]]; then
-  reversed=$(echo "$adjacent_sessions" | awk -F'' '
-    {
-      result = ""
-      for (i = NF; i >= 1; i--) {
-        gsub(/^[ ]+|[ ]+$/, "", $i)
-        if ($i != "") {
-          if (result == "") result = " " $i
-          else result = result "  " $i
-        }
-      }
-      print result
-    }
-  ')
+if [[ -n "$reversed" ]]; then
   printf '#[fg=brightblack]%s ' "$reversed"
 fi
 

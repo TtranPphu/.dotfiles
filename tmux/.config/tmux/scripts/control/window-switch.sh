@@ -6,6 +6,7 @@ preview_cmd='key=$(echo {} | cut -d" " -f1); '\
 'tmux capture-pane -p -t "$s:$i" -e -J 2>/dev/null'
 
 win_fmt='#{session_name}:#{window_index} '\
+'#{?window_bell_flag,󰅸,} '\
 '#{session_name} - #{window_name}: '\
 '#{window_panes} #{?#{==:#{window_panes},1},pane,panes}'
 
