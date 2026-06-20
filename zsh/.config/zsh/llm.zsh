@@ -2,10 +2,10 @@ if (( $+commands[copilot] )); then
   export COPILOT_PROVIDER_TYPE=openai
   export COPILOT_PROVIDER_BASE_URL=http://localhost:11434/v1
   export COPILOT_PROVIDER_API_KEY=ollama
-  export COPILOT_MODEL=qwen3.5:4b-q4_K_M
+  export COPILOT_MODEL=qwen3.5:9b-q4_K_M
   export COPILOT_OFFLINE=true
-  export COPILOT_PROVIDER_MAX_PROMPT_TOKENS=8192
-  export COPILOT_PROVIDER_MAX_OUTPUT_TOKENS=512
+  export COPILOT_PROVIDER_MAX_PROMPT_TOKENS=32768
+  export COPILOT_PROVIDER_MAX_OUTPUT_TOKENS=4096
 fi
 
 if (( $+commands[aichat] )); then
@@ -13,5 +13,5 @@ if (( $+commands[aichat] )); then
 fi
 
 if (( $+commands[ollama] )); then
-  alias aigc='git commit -m "$(AICHAT_MODEL="ollama:qwen3:4b-instruct" ; echo "$(git diff --staged), $AICHAT_MODEL" | aichat -m "$AICHAT_MODEL" -r messager)"'
+  alias aigc='git commit -m "$(AICHAT_MODEL="ollama:qwen3.5:9b-q4_K_M" ; echo "$(git diff --staged), $AICHAT_MODEL" | aichat -m "$AICHAT_MODEL" -r messager)"'
 fi
