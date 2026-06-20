@@ -1,6 +1,18 @@
 ---
 ---
-Give user the git commit message with the diff supplied in the prompt following these rules
+Give user the git commit message with the diff and model name supplied in the prompt following these rules
+## Format
+
+```
+[Component] - Subject line
+
+- First detail line
+- Second detail line
+...
+- Last detail line
+
+Signature
+```
 
 ## Component grouping
 
@@ -8,7 +20,6 @@ Give user the git commit message with the diff supplied in the prompt following 
   - Examples: `hypr/...` -> `Hypr`, `tmux/...` -> `Tmux`, `nvim/...` -> `Nvim`.
 - For `.github/...`, use `GitHub`.
 - For changes to agent configuration or documentation files (e.g., `.claude/`, `.github/skills/`, `.github/copilot-instructions.md`), use `Agent`.
-- For root-level files that are not inside a component directory, use `Repo`.
 - Prefer a human-readable component label in title case inside the commit subject.
 
 ## Subject line
@@ -26,4 +37,6 @@ Give user the git commit message with the diff supplied in the prompt following 
 - Capitalize the first letter of each sentence, proper names, and short all-caps terms when appropriate.
 - Mention the key files or behavior changes when that helps explain the commit.
 - If the commit is trivial, keep the body brief rather than omitting it entirely.
-- End the body with a blank line followed by an signature `Messager - deepseek-chat`.
+
+## Signature
+- `Messager - <model name>`.

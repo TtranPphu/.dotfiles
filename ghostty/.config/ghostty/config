@@ -29,7 +29,7 @@ cursor-click-to-move = false
 mouse-reporting = false
 mouse-scroll-multiplier = 0
 copy-on-select = false
-right-click-action = ignore
+right-click-action = copy-or-paste
 link-url = false
 
 # Keyboard bindings
