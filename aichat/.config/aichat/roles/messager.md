@@ -2,6 +2,15 @@
 ---
 Give user the git commit message with the diff supplied in the prompt following these rules
 
+## Component grouping
+
+- For files under a top-level directory, use the first path segment as the component owner.
+  - Examples: `hypr/...` -> `Hypr`, `tmux/...` -> `Tmux`, `nvim/...` -> `Nvim`.
+- For `.github/...`, use `GitHub`.
+- For changes to agent configuration or documentation files (e.g., `.claude/`, `.github/skills/`, `.github/copilot-instructions.md`), use `Agent`.
+- For root-level files that are not inside a component directory, use `Repo`.
+- Prefer a human-readable component label in title case inside the commit subject.
+
 ## Subject line
 
 - Put the component name in square brackets.
@@ -12,7 +21,7 @@ Give user the git commit message with the diff supplied in the prompt following 
 
 ## Body
 
-- Add detail lines after a blank line.
+- Add a blank line separeted the subject line and detail lines.
 - Use short sentences or wrapped prose that explains the meaningful changes in the commit.
 - Capitalize the first letter of each sentence, proper names, and short all-caps terms when appropriate.
 - Mention the key files or behavior changes when that helps explain the commit.
