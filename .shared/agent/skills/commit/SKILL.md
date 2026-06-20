@@ -17,11 +17,13 @@ This repository is organized around top-level components. When making commits:
 ## Component grouping
 
 - For files under a top-level directory, use the first path segment as the component owner.
-  - Examples: `hypr/...` -> `Hypr`, `tmux/...` -> `Tmux`, `nvim/...` -> `Nvim`.
+  - Examples: `hypr/...` -> `Hypr`, `tmux/...` -> `Tmux`, `nvim/...` -> `Nvim`, `opencode/...` -> `OpenCode`.
 - For `.github/...`, use `GitHub`.
 - For changes to agent configuration or documentation files (e.g., `.claude/`, `.github/skills/`, `.github/copilot-instructions.md`), use `Agent`.
 - For root-level files that are not inside a component directory, use `Repo`.
 - Prefer a human-readable component label in title case inside the commit subject.
+- When changes span multiple tightly-coupled components (e.g., removing an old file in one component
+  and updating references in another), combine them with `/`: `[Zsh/Nu]`.
 
 ## Commit message format
 
@@ -37,6 +39,8 @@ Examples:
 [Hypr] - Increase scrolling column width
 [Tmux] - Set default shell to zsh
 [GitHub] - Consolidate repository instructions
+[OpenCode] - Add stow package for opencode config
+[Zsh/Nu] - Update install-deps and reference
 ```
 
 ## Subject line rules
@@ -54,7 +58,7 @@ Examples:
 - Capitalize the first letter of each sentence, proper names, and short all-caps terms when appropriate.
 - Mention the key files or behavior changes when that helps explain the commit.
 - If the commit is trivial, keep the body brief rather than omitting it entirely.
-- End the body with a blank line followed by an agent signature matching the system prompt exactly (e.g., `Claude - deepseek-v4-flash[1m]`, `Copilot - <model>`, or `OpenCode - <model>`).
+- End the body with a blank line followed by an agent signature matching the system prompt exactly (e.g., `OpenCode - deepseek-v4-flash-free`, `Claude - deepseek-v4-flash[1m]`, or `Copilot - <model>`).
 - Do NOT use `Co-Authored-By` or other signatures.
 
 ## Workflow
