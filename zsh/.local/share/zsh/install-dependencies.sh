@@ -44,6 +44,7 @@ declare -a CARGO_PACKAGES=(
   zellij
   nu
   argc
+  llmfit
 )
 
 # System package manager packages (pacman > apt > dnf > zypper > apk)
@@ -56,6 +57,7 @@ declare -a SYSTEM_PACKAGES=(
   fzf
   lazygit
   lazydocker
+  ollama
   stow
   jq
   bat
@@ -71,6 +73,8 @@ declare -a SECONDARY_PACKAGES=(
 
 # Packages installed via `uv tool install`
 declare -a UV_PACKAGES=(
+  llmfit
+  vllm
 )
 
 # Packages installed via npm
@@ -81,6 +85,7 @@ declare -a NPM_PACKAGES=(
 
 # Packages installed via curl | sh (pipe)
 declare -a SCRIPT_INSTALL_PACKAGES=(
+  ollama
 )
 
 # Packages downloaded as scripts to ~/.local/bin
@@ -155,6 +160,7 @@ declare -A SCRIPT_DOWNLOAD_URLS=(
 # Script install (pipe) URLs — fetched and piped through sh.
 # Use {version} as a placeholder, resolved from the matching parent tool.
 declare -A SCRIPT_INSTALL_URLS=(
+  [ollama]="https://ollama.com/install.sh"
 )
 
 # ---------------------------------------------------------------------------
