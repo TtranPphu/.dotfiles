@@ -54,7 +54,7 @@ Examples:
 - Capitalize the first letter of each sentence, proper names, and short all-caps terms when appropriate.
 - Mention the key files or behavior changes when that helps explain the commit.
 - If the commit is trivial, keep the body brief rather than omitting it entirely.
-- End the body with a blank line followed by an agent signature matching the system prompt exactly (e.g., `Claude - deepseek-v4-flash[1m]` or `Copilot - <model>`).
+- End the body with a blank line followed by an agent signature matching the system prompt exactly (e.g., `Claude - deepseek-v4-flash[1m]`, `Copilot - <model>`, or `OpenCode - <model>`).
 - Do NOT use `Co-Authored-By` or other signatures.
 
 ## Workflow
