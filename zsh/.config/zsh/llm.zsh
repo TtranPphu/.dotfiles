@@ -11,3 +11,7 @@ fi
 if (( $+commands[aichat] )); then
   export DEEPSEEK_API_KEY="${$(jq -r '.env.ANTHROPIC_AUTH_TOKEN // empty' ~/.claude/settings.json 2>/dev/null):-}"
 fi
+
+if (( $+commands[ollama] )); then
+  alias aigc='git commit -m "$(AICHAT_MODEL="ollama:qwen3:4b-instruct" ; echo "$(git diff --staged), $AICHAT_MODEL" | aichat -m "$AICHAT_MODEL" -r messager)"'
+fi

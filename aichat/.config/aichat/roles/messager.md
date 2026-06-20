@@ -1,26 +1,25 @@
 ---
 ---
 Give user the git commit message with the diff and model name supplied in the prompt following these rules
+
 ## Format
 
-```
-[Component] - Subject line
+[<component>] - Subject line
 
 - First detail line
 - Second detail line
 ...
 - Last detail line
 
-Signature
-```
+Messager - <model name>
 
 ## Component grouping
 
+- Prefer a human-readable component label in title case inside the commit subject.
 - For files under a top-level directory, use the first path segment as the component owner.
   - Examples: `hypr/...` -> `Hypr`, `tmux/...` -> `Tmux`, `nvim/...` -> `Nvim`.
 - For `.github/...`, use `GitHub`.
 - For changes to agent configuration or documentation files (e.g., `.claude/`, `.github/skills/`, `.github/copilot-instructions.md`), use `Agent`.
-- Prefer a human-readable component label in title case inside the commit subject.
 
 ## Subject line
 
@@ -37,6 +36,3 @@ Signature
 - Capitalize the first letter of each sentence, proper names, and short all-caps terms when appropriate.
 - Mention the key files or behavior changes when that helps explain the commit.
 - If the commit is trivial, keep the body brief rather than omitting it entirely.
-
-## Signature
-- `Messager - <model name>`.
