@@ -35,7 +35,7 @@ if ((($env.TMUX? | is-empty) and ($env.ZELLIJ? | is-empty)) and ($env.DOTFILES_S
 }
 
 # --- Dependency installer ---
-let install_script = $"($env.HOME)/.local/share/zsh/install.sh"
+let install_script = $"($env.HOME)/.local/share/zsh/install-dependencies.sh"
 if ($install_script | path exists) {
     ^$install_script
 }

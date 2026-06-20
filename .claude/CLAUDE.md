@@ -20,7 +20,7 @@ See [conventions guide](.shared/agent/conventions.md).
 ## Shared Agent Resources
 
 This repo ships reusable agent resources in `.shared/agent/`:
-- **Skills** — Slash commands like `/commit`, `/stow-deploy`, `/pane-capture`, `/pane-logs`, `/handoff` ([skills directory](.shared/agent/skills/))
+- **Skills** — Slash commands like `/commit`, `/stow-deploy`, `/tmux-capture`, `/pane-logs`, `/handoff` ([skills directory](.shared/agent/skills/))
 - **Handoffs** — Context handoff documents for multi-session tasks ([handoffs directory](.shared/agent/handoffs/))
 
 ## What This Repo Is

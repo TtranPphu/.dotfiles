@@ -21,7 +21,7 @@ See [conventions guide](.shared/agent/conventions.md).
 ### Shared Agent Resources
 
 Skills and handoffs live in `.shared/agent/`:
-- **Skills** — `/commit`, `/stow-deploy`, `/pane-capture`, `/pane-logs`, `/handoff` ([skills directory](.shared/agent/skills/))
+- **Skills** — `/commit`, `/stow-deploy`, `/tmux-capture`, `/pane-logs`, `/handoff` ([skills directory](.shared/agent/skills/))
 - **Handoffs** — Context documents for multi-session tasks ([handoffs directory](.shared/agent/handoffs/))
 
 ### What This Repo Is

@@ -1,1 +1,0 @@
-../../../.shared/agent/skills/pane-capture/SKILL.md
