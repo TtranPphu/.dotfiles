@@ -27,8 +27,6 @@ SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 SCRIPT_PATH="$SCRIPT_DIR/install-dependencies.sh"
 SCRIPT_NAME="install-dependencies.sh"
 WORK_DIR="/tmp/dotfiles-test"
-RESULTS_DIR="$WORK_DIR/results"
-mkdir -p "$RESULTS_DIR"
 
 # ---- Colors ----
 GREEN='\033[0;32m'
@@ -43,6 +41,13 @@ TOTAL=0
 
 # ---- CLI filter ----
 RUN_FILTER="$1"
+
+# Save results path and tee all output
+REPO_ROOT="$(cd "$SCRIPT_DIR/../../../.." && pwd)"
+RESULTS_NAME="${SCRIPT_NAME%.sh}${RUN_FILTER:+-$RUN_FILTER}.txt"
+RESULTS_FILE="$REPO_ROOT/.tests/$RESULTS_NAME"
+mkdir -p "$(dirname "$RESULTS_FILE")"
+exec > "$RESULTS_FILE" 2>&1
 
 should_run() {
   local section="$1"

@@ -62,6 +62,7 @@ declare -a SYSTEM_PACKAGES=(
   eza
   ripgrep
   zoxide
+  opencode
 )
 
 # Secondary package manager (yay > paru > brew when not primary)
@@ -75,6 +76,7 @@ declare -a UV_PACKAGES=(
 # Packages installed via npm
 declare -a NPM_PACKAGES=(
   neovim
+  opencode-ai
 )
 
 # Packages installed via curl | sh (pipe)
@@ -131,6 +133,7 @@ declare -A PACKAGE_OVERRIDES=(
   [brew:nvim]="neovim"
   [brew:stow]="gnu-stow"
   [brew:ripgrep]="ripgrep"
+  [brew:opencode]="anomalyco/tap/opencode"
 )
 
 # ---------------------------------------------------------------------------

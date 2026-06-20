@@ -23,6 +23,12 @@ if command -v fzf &> /dev/null; then
   fzf_file_preview+="  $bat_cmd {} 2>/dev/null || cat {};"
   fzf_file_preview+=" fi"
 
+  # Default file search using fd (if available) to exclude .git and node_modules
+  if command -v fd &>/dev/null; then
+    export FZF_DEFAULT_COMMAND="fd --type f --hidden --exclude .git --exclude node_modules"
+    export FZF_ALT_C_COMMAND="fd --type d --hidden --exclude .git --exclude node_modules"
+  fi
+
   # fzf options with smart preview for files/dirs
   export FZF_DEFAULT_OPTS="--popup 60%,60% --reverse --multi \
     --wrap-sign='' --ellipsis='··' \

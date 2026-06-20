@@ -46,6 +46,7 @@ declare -A TOOLS=(
   [zellij]="zellij"
   [ripgrep]="ripgrep"
   [argc]="argc"
+  [opencode]="opencode"
 )
 
 # Tools available via cargo (fallback for when system PM doesn't have them)
@@ -65,6 +66,7 @@ declare -A CARGO_TOOLS=(
 # Tools available via npm (fallback)
 declare -A NPM_TOOLS=(
   [neovim]="neovim"
+  [opencode]="opencode-ai"
 )
 
 # Script-based tools (detected as commands, installed by downloading a script)
@@ -200,6 +202,7 @@ get_package_name() {
     brew)
       case "$tool" in
         walker) echo "" ;; # Not in brew
+        opencode) echo "anomalyco/tap/opencode" ;;
         *) echo "$base_name" ;;
       esac
       ;;
