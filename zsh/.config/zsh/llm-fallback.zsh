@@ -108,6 +108,8 @@ if (( $+commands[aichat] )) || (( $+commands[claude] )); then
       aichat-qwen)
         aichat -m ollama:qwen3:4b-instruct -s qwenie -r general --save-session "$*"
         _llm_setup_hint ;;
+      opencode-free)
+        opencode run -m opencode/deepseek-v4-flash-free -c "$@" ;;
     esac
     echo "$(( $(date +%s) + 300 ))|$route" > "$_llm_cache_file"
   }
@@ -138,6 +140,9 @@ if (( $+commands[aichat] )) || (( $+commands[claude] )); then
 
     elif (( $clean_words[(Ie)qwenie] )) && (( $+commands[aichat] )); then
       _llm_dispatch aichat-qwen "$@"
+
+    elif (( $clean_words[(Ie)freebie] )) && (( $+commands[opencode] )); then
+      _llm_dispatch opencode-free "$@"
 
     else
       if [[ -f $cache_file ]]; then

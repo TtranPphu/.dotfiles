@@ -10,7 +10,11 @@ if [[ ${1:-} == os ]]; then
   [[ -f $rf ]] || exit 0
   now=$(date +%s)
   mtime=$(date -r "$rf" +%s 2>/dev/null) || exit 0
-  ((now - mtime < 300)) && exit 1 || exit 0
+  ((now - mtime >= 300)) && exit 0
+  # Also show OS icon when the cached route name is not a known route
+  dir=$(dirname "$(readlink -f "$0")")
+  grep -q "^\s*$(<"$rf"))" "$dir/llm-route.sh" 2>/dev/null || exit 0
+  exit 1
 fi
 
 # Route check mode: show when specific route matches

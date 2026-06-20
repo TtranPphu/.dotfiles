@@ -11,6 +11,7 @@ ${custom.llm_flash}\
 ${custom.llm_reasoner}\
 ${custom.llm_chat}\
 ${custom.llm_qwen}\
+${custom.llm_free}\
 $shell\
 ${custom.compress_path}\
 ${custom.git_remote}\
@@ -81,6 +82,13 @@ command = 'config_dir="${STARSHIP_CONFIG%/*}"; ${config_dir:-$HOME/.config/stars
 when = 'config_dir="${STARSHIP_CONFIG%/*}"; ${config_dir:-$HOME/.config/starship}/llm-when.sh aichat-qwen'
 shell = ["bash"]
 style = "white"
+format = "[$output]($style)  "
+
+[custom.llm_free]
+command = 'config_dir="${STARSHIP_CONFIG%/*}"; ${config_dir:-$HOME/.config/starship}/llm-route.sh'
+when = 'config_dir="${STARSHIP_CONFIG%/*}"; ${config_dir:-$HOME/.config/starship}/llm-when.sh opencode-free'
+shell = ["bash"]
+style = "green"
 format = "[$output]($style)  "
 
 [shell]

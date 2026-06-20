@@ -22,6 +22,7 @@ if [[ $valid == true ]]; then
     aichat-reasoner) echo " " ;;
     aichat-chat)     echo " " ;;
     aichat-qwen)     echo " " ;;
+    opencode-free)   echo " " ;;
   esac
 elif [[ ${1:-} == os ]]; then
   if [[ -f /etc/os-release ]]; then
