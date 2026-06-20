@@ -1,0 +1,25 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "command": {
+    "commit": {
+      "description": "Create a git commit following project conventions",
+      "template": "Load the commit skill and follow its instructions. Group changes by top-level component. Create one commit per component unless tightly coupled.",
+      "subtask": true
+    },
+    "stow-deploy": {
+      "description": "Deploy, list, or preview stow packages",
+      "template": "Load the stow-deploy skill and follow its instructions. If an argument is given, use it as the package name or action (list/preview).",
+      "subtask": true
+    },
+    "handoff": {
+      "description": "Write a handoff document for interrupted work",
+      "template": "Load the handoff skill and document the current session's discoveries, decisions, and remaining work so another agent can continue.",
+      "subtask": true
+    },
+    "summary-handoffs": {
+      "description": "Archive handoffs into a single summary document",
+      "template": "Load the summary-handoffs skill. Read existing handoffs and related files, produce a concise summary, and archive the originals.",
+      "subtask": true
+    }
+  }
+}
