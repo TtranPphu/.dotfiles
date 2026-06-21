@@ -14,14 +14,14 @@ reversed=""
 while read -r s; do
   [[ "$s" == "$current_session" ]] && break
   if tmux -S "$socket_path" list-windows -t "$s" -F '#{window_bell_flag}' 2>/dev/null | grep -q 1; then
-    reversed="#[fg=green]󰅸 $s $reversed"
+    reversed=' #[fg=green]󰅸 '"$s"' '"${reversed:+$reversed}"
   else
-    reversed=" $s $reversed"
+    reversed="  $s ${reversed:+$reversed}"
   fi
 done < <(tmux -S "$socket_path" list-sessions -F '#{session_name}')
 
 if [[ -n "$reversed" ]]; then
-  printf '#[fg=brightblack]%s ' "$reversed"
+  printf '#[fg=brightblack]%s' "$reversed"
 fi
 
 printf '#[fg=blue]'

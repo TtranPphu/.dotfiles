@@ -34,14 +34,12 @@ case "$direction" in
 esac
 
 if (( ${#selected[@]} > 0 )); then
-  first=true
   for session in "${selected[@]}"; do
-    $first && first=false || printf ' '
     if tmux -S "$socket_path" list-windows -t "$session" \
       -F '#{window_bell_flag}' 2>/dev/null | grep -q 1; then
-      printf '#[fg=green]󰅸 %s' "$session"
+      printf ' #[fg=green]󰅸 %s ' "$session"
     else
-      printf ' %s' "$session"
+      printf '  %s ' "$session"
     fi
   done
 fi
