@@ -183,7 +183,7 @@ style = "yellow"
 disabled = true
 
 [custom.date]
-command = "date '+%y/%m/%d %a'"
+command = "date '+%y-%m-%d %a'"
 when = 'c=$(stty size < /dev/tty 2>/dev/null | cut -d" " -f2); [ "${c:-80}" -ge 120 ]'
 shell = ["bash"]
 style = "dimmed bright-cyan"
