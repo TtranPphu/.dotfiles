@@ -23,7 +23,10 @@ case "$direction" in
     selected=("${sessions[@]:0:current_index}")
     ;;
   next)
-    selected=("${sessions[@]:current_index + 1}")
+    selected=()
+    for ((i = ${#sessions[@]} - 1; i > current_index; i--)); do
+      selected+=("${sessions[i]}")
+    done
     ;;
   *)
     exit 1
