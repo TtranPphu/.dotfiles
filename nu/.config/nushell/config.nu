@@ -39,3 +39,4 @@ let install_script = $"($env.HOME)/.local/share/zsh/install-dependencies.sh"
 if ($install_script | path exists) {
     ^$install_script
 }
+source "~/.cargo/env.nu"
