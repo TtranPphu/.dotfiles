@@ -1,25 +1,26 @@
 #!/usr/bin/bash
 
-if [ ! -d /sys/class/power_supply/BAT0 ] && [ ! -d /sys/class/power_supply/BAT1 ]; then
-  exit 1
-fi
+bat_path=$(upower -e 2>/dev/null | grep -i bat | head -1)
+[ -z "$bat_path" ] && exit 1
 
-bat=$(cat /sys/class/power_supply/BAT*/capacity 2>/dev/null | head -1)
-status=$(cat /sys/class/power_supply/BAT*/status 2>/dev/null | head -1)
+read -r bat raw_status < <(
+  upower -i "$bat_path" 2>/dev/null | awk '
+    /percentage:/ { gsub(/%/,""); cap = sprintf("%.0f", $2) }
+    /state:/      { st = $2 }
+    END           { print cap, st }
+  '
+)
 
-if [ -z "$bat" ]; then
-  exit 1
-fi
+[ -z "$bat" ] && exit 1
 
 charging=("󰢜" "󰂆" "󰂇" "󰂈" "󰢝" "󰂉" "󰢞" "󰂊" "󰂋" "󰂅")
 discharging=("󱃍" "󰁻" "󰁼" "󰁽" "󰁾" "󰁿" "󰂀" "󰂁" "󰂂" "󰁹")
 
-idx=$((bat / 10))
-[ "$idx" -gt 9 ] && idx=9
+idx=$(( (bat - 1) / 10 ))
 
-if [ "$status" = "Full" ]; then
+if [ "$raw_status" = "fully-charged" ]; then
   icon="󰂄"
-elif [ "$status" = "Charging" ]; then
+elif [ "$raw_status" = "charging" ] || [ "$raw_status" = "pending-charge" ]; then
   icon="${charging[$idx]}"
 else
   icon="${discharging[$idx]}"

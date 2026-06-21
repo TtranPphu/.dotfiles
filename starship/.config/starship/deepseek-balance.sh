@@ -32,7 +32,7 @@ if [ -f "$STATE_FILE" ]; then
     if [ "$AGE" -ge "$CACHE_TTL" ]; then
       refresh_cache &>/dev/null &
     fi
-    printf "\$%.2f" "$BALANCE"
+    printf "%.2f" "$BALANCE"
     exit 0
   fi
 fi
@@ -41,7 +41,7 @@ fi
 refresh_cache 2>/dev/null || true
 BALANCE=$(jq -r '.total_balance // empty' "$STATE_FILE" 2>/dev/null) || BALANCE=""
 if [ -n "$BALANCE" ]; then
-  printf "\$%.2f" "$BALANCE"
+  printf "%.2f" "$BALANCE"
   exit 0
 fi
 exit 1

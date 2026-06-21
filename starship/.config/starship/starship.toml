@@ -27,9 +27,16 @@ $rust\
 $cmd_duration\
 ${custom.date}\
 ${custom.clock}\
-${custom.battery_high}\
-${custom.battery_mid}\
-${custom.battery_low}\
+${custom.battery_9}\
+${custom.battery_8}\
+${custom.battery_7}\
+${custom.battery_6}\
+${custom.battery_5}\
+${custom.battery_4}\
+${custom.battery_3}\
+${custom.battery_2}\
+${custom.battery_1}\
+${custom.battery_0}\
 $line_break\
 $character\
 """
@@ -211,25 +218,74 @@ format = " [$output]($style)"
 [battery]
 disabled = true
 
-[custom.battery_high]
+[custom.battery_9]
 command = 'config_dir="${STARSHIP_CONFIG%/*}"; ${config_dir:-$HOME/.config/starship}/battery/status.sh'
-when = 'config_dir="${STARSHIP_CONFIG%/*}"; ${config_dir:-$HOME/.config/starship}/battery/high.sh'
+when = 'config_dir="${STARSHIP_CONFIG%/*}"; ${config_dir:-$HOME/.config/starship}/battery/9.sh'
 shell = ["bash"]
-style = "bold green"
+style = "bold #9ece6a"
 format = " [$output]($style)"
 
-[custom.battery_mid]
+[custom.battery_8]
 command = 'config_dir="${STARSHIP_CONFIG%/*}"; ${config_dir:-$HOME/.config/starship}/battery/status.sh'
-when = 'config_dir="${STARSHIP_CONFIG%/*}"; ${config_dir:-$HOME/.config/starship}/battery/mid.sh'
+when = 'config_dir="${STARSHIP_CONFIG%/*}"; ${config_dir:-$HOME/.config/starship}/battery/8.sh'
 shell = ["bash"]
-style = "bold yellow"
+style = "bold #afc66a"
 format = " [$output]($style)"
 
-[custom.battery_low]
+[custom.battery_7]
 command = 'config_dir="${STARSHIP_CONFIG%/*}"; ${config_dir:-$HOME/.config/starship}/battery/status.sh'
-when = 'config_dir="${STARSHIP_CONFIG%/*}"; ${config_dir:-$HOME/.config/starship}/battery/low.sh'
+when = 'config_dir="${STARSHIP_CONFIG%/*}"; ${config_dir:-$HOME/.config/starship}/battery/7.sh'
 shell = ["bash"]
-style = "bold red"
+style = "bold #bfbf69"
+format = " [$output]($style)"
+
+[custom.battery_6]
+command = 'config_dir="${STARSHIP_CONFIG%/*}"; ${config_dir:-$HOME/.config/starship}/battery/status.sh'
+when = 'config_dir="${STARSHIP_CONFIG%/*}"; ${config_dir:-$HOME/.config/starship}/battery/6.sh'
+shell = ["bash"]
+style = "bold #d0b769"
+format = " [$output]($style)"
+
+[custom.battery_5]
+command = 'config_dir="${STARSHIP_CONFIG%/*}"; ${config_dir:-$HOME/.config/starship}/battery/status.sh'
+when = 'config_dir="${STARSHIP_CONFIG%/*}"; ${config_dir:-$HOME/.config/starship}/battery/5.sh'
+shell = ["bash"]
+style = "bold #e0af68"
+format = " [$output]($style)"
+
+[custom.battery_4]
+command = 'config_dir="${STARSHIP_CONFIG%/*}"; ${config_dir:-$HOME/.config/starship}/battery/status.sh'
+when = 'config_dir="${STARSHIP_CONFIG%/*}"; ${config_dir:-$HOME/.config/starship}/battery/4.sh'
+shell = ["bash"]
+style = "bold #e5a370"
+format = " [$output]($style)"
+
+[custom.battery_3]
+command = 'config_dir="${STARSHIP_CONFIG%/*}"; ${config_dir:-$HOME/.config/starship}/battery/status.sh'
+when = 'config_dir="${STARSHIP_CONFIG%/*}"; ${config_dir:-$HOME/.config/starship}/battery/3.sh'
+shell = ["bash"]
+style = "bold #e99877"
+format = " [$output]($style)"
+
+[custom.battery_2]
+command = 'config_dir="${STARSHIP_CONFIG%/*}"; ${config_dir:-$HOME/.config/starship}/battery/status.sh'
+when = 'config_dir="${STARSHIP_CONFIG%/*}"; ${config_dir:-$HOME/.config/starship}/battery/2.sh'
+shell = ["bash"]
+style = "bold #ee8d7f"
+format = " [$output]($style)"
+
+[custom.battery_1]
+command = 'config_dir="${STARSHIP_CONFIG%/*}"; ${config_dir:-$HOME/.config/starship}/battery/status.sh'
+when = 'config_dir="${STARSHIP_CONFIG%/*}"; ${config_dir:-$HOME/.config/starship}/battery/1.sh'
+shell = ["bash"]
+style = "bold #f28186"
+format = " [$output]($style)"
+
+[custom.battery_0]
+command = 'config_dir="${STARSHIP_CONFIG%/*}"; ${config_dir:-$HOME/.config/starship}/battery/status.sh'
+when = 'config_dir="${STARSHIP_CONFIG%/*}"; ${config_dir:-$HOME/.config/starship}/battery/0.sh'
+shell = ["bash"]
+style = "bold #f7768e"
 format = " [$output]($style)"
 
 

@@ -14,8 +14,7 @@ read -r cap raw_status < <(
 
 [[ -z "$cap" || ! "$cap" =~ ^[0-9]+$ ]] && exit 1
 
-idx=$((cap / 10))
-(( idx > 9 )) && idx=9
+idx=$(( (cap - 1) / 10 ))
 
 charging_icons=("󰢜" "󰂆" "󰂇" "󰂈" "󰢝" "󰂉" "󰢞" "󰂊" "󰂋" "󰂅")
 discharging_icons=("󱃍" "󰁻" "󰁼" "󰁽" "󰁾" "󰁿" "󰂀" "󰂁" "󰂂" "󰁹")
