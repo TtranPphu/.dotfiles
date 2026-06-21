@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+[[ -z "${TMUX-}${ZELLIJ-}" ]] || exit 1
+
 rf=/tmp/llm-route
 route="${1:?}"
 
