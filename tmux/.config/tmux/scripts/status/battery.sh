@@ -32,4 +32,4 @@ else
 fi
 color="${colors[$idx]}"
 
-printf '#[fg=colour233,bold,bg=%s] %s %s ' "$color" "$icon" "$cap"
+printf '#[fg=brightblack,bold,bg=%s] %s %s #[default]' "$color" "$icon" "$cap"

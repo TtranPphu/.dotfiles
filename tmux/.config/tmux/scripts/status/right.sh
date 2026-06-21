@@ -30,7 +30,7 @@ if [[ -n "${SSH_CONNECTION-}" || -n "${SSH_CLIENT-}" ]]; then
   printf '#[fg=brightblack]%s ' "$host_name"
 fi
 
-printf '#[fg=blue,bg=brightblack,bold]  #[fg=blue,bg=brightblack,bold]%s ' "${pane_id#%}"
+printf '#[fg=blue,bg=brightblack,bold]  %s #[default]' "${pane_id#%}"
 
 # DeepSeek balance
 "$script_dir/deepseek.sh"
