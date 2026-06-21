@@ -77,6 +77,9 @@ fi
 # Add wisely, as too many plugins slow down shell startup.
 plugins=(git fzf-tab)
 
+# tiny-shell completion start
+fpath=("$HOME/.local/share/zsh/site-functions" $fpath)
+# tiny-shell completion end
 source $ZSH/oh-my-zsh.sh
 
 # User configuration
@@ -152,3 +155,6 @@ if [ -z "$TMUX" ] && [ -z "$ZELLIJ" ] && [ -z "$DOTFILES_SHELL_PICKED" ]; then
       clear
   fi
 fi
+
+# opencode
+export PATH=/home/ttranpphu/.opencode/bin:$PATH

@@ -44,7 +44,6 @@ declare -a CARGO_PACKAGES=(
   zellij
   nu
   argc
-  llmfit
 )
 
 # System package manager packages (pacman > apt > dnf > zypper > apk)
@@ -73,8 +72,6 @@ declare -a SECONDARY_PACKAGES=(
 
 # Packages installed via `uv tool install`
 declare -a UV_PACKAGES=(
-  llmfit
-  vllm
 )
 
 # Packages installed via npm
@@ -93,6 +90,11 @@ declare -a SCRIPT_DOWNLOAD_PACKAGES=(
   fzf-tmux
 )
 
+# Packages built from source via cargo (git clone + cargo build)
+declare -a CARGO_GIT_PACKAGES=(
+  llmfit
+)
+
 # Packages installed via git clone
 declare -a GIT_PACKAGES=(
   zsh-autosuggestions
@@ -106,6 +108,8 @@ declare -a GIT_PACKAGES=(
 # Alternative command names for tools on different systems
 declare -A COMMAND_NAMES=(
   [bat]="batcat"
+  [neovim]="nvim"
+  [opencode-ai]="opencode"
   [ripgrep]="rg"
 )
 
@@ -115,6 +119,8 @@ declare -A DETECT_COMMANDS=(
   [ohmyzsh]="test -d \"\$HOME/.oh-my-zsh\""
   [rustup]="command -v rustup &>/dev/null || test -x \"\$HOME/.rustup/rustup-init\""
   [uv]="command -v uv &>/dev/null || test -x \"\$HOME/.local/bin/uv\""
+  [zsh-autosuggestions]="test -d \"\${ZSH_CUSTOM:-\$HOME/.oh-my-zsh/custom}/plugins/zsh-autosuggestions\""
+  [zsh-syntax-highlighting]="test -d \"\${ZSH_CUSTOM:-\$HOME/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting\""
 )
 
 # Per-package-manager package name overrides.
@@ -149,6 +155,11 @@ declare -A PACKAGE_OVERRIDES=(
 declare -A GIT_SOURCES=(
   [zsh-autosuggestions]="https://github.com/zsh-users/zsh-autosuggestions|${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/zsh-autosuggestions"
   [zsh-syntax-highlighting]="https://github.com/zsh-users/zsh-syntax-highlighting|${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting"
+)
+
+# Cargo git build targets: package → "url|binary_name|features"
+declare -A CARGO_GIT_SOURCES=(
+  [llmfit]="https://github.com/AlexsJones/llmfit|llmfit|wayland-data-control"
 )
 
 # Script download URLs. Use {version} as a placeholder — it's resolved
@@ -315,6 +326,7 @@ collect_packages() {
     for pkg in "${NPM_PACKAGES[@]}";                 do echo "$pkg"; done
     for pkg in "${SCRIPT_INSTALL_PACKAGES[@]}";      do echo "$pkg"; done
     for pkg in "${SCRIPT_DOWNLOAD_PACKAGES[@]}";     do echo "$pkg"; done
+    for pkg in "${CARGO_GIT_PACKAGES[@]}";           do echo "$pkg"; done
     for pkg in "${GIT_PACKAGES[@]}";                 do echo "$pkg"; done
   ) | sort -u
 }
@@ -638,6 +650,46 @@ install_via_script_download() {
   return 1
 }
 
+# Try installing via cargo git build (clone + build from source)
+install_via_cargo_git() {
+  local pkg=$1
+  local spec=${CARGO_GIT_SOURCES[$pkg]}
+
+  [ -z "$spec" ] && return 1
+
+  local url="${spec%%|*}"
+  local rest="${spec#*|}"
+  local binary_name="${rest%%|*}"
+  local features="${rest#*|}"
+
+  local build_dir="$HOME/.local/share/cargo-git/$pkg"
+
+  if command -v "$binary_name" &>/dev/null; then
+    echo -e "${YELLOW}⊘${NC} $binary_name already installed"
+    return 0
+  fi
+
+  if [ -d "$build_dir" ]; then
+    echo -e "${YELLOW}↑${NC} Updating $pkg (git pull)..."
+    git -C "$build_dir" pull --ff-only >> "$LOG_FILE" 2>&1 || true
+  else
+    echo -e "${YELLOW}↓${NC} Cloning $pkg..."
+    mkdir -p "$(dirname "$build_dir")"
+    git clone --depth 1 "$url" "$build_dir" >> "$LOG_FILE" 2>&1 || return 1
+  fi
+
+  echo -e "${YELLOW}🔨${NC} Building $pkg (cargo build --release --features $features)..."
+  if cargo build --release --features "$features" --manifest-path "$build_dir/Cargo.toml" >> "$LOG_FILE" 2>&1; then
+    mkdir -p "$HOME/.local/bin"
+    cp "$build_dir/target/release/$binary_name" "$HOME/.local/bin/"
+    echo -e "${GREEN}✓${NC} $pkg built and installed to ~/.local/bin/$binary_name"
+    return 0
+  else
+    echo -e "${RED}✗${NC} Failed to build $pkg"
+    return 1
+  fi
+}
+
 # Try installing via git clone
 install_via_git() {
   local pkg=$1
@@ -835,7 +887,14 @@ main() {
       done
     fi
 
-    # 8. Git clone
+    # 8. Cargo git build (clone + cargo build from source)
+    if ! $success; then
+      for cgp in "${CARGO_GIT_PACKAGES[@]}"; do
+        [ "$pkg" = "$cgp" ] && { install_via_cargo_git "$pkg" && success=true; break; }
+      done
+    fi
+
+    # 9. Git clone
     if ! $success; then
       for gp in "${GIT_PACKAGES[@]}"; do
         [ "$pkg" = "$gp" ] && { install_via_git "$pkg" && success=true; break; }
