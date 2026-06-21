@@ -30,17 +30,8 @@
         "baseURL": "http://localhost:11434/v1"
       },
       "models": {
-        "qwen3.5:4b-q4_K_M": {
-          "name": "Qwen 3.5 4B Q4"
-        },
         "qwen3.5:9b-q4_K_M": {
           "name": "Qwen 3.5 9B Q4"
-        },
-        "deepseek-r1:8b": {
-          "name": "DeepSeek R1 8B"
-        },
-        "deepseek-coder:6.7b-instruct-q4_K_M": {
-          "name": "DeepSeek Coder 6.7B Q4"
         },
         "qwen3:4b-instruct": {
           "name": "Qwen 3 4B Instruct"
