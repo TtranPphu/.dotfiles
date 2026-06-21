@@ -50,50 +50,50 @@ ${custom.docker_host}\
 
 
 [custom.llm_os]
-command = 'config_dir="${STARSHIP_CONFIG%/*}"; ${config_dir:-$HOME/.config/starship}/llm-route.sh os'
-when = 'config_dir="${STARSHIP_CONFIG%/*}"; ${config_dir:-$HOME/.config/starship}/llm-when.sh os'
+command = '${STARSHIP_CONFIG%/*}/llm/route.sh os'
+when = '${STARSHIP_CONFIG%/*}/llm/when.sh os'
 shell = ["bash"]
 style = "bold"
 format = "[$output]($style)  "
 
 [custom.llm_pro]
-command = 'config_dir="${STARSHIP_CONFIG%/*}"; ${config_dir:-$HOME/.config/starship}/llm-route.sh'
-when = 'config_dir="${STARSHIP_CONFIG%/*}"; ${config_dir:-$HOME/.config/starship}/llm-when.sh claude-pro'
+command = '${STARSHIP_CONFIG%/*}/llm/route.sh pro'
+when = '${STARSHIP_CONFIG%/*}/llm/when.sh pro'
 shell = ["bash"]
 style = "red"
 format = "[$output]($style)  "
 
 [custom.llm_flash]
-command = 'config_dir="${STARSHIP_CONFIG%/*}"; ${config_dir:-$HOME/.config/starship}/llm-route.sh'
-when = 'config_dir="${STARSHIP_CONFIG%/*}"; ${config_dir:-$HOME/.config/starship}/llm-when.sh claude-flash'
+command = '${STARSHIP_CONFIG%/*}/llm/route.sh flash'
+when = '${STARSHIP_CONFIG%/*}/llm/when.sh flash'
 shell = ["bash"]
 style = "purple"
 format = "[$output]($style)  "
 
 [custom.llm_reasoner]
-command = 'config_dir="${STARSHIP_CONFIG%/*}"; ${config_dir:-$HOME/.config/starship}/llm-route.sh'
-when = 'config_dir="${STARSHIP_CONFIG%/*}"; ${config_dir:-$HOME/.config/starship}/llm-when.sh aichat-reasoner'
+command = '${STARSHIP_CONFIG%/*}/llm/route.sh reasoner'
+when = '${STARSHIP_CONFIG%/*}/llm/when.sh reasoner'
 shell = ["bash"]
 style = "blue"
 format = "[$output]($style)  "
 
 [custom.llm_chat]
-command = 'config_dir="${STARSHIP_CONFIG%/*}"; ${config_dir:-$HOME/.config/starship}/llm-route.sh'
-when = 'config_dir="${STARSHIP_CONFIG%/*}"; ${config_dir:-$HOME/.config/starship}/llm-when.sh aichat-chat'
+command = '${STARSHIP_CONFIG%/*}/llm/route.sh chat'
+when = '${STARSHIP_CONFIG%/*}/llm/when.sh chat'
 shell = ["bash"]
 style = "cyan"
 format = "[$output]($style)  "
 
 [custom.llm_qwen]
-command = 'config_dir="${STARSHIP_CONFIG%/*}"; ${config_dir:-$HOME/.config/starship}/llm-route.sh'
-when = 'config_dir="${STARSHIP_CONFIG%/*}"; ${config_dir:-$HOME/.config/starship}/llm-when.sh aichat-qwen'
+command = '${STARSHIP_CONFIG%/*}/llm/route.sh qwen'
+when = '${STARSHIP_CONFIG%/*}/llm/when.sh qwen'
 shell = ["bash"]
 style = "white"
 format = "[$output]($style)  "
 
 [custom.llm_free]
-command = 'config_dir="${STARSHIP_CONFIG%/*}"; ${config_dir:-$HOME/.config/starship}/llm-route.sh'
-when = 'config_dir="${STARSHIP_CONFIG%/*}"; ${config_dir:-$HOME/.config/starship}/llm-when.sh opencode-free'
+command = '${STARSHIP_CONFIG%/*}/llm/route.sh free'
+when = '${STARSHIP_CONFIG%/*}/llm/when.sh free'
 shell = ["bash"]
 style = "green"
 format = "[$output]($style)  "
@@ -109,7 +109,7 @@ nu_indicator = " nu"
 zsh_indicator = " zsh"
 
 [custom.compress_path]
-command = 'config_dir="${STARSHIP_CONFIG%/*}"; ${config_dir:-$HOME/.config/starship}/compress-path.sh'
+command = '${STARSHIP_CONFIG%/*}/compress-path.sh'
 when = "true"
 shell = ["bash"]
 style = "bold bright-blue"
@@ -121,25 +121,9 @@ style = "green"
 format = "[$branch]($style) "
 
 [custom.git_remote]
-command = """
-remote=$(git remote get-url origin 2>/dev/null);
-case "$remote" in
-  *github*)
-    echo ""
-    ;;
-  *gitlab*)
-    echo ""
-    ;;
-  *bitbucket*)
-    echo ""
-    ;;
-  *)
-    echo "󰊢"
-    ;;
-esac
-"""
-shell = ["bash"]
+command = '${STARSHIP_CONFIG%/*}/git-remote.sh'
 when = "git rev-parse --is-inside-work-tree 2>/dev/null"
+shell = ["bash"]
 style = "bold white"
 format = "[$output]($style) "
 
@@ -199,7 +183,7 @@ style = "yellow"
 disabled = true
 
 [custom.date]
-command = 'config_dir="${STARSHIP_CONFIG%/*}"; ${config_dir:-$HOME/.config/starship}/compress-date.sh'
+command = '${STARSHIP_CONFIG%/*}/compress-date.sh'
 when = "true"
 shell = ["bash"]
 style = "dimmed bright-cyan"
@@ -219,71 +203,71 @@ format = " [$output]($style)"
 disabled = true
 
 [custom.battery_9]
-command = 'config_dir="${STARSHIP_CONFIG%/*}"; ${config_dir:-$HOME/.config/starship}/battery/status.sh'
-when = 'config_dir="${STARSHIP_CONFIG%/*}"; ${config_dir:-$HOME/.config/starship}/battery/9.sh'
+command = '${STARSHIP_CONFIG%/*}/battery/status.sh'
+when = '${STARSHIP_CONFIG%/*}/battery/guard.sh 9'
 shell = ["bash"]
 style = "bold #9ece6a"
 format = " [$output]($style)"
 
 [custom.battery_8]
-command = 'config_dir="${STARSHIP_CONFIG%/*}"; ${config_dir:-$HOME/.config/starship}/battery/status.sh'
-when = 'config_dir="${STARSHIP_CONFIG%/*}"; ${config_dir:-$HOME/.config/starship}/battery/8.sh'
+command = '${STARSHIP_CONFIG%/*}/battery/status.sh'
+when = '${STARSHIP_CONFIG%/*}/battery/guard.sh 8'
 shell = ["bash"]
 style = "bold #afc66a"
 format = " [$output]($style)"
 
 [custom.battery_7]
-command = 'config_dir="${STARSHIP_CONFIG%/*}"; ${config_dir:-$HOME/.config/starship}/battery/status.sh'
-when = 'config_dir="${STARSHIP_CONFIG%/*}"; ${config_dir:-$HOME/.config/starship}/battery/7.sh'
+command = '${STARSHIP_CONFIG%/*}/battery/status.sh'
+when = '${STARSHIP_CONFIG%/*}/battery/guard.sh 7'
 shell = ["bash"]
 style = "bold #bfbf69"
 format = " [$output]($style)"
 
 [custom.battery_6]
-command = 'config_dir="${STARSHIP_CONFIG%/*}"; ${config_dir:-$HOME/.config/starship}/battery/status.sh'
-when = 'config_dir="${STARSHIP_CONFIG%/*}"; ${config_dir:-$HOME/.config/starship}/battery/6.sh'
+command = '${STARSHIP_CONFIG%/*}/battery/status.sh'
+when = '${STARSHIP_CONFIG%/*}/battery/guard.sh 6'
 shell = ["bash"]
 style = "bold #d0b769"
 format = " [$output]($style)"
 
 [custom.battery_5]
-command = 'config_dir="${STARSHIP_CONFIG%/*}"; ${config_dir:-$HOME/.config/starship}/battery/status.sh'
-when = 'config_dir="${STARSHIP_CONFIG%/*}"; ${config_dir:-$HOME/.config/starship}/battery/5.sh'
+command = '${STARSHIP_CONFIG%/*}/battery/status.sh'
+when = '${STARSHIP_CONFIG%/*}/battery/guard.sh 5'
 shell = ["bash"]
 style = "bold #e0af68"
 format = " [$output]($style)"
 
 [custom.battery_4]
-command = 'config_dir="${STARSHIP_CONFIG%/*}"; ${config_dir:-$HOME/.config/starship}/battery/status.sh'
-when = 'config_dir="${STARSHIP_CONFIG%/*}"; ${config_dir:-$HOME/.config/starship}/battery/4.sh'
+command = '${STARSHIP_CONFIG%/*}/battery/status.sh'
+when = '${STARSHIP_CONFIG%/*}/battery/guard.sh 4'
 shell = ["bash"]
 style = "bold #e5a370"
 format = " [$output]($style)"
 
 [custom.battery_3]
-command = 'config_dir="${STARSHIP_CONFIG%/*}"; ${config_dir:-$HOME/.config/starship}/battery/status.sh'
-when = 'config_dir="${STARSHIP_CONFIG%/*}"; ${config_dir:-$HOME/.config/starship}/battery/3.sh'
+command = '${STARSHIP_CONFIG%/*}/battery/status.sh'
+when = '${STARSHIP_CONFIG%/*}/battery/guard.sh 3'
 shell = ["bash"]
 style = "bold #e99877"
 format = " [$output]($style)"
 
 [custom.battery_2]
-command = 'config_dir="${STARSHIP_CONFIG%/*}"; ${config_dir:-$HOME/.config/starship}/battery/status.sh'
-when = 'config_dir="${STARSHIP_CONFIG%/*}"; ${config_dir:-$HOME/.config/starship}/battery/2.sh'
+command = '${STARSHIP_CONFIG%/*}/battery/status.sh'
+when = '${STARSHIP_CONFIG%/*}/battery/guard.sh 2'
 shell = ["bash"]
 style = "bold #ee8d7f"
 format = " [$output]($style)"
 
 [custom.battery_1]
-command = 'config_dir="${STARSHIP_CONFIG%/*}"; ${config_dir:-$HOME/.config/starship}/battery/status.sh'
-when = 'config_dir="${STARSHIP_CONFIG%/*}"; ${config_dir:-$HOME/.config/starship}/battery/1.sh'
+command = '${STARSHIP_CONFIG%/*}/battery/status.sh'
+when = '${STARSHIP_CONFIG%/*}/battery/guard.sh 1'
 shell = ["bash"]
 style = "bold #f28186"
 format = " [$output]($style)"
 
 [custom.battery_0]
-command = 'config_dir="${STARSHIP_CONFIG%/*}"; ${config_dir:-$HOME/.config/starship}/battery/status.sh'
-when = 'config_dir="${STARSHIP_CONFIG%/*}"; ${config_dir:-$HOME/.config/starship}/battery/0.sh'
+command = '${STARSHIP_CONFIG%/*}/battery/status.sh'
+when = '${STARSHIP_CONFIG%/*}/battery/guard.sh 0'
 shell = ["bash"]
 style = "bold #f7768e"
 format = " [$output]($style)"
@@ -295,7 +279,7 @@ error_symbol = "[](bold red)"
 
 
 [custom.deepseek_balance]
-command = 'config_dir="${STARSHIP_CONFIG%/*}"; ${config_dir:-$HOME/.config/starship}/deepseek-balance.sh'
+command = '${STARSHIP_CONFIG%/*}/deepseek-balance.sh'
 when = 'test -z "${TMUX-}${ZELLIJ-}" && grep -q deepseek.com $HOME/.claude/settings.json 2>/dev/null'
 shell = ["bash"]
 style = "bright-blue"

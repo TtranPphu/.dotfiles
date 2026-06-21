@@ -5,7 +5,6 @@ set -euo pipefail
 dir=$(pwd)
 home=$HOME
 config_dir="${STARSHIP_CONFIG%/*}"
-config_dir="${config_dir:-$HOME/.config/starship}"
 
 compressed=$("$config_dir/compress-path.sh" 2>/dev/null || echo "$dir")
 path_len=${#compressed}

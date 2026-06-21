@@ -1,30 +1,19 @@
 #!/usr/bin/env bash
-# Output LLM route icon, or OS icon when called with 'os' arg and no route.
 set -euo pipefail
 
 rf=/tmp/llm-route
-valid=false
+route="${1:?}"
 
-if [[ -f $rf ]]; then
-  now=$(date +%s)
-  mtime=$(date -r "$rf" +%s 2>/dev/null) || true
-  [[ -n $mtime ]] && ((now - mtime < 300)) && valid=true
-fi
-
-if [[ $valid == true ]]; then
-  if [[ ${1:-} == os ]]; then
-    exit 1
+if [[ $route == os ]]; then
+  [[ -f $rf ]] || true  # continue to OS detection
+  if [[ -f $rf ]]; then
+    now=$(date +%s)
+    mtime=$(date -r "$rf" +%s 2>/dev/null) || true
+    if [[ -n $mtime ]] && ((now - mtime < 300)); then
+      read -r cached_route <"$rf"
+      [[ $cached_route =~ ^(claude-pro|claude-flash|aichat-reasoner|aichat-chat|aichat-qwen|opencode-free)$ ]] && exit 1
+    fi
   fi
-  route=$(<"$rf")
-  case $route in
-    claude-pro)      echo " " ;;
-    claude-flash)    echo " " ;;
-    aichat-reasoner) echo " " ;;
-    aichat-chat)     echo " " ;;
-    aichat-qwen)     echo " " ;;
-    opencode-free)   echo " " ;;
-  esac
-elif [[ ${1:-} == os ]]; then
   if [[ -f /etc/os-release ]]; then
     id=$(. /etc/os-release && echo "${ID:-linux}")
   else
@@ -51,4 +40,12 @@ elif [[ ${1:-} == os ]]; then
     ubuntu)       echo " " ;;
     *)            echo "󰌽 " ;;
   esac
+  exit 0
 fi
+
+[[ -f $rf ]] || exit 1
+now=$(date +%s)
+mtime=$(date -r "$rf" +%s 2>/dev/null) || exit 1
+((now - mtime < 300)) || exit 1
+
+echo " "
