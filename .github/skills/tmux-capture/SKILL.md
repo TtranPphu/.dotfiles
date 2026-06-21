@@ -1,0 +1,1 @@
+../../../.shared/agent/skills/tmux-capture/SKILL.md
