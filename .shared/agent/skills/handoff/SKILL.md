@@ -1,16 +1,16 @@
 ---
 name: handoff
-description: Write a handoff document for interrupted or deferred work. Use when work cannot be completed in a single session and needs to be resumed later by another agent.
+description: Write or archive handoff documents for interrupted or deferred work. Use when work cannot be completed in a single session or when asked to summarize/archive handoffs.
 user-invocable: true
 argument-hint: <topic>
 allowed-tools: [Read, Write, Bash, Grep]
 ---
 
-Use this skill when you need to document in-progress work so another agent can pick it up later. A handoff captures what was discovered, what was decided, and what remains to be done.
+Use this skill when you need to document in-progress work so another agent can pick it up later, or when asked to summarize and archive handoffs. A handoff captures what was discovered, what was decided, and what remains to be done.
 
 ## Where handoffs live
 
-Handoffs go in `.shared/agent/handoffs/<NN>-<topic>.md` relative to the repo root, where `<NN>` is the smallest available 2-digit number (01, 02, ...).
+Active handoffs go in `.shared/agent/handoffs/H<NN>-<topic>.md`, archived ones in `.shared/agent/handoffs/archive/A<NN>-<topic>.md`. `<NN>` is the smallest available 2-digit number (01, 02, ...).
 
 ## When to write a handoff
 
@@ -35,13 +35,43 @@ Every handoff should include these sections when applicable:
 
 **Verification** — Numbered checklist to confirm the work is done correctly.
 
+## Archiving handoffs
+
+When asked to summarize or archive handoffs:
+
+1. **Find handoffs** — Search `.shared/agent/handoffs/` for handoffs matching the topic (by name or keyword). Match against both the `NN-topic` filename and the `# Title`.
+2. **Read handoffs** — Read all matching handoffs in full.
+3. **Read referenced files** — For each handoff, read the current state of the files it references so the archive reflects what's actually on disk.
+4. **Produce archive** — Write to `.shared/agent/handoffs/archive/A<NN>-<topic>.md` with this structure:
+
+   ```
+   # <Topic>
+
+   ## Summary
+   <2-4 sentences: what was done, architecture decisions, key files affected>
+
+   ## Files
+   <bullet list of all files involved, with one-line purpose>
+
+   ## Key decisions
+   <brief bullet list of architectural or design decisions made>
+
+   ## Future iteration notes
+   <bullet list of what's left, edge cases, or potential improvements>
+   ```
+
+5. **Remove original** — Delete the original handoff file from `.shared/agent/handoffs/`.
+6. **Report** — Tell the user the archive is written.
+
 ## Formatting rules
 
-- Use absolute paths `/home/ttranpphu/...` or repo-relative paths from the dotfiles root
-- Show exact diffs or code snippets with language hints
-- Use `**bold**` for file paths in prose
-- Link to any relevant skills, configs, or prior handoffs by path
+- Use repo-relative paths.
+- Show exact diffs or code snippets with language hints.
+- Use `**bold**` for file paths in prose.
+- Link to any relevant skills, configs, or prior handoffs by path.
+- Keep archives concise — under 40 lines total.
+- If no handoffs match the topic, report that and list available handoffs.
 
 ## Reference
 
-See the existing handoff at `.shared/agent/handoffs/01-compositor-switching.md` for a complete example.
+See the existing handoff at `.shared/agent/handoffs/H01-quorum-cli-installation.md` for a complete example.

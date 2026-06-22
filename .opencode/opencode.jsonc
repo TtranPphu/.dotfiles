@@ -12,13 +12,8 @@
       "subtask": true
     },
     "handoff": {
-      "description": "Write a handoff document for interrupted work",
-      "template": "Load the handoff skill and document the current session's discoveries, decisions, and remaining work so another agent can continue.",
-      "subtask": true
-    },
-    "summary-handoffs": {
-      "description": "Archive handoffs into a single summary document",
-      "template": "Load the summary-handoffs skill. Read existing handoffs and related files, produce a concise summary, and archive the originals.",
+      "description": "Write or archive handoff documents for interrupted work",
+      "template": "Load the handoff skill. If writing, document current session's discoveries, decisions, and remaining work. If archiving, summarize and archive existing handoffs.",
       "subtask": true
     }
   },
