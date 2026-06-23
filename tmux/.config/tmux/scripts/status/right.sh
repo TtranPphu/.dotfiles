@@ -23,6 +23,14 @@ fi
 
 printf '#[fg=blue]'
 
+printf '#[fg=blue,bg=brightblack,bold]  %s #[default]' "${pane_id#%}"
+
+# DeepSeek balance
+"$script_dir/deepseek.sh"
+
+# Battery indicator
+"$script_dir/battery.sh"
+
 if tmux -S "$socket_path" show-environment -t "$current_session" SSH_CONNECTION 2>/dev/null | grep -q '^SSH_CONNECTION='; then
   if [[ "$host_name" =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]] || [[ "$host_name" == *:* ]]; then
     display_host="$host_name"
@@ -41,11 +49,3 @@ if tmux -S "$socket_path" show-environment -t "$current_session" SSH_CONNECTION 
     printf '#[fg=colour232,bg=colour%d] %s #[default]' "$bg" "$display_host"
   fi
 fi
-
-printf '#[fg=blue,bg=brightblack,bold]  %s #[default]' "${pane_id#%}"
-
-# DeepSeek balance
-"$script_dir/deepseek.sh"
-
-# Battery indicator
-"$script_dir/battery.sh"
