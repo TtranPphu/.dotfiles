@@ -26,8 +26,23 @@ fi
 
 printf '#[fg=blue]'
 
-if [[ -n "${SSH_CONNECTION-}" || -n "${SSH_CLIENT-}" ]]; then
-  printf '#[fg=brightblack]%s ' "$host_name"
+if tmux -S "$socket_path" show-environment -t "$current_session" SSH_CONNECTION 2>/dev/null | grep -q '^SSH_CONNECTION='; then
+  if [[ "$host_name" =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]] || [[ "$host_name" == *:* ]]; then
+    display_host="$host_name"
+  else
+    display_host="${host_name%%.*}"
+  fi
+  h=0
+  for ((i=0; i<${#host_name}; i++)); do
+    printf -v c '%d' "'${host_name:$i:1}"
+    ((h = (h * 31 + c) % 2147483647))
+  done
+  bg=$((16 + (h % 216)))
+  if (( (bg - 16) / 36 < 2 )); then
+    printf '#[fg=colour231,bg=colour%d] %s ' "$bg" "$display_host"
+  else
+    printf '#[fg=colour232,bg=colour%d] %s ' "$bg" "$display_host"
+  fi
 fi
 
 printf '#[fg=blue,bg=brightblack,bold]  %s #[default]' "${pane_id#%}"
