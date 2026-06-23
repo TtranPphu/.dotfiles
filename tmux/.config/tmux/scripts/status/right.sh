@@ -14,14 +14,14 @@ reversed=""
 while read -r s; do
   [[ "$s" == "$current_session" ]] && break
   if tmux -S "$socket_path" list-windows -t "$s" -F '#{window_bell_flag}' 2>/dev/null | grep -q 1; then
-    reversed=' #[fg=green]󰅸 '"$s"' '"${reversed:+$reversed}"
+    reversed='#[fg=green] 󰅸 '"$s"' #[default]'"${reversed:+$reversed}"
   else
-    reversed="  $s ${reversed:+$reversed}"
+    reversed='#[fg=brightblack]  '"$s"' #[default]'"${reversed:+$reversed}"
   fi
 done < <(tmux -S "$socket_path" list-sessions -F '#{session_name}')
 
 if [[ -n "$reversed" ]]; then
-  printf '#[fg=brightblack]%s' "$reversed"
+  printf '%s' "$reversed"
 fi
 
 printf '#[fg=blue]'
@@ -39,9 +39,9 @@ if tmux -S "$socket_path" show-environment -t "$current_session" SSH_CONNECTION 
   done
   bg=$((16 + (h % 216)))
   if (( (bg - 16) / 36 < 2 )); then
-    printf '#[fg=colour231,bg=colour%d] %s ' "$bg" "$display_host"
+    printf '#[fg=colour231,bg=colour%d] %s #[default]' "$bg" "$display_host"
   else
-    printf '#[fg=colour232,bg=colour%d] %s ' "$bg" "$display_host"
+    printf '#[fg=colour232,bg=colour%d] %s #[default]' "$bg" "$display_host"
   fi
 fi
 
