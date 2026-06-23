@@ -3,10 +3,7 @@
 socket_path="$1"
 current_session="$2"
 pane_id="$3"
-pane_mode="$4"
-client_prefix="$5"
-window_zoomed_flag="$6"
-host_name="$7"
+host_name="$4"
 script_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 
 # Build reversed list of sessions before current (newest first on status right)
