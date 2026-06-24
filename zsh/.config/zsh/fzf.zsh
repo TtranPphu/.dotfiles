@@ -3,6 +3,11 @@ if command -v fzf &> /dev/null; then
   # Source fzf keybindings and completion
   source <(fzf --zsh)
 
+  # Unbind default Alt+C (fzf-cd-widget)
+  bindkey -rM emacs '\ec'
+  bindkey -rM vicmd '\ec'
+  bindkey -rM viins '\ec'
+
   # Helper function to strip history line numbers
   _fzf_strip_history() {
     echo "$1" | sed 's/^[0-9 ]*//'
