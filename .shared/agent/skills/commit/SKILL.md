@@ -73,3 +73,31 @@ When asked to make commits:
 6. Repeat for the remaining components.
 
 If a change clearly spans multiple top-level components and cannot be split safely, use the smallest honest shared component label that fits the change, or ask the user if the split is ambiguous.
+
+## Handoff branch workflow
+
+When committing during a handoff build loop, you are on a feature branch (not master).
+
+- Check that you are on the correct branch (`git branch --show-current`)
+- Stage all changes for the handoff: `git add -A`
+- Commit with iteration tracking:
+  ```bash
+  iteration=$(git rev-list --count HEAD ^master 2>/dev/null || echo 1)
+  git commit -m "[<topic>] - Build iteration ${iteration}: <summary>"
+  ```
+
+## Merge to master
+
+When the user asks to merge a feature branch (e.g. "merge"):
+
+1. Ensure the working tree is clean (`git status`)
+2. Switch to master: `git checkout master`
+3. Squash merge the branch:
+   ```bash
+   git merge --squash <branch-name>
+   git commit -m "[Component] - <descriptive summary>"
+   ```
+4. Delete the feature branch: `git branch -D <branch-name>`
+5. Report success.
+   - The agent signature in the commit body should match the system prompt.
+   - Write a concise summary line in the merge commit.

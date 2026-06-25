@@ -15,6 +15,25 @@
       "description": "Write or archive handoff documents for interrupted work",
       "template": "Load the handoff skill. If writing, document current session's discoveries, decisions, and remaining work. If archiving, summarize and archive existing handoffs.",
       "subtask": true
+    },
+    "initiate": {
+      "description": "Start a build-verify-retrospect loop for a handoff",
+      "template": "Read the initiate skill and orchestrate the full build-verify-retrospect workflow. List handoffs, get user approval, create a feature branch, loop build/verify, run retrospect."
+    },
+    "build": {
+      "description": "Implement a handoff's deliverables",
+      "template": "Load the build skill and follow its instructions to implement the specified handoff.",
+      "subtask": true
+    },
+    "verify": {
+      "description": "Verify a handoff's implementation",
+      "template": "Load the verify skill and follow its instructions to check the specified handoff's verification items.",
+      "subtask": true
+    },
+    "retrospect": {
+      "description": "Analyze a completed handoff and improve skills",
+      "template": "Load the retrospect skill and follow its instructions to gather feedback and update skills.",
+      "subtask": true
     }
   },
   "provider": {
