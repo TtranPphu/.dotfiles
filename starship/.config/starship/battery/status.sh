@@ -1,15 +1,33 @@
 #!/usr/bin/bash
 
-bat_path=$(upower -e 2>/dev/null | grep -i bat | head -1)
-[ -z "$bat_path" ] && exit 1
+bat=""
+raw_status=""
 
-read -r bat raw_status < <(
-  upower -i "$bat_path" 2>/dev/null | awk '
-    /percentage:/ { gsub(/%/,""); cap = sprintf("%.0f", $2) }
-    /state:/      { st = $2 }
-    END           { print cap, st }
-  '
-)
+bat_path=$(upower -e 2>/dev/null | grep -i bat | head -1)
+if [ -n "$bat_path" ]; then
+  read -r bat raw_status < <(
+    upower -i "$bat_path" 2>/dev/null | awk '
+      /percentage:/ { gsub(/%/,""); cap = sprintf("%.0f", $2) }
+      /state:/      { st = $2 }
+      END           { print cap, st }
+    '
+  )
+fi
+
+if [ -z "$bat" ] && grep -qi microsoft /proc/version 2>/dev/null; then
+  read -r bat raw_status < <(
+    powershell.exe -NoProfile -Command '
+      $b = Get-WmiObject Win32_Battery
+      if ($b) { Write-Host "$($b.EstimatedChargeRemaining) $($b.BatteryStatus)" }
+    ' 2>/dev/null | tr -d '\r'
+  )
+  case "$raw_status" in
+    1) raw_status="discharging" ;;
+    2|6|7|8|9|11) raw_status="charging" ;;
+    3) raw_status="fully-charged" ;;
+    *) raw_status="" ;;
+  esac
+fi
 
 [ -z "$bat" ] && exit 1
 
