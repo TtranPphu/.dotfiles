@@ -20,6 +20,6 @@ This is split into three independent handoffs so each layer can be iterated sepa
 
 | Handoff | Focus |
 |---------|-------|
-| `H03-tmux-integration` | Keybinding, menu, send-keys, state mgmt |
-| `H04-capture-transcribe` | ffmpeg recording, faster-whisper, model mgmt |
-| `H05-rephrase-agent` | LLM prompt, context resolution, rewrite rules |
+| `H03-stt-tmux-integration` | Keybinding, menu, send-keys, state mgmt |
+| `H04-stt-capture-transcribe` | ffmpeg recording, faster-whisper, model mgmt |
+| `H05-stt-rephrase-agent` | LLM prompt, context resolution, rewrite rules |
