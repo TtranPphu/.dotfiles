@@ -31,8 +31,15 @@ result=$(
 )
 [[ -z "$result" ]] && exit 0
 
-session=$(echo "$result" | tail -1 | awk '{print $2}' | cut -d: -f1)
+query=$(echo "$result" | head -1)
+selection=$(echo "$result" | tail -1)
+if [[ "$query" == "$selection" ]]; then
+  session="$query"
+else
+  session=$(echo "$selection" | awk '{print $2}' | cut -d: -f1)
+fi
 session="${session/#\~/$HOME}"
+[[ -z "$session" ]] && exit 0
 
 if tmux has-session -t "$session" 2>/dev/null; then
   tmux switch-client -t "$session"

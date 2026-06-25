@@ -20,7 +20,14 @@ result=$(
 )
 [[ -z "$result" ]] && exit 0
 
-target=$(echo "$result" | tail -1 | cut -d" " -f1)
+query=$(echo "$result" | head -1)
+selection=$(echo "$result" | tail -1)
+if [[ "$query" == "$selection" ]]; then
+  tmux display-message "No window selected"
+  exit 0
+fi
+
+target=$(echo "$selection" | cut -d" " -f1)
 [[ -z "$target" ]] && exit 0
 
 session=$(echo "$target" | cut -d: -f1)
