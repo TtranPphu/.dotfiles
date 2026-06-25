@@ -10,7 +10,7 @@ Use this skill when you need to document in-progress work so another agent can p
 
 ## Where handoffs live
 
-Active handoffs go in `.shared/agent/handoffs/H<NN>-<topic>.md`, archived ones in `.shared/agent/handoffs/archive/A<NN>-<topic>.md`. `<NN>` is the smallest available 2-digit number (01, 02, ...).
+Active handoffs go in `.shared/agent/handoffs/H<NN>-<topic>.md`, archived ones in `.shared/agent/handoffs/archive/A<NN>-<topic>.md`. For handoffs, `<NN>` is the smallest 2-digit number (01, 02, ...) not already used in `.shared/agent/handoffs/`. For archives, `<NN>` is the smallest 2-digit number not already used in `.shared/agent/handoffs/archive/`. Check the *target* directory, not the source.
 
 ## When to write a handoff
 
@@ -74,4 +74,4 @@ When asked to summarize or archive handoffs:
 
 ## Reference
 
-See the existing handoff at `.shared/agent/handoffs/H01-quorum-cli-installation.md` for a complete example.
+See the existing handoff at `.shared/agent/handoffs/H07-tmux-session-presets.md` for a complete example.
