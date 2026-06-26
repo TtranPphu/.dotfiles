@@ -50,6 +50,7 @@ Examples:
 - Write the summary in sentence style, not title case.
 - Capitalize the first letter of the sentence, proper names, and short all-caps terms when needed.
 - Keep the summary concise and specific.
+- On handoff build iterations, the summary must clearly describe what changed and why — future agents reading `git log` to resume WIP depend on this to understand on-the-fly decisions.
 
 ## Body rules
 
@@ -58,6 +59,7 @@ Examples:
 - Capitalize the first letter of each sentence, proper names, and short all-caps terms when appropriate.
 - Mention the key files or behavior changes when that helps explain the commit.
 - If the commit is trivial, keep the body brief rather than omitting it entirely.
+- On handoff build iterations, explain the reasoning behind on-the-fly decisions (e.g. "removed X per maintainer request because Y") so future agents reading the log understand context for WIP resume.
 - End the body with a blank line followed by an agent signature matching the system prompt exactly (e.g., `OpenCode - deepseek-v4-flash-free`, `Claude - deepseek-v4-flash[1m]`, or `Copilot - <model>`).
 - Do NOT use `Co-Authored-By` or other signatures.
 
