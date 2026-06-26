@@ -132,7 +132,8 @@ fi
 # Picker — choose shell (zsh/nushell) and multiplexer (tmux/zellij) at startup
 if [ -z "$TMUX" ] && [ -z "$ZELLIJ" ] && [ -z "$DOTFILES_SHELL_PICKED" ]; then
   if command -v tmux >/dev/null 2>&1 && ! command -v zellij >/dev/null 2>&1; then
-    clear && export DOTFILES_SHELL_PICKED=1 && exec tmux new -A -s "${${${PWD##*/}#.}//./-}" "${SHELL##*/}"
+    clear && export DOTFILES_SHELL_PICKED=1
+    tmux_session_picker
   elif ! command -v tmux >/dev/null 2>&1 && command -v zellij >/dev/null 2>&1; then
     clear && export DOTFILES_SHELL_PICKED=1 && zellij attach -c "${${${PWD##*/}#.}//./-}"; clear; exit
   elif command -v tmux >/dev/null 2>&1 && command -v zellij >/dev/null 2>&1; then
@@ -149,7 +150,8 @@ if [ -z "$TMUX" ] && [ -z "$ZELLIJ" ] && [ -z "$DOTFILES_SHELL_PICKED" ]; then
     case "$choice" in
       z|Z) clear && export DOTFILES_SHELL_PICKED=1 ;;
       n|N) clear && export DOTFILES_SHELL_PICKED=1 && exec nu ;;
-      t|T) clear && export DOTFILES_SHELL_PICKED=1 && exec tmux new -A -s "${${${PWD##*/}#.}//./-}" "${SHELL##*/}" ;;
+      t|T) clear && export DOTFILES_SHELL_PICKED=1
+        tmux_session_picker ;;
       j|J) clear && export DOTFILES_SHELL_PICKED=1 && zellij attach -c "${${${PWD##*/}#.}//./-}"; clear; exit ;;
     esac
       clear

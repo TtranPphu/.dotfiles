@@ -15,6 +15,8 @@ If no argument, list available handoffs and ask the user to pick one.
 ### 2. Read the handoff
 Read the handoff file in full. Focus on the **Deliverables** section — each item specifies files to create or modify and their content.
 
+If the handoff involves user-facing UI elements (pickers, menus, prompts, displays), **design a sample UI mockup** before implementing. Use code-fenced text to show exactly how the UI will look. Present it to the user for approval. The approved mockup becomes the reference for both builder and tester.
+
 ### 3. Determine and switch to branch
 Extract the topic from the handoff filename (e.g. `H03-stt-tmux-integration.md` → topic `stt-tmux-integration`).
 Expand known abbreviations for the branch name:
@@ -32,6 +34,7 @@ For each item in the Deliverables section:
 - Create or modify files at the specified paths
 - Follow the exact specifications (code snippets, config values, file structure)
 - Use existing project conventions
+- **Match existing UI style.** When implementing pickers, menus, prompts, or any user-facing output, examine how existing UI elements look in the project (e.g. the shell/multiplexer picker in `.zshrc` uses green highlighting for shortcut keys). Replicate the same color scheme, formatting, and interaction pattern for consistency.
 
 ### 5. Commit
 Stage and commit to the branch:
