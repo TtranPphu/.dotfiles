@@ -11,6 +11,7 @@ foreground_args="$(
 app_name_rules=(
   'claude:claude'
   'copilot:copilot'
+  'opencode:opencode'
 )
 
 for rule in "${app_name_rules[@]}"; do
