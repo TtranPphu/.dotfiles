@@ -5,13 +5,10 @@
 #   - windows: separated by `;`, each window's apps separated by `,`
 #   - empty windows = default behavior (single shell pane, no exec)
 
-GREEN=$'\033[1;32m'
-NC=$'\033[0m'
-
 typeset -A session_presets
 session_presets[default]="|default|$(pwd)|"
-session_presets[d]="d|${GREEN}d${NC}otfiles|${HOME}/.dotfiles|opencode;nvim;"
-session_presets[t]="t|${GREEN}t${NC}iny-repository|${HOME}/projects/tiny-repository|opencode;nvim;"
+session_presets[d]="d|{d}otfiles|${HOME}/.dotfiles|opencode;nvim;"
+session_presets[t]="t|{t}iny-repository|${HOME}/projects/tiny-repository|opencode;nvim;"
 
 create_from_preset() {
   local preset_key="$1"
@@ -93,18 +90,30 @@ create_from_preset() {
 }
 
 tmux_session_picker() {
-  local ACTIVE=$'\033[1;34m' NC=$'\033[0m'
+  local GREEN=$'\033[1;32m' ACTIVE=$'\033[1;34m' NC=$'\033[0m'
   echo "Session presets:"
 
   local max_len=0
   local -a pdata=()
-  local -a pnames=()
+  local -a pdisplay=()
+  local -a pplain=()
   local -a picons=()
   for key val in "${(@kv)session_presets}"; do
     local -a fields=("${(@s:|:)val}")
     [[ -z "${fields[1]}" ]] && continue
-    local name="${fields[2]}"
+    local raw_name="${fields[2]}"
     local windows_str="${fields[4]:-}"
+
+    local plain display
+    if [[ "${raw_name:0:1}" == "{" && "${raw_name:2:1}" == "}" ]]; then
+      local char="${raw_name:1:1}"
+      local rest="${raw_name:3}"
+      display="${GREEN}${char}${NC}${rest}"
+      plain="${char}${rest}"
+    else
+      plain="$raw_name"
+      display="$raw_name"
+    fi
 
     local wicons=""
     if [[ -n "$windows_str" ]]; then
@@ -130,20 +139,20 @@ done
     fi
 
     pdata+=("$val")
-    pnames+=("$name")
+    pdisplay+=("$display")
+    pplain+=("$plain")
     picons+=("$wicons")
-    local plain=${name//$'\033'[0-9]*m/}
     (( ${#plain} > max_len )) && max_len=${#plain}
   done
 
   local idx=1
   for val in "${pdata[@]}"; do
     local -a fields=("${(@s:|:)val}")
-    local name="${pnames[$idx]}"
-    local display_name="$name"
-    local pad=$(( max_len - ${#name} + 1 ))
+    local display="${pdisplay[$idx]}"
+    local plain="${pplain[$idx]}"
+    local pad=$(( max_len - ${#plain} + 1 ))
     local padding=$(printf '%*s' $pad '')
-    echo "   ${display_name}:${padding}${picons[$idx]}"
+    echo "   ${display}:${padding}${picons[$idx]}"
     ((idx++))
   done
 
