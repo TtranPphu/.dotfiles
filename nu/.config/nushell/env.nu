@@ -11,6 +11,7 @@ $env.PAGER = (
 )
 
 $env.PATH = ($env.PATH | prepend [
+    $"($env.HOME)/.opencode/bin"
     $"($env.HOME)/.cargo/bin"
     $"($env.HOME)/.local/bin"
 ])

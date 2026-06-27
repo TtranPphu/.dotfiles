@@ -26,6 +26,18 @@ create_from_preset() {
   local session_name="${${${dir##*/}#.}//./-}"
   [[ -z "$session_name" ]] && session_name="shell"
 
+  local known_shells=' zsh bash sh nu fish dash ksh tcsh '
+  local current_shell="zsh"
+  local current
+  current=$(tmux display-message -p '#{pane_current_command}' 2>/dev/null)
+  if [[ "$known_shells" == *" $current "* ]]; then
+    current_shell="$current"
+  else
+    local start
+    start=$(tmux display-message -p '#{pane_start_command}' 2>/dev/null)
+    current_shell="${start:-zsh}"
+  fi
+
   if tmux has-session -t "$session_name" 2>/dev/null; then
     clear; exec tmux attach-session -t "$session_name"
   fi
@@ -34,14 +46,14 @@ create_from_preset() {
   IFS=';' read -rA windows <<< "$windows_str"
 
   if [[ ${#windows} -eq 0 || -z "${windows[1]}" ]]; then
-    tmux new-session -d -s "$session_name" -c "$dir"
+    tmux new-session -d -s "$session_name" -c "$dir" "$current_shell"
     clear; exec tmux attach-session -t "$session_name"
   fi
 
   local first_win="${windows[1]}"
   local -a first_apps=("${(@s:,:)first_win}")
 
-  tmux new-session -d -s "$session_name" -c "$dir" -n "${first_apps[1]}"
+  tmux new-session -d -s "$session_name" -c "$dir" -n "${first_apps[1]}" "$current_shell"
   tmux send-keys -t "${session_name}:1.1" "${first_apps[1]}" Enter
 
   local pane="1"
@@ -52,9 +64,9 @@ create_from_preset() {
     pane_width=$(tmux display-message -p -t "${session_name}:1.${pane}" '#{pane_width}')
     pane_height=$(tmux display-message -p -t "${session_name}:1.${pane}" '#{pane_height}')
     if (( pane_width > pane_height * 2 )); then
-      pane=$(tmux split-window -h -t "${session_name}:1.${pane}" -c "$dir" -P -F '#{pane_index}')
+      pane=$(tmux split-window -h -t "${session_name}:1.${pane}" -c "$dir" -P -F '#{pane_index}' "$current_shell")
     else
-      pane=$(tmux split-window -v -t "${session_name}:1.${pane}" -c "$dir" -P -F '#{pane_index}')
+      pane=$(tmux split-window -v -t "${session_name}:1.${pane}" -c "$dir" -P -F '#{pane_index}' "$current_shell")
     fi
     tmux send-keys -t "${session_name}:1.${pane}" "$app" Enter
   done
@@ -62,10 +74,10 @@ create_from_preset() {
   local -i win_idx=2
   for win_def in "${windows[@]:1}"; do
     if [[ -z "$win_def" ]]; then
-      tmux new-window -t "$session_name" -c "$dir"
+      tmux new-window -t "$session_name" -c "$dir" "$current_shell"
     else
       local -a apps=("${(@s:,:)win_def}")
-      tmux new-window -t "$session_name" -c "$dir" -n "${apps[1]}"
+      tmux new-window -t "$session_name" -c "$dir" -n "${apps[1]}" "$current_shell"
       tmux send-keys -t "${session_name}:${win_idx}.1" "${apps[1]}" Enter
       local pane="1"
       local -i napps=${#apps}
@@ -75,9 +87,9 @@ create_from_preset() {
         pane_width=$(tmux display-message -p -t "${session_name}:${win_idx}.${pane}" '#{pane_width}')
         pane_height=$(tmux display-message -p -t "${session_name}:${win_idx}.${pane}" '#{pane_height}')
         if (( pane_width > pane_height * 2 )); then
-          pane=$(tmux split-window -h -t "${session_name}:${win_idx}.${pane}" -c "$dir" -P -F '#{pane_index}')
+          pane=$(tmux split-window -h -t "${session_name}:${win_idx}.${pane}" -c "$dir" -P -F '#{pane_index}' "$current_shell")
         else
-          pane=$(tmux split-window -v -t "${session_name}:${win_idx}.${pane}" -c "$dir" -P -F '#{pane_index}')
+          pane=$(tmux split-window -v -t "${session_name}:${win_idx}.${pane}" -c "$dir" -P -F '#{pane_index}' "$current_shell")
         fi
         tmux send-keys -t "${session_name}:${win_idx}.${pane}" "$app" Enter
       done

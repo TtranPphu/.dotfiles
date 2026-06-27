@@ -1,6 +1,8 @@
 # Nushell configuration
 # Loaded after env.nu
 
+$env.config.show_banner = false
+
 # Source generated init files
 source ~/.cache/nu/starship.nu
 source ~/.cache/nu/zoxide.nu
@@ -57,15 +59,23 @@ if ((($env.TMUX? | is-empty) and ($env.ZELLIJ? | is-empty)) and ($env.DOTFILES_S
                 }
                 let dir = $preset.dir
                 let session = ($dir | path basename | str replace --regex '^\.' '' | str replace --all '.' '-')
+                let known_shells = " zsh bash sh nu fish dash ksh tcsh "
+                let _current = (tmux display-message -p '#{pane_current_command}' | str trim | str downcase)
+                let current_shell = if ($known_shells | str contains $" ($_current) ") {
+                    $_current
+                } else {
+                    let fallback = (tmux display-message -p '#{pane_start_command}' | str trim | str downcase)
+                    if ($known_shells | str contains $" ($fallback) ") { $fallback } else { "nu" }
+                }
                 if (tmux has-session -t $session | complete | get exit_code) == 0 {
                     clear; tmux attach-session -t $session; exit
                 }
                 let windows = $preset.windows
                 if ($windows | length) == 0 {
-                    tmux new-session -d -s $session -c $dir; clear; tmux attach-session -t $session; exit
+                    tmux new-session -d -s $session -c $dir $current_shell; clear; tmux attach-session -t $session; exit
                 }
                 let first = ($windows | first)
-                tmux new-session -d -s $session -c $dir -n ($first | first)
+                tmux new-session -d -s $session -c $dir -n ($first | first) $current_shell
                 tmux send-keys -t $"($session):1.1" $"($first | first)" Enter
                 mut pane = "1"
                 for app in ($first | skip 1) {
@@ -74,18 +84,18 @@ if ((($env.TMUX? | is-empty) and ($env.ZELLIJ? | is-empty)) and ($env.DOTFILES_S
                     let w = ($dims | first | into int)
                     let h = ($dims | last | into int)
                     if $w > $h * 2 {
-                        $pane = (tmux split-window -h -t $"($session):1.($pane)" -c $dir -P -F '#{pane_index}' | str trim)
+                        $pane = (tmux split-window -h -t $"($session):1.($pane)" -c $dir -P -F '#{pane_index}' $current_shell | str trim)
                     } else {
-                        $pane = (tmux split-window -v -t $"($session):1.($pane)" -c $dir -P -F '#{pane_index}' | str trim)
+                        $pane = (tmux split-window -v -t $"($session):1.($pane)" -c $dir -P -F '#{pane_index}' $current_shell | str trim)
                     }
                     tmux send-keys -t $"($session):1.($pane)" $"$app" Enter
                 }
                 mut win_idx = 2
                 for win_def in ($windows | skip 1) {
                     if ($win_def | length) == 0 {
-                        tmux new-window -t $session -c $dir
+                        tmux new-window -t $session -c $dir $current_shell
                     } else {
-                        tmux new-window -t $session -c $dir -n ($win_def | first)
+                        tmux new-window -t $session -c $dir -n ($win_def | first) $current_shell
                         tmux send-keys -t $"($session):($win_idx).1" $"($win_def | first)" Enter
                         mut pane = "1"
                         for app in ($win_def | skip 1) {
@@ -94,9 +104,9 @@ if ((($env.TMUX? | is-empty) and ($env.ZELLIJ? | is-empty)) and ($env.DOTFILES_S
                             let w = ($dims | first | into int)
                             let h = ($dims | last | into int)
                             if $w > $h * 2 {
-                                $pane = (tmux split-window -h -t $"($session):($win_idx).($pane)" -c $dir -P -F '#{pane_index}' | str trim)
+                                $pane = (tmux split-window -h -t $"($session):($win_idx).($pane)" -c $dir -P -F '#{pane_index}' $current_shell | str trim)
                             } else {
-                                $pane = (tmux split-window -v -t $"($session):($win_idx).($pane)" -c $dir -P -F '#{pane_index}' | str trim)
+                                $pane = (tmux split-window -v -t $"($session):($win_idx).($pane)" -c $dir -P -F '#{pane_index}' $current_shell | str trim)
                             }
                             tmux send-keys -t $"($session):($win_idx).($pane)" $"$app" Enter
                         }
@@ -142,15 +152,23 @@ if ((($env.TMUX? | is-empty) and ($env.ZELLIJ? | is-empty)) and ($env.DOTFILES_S
         }
         let dir = $preset.dir
         let session = ($dir | path basename | str replace --regex '^\.' '' | str replace --all '.' '-')
+        let known_shells = " zsh bash sh nu fish dash ksh tcsh "
+        let _current = (tmux display-message -p '#{pane_current_command}' | str trim | str downcase)
+        let current_shell = if ($known_shells | str contains $" ($_current) ") {
+            $_current
+        } else {
+            let fallback = (tmux display-message -p '#{pane_start_command}' | str trim | str downcase)
+            if ($known_shells | str contains $" ($fallback) ") { $fallback } else { "nu" }
+        }
         if (tmux has-session -t $session | complete | get exit_code) == 0 {
             clear; tmux attach-session -t $session; exit
         }
         let windows = $preset.windows
         if ($windows | length) == 0 {
-            tmux new-session -d -s $session -c $dir; clear; tmux attach-session -t $session; exit
+            tmux new-session -d -s $session -c $dir $current_shell; clear; tmux attach-session -t $session; exit
         }
         let first = ($windows | first)
-        tmux new-session -d -s $session -c $dir -n ($first | first)
+        tmux new-session -d -s $session -c $dir -n ($first | first) $current_shell
         tmux send-keys -t $"($session):1.1" $"($first | first)" Enter
         mut pane = "1"
         for app in ($first | skip 1) {
@@ -159,18 +177,18 @@ if ((($env.TMUX? | is-empty) and ($env.ZELLIJ? | is-empty)) and ($env.DOTFILES_S
             let w = ($dims | first | into int)
             let h = ($dims | last | into int)
             if $w > $h * 2 {
-                $pane = (tmux split-window -h -t $"($session):1.($pane)" -c $dir -P -F '#{pane_index}' | str trim)
+                $pane = (tmux split-window -h -t $"($session):1.($pane)" -c $dir -P -F '#{pane_index}' $current_shell | str trim)
             } else {
-                $pane = (tmux split-window -v -t $"($session):1.($pane)" -c $dir -P -F '#{pane_index}' | str trim)
+                $pane = (tmux split-window -v -t $"($session):1.($pane)" -c $dir -P -F '#{pane_index}' $current_shell | str trim)
             }
             tmux send-keys -t $"($session):1.($pane)" $"$app" Enter
         }
         mut win_idx = 2
         for win_def in ($windows | skip 1) {
             if ($win_def | length) == 0 {
-                tmux new-window -t $session -c $dir
+                tmux new-window -t $session -c $dir $current_shell
             } else {
-                tmux new-window -t $session -c $dir -n ($win_def | first)
+                tmux new-window -t $session -c $dir -n ($win_def | first) $current_shell
                 tmux send-keys -t $"($session):($win_idx).1" $"($win_def | first)" Enter
                 mut pane = "1"
                 for app in ($win_def | skip 1) {
@@ -179,9 +197,9 @@ if ((($env.TMUX? | is-empty) and ($env.ZELLIJ? | is-empty)) and ($env.DOTFILES_S
                     let w = ($dims | first | into int)
                     let h = ($dims | last | into int)
                     if $w > $h * 2 {
-                        $pane = (tmux split-window -h -t $"($session):($win_idx).($pane)" -c $dir -P -F '#{pane_index}' | str trim)
+                        $pane = (tmux split-window -h -t $"($session):($win_idx).($pane)" -c $dir -P -F '#{pane_index}' $current_shell | str trim)
                     } else {
-                        $pane = (tmux split-window -v -t $"($session):($win_idx).($pane)" -c $dir -P -F '#{pane_index}' | str trim)
+                        $pane = (tmux split-window -v -t $"($session):($win_idx).($pane)" -c $dir -P -F '#{pane_index}' $current_shell | str trim)
                     }
                     tmux send-keys -t $"($session):($win_idx).($pane)" $"$app" Enter
                 }
