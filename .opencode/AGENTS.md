@@ -3,8 +3,11 @@
 ### Important Rules
 
 - Never create git commits unless explicitly asked. Use the `/commit` skill when ready.
-- Add files under the stow package that owns the target path — don't create ad-hoc relocation scripts.
 - Always mind the changes the user made during the session before making your own.
+
+### What This Repo Is
+
+A GNU Stow-style dotfiles collection. Each top-level directory is a stow package whose internal path mirrors `$HOME`. No build system, tests, or CI.
 
 ### Communication Style
 
@@ -21,12 +24,8 @@ See [conventions guide](.shared/agent/conventions.md).
 ### Shared Agent Resources
 
 Skills and handoffs live in `.shared/agent/`:
-- **Skills** — `/commit`, `/stow-deploy`, `/tmux-capture`, `/pane-logs`, `/handoff` ([skills directory](.shared/agent/skills/))
+- **Skills** — `/commit`, `/stow-deploy`, `/tmux-troubleshoot`, `/handoff` ([skills directory](.shared/agent/skills/))
 - **Handoffs** — Context documents for multi-session tasks ([handoffs directory](.shared/agent/handoffs/))
-
-### What This Repo Is
-
-A GNU Stow-style dotfiles collection. Each top-level directory is a stow package whose internal path mirrors `$HOME`. No build system, tests, or CI.
 
 ### Config Quick Reference
 

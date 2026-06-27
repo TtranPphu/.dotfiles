@@ -5,6 +5,10 @@
 - Never create git commits unless explicitly asked by the user.
 - Always mind the changes the user made during the session before making your own.
 
+## What This Repo Is
+
+A GNU Stow-style dotfiles collection. Each top-level directory is a stow package whose internal path mirrors `$HOME`. There is no build system, tests, or CI.
+
 ## Communication Style
 
 See [communication style guide](.shared/agent/communication-style.md).
@@ -20,12 +24,8 @@ See [conventions guide](.shared/agent/conventions.md).
 ## Shared Agent Resources
 
 This repo ships reusable agent resources in `.shared/agent/`:
-- **Skills** — Slash commands like `/commit`, `/stow-deploy`, `/tmux-capture`, `/pane-logs`, `/handoff` ([skills directory](.shared/agent/skills/))
+- **Skills** — Slash commands like `/commit`, `/stow-deploy`, `/tmux-troubleshoot`, `/handoff` ([skills directory](.shared/agent/skills/))
 - **Handoffs** — Context handoff documents for multi-session tasks ([handoffs directory](.shared/agent/handoffs/))
-
-## What This Repo Is
-
-A GNU Stow-style dotfiles collection. Each top-level directory is a stow package whose internal path mirrors `$HOME`. There is no build system, tests, or CI.
 
 ## Config Quick Reference
 
