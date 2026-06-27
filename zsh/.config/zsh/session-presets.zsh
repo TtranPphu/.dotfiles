@@ -104,15 +104,14 @@ tmux_session_picker() {
     local raw_name="${fields[2]}"
     local windows_str="${fields[4]:-}"
 
-    local plain display
     if [[ "${raw_name:0:1}" == "{" && "${raw_name:2:1}" == "}" ]]; then
       local char="${raw_name:1:1}"
       local rest="${raw_name:3}"
-      display="${GREEN}${char}${NC}${rest}"
-      plain="${char}${rest}"
+      local display="${GREEN}${char}${NC}${rest}"
+      local plain="${char}${rest}"
     else
-      plain="$raw_name"
-      display="$raw_name"
+      local plain="$raw_name"
+      local display="$raw_name"
     fi
 
     local wicons=""
