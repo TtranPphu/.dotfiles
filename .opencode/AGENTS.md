@@ -1,5 +1,3 @@
-# AGENTS.md
-
 ### Important Rules
 
 - Never create git commits unless explicitly asked. Use the `/commit` skill when ready.
@@ -31,7 +29,3 @@ Skills and handoffs live in `.shared/agent/`:
 
 - **Desktop** (compositors, bars, launchers, themes) — See [desktop.md](.shared/agent/desktop.md)
 - **Terminal** (shell, editor, tmux, tools) — See [terminal.md](.shared/agent/terminal.md)
-
-### Session Permissions
-
-`.claude/settings.json` sets default mode to `plan`. Writes allowed only to `.claude/plans/` unless explicitly granted.

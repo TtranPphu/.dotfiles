@@ -1,5 +1,15 @@
 {
   "$schema": "https://opencode.ai/config.json",
+  "lsp": {
+    "jsonls": {
+      "command": ["vscode-json-language-server", "--stdio"],
+      "extensions": [".json", ".jsonc"]
+    },
+    "taplo": {
+      "command": ["taplo", "lsp", "stdio"],
+      "extensions": [".toml"]
+    }
+  },
   "command": {
     "commit": {
       "description": "Create a git commit following project conventions",
