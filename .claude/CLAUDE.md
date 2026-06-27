@@ -1,5 +1,3 @@
-# CLAUDE.md
-
 ## Important Rules
 
 - Never create git commits unless explicitly asked by the user.
