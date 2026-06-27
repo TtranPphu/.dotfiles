@@ -103,6 +103,19 @@ create_from_preset() {
 
 tmux_session_picker() {
   local GREEN=$'\033[1;32m' ACTIVE=$'\033[1;34m' NC=$'\033[0m'
+
+  local known_shells=' zsh bash sh nu fish dash ksh tcsh '
+  local shell_name="zsh"
+  local current
+  current=$(tmux display-message -p '#{pane_current_command}' 2>/dev/null)
+  if [[ "$known_shells" == *" $current "* ]]; then
+    shell_name="$current"
+  else
+    local start
+    start=$(tmux display-message -p '#{pane_start_command}' 2>/dev/null)
+    shell_name="${start:-zsh}"
+  fi
+
   echo "Session presets:"
 
   local max_len=0
@@ -130,13 +143,13 @@ tmux_session_picker() {
     if [[ -n "$windows_str" ]]; then
       local -a wins
       IFS=';' read -rA wins <<< "$windows_str"
-      local first_win=true
+      local       first_win=true
 for w in "${wins[@]}"; do
   if [[ -z "$w" ]]; then
     if $first_win; then
-      wicons+="${ACTIVE}  \$shell ${NC}"
+      wicons+="${ACTIVE}  ${shell_name} ${NC}"
     else
-      wicons+="  \$shell "
+      wicons+="  ${shell_name} "
     fi
   else
     if $first_win; then
@@ -161,9 +174,28 @@ done
     local -a fields=("${(@s:|:)val}")
     local display="${pdisplay[$idx]}"
     local plain="${pplain[$idx]}"
+    local dir="${fields[3]}"
+    local session_name="${${${dir##*/}#.}//./-}"
+    local wicons="${picons[$idx]}"
+    if tmux has-session -t "$session_name" 2>/dev/null; then
+      local active
+      active=$(tmux display-message -p -t "$session_name" '#{window_id}' 2>/dev/null)
+      local raw
+      raw=$(tmux list-windows -t "$session_name" -F "#{window_id} #{window_name}" 2>/dev/null)
+      wicons=""
+      while IFS= read -r line; do
+        local wid="${line% *}"
+        local wname="${line#* }"
+        if [[ "$wid" == "$active" ]]; then
+          wicons+="${ACTIVE}  ${wname} ${NC}"
+        else
+          wicons+="  ${wname} "
+        fi
+      done <<< "$raw"
+    fi
     local pad=$(( max_len - ${#plain} + 1 ))
     local padding=$(printf '%*s' $pad '')
-    echo "   ${display}:${padding}${picons[$idx]}"
+    echo "   ${display}:${padding}${wicons}"
     ((idx++))
   done
 

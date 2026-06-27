@@ -37,16 +37,39 @@ if ((($env.TMUX? | is-empty) and ($env.ZELLIJ? | is-empty)) and ($env.DOTFILES_S
                 print "Session presets:"
                 let items = ($presets | transpose key val | where key != "default")
                 let max_len = ($items | each { |p| $p.val.name | str length } | math max)
+                let known_shells = " zsh bash sh nu fish dash ksh tcsh "
+                let _cur = (tmux display-message -p '#{pane_current_command}' | str trim | str downcase)
+                let shell_name = if ($known_shells | str contains $" ($_cur) ") {
+                    $_cur
+                } else {
+                    let fallback = (tmux display-message -p '#{pane_start_command}' | str trim | str downcase)
+                    if ($known_shells | str contains $" ($fallback) ") { $fallback } else { "nu" }
+                }
                 for p in $items {
                     let hc = ($p.val.name | str substring 0..0)
                     let rest = ($p.val.name | str substring 1..)
-                    let icons = ($p.val.windows | enumerate | each { |it|
-                        if $it.index == 0 {
-                            if ($it.item | length) == 0 { $"($active)  $shell ($reset)" } else { $"($active)  ($it.item | first) ($reset)" }
-                        } else {
-                            if ($it.item | length) == 0 { $"  $shell " } else { $"  ($it.item | first) " }
-                        }
-                    } | str join)
+                    let session = ($p.val.dir | path basename | str replace --regex '^\.' '' | str replace --all '.' '-')
+                    let icons = if (tmux has-session -t $session | complete | get exit_code) == 0 {
+                        let wins = (tmux list-windows -t $session -F '#{window_name}|#{window_active}' | lines)
+                        $wins | each { |it|
+                            let parts = ($it | split row "|")
+                            let wname = ($parts | first)
+                            let is_active = ($parts | last | into int)
+                            if $is_active == 1 {
+                                $"($active)  ($wname) ($reset)"
+                            } else {
+                                $"  ($wname) "
+                            }
+                        } | str join
+                    } else {
+                        $p.val.windows | enumerate | each { |it|
+                            if $it.index == 0 {
+                                if ($it.item | length) == 0 { $"($active)  ($shell_name) ($reset)" } else { $"($active)  ($it.item | first) ($reset)" }
+                            } else {
+                                if ($it.item | length) == 0 { $"  ($shell_name) " } else { $"  ($it.item | first) " }
+                            }
+                        } | str join
+                    }
                     let pad = ($max_len - ($p.val.name | str length) + 1)
                     let padding = ("" | fill -c " " -w $pad -a l)
                     print $"   ($green)($hc)($reset)($rest):($padding)($icons)"
@@ -130,16 +153,39 @@ if ((($env.TMUX? | is-empty) and ($env.ZELLIJ? | is-empty)) and ($env.DOTFILES_S
         print "Session presets:"
         let items = ($presets | transpose key val | where key != "default")
         let max_len = ($items | each { |p| $p.val.name | str length } | math max)
+        let known_shells = " zsh bash sh nu fish dash ksh tcsh "
+        let _cur = (tmux display-message -p '#{pane_current_command}' | str trim | str downcase)
+        let shell_name = if ($known_shells | str contains $" ($_cur) ") {
+            $_cur
+        } else {
+            let fallback = (tmux display-message -p '#{pane_start_command}' | str trim | str downcase)
+            if ($known_shells | str contains $" ($fallback) ") { $fallback } else { "nu" }
+        }
         for p in $items {
             let hc = ($p.val.name | str substring 0..0)
             let rest = ($p.val.name | str substring 1..)
-            let icons = ($p.val.windows | enumerate | each { |it|
-                if $it.index == 0 {
-                    if ($it.item | length) == 0 { $"($active)  $shell ($reset)" } else { $"($active)  ($it.item | first) ($reset)" }
-                } else {
-                    if ($it.item | length) == 0 { $"  $shell " } else { $"  ($it.item | first) " }
-                }
-            } | str join)
+            let session = ($p.val.dir | path basename | str replace --regex '^\.' '' | str replace --all '.' '-')
+            let icons = if (tmux has-session -t $session | complete | get exit_code) == 0 {
+                let wins = (tmux list-windows -t $session -F '#{window_name}|#{window_active}' | lines)
+                $wins | each { |it|
+                    let parts = ($it | split row "|")
+                    let wname = ($parts | first)
+                    let is_active = ($parts | last | into int)
+                    if $is_active == 1 {
+                        $"($active)  ($wname) ($reset)"
+                    } else {
+                        $"  ($wname) "
+                    }
+                } | str join
+            } else {
+                $p.val.windows | enumerate | each { |it|
+                    if $it.index == 0 {
+                        if ($it.item | length) == 0 { $"($active)  ($shell_name) ($reset)" } else { $"($active)  ($it.item | first) ($reset)" }
+                    } else {
+                        if ($it.item | length) == 0 { $"  ($shell_name) " } else { $"  ($it.item | first) " }
+                    }
+                } | str join
+            }
             let pad = ($max_len - ($p.val.name | str length) + 1)
             let padding = ("" | fill -c " " -w $pad -a l)
             print $"   ($green)($hc)($reset)($rest):($padding)($icons)"
