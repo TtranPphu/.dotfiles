@@ -8,6 +8,137 @@ source ~/.cache/nu/starship.nu
 source ~/.cache/nu/zoxide.nu
 source ~/.cache/nu/aliases.nu
 
+# --- Session preset picker ---
+def _session_picker [] {
+    let green = $"(char --integer 0x1b)[1;32m"
+    let active = $"(char --integer 0x1b)[1;34m"
+    let reset = $"(char --integer 0x1b)[0m"
+
+    let presets = {
+        _: { name: "default", dir: $env.PWD, windows: [] }
+        d: { name: "dotfiles", dir: ($env.HOME | path join ".dotfiles"), windows: [[opencode], [nvim], []] }
+        t: { name: "tiny-repository", dir: ($env.HOME | path join "Projects" "tiny-repository"), windows: [[opencode], [nvim], []] }
+        k: { name: "zmk-{k}eyboard-cornix", dir: ($env.HOME | path join "Projects" "zmk-keyboard-cornix"), windows: [[opencode], [nvim], []] }
+    }
+
+    print "Session presets:"
+
+    let items = ($presets | transpose key val | where {|p| $p.key != "_" and ($p.val.dir | path exists) })
+
+    let max_len = ($items | each { |p|
+        if ($p.val.name | str contains "{") {
+            ($p.val.name | split row "{" | get 0 | str length) + 1 + ($p.val.name | split row "}" | get 1 | str length)
+        } else { $p.val.name | str length }
+    } | math max)
+
+    let known_shells = " zsh bash sh nu fish dash ksh tcsh "
+    let _cur = (tmux display-message -p '#{pane_current_command}' | str trim | str downcase)
+    let shell_name = if ($known_shells | str contains $" ($_cur) ") {
+        $_cur
+    } else {
+        let fallback = (tmux display-message -p '#{pane_start_command}' | str trim | str downcase)
+        if ($known_shells | str contains $" ($fallback) ") { $fallback } else { "nu" }
+    }
+
+    for p in $items {
+        let has_bracket = ($p.val.name | str contains "{")
+        let before = if $has_bracket { $p.val.name | split row "{" | get 0 } else { "" }
+        let char = if $has_bracket { $p.val.name | split row "{" | get 1 | str substring 0..0 } else { $p.val.name | str substring 0..0 }
+        let after = if $has_bracket { $p.val.name | split row "}" | get 1 } else { $p.val.name | str substring 1.. }
+        let plain_len = if $has_bracket { ($before | str length) + 1 + ($after | str length) } else { $p.val.name | str length }
+        let session = ($p.val.dir | path basename | str replace --regex '^\.' '' | str replace --all '.' '-')
+        let icons = if (tmux has-session -t $session | complete | get exit_code) == 0 {
+            let wins = (tmux list-windows -t $session -F '#{window_name}|#{window_active}' | lines)
+            $wins | each { |it|
+                let parts = ($it | split row "|")
+                let wname = ($parts | first)
+                let is_active = ($parts | last | into int)
+                if $is_active == 1 {
+                    $"($active)  ($wname) ($reset)"
+                } else {
+                    $"  ($wname) "
+                }
+            } | str join
+        } else {
+            $p.val.windows | enumerate | each { |it|
+                if $it.index == 0 {
+                    if ($it.item | length) == 0 { $"($active)  ($shell_name) ($reset)" } else { $"($active)  ($it.item | first) ($reset)" }
+                } else {
+                    if ($it.item | length) == 0 { $"  ($shell_name) " } else { $"  ($it.item | first) " }
+                }
+            } | str join
+        }
+        let pad = ($max_len - $plain_len + 1)
+        let padding = ("" | fill -c " " -w $pad -a l)
+        print $"   ($before)($green)($char)($reset)($after):($padding)($icons)"
+    }
+
+    print -n "Pick: "
+    let choice = (input --numchar 1 --suppress-output | str downcase)
+    let preset = ($presets | get -o $choice | default ($presets | get -o "_"))
+    if ($preset | is-empty) {
+        tmux new -A -s ($env.PWD | path basename | str replace --regex '^\.' '' | str replace --all '.' '-') nu; exit
+    }
+    let dir = $preset.dir
+    let session = ($dir | path basename | str replace --regex '^\.' '' | str replace --all '.' '-')
+    let known_shells = " zsh bash sh nu fish dash ksh tcsh "
+    let _current = (tmux display-message -p '#{pane_current_command}' | str trim | str downcase)
+    let current_shell = if ($known_shells | str contains $" ($_current) ") {
+        $_current
+    } else {
+        let fallback = (tmux display-message -p '#{pane_start_command}' | str trim | str downcase)
+        if ($known_shells | str contains $" ($fallback) ") { $fallback } else { "nu" }
+    }
+    if (tmux has-session -t $session | complete | get exit_code) == 0 {
+        clear; tmux attach-session -t $session; exit
+    }
+    let windows = $preset.windows
+    if ($windows | length) == 0 {
+        tmux new-session -d -s $session -c $dir $current_shell; clear; tmux attach-session -t $session; exit
+    }
+    let first = ($windows | first)
+    tmux new-session -d -s $session -c $dir -n ($first | first) $current_shell
+    tmux send-keys -t $"($session):1.1" $"($first | first)" Enter
+    mut pane = "1"
+    for app in ($first | skip 1) {
+        let geo = (tmux display-message -p -t $"($session):1.($pane)" '#{pane_width} #{pane_height}')
+        let dims = ($geo | split row " ")
+        let w = ($dims | first | into int)
+        let h = ($dims | last | into int)
+        if $w > $h * 2 {
+            $pane = (tmux split-window -h -t $"($session):1.($pane)" -c $dir -P -F '#{pane_index}' $current_shell | str trim)
+        } else {
+            $pane = (tmux split-window -v -t $"($session):1.($pane)" -c $dir -P -F '#{pane_index}' $current_shell | str trim)
+        }
+        tmux send-keys -t $"($session):1.($pane)" $"$app" Enter
+    }
+    mut win_idx = 2
+    for win_def in ($windows | skip 1) {
+        if ($win_def | length) == 0 {
+            tmux new-window -t $session -c $dir $current_shell
+        } else {
+            tmux new-window -t $session -c $dir -n ($win_def | first) $current_shell
+            tmux send-keys -t $"($session):($win_idx).1" $"($win_def | first)" Enter
+            mut pane = "1"
+            for app in ($win_def | skip 1) {
+                let geo = (tmux display-message -p -t $"($session):($win_idx).($pane)" '#{pane_width} #{pane_height}')
+                let dims = ($geo | split row " ")
+                let w = ($dims | first | into int)
+                let h = ($dims | last | into int)
+                if $w > $h * 2 {
+                    $pane = (tmux split-window -h -t $"($session):($win_idx).($pane)" -c $dir -P -F '#{pane_index}' $current_shell | str trim)
+                } else {
+                    $pane = (tmux split-window -v -t $"($session):($win_idx).($pane)" -c $dir -P -F '#{pane_index}' $current_shell | str trim)
+                }
+                tmux send-keys -t $"($session):($win_idx).($pane)" $"$app" Enter
+            }
+        }
+        $win_idx += 1
+    }
+    tmux select-window -t $"($session):1"
+    clear; tmux attach-session -t $session; exit
+}
+
 # --- Picker: choose shell (nushell/zsh) and multiplexer (tmux/zellij) at startup ---
 if ((($env.TMUX? | is-empty) and ($env.ZELLIJ? | is-empty)) and ($env.DOTFILES_SHELL_PICKED? | is-empty)) {
     let has_tmux = (which tmux | length) > 0
@@ -29,123 +160,7 @@ if ((($env.TMUX? | is-empty) and ($env.ZELLIJ? | is-empty)) and ($env.DOTFILES_S
             "t" | "T" => {
                 clear
                 $env.DOTFILES_SHELL_PICKED = "1"
-                let presets = {
-                    default: { key: "", name: "default", dir: $env.PWD, windows: [] }
-                    d: { key: "d", name: "dotfiles", dir: ($env.HOME | path join ".dotfiles"), windows: [[opencode], [nvim], []] }
-                    t: { key: "t", name: "tiny-repository", dir: ($env.HOME | path join "projects" "tiny-repository"), windows: [[opencode], [nvim], []] }
-                    k: { key: "k", name: "zmk-{k}eyboard-cornix", dir: ($env.HOME | path join "Projects" "zmk-keyboard-cornix"), windows: [[opencode], [nvim], []] }
-                }
-                print "Session presets:"
-                let items = ($presets | transpose key val | where key != "default")
-                let max_len = ($items | each { |p|
-                    if ($p.val.name | str contains "{") {
-                        ($p.val.name | split row "{" | get 0 | str length) + 1 + ($p.val.name | split row "}" | get 1 | str length)
-                    } else { $p.val.name | str length }
-                } | math max)
-                let known_shells = " zsh bash sh nu fish dash ksh tcsh "
-                let _cur = (tmux display-message -p '#{pane_current_command}' | str trim | str downcase)
-                let shell_name = if ($known_shells | str contains $" ($_cur) ") {
-                    $_cur
-                } else {
-                    let fallback = (tmux display-message -p '#{pane_start_command}' | str trim | str downcase)
-                    if ($known_shells | str contains $" ($fallback) ") { $fallback } else { "nu" }
-                }
-                for p in $items {
-                    let has_bracket = ($p.val.name | str contains "{")
-                    let before = if $has_bracket { $p.val.name | split row "{" | get 0 } else { "" }
-                    let char = if $has_bracket { $p.val.name | split row "{" | get 1 | str substring 0..0 } else { $p.val.name | str substring 0..0 }
-                    let after = if $has_bracket { $p.val.name | split row "}" | get 1 } else { $p.val.name | str substring 1.. }
-                    let plain_len = if $has_bracket { ($before | str length) + 1 + ($after | str length) } else { $p.val.name | str length }
-                    let session = ($p.val.dir | path basename | str replace --regex '^\.' '' | str replace --all '.' '-')
-                    let icons = if (tmux has-session -t $session | complete | get exit_code) == 0 {
-                        let wins = (tmux list-windows -t $session -F '#{window_name}|#{window_active}' | lines)
-                        $wins | each { |it|
-                            let parts = ($it | split row "|")
-                            let wname = ($parts | first)
-                            let is_active = ($parts | last | into int)
-                            if $is_active == 1 {
-                                $"($active)  ($wname) ($reset)"
-                            } else {
-                                $"  ($wname) "
-                            }
-                        } | str join
-                    } else {
-                        $p.val.windows | enumerate | each { |it|
-                            if $it.index == 0 {
-                                if ($it.item | length) == 0 { $"($active)  ($shell_name) ($reset)" } else { $"($active)  ($it.item | first) ($reset)" }
-                            } else {
-                                if ($it.item | length) == 0 { $"  ($shell_name) " } else { $"  ($it.item | first) " }
-                            }
-                        } | str join
-                    }
-                    let pad = ($max_len - $plain_len + 1)
-                    let padding = ("" | fill -c " " -w $pad -a l)
-                    print $"   ($before)($green)($char)($reset)($after):($padding)($icons)"
-                }
-                print -n "Pick: "
-                let choice = (input --numchar 1 --suppress-output | str downcase)
-                let preset = ($presets | get -o $choice | default ($presets | get -o "default"))
-                if ($preset | is-empty) {
-                    tmux new -A -s ($env.PWD | path basename | str replace --regex '^\.' '' | str replace --all '.' '-') nu; exit
-                }
-                let dir = $preset.dir
-                let session = ($dir | path basename | str replace --regex '^\.' '' | str replace --all '.' '-')
-                let known_shells = " zsh bash sh nu fish dash ksh tcsh "
-                let _current = (tmux display-message -p '#{pane_current_command}' | str trim | str downcase)
-                let current_shell = if ($known_shells | str contains $" ($_current) ") {
-                    $_current
-                } else {
-                    let fallback = (tmux display-message -p '#{pane_start_command}' | str trim | str downcase)
-                    if ($known_shells | str contains $" ($fallback) ") { $fallback } else { "nu" }
-                }
-                if (tmux has-session -t $session | complete | get exit_code) == 0 {
-                    clear; tmux attach-session -t $session; exit
-                }
-                let windows = $preset.windows
-                if ($windows | length) == 0 {
-                    tmux new-session -d -s $session -c $dir $current_shell; clear; tmux attach-session -t $session; exit
-                }
-                let first = ($windows | first)
-                tmux new-session -d -s $session -c $dir -n ($first | first) $current_shell
-                tmux send-keys -t $"($session):1.1" $"($first | first)" Enter
-                mut pane = "1"
-                for app in ($first | skip 1) {
-                    let geo = (tmux display-message -p -t $"($session):1.($pane)" '#{pane_width} #{pane_height}')
-                    let dims = ($geo | split row " ")
-                    let w = ($dims | first | into int)
-                    let h = ($dims | last | into int)
-                    if $w > $h * 2 {
-                        $pane = (tmux split-window -h -t $"($session):1.($pane)" -c $dir -P -F '#{pane_index}' $current_shell | str trim)
-                    } else {
-                        $pane = (tmux split-window -v -t $"($session):1.($pane)" -c $dir -P -F '#{pane_index}' $current_shell | str trim)
-                    }
-                    tmux send-keys -t $"($session):1.($pane)" $"$app" Enter
-                }
-                mut win_idx = 2
-                for win_def in ($windows | skip 1) {
-                    if ($win_def | length) == 0 {
-                        tmux new-window -t $session -c $dir $current_shell
-                    } else {
-                        tmux new-window -t $session -c $dir -n ($win_def | first) $current_shell
-                        tmux send-keys -t $"($session):($win_idx).1" $"($win_def | first)" Enter
-                        mut pane = "1"
-                        for app in ($win_def | skip 1) {
-                            let geo = (tmux display-message -p -t $"($session):($win_idx).($pane)" '#{pane_width} #{pane_height}')
-                            let dims = ($geo | split row " ")
-                            let w = ($dims | first | into int)
-                            let h = ($dims | last | into int)
-                            if $w > $h * 2 {
-                                $pane = (tmux split-window -h -t $"($session):($win_idx).($pane)" -c $dir -P -F '#{pane_index}' $current_shell | str trim)
-                            } else {
-                                $pane = (tmux split-window -v -t $"($session):($win_idx).($pane)" -c $dir -P -F '#{pane_index}' $current_shell | str trim)
-                            }
-                            tmux send-keys -t $"($session):($win_idx).($pane)" $"$app" Enter
-                        }
-                    }
-                    $win_idx += 1
-                }
-                tmux select-window -t $"($session):1"
-                clear; tmux attach-session -t $session; exit
+                _session_picker
             }
             "j" | "J" => { clear; $env.SHELL = "nu"; zellij attach -c ($env.PWD | path basename | str replace --regex '^\.' '' | str replace --all '.' '-'); clear; exit }
             _ => { clear }
@@ -153,123 +168,7 @@ if ((($env.TMUX? | is-empty) and ($env.ZELLIJ? | is-empty)) and ($env.DOTFILES_S
     } else if $has_tmux {
         clear
         $env.DOTFILES_SHELL_PICKED = "1"
-        let presets = {
-            default: { key: "", name: "default", dir: $env.PWD, windows: [] }
-            d: { key: "d", name: "dotfiles", dir: ($env.HOME | path join ".dotfiles"), windows: [[opencode], [nvim], []] }
-            t: { key: "t", name: "tiny-repository", dir: ($env.HOME | path join "projects" "tiny-repository"), windows: [[opencode], [nvim], []] }
-            k: { key: "k", name: "zmk-{k}eyboard-cornix", dir: ($env.HOME | path join "Projects" "zmk-keyboard-cornix"), windows: [[opencode], [nvim], []] }
-        }
-        print "Session presets:"
-        let items = ($presets | transpose key val | where key != "default")
-        let max_len = ($items | each { |p|
-            if ($p.val.name | str contains "{") {
-                ($p.val.name | split row "{" | get 0 | str length) + 1 + ($p.val.name | split row "}" | get 1 | str length)
-            } else { $p.val.name | str length }
-        } | math max)
-        let known_shells = " zsh bash sh nu fish dash ksh tcsh "
-        let _cur = (tmux display-message -p '#{pane_current_command}' | str trim | str downcase)
-        let shell_name = if ($known_shells | str contains $" ($_cur) ") {
-            $_cur
-        } else {
-            let fallback = (tmux display-message -p '#{pane_start_command}' | str trim | str downcase)
-            if ($known_shells | str contains $" ($fallback) ") { $fallback } else { "nu" }
-        }
-        for p in $items {
-            let has_bracket = ($p.val.name | str contains "{")
-            let before = if $has_bracket { $p.val.name | split row "{" | get 0 } else { "" }
-            let char = if $has_bracket { $p.val.name | split row "{" | get 1 | str substring 0..0 } else { $p.val.name | str substring 0..0 }
-            let after = if $has_bracket { $p.val.name | split row "}" | get 1 } else { $p.val.name | str substring 1.. }
-            let plain_len = if $has_bracket { ($before | str length) + 1 + ($after | str length) } else { $p.val.name | str length }
-            let session = ($p.val.dir | path basename | str replace --regex '^\.' '' | str replace --all '.' '-')
-            let icons = if (tmux has-session -t $session | complete | get exit_code) == 0 {
-                let wins = (tmux list-windows -t $session -F '#{window_name}|#{window_active}' | lines)
-                $wins | each { |it|
-                    let parts = ($it | split row "|")
-                    let wname = ($parts | first)
-                    let is_active = ($parts | last | into int)
-                    if $is_active == 1 {
-                        $"($active)  ($wname) ($reset)"
-                    } else {
-                        $"  ($wname) "
-                    }
-                } | str join
-            } else {
-                $p.val.windows | enumerate | each { |it|
-                    if $it.index == 0 {
-                        if ($it.item | length) == 0 { $"($active)  ($shell_name) ($reset)" } else { $"($active)  ($it.item | first) ($reset)" }
-                    } else {
-                        if ($it.item | length) == 0 { $"  ($shell_name) " } else { $"  ($it.item | first) " }
-                    }
-                } | str join
-            }
-            let pad = ($max_len - $plain_len + 1)
-            let padding = ("" | fill -c " " -w $pad -a l)
-            print $"   ($before)($green)($char)($reset)($after):($padding)($icons)"
-        }
-        print -n "Pick: "
-        let choice = (input --numchar 1 --suppress-output | str downcase)
-        let preset = ($presets | get -o $choice | default ($presets | get -o "default"))
-        if ($preset | is-empty) {
-            tmux new -A -s ($env.PWD | path basename | str replace --regex '^\.' '' | str replace --all '.' '-') nu; exit
-        }
-        let dir = $preset.dir
-        let session = ($dir | path basename | str replace --regex '^\.' '' | str replace --all '.' '-')
-        let known_shells = " zsh bash sh nu fish dash ksh tcsh "
-        let _current = (tmux display-message -p '#{pane_current_command}' | str trim | str downcase)
-        let current_shell = if ($known_shells | str contains $" ($_current) ") {
-            $_current
-        } else {
-            let fallback = (tmux display-message -p '#{pane_start_command}' | str trim | str downcase)
-            if ($known_shells | str contains $" ($fallback) ") { $fallback } else { "nu" }
-        }
-        if (tmux has-session -t $session | complete | get exit_code) == 0 {
-            clear; tmux attach-session -t $session; exit
-        }
-        let windows = $preset.windows
-        if ($windows | length) == 0 {
-            tmux new-session -d -s $session -c $dir $current_shell; clear; tmux attach-session -t $session; exit
-        }
-        let first = ($windows | first)
-        tmux new-session -d -s $session -c $dir -n ($first | first) $current_shell
-        tmux send-keys -t $"($session):1.1" $"($first | first)" Enter
-        mut pane = "1"
-        for app in ($first | skip 1) {
-            let geo = (tmux display-message -p -t $"($session):1.($pane)" '#{pane_width} #{pane_height}')
-            let dims = ($geo | split row " ")
-            let w = ($dims | first | into int)
-            let h = ($dims | last | into int)
-            if $w > $h * 2 {
-                $pane = (tmux split-window -h -t $"($session):1.($pane)" -c $dir -P -F '#{pane_index}' $current_shell | str trim)
-            } else {
-                $pane = (tmux split-window -v -t $"($session):1.($pane)" -c $dir -P -F '#{pane_index}' $current_shell | str trim)
-            }
-            tmux send-keys -t $"($session):1.($pane)" $"$app" Enter
-        }
-        mut win_idx = 2
-        for win_def in ($windows | skip 1) {
-            if ($win_def | length) == 0 {
-                tmux new-window -t $session -c $dir $current_shell
-            } else {
-                tmux new-window -t $session -c $dir -n ($win_def | first) $current_shell
-                tmux send-keys -t $"($session):($win_idx).1" $"($win_def | first)" Enter
-                mut pane = "1"
-                for app in ($win_def | skip 1) {
-                    let geo = (tmux display-message -p -t $"($session):($win_idx).($pane)" '#{pane_width} #{pane_height}')
-                    let dims = ($geo | split row " ")
-                    let w = ($dims | first | into int)
-                    let h = ($dims | last | into int)
-                    if $w > $h * 2 {
-                        $pane = (tmux split-window -h -t $"($session):($win_idx).($pane)" -c $dir -P -F '#{pane_index}' $current_shell | str trim)
-                    } else {
-                        $pane = (tmux split-window -v -t $"($session):($win_idx).($pane)" -c $dir -P -F '#{pane_index}' $current_shell | str trim)
-                    }
-                    tmux send-keys -t $"($session):($win_idx).($pane)" $"$app" Enter
-                }
-            }
-            $win_idx += 1
-        }
-        tmux select-window -t $"($session):1"
-        clear; tmux attach-session -t $session; exit
+        _session_picker
     } else if $has_zellij {
         $env.DOTFILES_SHELL_PICKED = "1"; clear; $env.SHELL = "nu"; zellij attach -c ($env.PWD | path basename | str replace --regex '^\.' '' | str replace --all '.' '-'); clear; exit
     }
