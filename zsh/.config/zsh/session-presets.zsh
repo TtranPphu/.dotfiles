@@ -9,6 +9,7 @@ typeset -A session_presets
 session_presets[default]="|default|$(pwd)|"
 session_presets[d]="d|{d}otfiles|${HOME}/.dotfiles|opencode;nvim;"
 session_presets[t]="t|{t}iny-repository|${HOME}/projects/tiny-repository|opencode;nvim;"
+session_presets[k]="k|zmk-{k}eyboard-cornix|${HOME}/Projects/zmk-keyboard-cornix|opencode;nvim;"
 
 create_from_preset() {
   local preset_key="$1"
@@ -129,11 +130,12 @@ tmux_session_picker() {
     local raw_name="${fields[2]}"
     local windows_str="${fields[4]:-}"
 
-    if [[ "${raw_name:0:1}" == "{" && "${raw_name:2:1}" == "}" ]]; then
-      local char="${raw_name:1:1}"
-      local rest="${raw_name:3}"
-      local display="${GREEN}${char}${NC}${rest}"
-      local plain="${char}${rest}"
+    if [[ "$raw_name" =~ '\{'([a-zA-Z0-9])'\}' ]]; then
+      local char="$match[1]"
+      local before="${raw_name%%\{$char\}*}"
+      local after="${raw_name##*\{$char\}}"
+      local display="${before}${GREEN}${char}${NC}${after}"
+      local plain="${before}${char}${after}"
     else
       local plain="$raw_name"
       local display="$raw_name"
@@ -178,10 +180,8 @@ done
     local session_name="${${${dir##*/}#.}//./-}"
     local wicons="${picons[$idx]}"
     if tmux has-session -t "$session_name" 2>/dev/null; then
-      local active
-      active=$(tmux display-message -p -t "$session_name" '#{window_id}' 2>/dev/null)
-      local raw
-      raw=$(tmux list-windows -t "$session_name" -F "#{window_id} #{window_name}" 2>/dev/null)
+      local active=$(tmux display-message -p -t "$session_name" '#{window_id}' 2>/dev/null)
+      local raw=$(tmux list-windows -t "$session_name" -F "#{window_id} #{window_name}" 2>/dev/null)
       wicons=""
       while IFS= read -r line; do
         local wid="${line% *}"

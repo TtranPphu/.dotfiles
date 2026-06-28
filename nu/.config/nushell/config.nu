@@ -33,6 +33,7 @@ if ((($env.TMUX? | is-empty) and ($env.ZELLIJ? | is-empty)) and ($env.DOTFILES_S
                     default: { key: "", name: "default", dir: $env.PWD, windows: [] }
                     d: { key: "d", name: "dotfiles", dir: ($env.HOME | path join ".dotfiles"), windows: [[opencode], [nvim], []] }
                     t: { key: "t", name: "tiny-repository", dir: ($env.HOME | path join "projects" "tiny-repository"), windows: [[opencode], [nvim], []] }
+                    k: { key: "k", name: "zmk-{k}eyboard-cornix", dir: ($env.HOME | path join "Projects" "zmk-keyboard-cornix"), windows: [[opencode], [nvim], []] }
                 }
                 print "Session presets:"
                 let items = ($presets | transpose key val | where key != "default")
@@ -46,8 +47,9 @@ if ((($env.TMUX? | is-empty) and ($env.ZELLIJ? | is-empty)) and ($env.DOTFILES_S
                     if ($known_shells | str contains $" ($fallback) ") { $fallback } else { "nu" }
                 }
                 for p in $items {
-                    let hc = ($p.val.name | str substring 0..0)
-                    let rest = ($p.val.name | str substring 1..)
+                    let has_bracket = ($p.val.name | str contains "{")
+                    let hc = if $has_bracket { $p.val.name | split row "{" | get 1 | str substring 0..0 } else { $p.val.name | str substring 0..0 }
+                    let rest = if $has_bracket { ($p.val.name | split row "{" | get 0) + ($p.val.name | split row "}" | get 1) } else { $p.val.name | str substring 1.. }
                     let session = ($p.val.dir | path basename | str replace --regex '^\.' '' | str replace --all '.' '-')
                     let icons = if (tmux has-session -t $session | complete | get exit_code) == 0 {
                         let wins = (tmux list-windows -t $session -F '#{window_name}|#{window_active}' | lines)
@@ -149,6 +151,7 @@ if ((($env.TMUX? | is-empty) and ($env.ZELLIJ? | is-empty)) and ($env.DOTFILES_S
             default: { key: "", name: "default", dir: $env.PWD, windows: [] }
             d: { key: "d", name: "dotfiles", dir: ($env.HOME | path join ".dotfiles"), windows: [[opencode], [nvim], []] }
             t: { key: "t", name: "tiny-repository", dir: ($env.HOME | path join "projects" "tiny-repository"), windows: [[opencode], [nvim], []] }
+            k: { key: "k", name: "zmk-{k}eyboard-cornix", dir: ($env.HOME | path join "Projects" "zmk-keyboard-cornix"), windows: [[opencode], [nvim], []] }
         }
         print "Session presets:"
         let items = ($presets | transpose key val | where key != "default")
@@ -162,8 +165,9 @@ if ((($env.TMUX? | is-empty) and ($env.ZELLIJ? | is-empty)) and ($env.DOTFILES_S
             if ($known_shells | str contains $" ($fallback) ") { $fallback } else { "nu" }
         }
         for p in $items {
-            let hc = ($p.val.name | str substring 0..0)
-            let rest = ($p.val.name | str substring 1..)
+            let has_bracket = ($p.val.name | str contains "{")
+            let hc = if $has_bracket { $p.val.name | split row "{" | get 1 | str substring 0..0 } else { $p.val.name | str substring 0..0 }
+            let rest = if $has_bracket { ($p.val.name | split row "{" | get 0) + ($p.val.name | split row "}" | get 1) } else { $p.val.name | str substring 1.. }
             let session = ($p.val.dir | path basename | str replace --regex '^\.' '' | str replace --all '.' '-')
             let icons = if (tmux has-session -t $session | complete | get exit_code) == 0 {
                 let wins = (tmux list-windows -t $session -F '#{window_name}|#{window_active}' | lines)
