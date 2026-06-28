@@ -1,28 +1,27 @@
-# session_presets[key]="key|display_name|dir|window1_apps;window2_apps;..."
-#   - key: single char for picker (empty = default fallback)
+# session_presets[key]="display_name|dir|window1_apps;window2_apps;..."
+#   - key: single char for picker (_ = default fallback, hidden from picker)
 #   - display_name: shown in picker menu
 #   - dir: working directory for all windows
 #   - windows: separated by `;`, each window's apps separated by `,`
 #   - empty windows = default behavior (single shell pane, no exec)
 
 typeset -A session_presets
-session_presets[default]="|default|$(pwd)|"
-session_presets[d]="d|{d}otfiles|${HOME}/.dotfiles|opencode;nvim;"
-session_presets[t]="t|{t}iny-repository|${HOME}/projects/tiny-repository|opencode;nvim;"
-session_presets[k]="k|zmk-{k}eyboard-cornix|${HOME}/Projects/zmk-keyboard-cornix|opencode;nvim;"
+session_presets[_]="default|$(pwd)|"
+session_presets[d]="{d}otfiles|${HOME}/.dotfiles|opencode;nvim;"
+session_presets[t]="{t}iny-repository|${HOME}/Projects/tiny-repository|opencode;nvim;"
+session_presets[k]="zmk-{k}eyboard-cornix|${HOME}/Projects/zmk-keyboard-cornix|opencode;nvim;"
 
 create_from_preset() {
   local preset_key="$1"
   local def="${session_presets[$preset_key]}"
-  [[ -z "$def" ]] && def="${session_presets[default]}"
+  [[ -z "$def" ]] && def="${session_presets[_]}"
   [[ -z "$def" ]] && return 1
 
   local IFS='|'
   local -a fields=("${(@s:|:)def}")
-  local key="${fields[1]}"
-  local name="${fields[2]}"
-  local dir="${fields[3]}"
-  local windows_str="${fields[4]:-}"
+  local name="${fields[1]}"
+  local dir="${fields[2]}"
+  local windows_str="${fields[3]:-}"
 
   local session_name="${${${dir##*/}#.}//./-}"
   [[ -z "$session_name" ]] && session_name="shell"
@@ -126,9 +125,11 @@ tmux_session_picker() {
   local -a picons=()
   for key val in "${(@kv)session_presets}"; do
     local -a fields=("${(@s:|:)val}")
-    [[ -z "${fields[1]}" ]] && continue
-    local raw_name="${fields[2]}"
-    local windows_str="${fields[4]:-}"
+    [[ "$key" == "_" ]] && continue
+    local dir="${fields[2]}"
+    [[ -z "$dir" || ! -d "$dir" ]] && continue
+    local raw_name="${fields[1]}"
+    local windows_str="${fields[3]:-}"
 
     if [[ "$raw_name" =~ '\{'([a-zA-Z0-9])'\}' ]]; then
       local char="$match[1]"
@@ -176,7 +177,7 @@ done
     local -a fields=("${(@s:|:)val}")
     local display="${pdisplay[$idx]}"
     local plain="${pplain[$idx]}"
-    local dir="${fields[3]}"
+    local dir="${fields[2]}"
     local session_name="${${${dir##*/}#.}//./-}"
     local wicons="${picons[$idx]}"
     if tmux has-session -t "$session_name" 2>/dev/null; then
@@ -205,7 +206,7 @@ done
 
   local matched="${session_presets[${(L)choice}]}"
   if [[ -z "$matched" ]]; then
-    create_from_preset "default"
+    create_from_preset "_"
   else
     create_from_preset "${(L)choice}"
   fi
