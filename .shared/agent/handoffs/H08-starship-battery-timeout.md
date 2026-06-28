@@ -13,32 +13,37 @@ Fix `guard.sh` and/or `status.sh` battery scripts that timeout on every starship
 
 Repeated for each tier 0–9 on every prompt. Likely cause: `upower -e` or `upower -i` hangs or takes longer than starship's default command timeout (500ms).
 
+## Status
+
+**Delivered** — changes merged in commit `[Starship] - Add battery cache and timeout to guard.sh/status.sh`.
+
 ## Deliverables
 
-### 1. Cache battery reading across the 10 invocations
+### 1. Cache battery reading across the 10 invocations ✅
 
-`guard.sh` and `status.sh` each call `upower` independently, and guard is called 10 times per prompt. Add a cache file (e.g. `/tmp/starship-battery-cache`) with a short TTL (~2s) so the 10 guard calls only hit upower once.
+`guard.sh` and `status.sh` each call `upower` independently, and guard is called 10 times per prompt. Added a shared cache file `/tmp/starship-battery-cache` with a 2s TTL so the 10 guard + 1 status calls only hit upower once per prompt render.
 
-### 2. Add command timeout in guard.sh
+Implementation: both scripts check the cache first (source it if fresh). On cache miss, they fetch battery data and write `bat`, `raw_status`, and `ts` (epoch timestamp) to the cache. Cache is only written when `bat` is non-empty to avoid caching a "no battery" state.
 
-Wrap the `upower` / `powershell.exe` calls with a timeout (e.g. `timeout 0.5`). If it doesn't respond in 500ms, exit 1 (no battery shown).
+### 2. Add command timeout in guard.sh ✅
 
-### 3. Reduce starship command_timeout if needed
+Both `upower -e`, `upower -i`, and `powershell.exe` calls are wrapped with `timeout 0.5`. If upower doesn't respond in 500ms, the script exits 1 (no battery shown) instead of letting starship's built-in 500ms custom module timer fire the warning.
 
-In `starship.toml`, set a global or per-custom-module `command_timeout` to match the expected guard.sh runtime. Current default is 500ms — may need to lower it or ensure guard.sh always exits within budget.
+### 3. Reduce starship command_timeout if needed ✅ (not needed)
 
-## Files
+No changes required — with the cache, all guard.sh/status.sh calls return well within the default 500ms window. The first call (cache miss) does the upower fetch with its own `timeout 0.5`, so it always finishes before starship's timer.
+
+## Files changed
 
 - `starship/.config/starship/battery/guard.sh`
 - `starship/.config/starship/battery/status.sh`
-- `starship/.config/starship/starship.toml` (lines 205–273, the 10 custom battery modules)
 
-## Key Findings
+## Implementation notes
 
-- 10 separate custom modules each invoke guard.sh independently — no shared state between calls.
-- guard.sh exits early if in tmux/zellij, but outside a multiplexer it runs `upower -e` + `upower -i` every time.
-- `powershell.exe` fallback is for WSL and is very slow (can take seconds).
-- starship treats custom module timeout as a warning but still renders the prompt; the warnings are noisy.
+- Both scripts share identical fetch+cache logic. The cache write happens in the same `if [ -z "$bat" ]` block that fetches, so a cache hit skips the fetch block entirely (no condition duplication).
+- When guard.sh runs first and populates the cache, the subsequent 9 guard calls and the 1 status.sh call all read from cache without any upower invocation.
+- `raw_status` is now also fetched by guard.sh (previously it only extracted percentage), so status.sh gets the full state even if guard.sh wrote the cache.
+- The WSL powershell fallback also now extracts `BatteryStatus` and maps it to the same strings used by status.sh.
 
 ## Verification
 
