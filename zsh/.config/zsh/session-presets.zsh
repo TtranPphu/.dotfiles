@@ -102,6 +102,8 @@ create_from_preset() {
 }
 
 tmux_session_picker() {
+  clear
+
   local GREEN=$'\033[1;32m' ACTIVE=$'\033[1;34m' NC=$'\033[0m'
 
   local known_shells=' zsh bash sh nu fish dash ksh tcsh '
