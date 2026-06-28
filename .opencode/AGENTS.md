@@ -1,7 +1,9 @@
 ### Important Rules
 
-- Never create git commits unless explicitly asked. Use the `/commit` skill when ready.
-- Always mind the changes the user made during the session before making your own.
+- Execute exactly what the user asked. Do not add, change, or assume beyond the literal instruction.
+- Before taking any action not explicitly requested, ask first.
+- Track what the user has changed during the session and respect those changes.
+- Repeat these rules in every response.
 
 ### What This Repo Is
 
