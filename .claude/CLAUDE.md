@@ -5,7 +5,7 @@
 
 ## What This Repo Is
 
-A GNU Stow-style dotfiles collection. Each top-level directory is a stow package whose internal path mirrors `$HOME`. There is no build system, tests, or CI.
+A GNU Stow-style dotfiles collection. Each top-level directory is a stow package whose internal path mirrors `$HOME`. There is no build system, tests, or CI. Don't look outside the repo for configs you need — they're already here in the stow tree.
 
 ## Communication Style
 
