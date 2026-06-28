@@ -82,6 +82,24 @@ Or merge into the existing battery display with a combined status line. The hand
 5. **Descriptor length** — The auxiliary descriptor might be an empty byte array if firmware is older than the ZMK split battery PR. If no descriptor found, treat the first Battery Level as main and the second as peripheral (order-dependent fallback).
 6. **BlueZ not running** — all calls fail silently, script exits 1. Starship shows nothing, no warnings.
 
+## References
+
+| What | Link |
+|---|---|
+| ZMK battery Kconfig docs | https://zmk.dev/docs/config/battery |
+| ZMK split config (BLE battery flags) | https://zmk.dev/docs/config/split |
+| ZMK split keyboards feature page | https://zmk.dev/docs/features/split-keyboards |
+| PR #2045 — split battery reporting over BLE GATT | https://github.com/zmkfirmware/zmk/pull/2045 |
+| Original issue #764 — feature request | https://github.com/zmkfirmware/zmk/issues/764 |
+| Python script — read both levels via dbus-next | https://gist.github.com/madushan1000/9744eb6350a5dd9685fb6bfbb25fbb8a |
+| Shell script — read both levels via gdbus | https://gist.github.com/alsibir/7556807954c8dce3660f575ae7108cb5 |
+| zmkBATx — Linux system tray app (AUR: `zmkbatx`) | https://github.com/mh4x0f/zmkBATx |
+| ZmkBatteryClient — Waybar custom module | https://github.com/JanValiska/ZmkBatteryClient |
+| zmk-battery-center — Tauri tray app (cross-platform) | https://github.com/kot149/zmk-battery-center |
+| H08 — Starship battery timeout (cache pattern reference) | `H08-starship-battery-timeout.md` |
+| Cornix ZMK config (this repo) | `boards/jzf/cornix/cornix_left_defconfig` (lines 67-68) |
+| Existing laptop battery scripts | `starship/.config/starship/battery/guard.sh` and `status.sh` |
+
 ## Verification
 
 1. Run `keyboard-battery` while keyboard is connected — valid JSON with two integer values printed within 500ms.
