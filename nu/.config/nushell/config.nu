@@ -37,7 +37,11 @@ if ((($env.TMUX? | is-empty) and ($env.ZELLIJ? | is-empty)) and ($env.DOTFILES_S
                 }
                 print "Session presets:"
                 let items = ($presets | transpose key val | where key != "default")
-                let max_len = ($items | each { |p| $p.val.name | str length } | math max)
+                let max_len = ($items | each { |p|
+                    if ($p.val.name | str contains "{") {
+                        ($p.val.name | split row "{" | get 0 | str length) + 1 + ($p.val.name | split row "}" | get 1 | str length)
+                    } else { $p.val.name | str length }
+                } | math max)
                 let known_shells = " zsh bash sh nu fish dash ksh tcsh "
                 let _cur = (tmux display-message -p '#{pane_current_command}' | str trim | str downcase)
                 let shell_name = if ($known_shells | str contains $" ($_cur) ") {
@@ -48,8 +52,10 @@ if ((($env.TMUX? | is-empty) and ($env.ZELLIJ? | is-empty)) and ($env.DOTFILES_S
                 }
                 for p in $items {
                     let has_bracket = ($p.val.name | str contains "{")
-                    let hc = if $has_bracket { $p.val.name | split row "{" | get 1 | str substring 0..0 } else { $p.val.name | str substring 0..0 }
-                    let rest = if $has_bracket { ($p.val.name | split row "{" | get 0) + ($p.val.name | split row "}" | get 1) } else { $p.val.name | str substring 1.. }
+                    let before = if $has_bracket { $p.val.name | split row "{" | get 0 } else { "" }
+                    let char = if $has_bracket { $p.val.name | split row "{" | get 1 | str substring 0..0 } else { $p.val.name | str substring 0..0 }
+                    let after = if $has_bracket { $p.val.name | split row "}" | get 1 } else { $p.val.name | str substring 1.. }
+                    let plain_len = if $has_bracket { ($before | str length) + 1 + ($after | str length) } else { $p.val.name | str length }
                     let session = ($p.val.dir | path basename | str replace --regex '^\.' '' | str replace --all '.' '-')
                     let icons = if (tmux has-session -t $session | complete | get exit_code) == 0 {
                         let wins = (tmux list-windows -t $session -F '#{window_name}|#{window_active}' | lines)
@@ -72,9 +78,9 @@ if ((($env.TMUX? | is-empty) and ($env.ZELLIJ? | is-empty)) and ($env.DOTFILES_S
                             }
                         } | str join
                     }
-                    let pad = ($max_len - ($p.val.name | str length) + 1)
+                    let pad = ($max_len - $plain_len + 1)
                     let padding = ("" | fill -c " " -w $pad -a l)
-                    print $"   ($green)($hc)($reset)($rest):($padding)($icons)"
+                    print $"   ($before)($green)($char)($reset)($after):($padding)($icons)"
                 }
                 print -n "Pick: "
                 let choice = (input --numchar 1 --suppress-output | str downcase)
@@ -155,7 +161,11 @@ if ((($env.TMUX? | is-empty) and ($env.ZELLIJ? | is-empty)) and ($env.DOTFILES_S
         }
         print "Session presets:"
         let items = ($presets | transpose key val | where key != "default")
-        let max_len = ($items | each { |p| $p.val.name | str length } | math max)
+        let max_len = ($items | each { |p|
+            if ($p.val.name | str contains "{") {
+                ($p.val.name | split row "{" | get 0 | str length) + 1 + ($p.val.name | split row "}" | get 1 | str length)
+            } else { $p.val.name | str length }
+        } | math max)
         let known_shells = " zsh bash sh nu fish dash ksh tcsh "
         let _cur = (tmux display-message -p '#{pane_current_command}' | str trim | str downcase)
         let shell_name = if ($known_shells | str contains $" ($_cur) ") {
@@ -166,8 +176,10 @@ if ((($env.TMUX? | is-empty) and ($env.ZELLIJ? | is-empty)) and ($env.DOTFILES_S
         }
         for p in $items {
             let has_bracket = ($p.val.name | str contains "{")
-            let hc = if $has_bracket { $p.val.name | split row "{" | get 1 | str substring 0..0 } else { $p.val.name | str substring 0..0 }
-            let rest = if $has_bracket { ($p.val.name | split row "{" | get 0) + ($p.val.name | split row "}" | get 1) } else { $p.val.name | str substring 1.. }
+            let before = if $has_bracket { $p.val.name | split row "{" | get 0 } else { "" }
+            let char = if $has_bracket { $p.val.name | split row "{" | get 1 | str substring 0..0 } else { $p.val.name | str substring 0..0 }
+            let after = if $has_bracket { $p.val.name | split row "}" | get 1 } else { $p.val.name | str substring 1.. }
+            let plain_len = if $has_bracket { ($before | str length) + 1 + ($after | str length) } else { $p.val.name | str length }
             let session = ($p.val.dir | path basename | str replace --regex '^\.' '' | str replace --all '.' '-')
             let icons = if (tmux has-session -t $session | complete | get exit_code) == 0 {
                 let wins = (tmux list-windows -t $session -F '#{window_name}|#{window_active}' | lines)
@@ -190,9 +202,9 @@ if ((($env.TMUX? | is-empty) and ($env.ZELLIJ? | is-empty)) and ($env.DOTFILES_S
                     }
                 } | str join
             }
-            let pad = ($max_len - ($p.val.name | str length) + 1)
+            let pad = ($max_len - $plain_len + 1)
             let padding = ("" | fill -c " " -w $pad -a l)
-            print $"   ($green)($hc)($reset)($rest):($padding)($icons)"
+            print $"   ($before)($green)($char)($reset)($after):($padding)($icons)"
         }
         print -n "Pick: "
         let choice = (input --numchar 1 --suppress-output | str downcase)
