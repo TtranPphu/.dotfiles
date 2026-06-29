@@ -9,6 +9,7 @@ typeset -A session_presets
 session_presets[_]="default|$(pwd)|"
 session_presets[d]="{d}otfiles|${HOME}/.dotfiles|opencode;nvim;"
 session_presets[t]="{t}iny-repository|${HOME}/Projects/tiny-repository|opencode;nvim;"
+session_presets[n]="ti{n}y-repository|${HOME}/projects/tiny-repository|opencode;nvim;"
 session_presets[k]="zmk-{k}eyboard-cornix|${HOME}/Projects/zmk-keyboard-cornix|opencode;nvim;"
 
 create_from_preset() {
