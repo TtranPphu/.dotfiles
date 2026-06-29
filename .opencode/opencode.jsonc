@@ -21,6 +21,11 @@
       "template": "Load the stow-deploy skill and follow its instructions. If an argument is given, use it as the package name or action (list/preview).",
       "subtask": true
     },
+    "tmux-troubleshoot": {
+      "description": "Investigate tmux panes: capture output, check logs, inspect status lines",
+      "template": "Load the tmux-troubleshoot skill and follow its instructions to diagnose the tmux issue.",
+      "subtask": true
+    },
     "handoff": {
       "description": "Write or archive handoff documents for interrupted work",
       "template": "Load the handoff skill. If writing, document current session's discoveries, decisions, and remaining work. If archiving, summarize and archive existing handoffs.",
