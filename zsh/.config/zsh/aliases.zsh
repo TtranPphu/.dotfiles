@@ -8,13 +8,13 @@ if command -v eza &>/dev/null; then
   alias ls='eza -ah --icons'
 
   alias la='eza -lah --icons --group'
-  alias lt='eza -lah --tree --icons --ignore-glob=.git --group'
+  alias lt='eza -lah --tree --icons --ignore-glob=".git|node_modules" --group'
   alias ld='eza -lah --only-dirs --icons --group'
   alias lf='eza -lah --only-files --icons --group'
   alias lh='eza -lad .* --icons --group'
 
   lap() { eza -lah --icons --group --color=always "$@" | ${PAGER:-less}; }
-  ltp() { eza -lah --tree --icons --ignore-glob=.git --group --color=always "$@" | ${PAGER:-less}; }
+  ltp() { eza -lah --tree --icons --ignore-glob='.git|node_modules' --group --color=always "$@" | ${PAGER:-less}; }
   ldp() { eza -lah --only-dirs --icons --group --color=always "$@" | ${PAGER:-less}; }
   lfp() { eza -lah --only-files --icons --group --color=always "$@" | ${PAGER:-less}; }
   lhp() { eza -lad .* --icons --group --color=always "$@" | ${PAGER:-less}; }
