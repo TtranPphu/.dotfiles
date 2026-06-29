@@ -17,7 +17,7 @@ while IFS=' ' read -r pid rest; do
     if [[ "$rest" == *"$pattern"* ]]; then
       branch="$(git -C "/proc/$pid/cwd" branch --show-current 2>/dev/null)"
       if [[ -n "$branch" ]]; then
-        printf '%s' "${name}:${branch}"
+        printf '%s' "${name}  ${branch}"
       else
         printf '%s' "$name"
       fi
