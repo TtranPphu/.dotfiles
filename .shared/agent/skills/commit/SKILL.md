@@ -20,7 +20,7 @@ See [commit-conventions.md](.shared/agent/commit-conventions.md) for the shared 
 
 When asked to make commits:
 
-1. Run `git status`, `git diff`, and `git log -5` to understand state and style.
+1. Run `git status -u`, `git diff`, and `git log -5` to understand state and style.
 2. Identify distinct top-level components with changes.
 3. Review diffs for each component before staging.
 4. Stage only one component at a time (never `git add -A`).
