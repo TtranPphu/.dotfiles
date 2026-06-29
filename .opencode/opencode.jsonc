@@ -45,6 +45,11 @@
       "template": "Load the verify skill and follow its instructions to check the specified handoff's verification items.",
       "subtask": true
     },
+    "merge": {
+      "description": "Merge a feature branch into master with a conventional commit message",
+      "template": "Load the merge skill and follow its instructions. If a branch name is given, use it; otherwise ask which branch to merge.",
+      "subtask": true
+    },
     "retrospect": {
       "description": "Analyze a completed handoff and improve skills",
       "template": "Load the retrospect skill and follow its instructions to gather feedback and update skills.",
