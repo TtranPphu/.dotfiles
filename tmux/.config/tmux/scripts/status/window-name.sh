@@ -3,25 +3,27 @@
 tty="${1:-}"
 default_app="${2:-}"
 
-foreground_args="$(
-  ps -t "$tty" -o stat= -o args= 2>/dev/null |
-    awk '/\+/ { $1 = ""; sub(/^ /, ""); print; exit }'
-)"
-
 app_name_rules=(
   'claude:claude'
   'copilot:copilot'
   'opencode:opencode'
 )
 
-for rule in "${app_name_rules[@]}"; do
-  pattern="${rule%%:*}"
-  name="${rule#*:}"
+while IFS=' ' read -r pid rest; do
+  for rule in "${app_name_rules[@]}"; do
+    pattern="${rule%%:*}"
+    name="${rule#*:}"
 
-  if [[ "$foreground_args" == *"$pattern"* ]]; then
-    printf '%s' "$name"
-    exit 0
-  fi
-done
+    if [[ "$rest" == *"$pattern"* ]]; then
+      branch="$(git -C "/proc/$pid/cwd" branch --show-current 2>/dev/null)"
+      if [[ -n "$branch" ]]; then
+        printf '%s' "${name}  ${branch}"
+      else
+        printf '%s' "$name"
+      fi
+      exit 0
+    fi
+  done
+done < <(ps -t "$tty" -o pid= -o args= 2>/dev/null)
 
 printf '%s' "$default_app"
