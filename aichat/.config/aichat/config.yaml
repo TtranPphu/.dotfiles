@@ -5,7 +5,7 @@ repl_prelude: default:general
 save_session: true
 use_tools: fs
 mapping_tools:
-  fs: 'fs_cat,fs_ls,fs_mkdir,fs_rm,fs_write'
+  fs: 'fs_cat,fs_ls'
 compress_threshold: 64000
 summarize_prompt: 'Compress the conversation into a concise recap preserving key decisions and context.'
 summary_prompt: '[Compressed session context]: '
