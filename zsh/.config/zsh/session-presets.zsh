@@ -55,7 +55,7 @@ create_from_preset() {
   local -a first_apps=("${(@s:,:)first_win}")
 
   tmux new-session -d -s "$session_name" -c "$dir" -n "${first_apps[1]}" "$current_shell"
-  tmux send-keys -t "${session_name}:1.1" "${first_apps[1]}" Enter
+  tmux send-keys -t "${session_name}:1.1" "clear && ${first_apps[1]}" Enter
 
   local pane="1"
   local -i total_apps=${#first_apps}
@@ -69,7 +69,7 @@ create_from_preset() {
     else
       pane=$(tmux split-window -v -t "${session_name}:1.${pane}" -c "$dir" -P -F '#{pane_index}' "$current_shell")
     fi
-    tmux send-keys -t "${session_name}:1.${pane}" "$app" Enter
+    tmux send-keys -t "${session_name}:1.${pane}" "clear && $app" Enter
   done
 
   local -i win_idx=2
@@ -79,7 +79,7 @@ create_from_preset() {
     else
       local -a apps=("${(@s:,:)win_def}")
       tmux new-window -t "$session_name" -c "$dir" -n "${apps[1]}" "$current_shell"
-      tmux send-keys -t "${session_name}:${win_idx}.1" "${apps[1]}" Enter
+      tmux send-keys -t "${session_name}:${win_idx}.1" "clear && ${apps[1]}" Enter
       local pane="1"
       local -i napps=${#apps}
       for (( i = 2; i <= napps; i++ )); do
@@ -92,7 +92,7 @@ create_from_preset() {
         else
           pane=$(tmux split-window -v -t "${session_name}:${win_idx}.${pane}" -c "$dir" -P -F '#{pane_index}' "$current_shell")
         fi
-        tmux send-keys -t "${session_name}:${win_idx}.${pane}" "$app" Enter
+        tmux send-keys -t "${session_name}:${win_idx}.${pane}" "clear && $app" Enter
       done
     fi
     ((win_idx++))
