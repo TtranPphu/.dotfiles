@@ -96,7 +96,7 @@ Or merge into the existing battery display with a combined status line. The hand
 | zmkBATx — Linux system tray app (AUR: `zmkbatx`) | https://github.com/mh4x0f/zmkBATx |
 | ZmkBatteryClient — Waybar custom module | https://github.com/JanValiska/ZmkBatteryClient |
 | zmk-battery-center — Tauri tray app (cross-platform) | https://github.com/kot149/zmk-battery-center |
-| H08 — Starship battery timeout (cache pattern reference) | `H08-starship-battery-timeout.md` |
+| H08 — Starship timeout warnings (cache pattern reference) | `H08-starship-timeout.md` |
 | Cornix ZMK config (this repo) | `boards/jzf/cornix/cornix_left_defconfig` (lines 67-68) |
 | Existing laptop battery scripts | `starship/.config/starship/battery/guard.sh` and `status.sh` |
 
