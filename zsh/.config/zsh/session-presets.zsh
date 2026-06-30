@@ -190,11 +190,11 @@ done
     local wicons="${picons[$idx]}"
     if tmux has-session -t "$session_name" 2>/dev/null; then
       local active=$(tmux display-message -p -t "$session_name" '#{window_id}' 2>/dev/null)
-      local raw=$(tmux list-windows -t "$session_name" -F "#{window_id} #{window_name}" 2>/dev/null)
+      local raw=$(tmux list-windows -t "$session_name" -F "#{window_id}|#{window_name}" 2>/dev/null)
       wicons=""
       while IFS= read -r line; do
-        local wid="${line% *}"
-        local wname="${line#* }"
+        local wid="${line%%|*}"
+        local wname="${line#*|}"
         if [[ "$wid" == "$active" ]]; then
           wicons+="${ACTIVE}  ${wname} ${NC}"
         else
