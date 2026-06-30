@@ -2,7 +2,6 @@
 
 - Execute exactly what the user asked. Do not add, change, or assume beyond the literal instruction.
 - Before taking any action not explicitly requested, ask first.
-- Never create git commits unless explicitly asked by the user.
 - Track what the user has changed during the session and respect those changes.
 
 ## What This Repo Is
