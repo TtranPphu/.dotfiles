@@ -54,7 +54,11 @@ create_from_preset() {
   local first_win="${windows[1]}"
   local -a first_apps=("${(@s:,:)first_win}")
 
-  tmux new-session -d -s "$session_name" -c "$dir" -n "${first_apps[1]}" "$current_shell"
+  local branch
+  branch="$(git -C "$dir" branch --show-current 2>/dev/null)"
+  local win1_name="${first_apps[1]}${branch:+ 󰊢 ${branch}}"
+
+  tmux new-session -d -s "$session_name" -c "$dir" -n "$win1_name" "$current_shell"
   tmux send-keys -t "${session_name}:1.1" "clear && ${first_apps[1]}" Enter
 
   local pane="1"
@@ -78,7 +82,8 @@ create_from_preset() {
       tmux new-window -t "$session_name" -c "$dir" "$current_shell"
     else
       local -a apps=("${(@s:,:)win_def}")
-      tmux new-window -t "$session_name" -c "$dir" -n "${apps[1]}" "$current_shell"
+      local win_name="${apps[1]}${branch:+ 󰊢 ${branch}}"
+      tmux new-window -t "$session_name" -c "$dir" -n "$win_name" "$current_shell"
       tmux send-keys -t "${session_name}:${win_idx}.1" "clear && ${apps[1]}" Enter
       local pane="1"
       local -i napps=${#apps}
