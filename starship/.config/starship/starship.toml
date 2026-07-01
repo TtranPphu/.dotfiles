@@ -37,6 +37,26 @@ ${custom.battery_3}\
 ${custom.battery_2}\
 ${custom.battery_1}\
 ${custom.battery_0}\
+${custom.keyboard_9}\
+${custom.keyboard_8}\
+${custom.keyboard_7}\
+${custom.keyboard_6}\
+${custom.keyboard_5}\
+${custom.keyboard_4}\
+${custom.keyboard_3}\
+${custom.keyboard_2}\
+${custom.keyboard_1}\
+${custom.keyboard_0}\
+${custom.keyboard_right_9}\
+${custom.keyboard_right_8}\
+${custom.keyboard_right_7}\
+${custom.keyboard_right_6}\
+${custom.keyboard_right_5}\
+${custom.keyboard_right_4}\
+${custom.keyboard_right_3}\
+${custom.keyboard_right_2}\
+${custom.keyboard_right_1}\
+${custom.keyboard_right_0}\
 $line_break\
 $character\
 """
@@ -268,6 +288,146 @@ format = " [$output]($style)"
 [custom.battery_0]
 command = '${STARSHIP_CONFIG%/*}/battery/status.sh'
 when = '${STARSHIP_CONFIG%/*}/battery/guard.sh 0'
+shell = ["bash"]
+style = "bold #f7768e"
+format = " [$output]($style)"
+
+[custom.keyboard_9]
+command = '${STARSHIP_CONFIG%/*}/scripts/keyboard-battery.sh --display left'
+when = '[ -z "$TMUX" ] && ${STARSHIP_CONFIG%/*}/scripts/keyboard-battery.sh --guard 9 left'
+shell = ["bash"]
+style = "bold #9ece6a"
+format = " [$output]($style)"
+
+[custom.keyboard_8]
+command = '${STARSHIP_CONFIG%/*}/scripts/keyboard-battery.sh --display left'
+when = '[ -z "$TMUX" ] && ${STARSHIP_CONFIG%/*}/scripts/keyboard-battery.sh --guard 8 left'
+shell = ["bash"]
+style = "bold #afc66a"
+format = " [$output]($style)"
+
+[custom.keyboard_7]
+command = '${STARSHIP_CONFIG%/*}/scripts/keyboard-battery.sh --display left'
+when = '[ -z "$TMUX" ] && ${STARSHIP_CONFIG%/*}/scripts/keyboard-battery.sh --guard 7 left'
+shell = ["bash"]
+style = "bold #bfbf69"
+format = " [$output]($style)"
+
+[custom.keyboard_6]
+command = '${STARSHIP_CONFIG%/*}/scripts/keyboard-battery.sh --display left'
+when = '[ -z "$TMUX" ] && ${STARSHIP_CONFIG%/*}/scripts/keyboard-battery.sh --guard 6 left'
+shell = ["bash"]
+style = "bold #d0b769"
+format = " [$output]($style)"
+
+[custom.keyboard_5]
+command = '${STARSHIP_CONFIG%/*}/scripts/keyboard-battery.sh --display left'
+when = '[ -z "$TMUX" ] && ${STARSHIP_CONFIG%/*}/scripts/keyboard-battery.sh --guard 5 left'
+shell = ["bash"]
+style = "bold #e0af68"
+format = " [$output]($style)"
+
+[custom.keyboard_4]
+command = '${STARSHIP_CONFIG%/*}/scripts/keyboard-battery.sh --display left'
+when = '[ -z "$TMUX" ] && ${STARSHIP_CONFIG%/*}/scripts/keyboard-battery.sh --guard 4 left'
+shell = ["bash"]
+style = "bold #e5a370"
+format = " [$output]($style)"
+
+[custom.keyboard_3]
+command = '${STARSHIP_CONFIG%/*}/scripts/keyboard-battery.sh --display left'
+when = '[ -z "$TMUX" ] && ${STARSHIP_CONFIG%/*}/scripts/keyboard-battery.sh --guard 3 left'
+shell = ["bash"]
+style = "bold #e99877"
+format = " [$output]($style)"
+
+[custom.keyboard_2]
+command = '${STARSHIP_CONFIG%/*}/scripts/keyboard-battery.sh --display left'
+when = '[ -z "$TMUX" ] && ${STARSHIP_CONFIG%/*}/scripts/keyboard-battery.sh --guard 2 left'
+shell = ["bash"]
+style = "bold #ee8d7f"
+format = " [$output]($style)"
+
+[custom.keyboard_1]
+command = '${STARSHIP_CONFIG%/*}/scripts/keyboard-battery.sh --display left'
+when = '[ -z "$TMUX" ] && ${STARSHIP_CONFIG%/*}/scripts/keyboard-battery.sh --guard 1 left'
+shell = ["bash"]
+style = "bold #f28186"
+format = " [$output]($style)"
+
+[custom.keyboard_0]
+command = '${STARSHIP_CONFIG%/*}/scripts/keyboard-battery.sh --display left'
+when = '[ -z "$TMUX" ] && ${STARSHIP_CONFIG%/*}/scripts/keyboard-battery.sh --guard 0 left'
+shell = ["bash"]
+style = "bold #f7768e"
+format = " [$output]($style)"
+
+[custom.keyboard_right_9]
+command = '${STARSHIP_CONFIG%/*}/scripts/keyboard-battery.sh --display right'
+when = '[ -z "$TMUX" ] && ${STARSHIP_CONFIG%/*}/scripts/keyboard-battery.sh --guard 9 right'
+shell = ["bash"]
+style = "bold #9ece6a"
+format = " [$output]($style)"
+
+[custom.keyboard_right_8]
+command = '${STARSHIP_CONFIG%/*}/scripts/keyboard-battery.sh --display right'
+when = '[ -z "$TMUX" ] && ${STARSHIP_CONFIG%/*}/scripts/keyboard-battery.sh --guard 8 right'
+shell = ["bash"]
+style = "bold #afc66a"
+format = " [$output]($style)"
+
+[custom.keyboard_right_7]
+command = '${STARSHIP_CONFIG%/*}/scripts/keyboard-battery.sh --display right'
+when = '[ -z "$TMUX" ] && ${STARSHIP_CONFIG%/*}/scripts/keyboard-battery.sh --guard 7 right'
+shell = ["bash"]
+style = "bold #bfbf69"
+format = " [$output]($style)"
+
+[custom.keyboard_right_6]
+command = '${STARSHIP_CONFIG%/*}/scripts/keyboard-battery.sh --display right'
+when = '[ -z "$TMUX" ] && ${STARSHIP_CONFIG%/*}/scripts/keyboard-battery.sh --guard 6 right'
+shell = ["bash"]
+style = "bold #d0b769"
+format = " [$output]($style)"
+
+[custom.keyboard_right_5]
+command = '${STARSHIP_CONFIG%/*}/scripts/keyboard-battery.sh --display right'
+when = '[ -z "$TMUX" ] && ${STARSHIP_CONFIG%/*}/scripts/keyboard-battery.sh --guard 5 right'
+shell = ["bash"]
+style = "bold #e0af68"
+format = " [$output]($style)"
+
+[custom.keyboard_right_4]
+command = '${STARSHIP_CONFIG%/*}/scripts/keyboard-battery.sh --display right'
+when = '[ -z "$TMUX" ] && ${STARSHIP_CONFIG%/*}/scripts/keyboard-battery.sh --guard 4 right'
+shell = ["bash"]
+style = "bold #e5a370"
+format = " [$output]($style)"
+
+[custom.keyboard_right_3]
+command = '${STARSHIP_CONFIG%/*}/scripts/keyboard-battery.sh --display right'
+when = '[ -z "$TMUX" ] && ${STARSHIP_CONFIG%/*}/scripts/keyboard-battery.sh --guard 3 right'
+shell = ["bash"]
+style = "bold #e99877"
+format = " [$output]($style)"
+
+[custom.keyboard_right_2]
+command = '${STARSHIP_CONFIG%/*}/scripts/keyboard-battery.sh --display right'
+when = '[ -z "$TMUX" ] && ${STARSHIP_CONFIG%/*}/scripts/keyboard-battery.sh --guard 2 right'
+shell = ["bash"]
+style = "bold #ee8d7f"
+format = " [$output]($style)"
+
+[custom.keyboard_right_1]
+command = '${STARSHIP_CONFIG%/*}/scripts/keyboard-battery.sh --display right'
+when = '[ -z "$TMUX" ] && ${STARSHIP_CONFIG%/*}/scripts/keyboard-battery.sh --guard 1 right'
+shell = ["bash"]
+style = "bold #f28186"
+format = " [$output]($style)"
+
+[custom.keyboard_right_0]
+command = '${STARSHIP_CONFIG%/*}/scripts/keyboard-battery.sh --display right'
+when = '[ -z "$TMUX" ] && ${STARSHIP_CONFIG%/*}/scripts/keyboard-battery.sh --guard 0 right'
 shell = ["bash"]
 style = "bold #f7768e"
 format = " [$output]($style)"
