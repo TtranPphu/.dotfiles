@@ -1,0 +1,1 @@
+../../../../../.shared/scripts/keyboard-battery-util.sh

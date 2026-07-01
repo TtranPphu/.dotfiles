@@ -31,6 +31,9 @@ printf '#[fg=blue,bg=brightblack,bold]  %s #[default]' "${pane_id#%}"
 # Battery indicator
 "$script_dir/battery.sh"
 
+# Keyboard battery
+"$script_dir/keyboard-battery.sh"
+
 if tmux -S "$socket_path" show-environment -t "$current_session" SSH_CONNECTION 2>/dev/null | grep -q '^SSH_CONNECTION='; then
   if [[ "$host_name" =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]] || [[ "$host_name" == *:* ]]; then
     display_host="$host_name"
