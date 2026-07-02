@@ -12,6 +12,9 @@ BATTERY_SVC_UUID="0000180f-0000-1000-8000-00805f9b34fb"
 BATTERY_LEVEL_UUID="00002a19-0000-1000-8000-00805f9b34fb"
 BATTERY_USER_DESC="00002901-0000-1000-8000-00805f9b34fb"
 
+SCRIPT_DIR="$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")"
+WSL_PS1="$SCRIPT_DIR/keyboard-battery-wsl.ps1"
+
 usage() { exit 1; }
 err_exit() { exit 1; }
 
@@ -50,6 +53,33 @@ gdbus_desc_value() {
   for hex in $(printf '%s' "$out" | grep -o '0x[0-9a-f][0-9a-f]'); do
     printf "\\x$hex"
   done
+}
+
+read_batteries_wsl() {
+  [[ -f "$WSL_PS1" ]] || return 1
+  command -v powershell.exe &>/dev/null || return 1
+  grep -qi microsoft /proc/version 2>/dev/null || return 1
+
+  if ! mkdir "/tmp/keyboard-battery-wsl.lock" 2>/dev/null; then
+    return 1
+  fi
+
+  (
+    tmp=$(mktemp "$CACHEFILE.XXXXXX")
+    result=$(timeout 10 powershell.exe -NoProfile -ExecutionPolicy Bypass -File "$WSL_PS1" 2>/dev/null | tr -d '\r')
+    if [[ -n "$result" ]]; then
+      left="${result%% *}"
+      right="${result##* }"
+      if [[ -n "$left" ]]; then
+        printf '%s %s %s\n' "$left" "${right:-0}" "$(date +%s)" > "$tmp"
+        mv "$tmp" "$CACHEFILE"
+      fi
+    fi
+    rm -f "$tmp"
+    rmdir "/tmp/keyboard-battery-wsl.lock" 2>/dev/null
+  ) & disown
+
+  return 1
 }
 
 read_batteries_gdbus() {
@@ -119,7 +149,29 @@ read_batteries_gdbus() {
   return 1
 }
 
+read_batteries_wsl_sync() {
+  [[ -f "$WSL_PS1" ]] || return 1
+  command -v powershell.exe &>/dev/null || return 1
+  grep -qi microsoft /proc/version 2>/dev/null || return 1
+
+  local result left right
+  result=$(timeout 10 powershell.exe -NoProfile -ExecutionPolicy Bypass -File "$WSL_PS1" 2>/dev/null | tr -d '\r') || return 1
+  left="${result%% *}"
+  right="${result##* }"
+  [[ -z "$left" ]] && return 1
+  printf '%s %s' "$left" "${right:-0}"
+  return 0
+}
+
 read_batteries() {
+  if grep -qi microsoft /proc/version 2>/dev/null; then
+    if [[ -z "${TMUX-}" ]]; then
+      read_batteries_wsl && return 0
+    else
+      read_batteries_wsl_sync && return 0
+    fi
+    return 1
+  fi
   if command -v gdbus &>/dev/null; then
     read_batteries_gdbus && return 0
   fi
