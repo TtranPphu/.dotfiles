@@ -2,7 +2,7 @@
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-UTIL="$SCRIPT_DIR/keyboard-battery-util.sh"
+UTIL="$SCRIPT_DIR/keyboard-util.sh"
 
 data=$("$UTIL") || exit 1
 left="${data%% *}"

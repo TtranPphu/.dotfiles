@@ -1,35 +1,12 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-cap=""
-raw_status=""
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+UTIL="$SCRIPT_DIR/battery-util.sh"
 
-bat_path=$(upower -e 2>/dev/null | grep -i bat | head -1)
-if [[ -n "$bat_path" ]]; then
-  read -r cap raw_status < <(
-    upower -i "$bat_path" 2>/dev/null | awk '
-      /percentage:/ { gsub(/%/,""); cap = sprintf("%.0f", $2) }
-      /state:/      { st = $2 }
-      END           { print cap, st }
-    '
-  )
-fi
-
-if [[ -z "$cap" || ! "$cap" =~ ^[0-9]+$ ]] && grep -qi microsoft /proc/version 2>/dev/null; then
-  read -r cap raw_status < <(
-    powershell.exe -NoProfile -Command '
-      $b = Get-WmiObject Win32_Battery
-      if ($b) { Write-Host "$($b.EstimatedChargeRemaining) $($b.BatteryStatus)" }
-    ' 2>/dev/null | tr -d '\r'
-  )
-  case "$raw_status" in
-    1) raw_status="discharging" ;;
-    2|6|7|8|9|11) raw_status="charging" ;;
-    3) raw_status="fully-charged" ;;
-    *) raw_status="" ;;
-  esac
-fi
-
+data=$("$UTIL") || exit 1
+cap="${data%% *}"
+raw_status="${data##* }"
 [[ -z "$cap" || ! "$cap" =~ ^[0-9]+$ ]] && exit 1
 
 idx=$(( (cap - 1) / 10 ))
@@ -41,9 +18,9 @@ colors=(
   "#e0af68" "#d0b769" "#bfbf69" "#afc66a" "#9ece6a"
 )
 
-if [[ $raw_status == "fully-charged" ]]; then
+if [[ "${raw_status:-}" == "fully-charged" ]]; then
   icon="󰂄"
-elif [[ $raw_status == "charging" || $raw_status == "pending-charge" ]]; then
+elif [[ "${raw_status:-}" == "charging" || "${raw_status:-}" == "pending-charge" ]]; then
   icon="${charging_icons[$idx]}"
 else
   icon="${discharging_icons[$idx]}"

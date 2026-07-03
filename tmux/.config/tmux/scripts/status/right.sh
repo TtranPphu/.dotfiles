@@ -31,7 +31,7 @@ printf '#[fg=blue,bg=brightblack,bold]  %s #[default]' "${pane_id#%}"
 "$script_dir/battery.sh"
 
 # Keyboard battery
-"$script_dir/keyboard-battery.sh"
+"$script_dir/keyboard.sh"
 
 if tmux -S "$socket_path" show-environment -t "$current_session" SSH_CONNECTION 2>/dev/null | grep -q '^SSH_CONNECTION='; then
   "$script_dir/hostname.sh"

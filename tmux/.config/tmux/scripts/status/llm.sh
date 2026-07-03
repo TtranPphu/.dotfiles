@@ -1,53 +1,45 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-rf=/tmp/llm-route
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+UTIL="$SCRIPT_DIR/llm-util.sh"
 
-if [[ -f $rf ]]; then
-  now=$(date +%s)
-  mtime=$(date -r "$rf" +%s 2>/dev/null) || mtime=0
-  if ((now - mtime < 300)); then
-    read -r route <"$rf"
-    case "$route" in
-      claude-pro)      color="red" ;;
-      claude-flash)    color="purple" ;;
-      aichat-reasoner) color="blue" ;;
-      aichat-chat)     color="cyan" ;;
-      aichat-qwen)     color="white" ;;
-      opencode-free)   color="green" ;;
-      *)               color="colour239" ;;
-    esac
-    printf '#[fg=colour233,bold,bg=%s]  ▐#[default]' "$color"
-    exit 0
-  fi
-fi
+data=$("$UTIL") || exit 1
+type="${data%% *}"
+value="${data#* }"
 
-# OS fallback
-if [[ -f /etc/os-release ]]; then
-  id=$(. /etc/os-release && echo "${ID:-linux}")
+if [[ $type == route ]]; then
+  case "$value" in
+    claude-pro)      color="red" ;;
+    claude-flash)    color="purple" ;;
+    aichat-reasoner) color="blue" ;;
+    aichat-chat)     color="cyan" ;;
+    aichat-qwen)     color="white" ;;
+    opencode-free)   color="green" ;;
+    *)               color="colour239" ;;
+  esac
+  printf '#[fg=colour233,bold,bg=%s]  ▐#[default]' "$color"
 else
-  id=linux
+  case "$value" in
+    alpine)       icon="" ;;
+    amzn)         icon="" ;;
+    android)      icon="" ;;
+    arch|artix)   icon="󰣇" ;;
+    centos)       icon="" ;;
+    darwin)       icon="󰀵" ;;
+    debian)       icon="󰣚" ;;
+    fedora)       icon="󰣛" ;;
+    gentoo)       icon="󰣨" ;;
+    manjaro)      icon="" ;;
+    mint)         icon="󰣭" ;;
+    nixos)        icon="" ;;
+    opensuse*)    icon="" ;;
+    raspbian)     icon="󰐿" ;;
+    rhel|redhat)  icon="󱄛" ;;
+    rocky)        icon="" ;;
+    sles)         icon="" ;;
+    ubuntu)       icon="" ;;
+    *)            icon="󰌽" ;;
+  esac
+  printf '#[fg=colour233,bold,bg=brightblack] %s ▐#[default]' "$icon"
 fi
-case "$id" in
-  alpine)       icon="" ;;
-  amzn)         icon="" ;;
-  android)      icon="" ;;
-  arch|artix)   icon="󰣇" ;;
-  centos)       icon="" ;;
-  darwin)       icon="󰀵" ;;
-  debian)       icon="󰣚" ;;
-  fedora)       icon="󰣛" ;;
-  gentoo)       icon="󰣨" ;;
-  manjaro)      icon="" ;;
-  mint)         icon="󰣭" ;;
-  nixos)        icon="" ;;
-  opensuse*)    icon="" ;;
-  raspbian)     icon="󰐿" ;;
-  rhel|redhat)  icon="󱄛" ;;
-  rocky)        icon="" ;;
-  sles)         icon="" ;;
-  ubuntu)       icon="" ;;
-  *)            icon="󰌽" ;;
-esac
-
-printf '#[fg=colour233,bold,bg=brightblack] %s ▐#[default]' "$icon"
