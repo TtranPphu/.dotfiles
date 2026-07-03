@@ -453,7 +453,7 @@ format = " [ $user]($style)"
 
 [custom.hostname]
 command = '${STARSHIP_CONFIG%/*}/scripts/hostname.sh'
-when = '[ -z "$TMUX" ]'
+when = '[ -z "$TMUX" ] && ([ -n "$SSH_CONNECTION" ] || test -f /.dockerenv)'
 shell = ["bash"]
 style = "bold dimmed green"
 format = " [$output]($style)"
