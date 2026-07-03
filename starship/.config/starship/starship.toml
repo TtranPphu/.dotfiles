@@ -64,7 +64,7 @@ $character\
 right_format = """
 ${custom.deepseek_balance}\
 $username\
-$hostname\
+${custom.hostname}\
 ${custom.docker_host}\
 """
 
@@ -451,8 +451,12 @@ style_user = "bold cyan"
 style_root = "bold purple"
 format = " [ $user]($style)"
 
-[hostname]
-format = " [󰢹 $hostname]($style)"
+[custom.hostname]
+command = '${STARSHIP_CONFIG%/*}/scripts/hostname.sh'
+when = '[ -z "$TMUX" ]'
+shell = ["bash"]
+style = "bold dimmed green"
+format = " [$output]($style)"
 
 
 [custom.docker_host]
