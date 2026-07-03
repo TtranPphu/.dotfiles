@@ -2,7 +2,7 @@
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-UTIL="$SCRIPT_DIR/keyboard-battery-util.sh"
+UTIL="$SCRIPT_DIR/keyboard-util.sh"
 
 usage() {
   echo "Usage: $(basename "$0") --display <left|right> | --guard <tier> <left|right>"

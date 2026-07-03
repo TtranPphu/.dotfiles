@@ -70,50 +70,50 @@ ${custom.docker_host}\
 
 
 [custom.llm_os]
-command = '${STARSHIP_CONFIG%/*}/llm/route.sh os'
-when = '${STARSHIP_CONFIG%/*}/llm/when.sh os'
+command = '${STARSHIP_CONFIG%/*}/scripts/llm.sh --display os'
+when = '[ -z "$TMUX" ] && [ -z "$ZELLIJ" ] && ${STARSHIP_CONFIG%/*}/scripts/llm.sh --guard os'
 shell = ["bash"]
 style = "bold"
 format = "[$output]($style)  "
 
 [custom.llm_pro]
-command = '${STARSHIP_CONFIG%/*}/llm/route.sh pro'
-when = '${STARSHIP_CONFIG%/*}/llm/when.sh pro'
+command = '${STARSHIP_CONFIG%/*}/scripts/llm.sh --display pro'
+when = '[ -z "$TMUX" ] && [ -z "$ZELLIJ" ] && ${STARSHIP_CONFIG%/*}/scripts/llm.sh --guard pro'
 shell = ["bash"]
 style = "red"
 format = "[$output]($style)  "
 
 [custom.llm_flash]
-command = '${STARSHIP_CONFIG%/*}/llm/route.sh flash'
-when = '${STARSHIP_CONFIG%/*}/llm/when.sh flash'
+command = '${STARSHIP_CONFIG%/*}/scripts/llm.sh --display flash'
+when = '[ -z "$TMUX" ] && [ -z "$ZELLIJ" ] && ${STARSHIP_CONFIG%/*}/scripts/llm.sh --guard flash'
 shell = ["bash"]
 style = "purple"
 format = "[$output]($style)  "
 
 [custom.llm_reasoner]
-command = '${STARSHIP_CONFIG%/*}/llm/route.sh reasoner'
-when = '${STARSHIP_CONFIG%/*}/llm/when.sh reasoner'
+command = '${STARSHIP_CONFIG%/*}/scripts/llm.sh --display reasoner'
+when = '[ -z "$TMUX" ] && [ -z "$ZELLIJ" ] && ${STARSHIP_CONFIG%/*}/scripts/llm.sh --guard reasoner'
 shell = ["bash"]
 style = "blue"
 format = "[$output]($style)  "
 
 [custom.llm_chat]
-command = '${STARSHIP_CONFIG%/*}/llm/route.sh chat'
-when = '${STARSHIP_CONFIG%/*}/llm/when.sh chat'
+command = '${STARSHIP_CONFIG%/*}/scripts/llm.sh --display chat'
+when = '[ -z "$TMUX" ] && [ -z "$ZELLIJ" ] && ${STARSHIP_CONFIG%/*}/scripts/llm.sh --guard chat'
 shell = ["bash"]
 style = "cyan"
 format = "[$output]($style)  "
 
 [custom.llm_qwen]
-command = '${STARSHIP_CONFIG%/*}/llm/route.sh qwen'
-when = '${STARSHIP_CONFIG%/*}/llm/when.sh qwen'
+command = '${STARSHIP_CONFIG%/*}/scripts/llm.sh --display qwen'
+when = '[ -z "$TMUX" ] && [ -z "$ZELLIJ" ] && ${STARSHIP_CONFIG%/*}/scripts/llm.sh --guard qwen'
 shell = ["bash"]
 style = "white"
 format = "[$output]($style)  "
 
 [custom.llm_free]
-command = '${STARSHIP_CONFIG%/*}/llm/route.sh free'
-when = '${STARSHIP_CONFIG%/*}/llm/when.sh free'
+command = '${STARSHIP_CONFIG%/*}/scripts/llm.sh --display free'
+when = '[ -z "$TMUX" ] && [ -z "$ZELLIJ" ] && ${STARSHIP_CONFIG%/*}/scripts/llm.sh --guard free'
 shell = ["bash"]
 style = "green"
 format = "[$output]($style)  "
@@ -129,7 +129,7 @@ nu_indicator = " nu"
 zsh_indicator = " zsh"
 
 [custom.compress_path]
-command = '${STARSHIP_CONFIG%/*}/compress-path.sh'
+command = '${STARSHIP_CONFIG%/*}/scripts/path.sh'
 when = "true"
 shell = ["bash"]
 style = "bold bright-blue"
@@ -141,7 +141,7 @@ style = "green"
 format = "[$branch]($style) "
 
 [custom.git_remote]
-command = '${STARSHIP_CONFIG%/*}/git-remote.sh'
+command = '${STARSHIP_CONFIG%/*}/scripts/git-remote.sh'
 when = "git rev-parse --is-inside-work-tree 2>/dev/null"
 shell = ["bash"]
 style = "bold white"
@@ -223,211 +223,211 @@ format = " [$output]($style)"
 disabled = true
 
 [custom.battery_9]
-command = '${STARSHIP_CONFIG%/*}/battery/status.sh'
-when = '${STARSHIP_CONFIG%/*}/battery/guard.sh 9'
+command = '${STARSHIP_CONFIG%/*}/scripts/battery.sh --display'
+when = '[ -z "$TMUX" ] && [ -z "$ZELLIJ" ] && ${STARSHIP_CONFIG%/*}/scripts/battery.sh --guard 9'
 shell = ["bash"]
 style = "bold #9ece6a"
 format = " [$output]($style)"
 
 [custom.battery_8]
-command = '${STARSHIP_CONFIG%/*}/battery/status.sh'
-when = '${STARSHIP_CONFIG%/*}/battery/guard.sh 8'
+command = '${STARSHIP_CONFIG%/*}/scripts/battery.sh --display'
+when = '[ -z "$TMUX" ] && [ -z "$ZELLIJ" ] && ${STARSHIP_CONFIG%/*}/scripts/battery.sh --guard 8'
 shell = ["bash"]
 style = "bold #afc66a"
 format = " [$output]($style)"
 
 [custom.battery_7]
-command = '${STARSHIP_CONFIG%/*}/battery/status.sh'
-when = '${STARSHIP_CONFIG%/*}/battery/guard.sh 7'
+command = '${STARSHIP_CONFIG%/*}/scripts/battery.sh --display'
+when = '[ -z "$TMUX" ] && [ -z "$ZELLIJ" ] && ${STARSHIP_CONFIG%/*}/scripts/battery.sh --guard 7'
 shell = ["bash"]
 style = "bold #bfbf69"
 format = " [$output]($style)"
 
 [custom.battery_6]
-command = '${STARSHIP_CONFIG%/*}/battery/status.sh'
-when = '${STARSHIP_CONFIG%/*}/battery/guard.sh 6'
+command = '${STARSHIP_CONFIG%/*}/scripts/battery.sh --display'
+when = '[ -z "$TMUX" ] && [ -z "$ZELLIJ" ] && ${STARSHIP_CONFIG%/*}/scripts/battery.sh --guard 6'
 shell = ["bash"]
 style = "bold #d0b769"
 format = " [$output]($style)"
 
 [custom.battery_5]
-command = '${STARSHIP_CONFIG%/*}/battery/status.sh'
-when = '${STARSHIP_CONFIG%/*}/battery/guard.sh 5'
+command = '${STARSHIP_CONFIG%/*}/scripts/battery.sh --display'
+when = '[ -z "$TMUX" ] && [ -z "$ZELLIJ" ] && ${STARSHIP_CONFIG%/*}/scripts/battery.sh --guard 5'
 shell = ["bash"]
 style = "bold #e0af68"
 format = " [$output]($style)"
 
 [custom.battery_4]
-command = '${STARSHIP_CONFIG%/*}/battery/status.sh'
-when = '${STARSHIP_CONFIG%/*}/battery/guard.sh 4'
+command = '${STARSHIP_CONFIG%/*}/scripts/battery.sh --display'
+when = '[ -z "$TMUX" ] && [ -z "$ZELLIJ" ] && ${STARSHIP_CONFIG%/*}/scripts/battery.sh --guard 4'
 shell = ["bash"]
 style = "bold #e5a370"
 format = " [$output]($style)"
 
 [custom.battery_3]
-command = '${STARSHIP_CONFIG%/*}/battery/status.sh'
-when = '${STARSHIP_CONFIG%/*}/battery/guard.sh 3'
+command = '${STARSHIP_CONFIG%/*}/scripts/battery.sh --display'
+when = '[ -z "$TMUX" ] && [ -z "$ZELLIJ" ] && ${STARSHIP_CONFIG%/*}/scripts/battery.sh --guard 3'
 shell = ["bash"]
 style = "bold #e99877"
 format = " [$output]($style)"
 
 [custom.battery_2]
-command = '${STARSHIP_CONFIG%/*}/battery/status.sh'
-when = '${STARSHIP_CONFIG%/*}/battery/guard.sh 2'
+command = '${STARSHIP_CONFIG%/*}/scripts/battery.sh --display'
+when = '[ -z "$TMUX" ] && [ -z "$ZELLIJ" ] && ${STARSHIP_CONFIG%/*}/scripts/battery.sh --guard 2'
 shell = ["bash"]
 style = "bold #ee8d7f"
 format = " [$output]($style)"
 
 [custom.battery_1]
-command = '${STARSHIP_CONFIG%/*}/battery/status.sh'
-when = '${STARSHIP_CONFIG%/*}/battery/guard.sh 1'
+command = '${STARSHIP_CONFIG%/*}/scripts/battery.sh --display'
+when = '[ -z "$TMUX" ] && [ -z "$ZELLIJ" ] && ${STARSHIP_CONFIG%/*}/scripts/battery.sh --guard 1'
 shell = ["bash"]
 style = "bold #f28186"
 format = " [$output]($style)"
 
 [custom.battery_0]
-command = '${STARSHIP_CONFIG%/*}/battery/status.sh'
-when = '${STARSHIP_CONFIG%/*}/battery/guard.sh 0'
+command = '${STARSHIP_CONFIG%/*}/scripts/battery.sh --display'
+when = '[ -z "$TMUX" ] && [ -z "$ZELLIJ" ] && ${STARSHIP_CONFIG%/*}/scripts/battery.sh --guard 0'
 shell = ["bash"]
 style = "bold #f7768e"
 format = " [$output]($style)"
 
 [custom.keyboard_9]
-command = '${STARSHIP_CONFIG%/*}/scripts/keyboard-battery.sh --display left'
-when = '[ -z "$TMUX" ] && ${STARSHIP_CONFIG%/*}/scripts/keyboard-battery.sh --guard 9 left'
+command = '${STARSHIP_CONFIG%/*}/scripts/keyboard.sh --display left'
+when = '[ -z "$TMUX" ] && ${STARSHIP_CONFIG%/*}/scripts/keyboard.sh --guard 9 left'
 shell = ["bash"]
 style = "bold #9ece6a"
 format = " [$output]($style)"
 
 [custom.keyboard_8]
-command = '${STARSHIP_CONFIG%/*}/scripts/keyboard-battery.sh --display left'
-when = '[ -z "$TMUX" ] && ${STARSHIP_CONFIG%/*}/scripts/keyboard-battery.sh --guard 8 left'
+command = '${STARSHIP_CONFIG%/*}/scripts/keyboard.sh --display left'
+when = '[ -z "$TMUX" ] && ${STARSHIP_CONFIG%/*}/scripts/keyboard.sh --guard 8 left'
 shell = ["bash"]
 style = "bold #afc66a"
 format = " [$output]($style)"
 
 [custom.keyboard_7]
-command = '${STARSHIP_CONFIG%/*}/scripts/keyboard-battery.sh --display left'
-when = '[ -z "$TMUX" ] && ${STARSHIP_CONFIG%/*}/scripts/keyboard-battery.sh --guard 7 left'
+command = '${STARSHIP_CONFIG%/*}/scripts/keyboard.sh --display left'
+when = '[ -z "$TMUX" ] && ${STARSHIP_CONFIG%/*}/scripts/keyboard.sh --guard 7 left'
 shell = ["bash"]
 style = "bold #bfbf69"
 format = " [$output]($style)"
 
 [custom.keyboard_6]
-command = '${STARSHIP_CONFIG%/*}/scripts/keyboard-battery.sh --display left'
-when = '[ -z "$TMUX" ] && ${STARSHIP_CONFIG%/*}/scripts/keyboard-battery.sh --guard 6 left'
+command = '${STARSHIP_CONFIG%/*}/scripts/keyboard.sh --display left'
+when = '[ -z "$TMUX" ] && ${STARSHIP_CONFIG%/*}/scripts/keyboard.sh --guard 6 left'
 shell = ["bash"]
 style = "bold #d0b769"
 format = " [$output]($style)"
 
 [custom.keyboard_5]
-command = '${STARSHIP_CONFIG%/*}/scripts/keyboard-battery.sh --display left'
-when = '[ -z "$TMUX" ] && ${STARSHIP_CONFIG%/*}/scripts/keyboard-battery.sh --guard 5 left'
+command = '${STARSHIP_CONFIG%/*}/scripts/keyboard.sh --display left'
+when = '[ -z "$TMUX" ] && ${STARSHIP_CONFIG%/*}/scripts/keyboard.sh --guard 5 left'
 shell = ["bash"]
 style = "bold #e0af68"
 format = " [$output]($style)"
 
 [custom.keyboard_4]
-command = '${STARSHIP_CONFIG%/*}/scripts/keyboard-battery.sh --display left'
-when = '[ -z "$TMUX" ] && ${STARSHIP_CONFIG%/*}/scripts/keyboard-battery.sh --guard 4 left'
+command = '${STARSHIP_CONFIG%/*}/scripts/keyboard.sh --display left'
+when = '[ -z "$TMUX" ] && ${STARSHIP_CONFIG%/*}/scripts/keyboard.sh --guard 4 left'
 shell = ["bash"]
 style = "bold #e5a370"
 format = " [$output]($style)"
 
 [custom.keyboard_3]
-command = '${STARSHIP_CONFIG%/*}/scripts/keyboard-battery.sh --display left'
-when = '[ -z "$TMUX" ] && ${STARSHIP_CONFIG%/*}/scripts/keyboard-battery.sh --guard 3 left'
+command = '${STARSHIP_CONFIG%/*}/scripts/keyboard.sh --display left'
+when = '[ -z "$TMUX" ] && ${STARSHIP_CONFIG%/*}/scripts/keyboard.sh --guard 3 left'
 shell = ["bash"]
 style = "bold #e99877"
 format = " [$output]($style)"
 
 [custom.keyboard_2]
-command = '${STARSHIP_CONFIG%/*}/scripts/keyboard-battery.sh --display left'
-when = '[ -z "$TMUX" ] && ${STARSHIP_CONFIG%/*}/scripts/keyboard-battery.sh --guard 2 left'
+command = '${STARSHIP_CONFIG%/*}/scripts/keyboard.sh --display left'
+when = '[ -z "$TMUX" ] && ${STARSHIP_CONFIG%/*}/scripts/keyboard.sh --guard 2 left'
 shell = ["bash"]
 style = "bold #ee8d7f"
 format = " [$output]($style)"
 
 [custom.keyboard_1]
-command = '${STARSHIP_CONFIG%/*}/scripts/keyboard-battery.sh --display left'
-when = '[ -z "$TMUX" ] && ${STARSHIP_CONFIG%/*}/scripts/keyboard-battery.sh --guard 1 left'
+command = '${STARSHIP_CONFIG%/*}/scripts/keyboard.sh --display left'
+when = '[ -z "$TMUX" ] && ${STARSHIP_CONFIG%/*}/scripts/keyboard.sh --guard 1 left'
 shell = ["bash"]
 style = "bold #f28186"
 format = " [$output]($style)"
 
 [custom.keyboard_0]
-command = '${STARSHIP_CONFIG%/*}/scripts/keyboard-battery.sh --display left'
-when = '[ -z "$TMUX" ] && ${STARSHIP_CONFIG%/*}/scripts/keyboard-battery.sh --guard 0 left'
+command = '${STARSHIP_CONFIG%/*}/scripts/keyboard.sh --display left'
+when = '[ -z "$TMUX" ] && ${STARSHIP_CONFIG%/*}/scripts/keyboard.sh --guard 0 left'
 shell = ["bash"]
 style = "bold #f7768e"
 format = " [$output]($style)"
 
 [custom.keyboard_right_9]
-command = '${STARSHIP_CONFIG%/*}/scripts/keyboard-battery.sh --display right'
-when = '[ -z "$TMUX" ] && ${STARSHIP_CONFIG%/*}/scripts/keyboard-battery.sh --guard 9 right'
+command = '${STARSHIP_CONFIG%/*}/scripts/keyboard.sh --display right'
+when = '[ -z "$TMUX" ] && ${STARSHIP_CONFIG%/*}/scripts/keyboard.sh --guard 9 right'
 shell = ["bash"]
 style = "bold #9ece6a"
 format = " [$output]($style)"
 
 [custom.keyboard_right_8]
-command = '${STARSHIP_CONFIG%/*}/scripts/keyboard-battery.sh --display right'
-when = '[ -z "$TMUX" ] && ${STARSHIP_CONFIG%/*}/scripts/keyboard-battery.sh --guard 8 right'
+command = '${STARSHIP_CONFIG%/*}/scripts/keyboard.sh --display right'
+when = '[ -z "$TMUX" ] && ${STARSHIP_CONFIG%/*}/scripts/keyboard.sh --guard 8 right'
 shell = ["bash"]
 style = "bold #afc66a"
 format = " [$output]($style)"
 
 [custom.keyboard_right_7]
-command = '${STARSHIP_CONFIG%/*}/scripts/keyboard-battery.sh --display right'
-when = '[ -z "$TMUX" ] && ${STARSHIP_CONFIG%/*}/scripts/keyboard-battery.sh --guard 7 right'
+command = '${STARSHIP_CONFIG%/*}/scripts/keyboard.sh --display right'
+when = '[ -z "$TMUX" ] && ${STARSHIP_CONFIG%/*}/scripts/keyboard.sh --guard 7 right'
 shell = ["bash"]
 style = "bold #bfbf69"
 format = " [$output]($style)"
 
 [custom.keyboard_right_6]
-command = '${STARSHIP_CONFIG%/*}/scripts/keyboard-battery.sh --display right'
-when = '[ -z "$TMUX" ] && ${STARSHIP_CONFIG%/*}/scripts/keyboard-battery.sh --guard 6 right'
+command = '${STARSHIP_CONFIG%/*}/scripts/keyboard.sh --display right'
+when = '[ -z "$TMUX" ] && ${STARSHIP_CONFIG%/*}/scripts/keyboard.sh --guard 6 right'
 shell = ["bash"]
 style = "bold #d0b769"
 format = " [$output]($style)"
 
 [custom.keyboard_right_5]
-command = '${STARSHIP_CONFIG%/*}/scripts/keyboard-battery.sh --display right'
-when = '[ -z "$TMUX" ] && ${STARSHIP_CONFIG%/*}/scripts/keyboard-battery.sh --guard 5 right'
+command = '${STARSHIP_CONFIG%/*}/scripts/keyboard.sh --display right'
+when = '[ -z "$TMUX" ] && ${STARSHIP_CONFIG%/*}/scripts/keyboard.sh --guard 5 right'
 shell = ["bash"]
 style = "bold #e0af68"
 format = " [$output]($style)"
 
 [custom.keyboard_right_4]
-command = '${STARSHIP_CONFIG%/*}/scripts/keyboard-battery.sh --display right'
-when = '[ -z "$TMUX" ] && ${STARSHIP_CONFIG%/*}/scripts/keyboard-battery.sh --guard 4 right'
+command = '${STARSHIP_CONFIG%/*}/scripts/keyboard.sh --display right'
+when = '[ -z "$TMUX" ] && ${STARSHIP_CONFIG%/*}/scripts/keyboard.sh --guard 4 right'
 shell = ["bash"]
 style = "bold #e5a370"
 format = " [$output]($style)"
 
 [custom.keyboard_right_3]
-command = '${STARSHIP_CONFIG%/*}/scripts/keyboard-battery.sh --display right'
-when = '[ -z "$TMUX" ] && ${STARSHIP_CONFIG%/*}/scripts/keyboard-battery.sh --guard 3 right'
+command = '${STARSHIP_CONFIG%/*}/scripts/keyboard.sh --display right'
+when = '[ -z "$TMUX" ] && ${STARSHIP_CONFIG%/*}/scripts/keyboard.sh --guard 3 right'
 shell = ["bash"]
 style = "bold #e99877"
 format = " [$output]($style)"
 
 [custom.keyboard_right_2]
-command = '${STARSHIP_CONFIG%/*}/scripts/keyboard-battery.sh --display right'
-when = '[ -z "$TMUX" ] && ${STARSHIP_CONFIG%/*}/scripts/keyboard-battery.sh --guard 2 right'
+command = '${STARSHIP_CONFIG%/*}/scripts/keyboard.sh --display right'
+when = '[ -z "$TMUX" ] && ${STARSHIP_CONFIG%/*}/scripts/keyboard.sh --guard 2 right'
 shell = ["bash"]
 style = "bold #ee8d7f"
 format = " [$output]($style)"
 
 [custom.keyboard_right_1]
-command = '${STARSHIP_CONFIG%/*}/scripts/keyboard-battery.sh --display right'
-when = '[ -z "$TMUX" ] && ${STARSHIP_CONFIG%/*}/scripts/keyboard-battery.sh --guard 1 right'
+command = '${STARSHIP_CONFIG%/*}/scripts/keyboard.sh --display right'
+when = '[ -z "$TMUX" ] && ${STARSHIP_CONFIG%/*}/scripts/keyboard.sh --guard 1 right'
 shell = ["bash"]
 style = "bold #f28186"
 format = " [$output]($style)"
 
 [custom.keyboard_right_0]
-command = '${STARSHIP_CONFIG%/*}/scripts/keyboard-battery.sh --display right'
-when = '[ -z "$TMUX" ] && ${STARSHIP_CONFIG%/*}/scripts/keyboard-battery.sh --guard 0 right'
+command = '${STARSHIP_CONFIG%/*}/scripts/keyboard.sh --display right'
+when = '[ -z "$TMUX" ] && ${STARSHIP_CONFIG%/*}/scripts/keyboard.sh --guard 0 right'
 shell = ["bash"]
 style = "bold #f7768e"
 format = " [$output]($style)"
@@ -439,7 +439,7 @@ error_symbol = "[](bold red)"
 
 
 [custom.deepseek_balance]
-command = '${STARSHIP_CONFIG%/*}/deepseek-balance.sh'
+command = '${STARSHIP_CONFIG%/*}/scripts/deepseek.sh'
 when = 'test -z "${TMUX-}${ZELLIJ-}" && grep -q deepseek.com $HOME/.claude/settings.json 2>/dev/null'
 shell = ["bash"]
 style = "bright-blue"
