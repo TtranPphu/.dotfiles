@@ -178,31 +178,49 @@ read_batteries() {
   return 1
 }
 
-main() {
-  mkdir -p /tmp
-
-  {
-    flock -x 200 2>/dev/null || return 1
+fetch_async() {
+  (
+    flock -xn 200 2>/dev/null || exit 1
 
     local now ts left right
     now=$(date +%s)
 
     if [[ -f "$CACHEFILE" ]]; then
       read -r left right ts < "$CACHEFILE" 2>/dev/null || true
-      if [[ -n "$ts" ]] && [[ $(( now - ts )) -lt "$CACHE_TTL" ]] && [[ -n "$left" ]]; then
-        printf '%s %s\n' "$left" "${right:-0}"
-        return 0
+      if [[ -n "$left" ]] && [[ $(( now - ts )) -lt "$CACHE_TTL" ]]; then
+        exit 0
       fi
     fi
 
     local result
-    result=$(read_batteries 2>/dev/null) || return 1
+    result=$(read_batteries 2>/dev/null) || exit 1
     left="${result%% *}"
     right="${result##* }"
-    printf '%s %s\n' "$left" "${right:-0}"
     printf '%s %s %s\n' "$left" "${right:-0}" "$now" > "$CACHEFILE"
+  ) 200>"$LOCKFILE" & disown
+}
 
-  } 200>"$LOCKFILE"
+main() {
+  mkdir -p /tmp
+
+  local now ts left right
+  now=$(date +%s)
+
+  if [[ -f "$CACHEFILE" ]]; then
+    read -r left right ts < "$CACHEFILE" 2>/dev/null || true
+    if [[ -n "$left" ]]; then
+      if [[ $(( now - ts )) -lt "$CACHE_TTL" ]]; then
+        printf '%s %s\n' "$left" "${right:-0}"
+        return 0
+      fi
+      fetch_async
+      printf '%s %s\n' "$left" "${right:-0}"
+      return 0
+    fi
+  fi
+
+  fetch_async
+  return 1
 }
 
 main "$@"
