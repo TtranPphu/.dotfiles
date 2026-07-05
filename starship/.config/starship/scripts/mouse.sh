@@ -17,7 +17,7 @@ cap="${data%% *}"
 
 case "${1:-}" in
   --display)
-    if [[ ${COLUMNS:-$(tput cols 2>/dev/null || echo 80)} -lt 80 ]]; then
+    if [[ $(stty size < /dev/tty 2>/dev/null | cut -d" " -f2 || echo 120) -lt 120 ]]; then
       printf '󰍽'
     else
       printf '󰍽 %s' "$cap"
