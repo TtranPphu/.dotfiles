@@ -27,4 +27,8 @@ else
 fi
 color="${colors[$idx]}"
 
-printf '#[fg=brightblack,bold,bg=%s] %s %s #[default]' "$color" "$icon" "$cap"
+if [[ ${COLUMNS:-$(tput cols 2>/dev/null || echo 80)} -lt 80 ]]; then
+  printf '#[fg=brightblack,bold,bg=%s] %s #[default]' "$color" "$icon"
+else
+  printf '#[fg=brightblack,bold,bg=%s] %s %s #[default]' "$color" "$icon" "$cap"
+fi

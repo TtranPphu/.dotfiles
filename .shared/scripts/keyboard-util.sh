@@ -197,7 +197,7 @@ fetch_async() {
     left="${result%% *}"
     right="${result##* }"
     printf '%s %s %s\n' "$left" "${right:-0}" "$now" > "$CACHEFILE"
-  ) 200>"$LOCKFILE" & disown
+  ) 200>"$LOCKFILE" >/dev/null 2>&1 & disown
 }
 
 main() {

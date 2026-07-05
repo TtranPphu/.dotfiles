@@ -57,6 +57,16 @@ ${custom.keyboard_right_3}\
 ${custom.keyboard_right_2}\
 ${custom.keyboard_right_1}\
 ${custom.keyboard_right_0}\
+${custom.mouse_9}\
+${custom.mouse_8}\
+${custom.mouse_7}\
+${custom.mouse_6}\
+${custom.mouse_5}\
+${custom.mouse_4}\
+${custom.mouse_3}\
+${custom.mouse_2}\
+${custom.mouse_1}\
+${custom.mouse_0}\
 $line_break\
 $character\
 """
@@ -428,6 +438,76 @@ format = " [$output]($style)"
 [custom.keyboard_right_0]
 command = '${STARSHIP_CONFIG%/*}/scripts/keyboard.sh --display right'
 when = '[ -z "$TMUX" ] && ${STARSHIP_CONFIG%/*}/scripts/keyboard.sh --guard 0 right'
+shell = ["bash"]
+style = "bold #f7768e"
+format = " [$output]($style)"
+
+[custom.mouse_9]
+command = '${STARSHIP_CONFIG%/*}/scripts/mouse.sh --display'
+when = '[ -z "$TMUX" ] && ${STARSHIP_CONFIG%/*}/scripts/mouse.sh --guard 9'
+shell = ["bash"]
+style = "bold #9ece6a"
+format = " [$output]($style)"
+
+[custom.mouse_8]
+command = '${STARSHIP_CONFIG%/*}/scripts/mouse.sh --display'
+when = '[ -z "$TMUX" ] && ${STARSHIP_CONFIG%/*}/scripts/mouse.sh --guard 8'
+shell = ["bash"]
+style = "bold #afc66a"
+format = " [$output]($style)"
+
+[custom.mouse_7]
+command = '${STARSHIP_CONFIG%/*}/scripts/mouse.sh --display'
+when = '[ -z "$TMUX" ] && ${STARSHIP_CONFIG%/*}/scripts/mouse.sh --guard 7'
+shell = ["bash"]
+style = "bold #bfbf69"
+format = " [$output]($style)"
+
+[custom.mouse_6]
+command = '${STARSHIP_CONFIG%/*}/scripts/mouse.sh --display'
+when = '[ -z "$TMUX" ] && ${STARSHIP_CONFIG%/*}/scripts/mouse.sh --guard 6'
+shell = ["bash"]
+style = "bold #d0b769"
+format = " [$output]($style)"
+
+[custom.mouse_5]
+command = '${STARSHIP_CONFIG%/*}/scripts/mouse.sh --display'
+when = '[ -z "$TMUX" ] && ${STARSHIP_CONFIG%/*}/scripts/mouse.sh --guard 5'
+shell = ["bash"]
+style = "bold #e0af68"
+format = " [$output]($style)"
+
+[custom.mouse_4]
+command = '${STARSHIP_CONFIG%/*}/scripts/mouse.sh --display'
+when = '[ -z "$TMUX" ] && ${STARSHIP_CONFIG%/*}/scripts/mouse.sh --guard 4'
+shell = ["bash"]
+style = "bold #e5a370"
+format = " [$output]($style)"
+
+[custom.mouse_3]
+command = '${STARSHIP_CONFIG%/*}/scripts/mouse.sh --display'
+when = '[ -z "$TMUX" ] && ${STARSHIP_CONFIG%/*}/scripts/mouse.sh --guard 3'
+shell = ["bash"]
+style = "bold #e99877"
+format = " [$output]($style)"
+
+[custom.mouse_2]
+command = '${STARSHIP_CONFIG%/*}/scripts/mouse.sh --display'
+when = '[ -z "$TMUX" ] && ${STARSHIP_CONFIG%/*}/scripts/mouse.sh --guard 2'
+shell = ["bash"]
+style = "bold #ee8d7f"
+format = " [$output]($style)"
+
+[custom.mouse_1]
+command = '${STARSHIP_CONFIG%/*}/scripts/mouse.sh --display'
+when = '[ -z "$TMUX" ] && ${STARSHIP_CONFIG%/*}/scripts/mouse.sh --guard 1'
+shell = ["bash"]
+style = "bold #f28186"
+format = " [$output]($style)"
+
+[custom.mouse_0]
+command = '${STARSHIP_CONFIG%/*}/scripts/mouse.sh --display'
+when = '[ -z "$TMUX" ] && ${STARSHIP_CONFIG%/*}/scripts/mouse.sh --guard 0'
 shell = ["bash"]
 style = "bold #f7768e"
 format = " [$output]($style)"

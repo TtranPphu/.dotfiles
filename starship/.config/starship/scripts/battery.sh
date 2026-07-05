@@ -28,7 +28,11 @@ case "${1:-}" in
       icon="${discharging[$idx]}"
     fi
 
-    printf '%s %s' "$icon" "$bat"
+    if [[ ${COLUMNS:-$(tput cols 2>/dev/null || echo 80)} -lt 80 ]]; then
+      printf '%s' "$icon"
+    else
+      printf '%s %s' "$icon" "$bat"
+    fi
     ;;
   --guard)
     [[ $# -lt 2 ]] && usage

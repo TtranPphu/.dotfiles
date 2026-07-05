@@ -19,7 +19,9 @@ right="${data##* }"
 case "${1:-}" in
   --display)
     [[ $# -lt 2 ]] && usage
-    if [[ "$2" == "left" ]]; then
+    if [[ ${COLUMNS:-$(tput cols 2>/dev/null || echo 80)} -lt 80 ]]; then
+      printf ''
+    elif [[ "$2" == "left" ]]; then
       printf ' %s' "$left"
     elif [[ "$2" == "right" ]]; then
       printf ' %s' "$right"

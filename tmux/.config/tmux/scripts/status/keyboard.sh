@@ -20,5 +20,10 @@ idx_right=$(( (right - 1) / 10 ))
 [[ idx_left  -ge 0 ]] && [[ idx_left  -lt 10 ]] || idx_left=0
 [[ idx_right -ge 0 ]] && [[ idx_right -lt 10 ]] || idx_right=0
 
-printf '#[fg=brightblack,bold,bg=%s]  %s #[default]' "${colors[$idx_left]}" "$left"
-printf '#[fg=brightblack,bold,bg=%s]  %s #[default]' "${colors[$idx_right]}" "$right"
+if [[ ${COLUMNS:-$(tput cols 2>/dev/null || echo 80)} -lt 80 ]]; then
+  printf '#[fg=brightblack,bold,bg=%s]  #[default]' "${colors[$idx_left]}"
+  printf '#[fg=brightblack,bold,bg=%s]  #[default]' "${colors[$idx_right]}"
+else
+  printf '#[fg=brightblack,bold,bg=%s]  %s #[default]' "${colors[$idx_left]}" "$left"
+  printf '#[fg=brightblack,bold,bg=%s]  %s #[default]' "${colors[$idx_right]}" "$right"
+fi
