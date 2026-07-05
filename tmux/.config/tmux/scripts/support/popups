@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+case "${1:-}" in
+  tree)
+    eza -lah --tree --icons --ignore-glob='.git|node_modules' --group --color=always |
+      $(command -v batcat 2>/dev/null || command -v bat 2>/dev/null || echo less)
+    ;;
+  *)
+    exit 1
+    ;;
+esac

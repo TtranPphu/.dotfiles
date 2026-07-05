@@ -412,11 +412,7 @@ done
 
 # ── Pager selection ──────────────────────────────────────────
 
-if command -v bat &>/dev/null; then
-  PAGER="bat --style=plain --paging=never"
-else
-  PAGER="less -FXR"
-fi
+PAGER="$(command -v batcat 2>/dev/null || command -v bat 2>/dev/null || echo less)"
 
 # ── Main ─────────────────────────────────────────────────────
 
