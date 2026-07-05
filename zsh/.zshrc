@@ -124,6 +124,9 @@ eval "$(starship init zsh)"
 export STARSHIP_CONFIG=~/.config/starship/starship.toml
 ZLE_RPROMPT_INDENT=0
 
+# opencode
+export PATH=/home/ttranpphu/.opencode/bin:$PATH
+
 # Check for missing dotfiles dependencies on shell startup
 if [ -x "$HOME/.local/share/zsh/install-dependencies.sh" ]; then
   "$HOME/.local/share/zsh/install-dependencies.sh" 2>/dev/null || true
@@ -159,5 +162,4 @@ if [ -z "$TMUX" ] && [ -z "$ZELLIJ" ] && [ -z "$DOTFILES_SHELL_PICKED" ]; then
   fi
 fi
 
-# opencode
-export PATH=/home/ttranpphu/.opencode/bin:$PATH
+

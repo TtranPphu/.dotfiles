@@ -4,6 +4,20 @@
 #   - dir: working directory for all windows
 #   - windows: separated by `;`, each window's apps separated by `,`
 #   - empty windows = default behavior (single shell pane, no exec)
+#   - resolve_app maps short names to full commands (e.g. opencode → opencode --continue if sessions exist)
+
+resolve_app() {
+  local key="$1"
+  local dir="${2:-}"
+  local cmd="$key"
+  if [[ "$key" == "opencode" ]]; then
+    if [[ -n "$dir" ]] && sqlite3 ~/.local/share/opencode/opencode.db \
+      "SELECT 1 FROM session s JOIN project_directory pd ON s.project_id = pd.project_id WHERE pd.directory = '${dir//\'/\'}' LIMIT 1;" 2>/dev/null | grep -q 1; then
+      cmd="opencode --continue"
+    fi
+  fi
+  printf '%s' "$cmd"
+}
 
 typeset -A session_presets
 session_presets[_]="default|$(pwd)|"
@@ -55,12 +69,12 @@ create_from_preset() {
   local -a first_apps=("${(@s:,:)first_win}")
 
   tmux new-session -d -s "$session_name" -c "$dir" "$current_shell"
-  tmux send-keys -t "${session_name}:1.1" "clear && ${first_apps[1]}" Enter
+  tmux send-keys -t "${session_name}:1.1" "clear && $(resolve_app "${first_apps[1]}" "$dir")" Enter
 
   local pane="1"
   local -i total_apps=${#first_apps}
   for (( i = 2; i <= total_apps; i++ )); do
-    local app="${first_apps[$i]}"
+    local app="$(resolve_app "${first_apps[$i]}" "$dir")"
     local pane_width pane_height
     pane_width=$(tmux display-message -p -t "${session_name}:1.${pane}" '#{pane_width}')
     pane_height=$(tmux display-message -p -t "${session_name}:1.${pane}" '#{pane_height}')
@@ -79,11 +93,11 @@ create_from_preset() {
     else
       local -a apps=("${(@s:,:)win_def}")
       tmux new-window -t "$session_name" -c "$dir" "$current_shell"
-      tmux send-keys -t "${session_name}:${win_idx}.1" "clear && ${apps[1]}" Enter
+      tmux send-keys -t "${session_name}:${win_idx}.1" "clear && $(resolve_app "${apps[1]}" "$dir")" Enter
       local pane="1"
       local -i napps=${#apps}
       for (( i = 2; i <= napps; i++ )); do
-        local app="${apps[$i]}"
+        local app="$(resolve_app "${apps[$i]}" "$dir")"
         local pane_width pane_height
         pane_width=$(tmux display-message -p -t "${session_name}:${win_idx}.${pane}" '#{pane_width}')
         pane_height=$(tmux display-message -p -t "${session_name}:${win_idx}.${pane}" '#{pane_height}')
