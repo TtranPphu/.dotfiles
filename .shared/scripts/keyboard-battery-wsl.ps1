@@ -33,6 +33,7 @@ $null = [Windows.Devices.Bluetooth.BluetoothLEDevice, Windows.Devices.Bluetooth,
 $null = [Windows.Devices.Bluetooth.GenericAttributeProfile.GattDeviceService, Windows.Devices.Bluetooth.GenericAttributeProfile, ContentType = WindowsRuntime]
 $null = [Windows.Devices.Bluetooth.GenericAttributeProfile.GattDeviceServicesResult, Windows.Devices.Bluetooth.GenericAttributeProfile, ContentType = WindowsRuntime]
 $null = [Windows.Devices.Bluetooth.GenericAttributeProfile.GattCharacteristicsResult, Windows.Devices.Bluetooth.GenericAttributeProfile, ContentType = WindowsRuntime]
+$null = [Windows.Devices.Bluetooth.BluetoothCacheMode, Windows.Devices.Bluetooth, ContentType = WindowsRuntime]
 
 function AwaitOp($asyncOp, $resultType) {
   $m = [System.WindowsRuntimeSystemExtensions].GetMethods() | Where-Object { $_.Name -eq "AsTask" -and $_.IsGenericMethodDefinition -and $_.GetGenericArguments().Length -eq 1 -and $_.GetParameters().Length -eq 1 -and $_.GetParameters()[0].ParameterType.Name.Contains("IAsyncOperation") }
@@ -82,7 +83,7 @@ if ($gattResult -and $gattResult.Status -eq "Success") {
       $isAux = ($ch.UserDescription -eq "auxiliary" -or $ch.UserDescription -eq "Peripheral 0")
 
       try {
-        $rv = AwaitOp ($ch.ReadValueAsync()) ([Windows.Devices.Bluetooth.GenericAttributeProfile.GattReadResult])
+        $rv = AwaitOp ($ch.ReadValueAsync([Windows.Devices.Bluetooth.BluetoothCacheMode]::Uncached)) ([Windows.Devices.Bluetooth.GenericAttributeProfile.GattReadResult])
       } catch { continue }
       if (-not $rv -or $rv.Status -ne "Success") { continue }
 
