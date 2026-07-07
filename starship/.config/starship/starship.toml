@@ -67,6 +67,16 @@ ${custom.mouse_3}\
 ${custom.mouse_2}\
 ${custom.mouse_1}\
 ${custom.mouse_0}\
+${custom.headphone_9}\
+${custom.headphone_8}\
+${custom.headphone_7}\
+${custom.headphone_6}\
+${custom.headphone_5}\
+${custom.headphone_4}\
+${custom.headphone_3}\
+${custom.headphone_2}\
+${custom.headphone_1}\
+${custom.headphone_0}\
 $line_break\
 $character\
 """
@@ -512,6 +522,75 @@ shell = ["bash"]
 style = "bold #f7768e"
 format = " [$output]($style)"
 
+[custom.headphone_9]
+command = '${STARSHIP_CONFIG%/*}/scripts/headphone.sh --display'
+when = '[ -z "$TMUX" ] && ${STARSHIP_CONFIG%/*}/scripts/headphone.sh --guard 9'
+shell = ["bash"]
+style = "bold #9ece6a"
+format = " [$output]($style)"
+
+[custom.headphone_8]
+command = '${STARSHIP_CONFIG%/*}/scripts/headphone.sh --display'
+when = '[ -z "$TMUX" ] && ${STARSHIP_CONFIG%/*}/scripts/headphone.sh --guard 8'
+shell = ["bash"]
+style = "bold #afc66a"
+format = " [$output]($style)"
+
+[custom.headphone_7]
+command = '${STARSHIP_CONFIG%/*}/scripts/headphone.sh --display'
+when = '[ -z "$TMUX" ] && ${STARSHIP_CONFIG%/*}/scripts/headphone.sh --guard 7'
+shell = ["bash"]
+style = "bold #bfbf69"
+format = " [$output]($style)"
+
+[custom.headphone_6]
+command = '${STARSHIP_CONFIG%/*}/scripts/headphone.sh --display'
+when = '[ -z "$TMUX" ] && ${STARSHIP_CONFIG%/*}/scripts/headphone.sh --guard 6'
+shell = ["bash"]
+style = "bold #d0b769"
+format = " [$output]($style)"
+
+[custom.headphone_5]
+command = '${STARSHIP_CONFIG%/*}/scripts/headphone.sh --display'
+when = '[ -z "$TMUX" ] && ${STARSHIP_CONFIG%/*}/scripts/headphone.sh --guard 5'
+shell = ["bash"]
+style = "bold #e0af68"
+format = " [$output]($style)"
+
+[custom.headphone_4]
+command = '${STARSHIP_CONFIG%/*}/scripts/headphone.sh --display'
+when = '[ -z "$TMUX" ] && ${STARSHIP_CONFIG%/*}/scripts/headphone.sh --guard 4'
+shell = ["bash"]
+style = "bold #e5a370"
+format = " [$output]($style)"
+
+[custom.headphone_3]
+command = '${STARSHIP_CONFIG%/*}/scripts/headphone.sh --display'
+when = '[ -z "$TMUX" ] && ${STARSHIP_CONFIG%/*}/scripts/headphone.sh --guard 3'
+shell = ["bash"]
+style = "bold #e99877"
+format = " [$output]($style)"
+
+[custom.headphone_2]
+command = '${STARSHIP_CONFIG%/*}/scripts/headphone.sh --display'
+when = '[ -z "$TMUX" ] && ${STARSHIP_CONFIG%/*}/scripts/headphone.sh --guard 2'
+shell = ["bash"]
+style = "bold #ee8d7f"
+format = " [$output]($style)"
+
+[custom.headphone_1]
+command = '${STARSHIP_CONFIG%/*}/scripts/headphone.sh --display'
+when = '[ -z "$TMUX" ] && ${STARSHIP_CONFIG%/*}/scripts/headphone.sh --guard 1'
+shell = ["bash"]
+style = "bold #f28186"
+format = " [$output]($style)"
+
+[custom.headphone_0]
+command = '${STARSHIP_CONFIG%/*}/scripts/headphone.sh --display'
+when = '[ -z "$TMUX" ] && ${STARSHIP_CONFIG%/*}/scripts/headphone.sh --guard 0'
+shell = ["bash"]
+style = "bold #f7768e"
+format = " [$output]($style)"
 
 [character]
 success_symbol = "[](bold green)"

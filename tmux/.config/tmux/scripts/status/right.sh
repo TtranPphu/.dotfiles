@@ -36,6 +36,9 @@ printf '#[fg=blue,bg=brightblack,bold]  %s #[default]' "${pane_id#%}"
 # Mouse battery
 "$script_dir/mouse.sh"
 
+# Headphone battery
+"$script_dir/headphone.sh"
+
 if tmux -S "$socket_path" show-environment -t "$current_session" SSH_CONNECTION 2>/dev/null | grep -q '^SSH_CONNECTION='; then
   "$script_dir/hostname.sh"
 fi
