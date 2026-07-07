@@ -5,17 +5,8 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 UTIL="$SCRIPT_DIR/headphone-util.sh"
 
 data=$("$UTIL") || exit 1
-left="${data%% *}"
-rest="${data#* }"
-right="${rest%% *}"
-case_bat="${rest##* }"
-[[ -z "$left" ]] && exit 1
-
-# Pick first non-zero battery value
-val="$left"
-[[ "$val" -eq 0 && "$right" -gt 0 ]] && val="$right"
-[[ "$val" -eq 0 && "$case_bat" -gt 0 ]] && val="$case_bat"
-[[ "$val" -eq 0 ]] && exit 1
+[[ -z "$data" || "$data" -eq 0 ]] && exit 1
+val="$data"
 
 colors=(
   "#f7768e" "#f28186" "#ee8d7f" "#e99877" "#e5a370"

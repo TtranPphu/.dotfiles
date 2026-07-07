@@ -57,7 +57,7 @@ gdbus_desc_value() {
 }
 
 read_batteries_gdbus() {
-  local dev_path="" left="" right="" case_bat=""
+  local dev_path=""
   local svc_uuid char_uuid
   local raw_val hex_val
 
@@ -75,6 +75,24 @@ read_batteries_gdbus() {
 
   [[ -z "$dev_path" ]] && return 1
 
+  # Try newer BlueZ Battery1 interface first (no GATT traversal needed).
+  # gdbus_prop doesn't handle D-Bus byte types (<byte 0xNN>), so parse directly.
+  local battery_raw battery_hex
+  battery_raw=$(timeout "$DBUS_TIMEOUT" gdbus call --system \
+    --dest "$DBUS_CONN" \
+    --object-path "$dev_path" \
+    --method org.freedesktop.DBus.Properties.Get \
+    org.bluez.Battery1 Percentage 2>/dev/null) || battery_raw=""
+  battery_hex=$(printf '%s' "$battery_raw" | grep -o '0x[0-9a-f][0-9a-f]' | head -1) || battery_hex=""
+  if [[ -n "$battery_hex" ]]; then
+    battery_val=$((16#${battery_hex#0x}))
+    if [[ "$battery_val" -ge 0 && "$battery_val" -le 100 ]] 2>/dev/null; then
+      printf '%s\n' "$battery_val"
+      return 0
+    fi
+  fi
+
+  # Fallback: traverse GATT services for Battery Service (older BlueZ/device path)
   while read -r svc; do
     svc_uuid=$(gdbus_prop "$dev_path/$svc" org.bluez.GattService1 UUID) || continue
     [[ "$svc_uuid" != "$BATTERY_SVC_UUID" ]] && continue
@@ -88,30 +106,8 @@ read_batteries_gdbus() {
       hex_val=$((16#$raw_val))
       [[ "$hex_val" -gt 100 ]] && continue
 
-      # Distinguish left/right via UserDescription descriptor
-      local is_right="" is_case=""
-      while read -r desc; do
-        desc_uuid=$(gdbus_prop "$dev_path/$svc/$chr/$desc" org.bluez.GattDescriptor1 UUID) || continue
-        if [[ "$desc_uuid" == "$BATTERY_USER_DESC" ]]; then
-          local desc_str
-          desc_str=$(gdbus_desc_value "$dev_path/$svc/$chr/$desc") || true
-          if [[ "$desc_str" == "auxiliary" ]]; then
-            is_right=1
-          fi
-        fi
-      done < <(gdbus introspect --system --only-properties \
-        --dest "$DBUS_CONN" --object-path "$dev_path/$svc/$chr" 2>/dev/null |
-        grep -o 'desc[0-9a-f][0-9a-f]*')
-
-      if [[ -n "$is_right" ]]; then
-        right="$hex_val"
-      elif [[ -z "$left" ]]; then
-        left="$hex_val"
-      elif [[ -z "$right" ]]; then
-        right="$hex_val"
-      elif [[ -z "$case_bat" ]]; then
-        case_bat="$hex_val"
-      fi
+      printf '%s\n' "$hex_val"
+      return 0
     done < <(gdbus introspect --system --only-properties \
       --dest "$DBUS_CONN" --object-path "$dev_path/$svc" 2>/dev/null |
       grep -o 'char[0-9a-f][0-9a-f]*')
@@ -119,10 +115,6 @@ read_batteries_gdbus() {
     --dest "$DBUS_CONN" --object-path "$dev_path" 2>/dev/null |
     grep -o 'service[0-9a-f][0-9a-f]*')
 
-  if [[ -n "$left" ]]; then
-    printf '%s %s %s\n' "${left:-0}" "${right:-0}" "${case_bat:-0}"
-    return 0
-  fi
   return 1
 }
 
@@ -139,14 +131,9 @@ read_batteries_wsl() {
     tmp=$(mktemp "$CACHEFILE.XXXXXX")
     result=$(timeout 10 powershell.exe -NoProfile -ExecutionPolicy Bypass -File "$WSL_PS1" 2>/dev/null | tr -d '\r')
     if [[ -n "$result" ]]; then
-      left="${result%% *}"
-      rest="${result#* }"
-      right="${rest%% *}"
-      case_bat="${rest##* }"
-      [[ "$right" == "$left" ]] && right=0
-      [[ "$case_bat" == "$left" ]] && case_bat=0
-      if [[ -n "$left" ]]; then
-        printf '%s %s %s %s\n' "$left" "${right:-0}" "${case_bat:-0}" "$(date +%s)" > "$tmp"
+      val="${result%% *}"
+      if [[ -n "$val" ]]; then
+        printf '%s %s\n' "$val" "$(date +%s)" > "$tmp"
         mv "$tmp" "$CACHEFILE"
       fi
     fi
@@ -162,16 +149,11 @@ read_batteries_wsl_sync() {
   command -v powershell.exe &>/dev/null || return 1
   grep -qi microsoft /proc/version 2>/dev/null || return 1
 
-  local result left right case_bat
+  local result val
   result=$(timeout 10 powershell.exe -NoProfile -ExecutionPolicy Bypass -File "$WSL_PS1" 2>/dev/null | tr -d '\r') || return 1
-  left="${result%% *}"
-  rest="${result#* }"
-  right="${rest%% *}"
-  case_bat="${rest##* }"
-  [[ "$right" == "$left" ]] && right=0
-  [[ "$case_bat" == "$left" ]] && case_bat=0
-  [[ -z "$left" ]] && return 1
-  printf '%s %s %s' "$left" "${right:-0}" "${case_bat:-0}"
+  val="${result%% *}"
+  [[ -z "$val" ]] && return 1
+  printf '%s' "$val"
   return 0
 }
 
@@ -194,41 +176,37 @@ fetch_async() {
   (
     flock -xn 200 2>/dev/null || exit 1
 
-    local now ts left right case_bat
+    local now ts val
     now=$(date +%s)
 
     if [[ -f "$CACHEFILE" ]]; then
-      read -r left right case_bat ts < "$CACHEFILE" 2>/dev/null || true
-      if [[ -n "$left" ]] && [[ $(( now - ts )) -lt "$CACHE_TTL" ]]; then
+      read -r val ts < "$CACHEFILE" 2>/dev/null || true
+      if [[ -n "$val" ]] && [[ $(( now - ts )) -lt "$CACHE_TTL" ]]; then
         exit 0
       fi
     fi
 
     local result
     result=$(read_batteries 2>/dev/null) || exit 1
-    left="${result%% *}"
-    rest="${result#* }"
-    right="${rest%% *}"
-    case_bat="${rest##* }"
-    printf '%s %s %s %s\n' "$left" "${right:-0}" "${case_bat:-0}" "$now" > "$CACHEFILE"
+    printf '%s %s\n' "$result" "$now" > "$CACHEFILE"
   ) 200>"$LOCKFILE" >/dev/null 2>&1 & disown
 }
 
 main() {
   mkdir -p /tmp
 
-  local now ts left right case_bat
+  local now ts val
   now=$(date +%s)
 
   if [[ -f "$CACHEFILE" ]]; then
-    read -r left right case_bat ts < "$CACHEFILE" 2>/dev/null || true
-    if [[ -n "$left" ]]; then
+    read -r val ts < "$CACHEFILE" 2>/dev/null || true
+    if [[ -n "$val" ]]; then
       if [[ $(( now - ts )) -lt "$CACHE_TTL" ]]; then
-        printf '%s %s %s\n' "$left" "${right:-0}" "${case_bat:-0}"
+        printf '%s\n' "$val"
         return 0
       fi
       fetch_async
-      printf '%s %s %s\n' "$left" "${right:-0}" "${case_bat:-0}"
+      printf '%s\n' "$val"
       return 0
     fi
   fi
