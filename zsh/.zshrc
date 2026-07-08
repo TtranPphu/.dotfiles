@@ -127,11 +127,6 @@ ZLE_RPROMPT_INDENT=0
 # opencode
 export PATH=/home/ttranpphu/.opencode/bin:$PATH
 
-# Check for missing dotfiles dependencies on shell startup
-if [ -x "$HOME/.local/share/zsh/install-dependencies.sh" ]; then
-  "$HOME/.local/share/zsh/install-dependencies.sh" 2>/dev/null || true
-fi
-
 # Picker — choose shell (zsh/nushell) and multiplexer (tmux/zellij) at startup
 if [ -z "$TMUX" ] && [ -z "$ZELLIJ" ] && [ -z "$DOTFILES_SHELL_PICKED" ]; then
   command -v tmux   >/dev/null 2>&1 && has_tmux=true    || has_tmux=false
