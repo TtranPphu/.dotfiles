@@ -123,32 +123,6 @@ read_batteries_wsl() {
   command -v powershell.exe &>/dev/null || return 1
   grep -qi microsoft /proc/version 2>/dev/null || return 1
 
-  if ! mkdir "/tmp/headphone-battery-wsl.lock" 2>/dev/null; then
-    return 1
-  fi
-
-  (
-    tmp=$(mktemp "$CACHEFILE.XXXXXX")
-    result=$(timeout 10 powershell.exe -NoProfile -ExecutionPolicy Bypass -File "$WSL_PS1" 2>/dev/null | tr -d '\r')
-    if [[ -n "$result" ]]; then
-      val="${result%% *}"
-      if [[ -n "$val" ]]; then
-        printf '%s %s\n' "$val" "$(date +%s)" > "$tmp"
-        mv "$tmp" "$CACHEFILE"
-      fi
-    fi
-    rm -f "$tmp"
-    rmdir "/tmp/headphone-battery-wsl.lock" 2>/dev/null
-  ) & disown
-
-  return 1
-}
-
-read_batteries_wsl_sync() {
-  [[ -f "$WSL_PS1" ]] || return 1
-  command -v powershell.exe &>/dev/null || return 1
-  grep -qi microsoft /proc/version 2>/dev/null || return 1
-
   local result val
   result=$(timeout 10 powershell.exe -NoProfile -ExecutionPolicy Bypass -File "$WSL_PS1" 2>/dev/null | tr -d '\r') || return 1
   val="${result%% *}"
@@ -159,11 +133,7 @@ read_batteries_wsl_sync() {
 
 read_batteries() {
   if grep -qi microsoft /proc/version 2>/dev/null; then
-    if [[ -z "${TMUX-}" ]]; then
-      read_batteries_wsl && return 0
-    else
-      read_batteries_wsl_sync && return 0
-    fi
+    read_batteries_wsl && return 0
     return 1
   fi
   if command -v gdbus &>/dev/null; then
