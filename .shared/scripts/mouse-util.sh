@@ -97,7 +97,7 @@ fetch_async() {
     fi
 
     local result
-    result=$(read_battery_gdbus 2>/dev/null) || exit 1
+    result=$(read_battery_gdbus 2>/dev/null) || { rm -f "$CACHEFILE"; exit 1; }
     printf '%s %s\n' "$result" "$now" > "$CACHEFILE"
   ) 200>"$LOCKFILE" >/dev/null 2>&1 & disown
 }

@@ -193,7 +193,7 @@ fetch_async() {
     fi
 
     local result
-    result=$(read_batteries 2>/dev/null) || exit 1
+    result=$(read_batteries 2>/dev/null) || { rm -f "$CACHEFILE"; exit 1; }
     left="${result%% *}"
     right="${result##* }"
     printf '%s %s %s\n' "$left" "${right:-0}" "$now" > "$CACHEFILE"
