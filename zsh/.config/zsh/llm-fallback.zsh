@@ -1,5 +1,3 @@
-# Command-not-found fallback: route unknown commands to LLM
-_saved_cnf_handler=$functions[command_not_found_handler]
 if (( $+commands[aichat] )) || (( $+commands[claude] )); then
   _claude_fallback() {
     local filler=(
@@ -122,15 +120,7 @@ if (( $+commands[aichat] )) || (( $+commands[claude] )); then
       _llm_dispatch opencode-free "$@"
 
     else
-      local _our_handler=$functions[command_not_found_handler]
-      if [[ -n $_saved_cnf_handler ]]; then
-        eval "$_saved_cnf_handler"
-        command_not_found_handler "$@"
-      else
-        unset -f command_not_found_handler
-        ("$@")
-      fi
-      eval "$_our_handler"
+      printf "llm_fallback: command not found: %s\n" $1
     fi
   }
 fi
