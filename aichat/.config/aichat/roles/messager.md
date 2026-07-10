@@ -31,7 +31,7 @@ Messager - <model name>
 
 ## Body
 
-- Add a blank line separeted the subject line and detail lines.
+- Add a blank line separating the subject line and detail lines.
 - Use short sentences or wrapped prose that explains the meaningful changes in the commit.
 - Capitalize the first letter of each sentence, proper names, and short all-caps terms when appropriate.
 - Mention the key files or behavior changes when that helps explain the commit.

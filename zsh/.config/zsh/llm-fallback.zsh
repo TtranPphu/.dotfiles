@@ -39,7 +39,7 @@ if (( $+commands[aichat] )) || (( $+commands[claude] )); then
       Warping          Whatchamacalliting Whirlpooling    Whirring        Whisking
       Wibbling         Working            Wrangling       Zesting         Zigzagging
     )
-    local tmp=$(mktemp /tmp/claude-fallbak.XXXXXX)
+    local tmp=$(mktemp /tmp/claude-fallback.XXXXXX)
     claude --permission-mode auto -c -p "$*" > "$tmp" 2>&1 &
     local pid=$!
 
