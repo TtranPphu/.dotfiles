@@ -55,8 +55,6 @@ case "${1:-}" in
     case "$2" in
       pro)      cached="claude-pro" ;;
       flash)    cached="claude-flash" ;;
-      reasoner) cached="aichat-reasoner" ;;
-      chat)     cached="aichat-chat" ;;
       qwen)     cached="aichat-qwen" ;;
       free)     cached="opencode-free" ;;
       *)        exit 1 ;;

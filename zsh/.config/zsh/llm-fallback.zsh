@@ -1,4 +1,5 @@
 # Command-not-found fallback: route unknown commands to LLM
+_saved_cnf_handler=$functions[command_not_found_handler]
 if (( $+commands[aichat] )) || (( $+commands[claude] )); then
   _claude_fallback() {
     local filler=(
@@ -82,16 +83,6 @@ if (( $+commands[aichat] )) || (( $+commands[claude] )); then
 
   _llm_cache_file=/tmp/llm-cache-$$
 
-  _llm_setup_hint() {
-    if [ -z "$AICHAT_FUNCTIONS_DIR" ] || [ ! -f "$AICHAT_FUNCTIONS_DIR/functions.json" ]; then
-      local setup="$HOME/.local/bin/aichat-setup"
-      if [ -x "$setup" ]; then
-        echo $'\n\033[33m>\033[0m To enable filesystem tools, run:'
-        echo $'  \033[32maichat-setup\033[0m'
-      fi
-    fi
-  }
-
   _llm_dispatch() {
     local route=$1; shift
     echo "$route" > /tmp/llm-route
@@ -99,15 +90,8 @@ if (( $+commands[aichat] )) || (( $+commands[claude] )); then
     case $route in
       claude-pro) ANTHROPIC_MODEL=deepseek-v4-pro[1m] _claude_fallback "$@" ;;
       claude-flash) ANTHROPIC_MODEL=deepseek-v4-flash[1m] _claude_fallback "$@" ;;
-      aichat-reasoner)
-        aichat -m deepseek:deepseek-reasoner -s thinkie -r general --save-session "$*"
-        _llm_setup_hint ;;
-      aichat-chat)
-        aichat -m deepseek:deepseek-chat -s talkie -r general --save-session "$*"
-        _llm_setup_hint ;;
       aichat-qwen)
-        aichat -m ollama:qwen3:4b-instruct -s qwenie -r general --save-session "$*"
-        _llm_setup_hint ;;
+        aichat -m ollama:qwen3:4b-instruct -s qwenie -r general --save-session "$*" ;;
       opencode-free)
         opencode run -m opencode/deepseek-v4-flash-free -c "$@" ;;
     esac
@@ -117,7 +101,6 @@ if (( $+commands[aichat] )) || (( $+commands[claude] )); then
   command_not_found_handler() {
     local first_five="${*: :5}"
     local lower="${first_five:l}"
-    local cache_file=$_llm_cache_file
 
     local -a words=(${=lower})
     local -a clean_words=()
@@ -132,12 +115,6 @@ if (( $+commands[aichat] )) || (( $+commands[claude] )); then
     elif (( $clean_words[(Ie)seekie] || $clean_words[(Ie)flashy] )) && (( $+commands[claude] )); then
       _llm_dispatch claude-flash "$@"
 
-    elif (( $clean_words[(Ie)thinkie] )) && (( $+commands[aichat] )); then
-      _llm_dispatch aichat-reasoner "$@"
-
-    elif (( $clean_words[(Ie)talkie] )) && (( $+commands[aichat] )); then
-      _llm_dispatch aichat-chat "$@"
-
     elif (( $clean_words[(Ie)qwenie] )) && (( $+commands[aichat] )); then
       _llm_dispatch aichat-qwen "$@"
 
@@ -145,18 +122,15 @@ if (( $+commands[aichat] )) || (( $+commands[claude] )); then
       _llm_dispatch opencode-free "$@"
 
     else
-      if [[ -f $cache_file ]]; then
-        local expiry route
-        IFS='|' read expiry route < "$cache_file" 2>/dev/null
-        if [[ -n $route ]] && (( $(date +%s) < expiry )); then
-          echo "$(( $(date +%s) + 300 ))|$route" > "$cache_file"
-          _llm_dispatch "$route" "$@"
-          return
-        fi
-        rm -f "$cache_file"
+      local _our_handler=$functions[command_not_found_handler]
+      if [[ -n $_saved_cnf_handler ]]; then
+        eval "$_saved_cnf_handler"
+        command_not_found_handler "$@"
+      else
+        unset -f command_not_found_handler
+        ("$@")
       fi
-      (( $+commands[aichat] )) || return 1
-      _llm_dispatch aichat-chat "$@"
+      eval "$_our_handler"
     fi
   }
 fi

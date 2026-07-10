@@ -38,4 +38,4 @@ GNU Stow-style dotfiles. Every top-level directory is a stow package whose inter
 | git | `git/.config/git/` | |
 | lazydocker | `lazydocker/.config/lazydocker/` | |
 | lazygit | `lazygit/.config/lazygit/` | |
-| aichat | `aichat/.config/aichat/` | Integrates `llm-functions` if present |
+| aichat | `aichat/.config/aichat/` | |

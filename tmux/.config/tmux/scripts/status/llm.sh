@@ -12,8 +12,6 @@ if [[ $type == route ]]; then
   case "$value" in
     claude-pro)      color="red" ;;
     claude-flash)    color="purple" ;;
-    aichat-reasoner) color="blue" ;;
-    aichat-chat)     color="cyan" ;;
     aichat-qwen)     color="white" ;;
     opencode-free)   color="green" ;;
     *)               color="colour239" ;;
