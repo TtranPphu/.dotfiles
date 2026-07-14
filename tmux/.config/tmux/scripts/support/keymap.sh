@@ -121,8 +121,8 @@ DESC["root:M-6"]="Go to window 6"
 DESC["root:M-7"]="Go to window 7"
 DESC["root:M-8"]="Go to window 8"
 DESC["root:M-9"]="Go to window 9"
-DESC["root:M-h"]="Previous window"
-DESC["root:M-l"]="Next window"
+DESC["root:M-j"]="Previous window"
+DESC["root:M-k"]="Next window"
 DESC["root:M-a"]="Previous window"
 DESC["root:M-d"]="Next window"
 
@@ -131,8 +131,8 @@ DESC["root:M-L"]="Swap window right"
 DESC["root:M-A"]="Swap window left"
 DESC["root:M-D"]="Swap window right"
 
-DESC["root:M-j"]="Next session"
-DESC["root:M-k"]="Previous session"
+DESC["root:M-h"]="Next session"
+DESC["root:M-l"]="Previous session"
 DESC["root:M-s"]="Switch session (fzf)"
 DESC["root:M-w"]="Switch window (fzf)"
 DESC["root:M-m"]="Move pane to session (fzf)"
@@ -385,19 +385,19 @@ parse_root_bindings() {
     "\$4 ~ /^M-S-C-/"
 
   format_group "Window" "root" "" "" \
-    "\$4 ~ /^M-[1-9]\$/ || \$4 ~ /^M-[hlad]\$/"
+    "\$4 ~ /^M-[1-9]\$/ || \$4 ~ /^M-[jkad]\$/"
 
   format_group "Window Swap" "root" "" "" \
     "\$4 ~ /^M-[HLAD]\$/"
 
   format_group "Session" "root" "" "" \
-    "\$4 ~ /^M-[jkmsw]\$/"
+    "\$4 ~ /^M-[hlmsw]\$/"
 
   format_group "Mouse" "root" "" "" \
     "\$4 ~ /Mouse/"
 
   format_group "Other" "root" "" "" \
-    "\$4 !~ /^M-C-/ && \$4 !~ /^M-S-C-/ && \$4 !~ /^M-[1-9hladHLADjkmsw]\$/ && \$4 !~ /Mouse/"
+    "\$4 !~ /^M-C-/ && \$4 !~ /^M-S-C-/ && \$4 !~ /^M-[1-9jkadHLADhlmsw]\$/ && \$4 !~ /Mouse/"
 }
 
 # ── Flag parsing ─────────────────────────────────────────────
