@@ -12,7 +12,7 @@ resolve_app() {
   local cmd="$key"
   if [[ "$key" == "opencode" ]]; then
     if [[ -n "$dir" ]] && (( $+commands[sqlite3] )) && sqlite3 ~/.local/share/opencode/opencode.db \
-      "SELECT 1 FROM session s JOIN project_directory pd ON s.project_id = pd.project_id WHERE pd.directory = '${dir//\'/\'}' LIMIT 1;" 2>/dev/null | grep -q 1; then
+      "SELECT 1 FROM session s JOIN project p ON s.project_id = p.id WHERE p.worktree = '${dir//\'/\'}' LIMIT 1;" 2>/dev/null | grep -q 1; then
       cmd="opencode --continue"
     fi
   fi
