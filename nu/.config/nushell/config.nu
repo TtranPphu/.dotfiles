@@ -32,11 +32,11 @@ def _session_picker [] {
     } | math max)
 
     let known_shells = " zsh bash sh nu fish dash ksh tcsh "
-    let _cur = (tmux display-message -p '#{pane_current_command}' | str trim | str downcase)
+    let _cur = (tmux display-message -p '#{pane_current_command}' | str trim | str lowercase)
     let shell_name = if ($known_shells | str contains $" ($_cur) ") {
         $_cur
     } else {
-        let fallback = (tmux display-message -p '#{pane_start_command}' | str trim | str downcase)
+        let fallback = (tmux display-message -p '#{pane_start_command}' | str trim | str lowercase)
         if ($known_shells | str contains $" ($fallback) ") { $fallback } else { "nu" }
     }
 
@@ -74,7 +74,7 @@ def _session_picker [] {
     }
 
     print -n "Pick: "
-    let choice = (input --numchar 1 --suppress-output | str downcase)
+    let choice = (input --numchar 1 --suppress-output | str lowercase)
     let preset = ($presets | get -o $choice | default ($presets | get -o "_"))
     if ($preset | is-empty) {
         tmux new -A -s ($env.PWD | path basename | str replace --regex '^\.' '' | str replace --all '.' '-') nu; exit
@@ -82,11 +82,11 @@ def _session_picker [] {
     let dir = $preset.dir
     let session = ($dir | path basename | str replace --regex '^\.' '' | str replace --all '.' '-')
     let known_shells = " zsh bash sh nu fish dash ksh tcsh "
-    let _current = (tmux display-message -p '#{pane_current_command}' | str trim | str downcase)
+    let _current = (tmux display-message -p '#{pane_current_command}' | str trim | str lowercase)
     let current_shell = if ($known_shells | str contains $" ($_current) ") {
         $_current
     } else {
-        let fallback = (tmux display-message -p '#{pane_start_command}' | str trim | str downcase)
+        let fallback = (tmux display-message -p '#{pane_start_command}' | str trim | str lowercase)
         if ($known_shells | str contains $" ($fallback) ") { $fallback } else { "nu" }
     }
     if (tmux has-session -t $session | complete | get exit_code) == 0 {
@@ -152,7 +152,7 @@ if ((($env.TMUX? | is-empty) and ($env.ZELLIJ? | is-empty)) and ($env.DOTFILES_S
         print ("Shells:       " + $green + "N" + $reset + "ushell (default)" + (if $has_zsh { " | " + $green + "Z" + $reset + "sh" } else { "" }))
         print ("Multiplexers: " + $green + "T" + $reset + "mux | Zelli" + $green + "j" + $reset)
         print -n "Pick: "
-                let choice = (input --numchar 1 --suppress-output | str downcase)
+                let choice = (input --numchar 1 --suppress-output | str lowercase)
                 $env.DOTFILES_SHELL_PICKED = "1"
                 match $choice {
             "n" | "N" => { clear }
