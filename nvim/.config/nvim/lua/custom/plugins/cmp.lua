@@ -1,4 +1,4 @@
--- Completion framework with Copilot integration
+-- Completion framework
 -- Uses blink.cmp with 'super-tab' preset (Tab accepts completions)
 
 vim.pack.add { { src = 'https://github.com/saghen/blink.cmp', version = vim.version.range '1.*' } }
@@ -17,9 +17,6 @@ require('blink.cmp').setup {
     documentation = { auto_show = false, auto_show_delay_ms = 500 },
   },
   sources = {
-    default = { 'copilot', 'lsp', 'path', 'snippets', 'buffer' },
-    copilot = {
-      async = true,
-    },
+    default = { 'lsp', 'path', 'snippets', 'buffer' },
   },
 }
