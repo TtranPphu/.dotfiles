@@ -33,14 +33,8 @@ left_prompt:
 right_prompt:
   '{color.light_blue}{?session  {?consume_tokens {consume_percent}%}}{color.reset}'
 
-model: deepseek:deepseek-chat
+model: ollama:qwen3:4b-instruct
 clients:
-- type: openai-compatible
-  name: deepseek
-  api_base: https://api.deepseek.com
-  models:
-    - name: deepseek:deepseek-chat
-    - name: deepseek:deepseek-reasoner
 - type: openai-compatible
   name: ollama
   api_base: http://localhost:11434/v1

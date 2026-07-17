@@ -1,15 +1,15 @@
 if (( $+commands[copilot] )); then
-  export COPILOT_PROVIDER_TYPE=openai
-  export COPILOT_PROVIDER_BASE_URL=http://localhost:11434/v1
-  export COPILOT_PROVIDER_API_KEY=ollama
-  export COPILOT_MODEL=qwen3.5:9b-q4_K_M
-  export COPILOT_OFFLINE=true
-  export COPILOT_PROVIDER_MAX_PROMPT_TOKENS=32768
-  export COPILOT_PROVIDER_MAX_OUTPUT_TOKENS=4096
-fi
+  local claude_settings=~/.claude/settings.json
+  local base_url="${$(jq -r '.env.ANTHROPIC_BASE_URL // empty' "$claude_settings" 2>/dev/null):-https://api.deepseek.com/anthropic}"
+  local api_key="${$(jq -r '.env.ANTHROPIC_AUTH_TOKEN // empty' "$claude_settings" 2>/dev/null):-}"
 
-if (( $+commands[aichat] )); then
-  export DEEPSEEK_API_KEY="${$(jq -r '.env.ANTHROPIC_AUTH_TOKEN // empty' ~/.claude/settings.json 2>/dev/null):-}"
+  export COPILOT_PROVIDER_TYPE=anthropic
+  export COPILOT_PROVIDER_BASE_URL="$base_url"
+  export COPILOT_PROVIDER_API_KEY="$api_key"
+  export COPILOT_MODEL="${$(jq -r '.env.ANTHROPIC_MODEL // empty' "$claude_settings" 2>/dev/null):-deepseek-v4-flash[1m]}"
+  export COPILOT_OFFLINE=true
+  export COPILOT_PROVIDER_MAX_PROMPT_TOKENS=840000
+  export COPILOT_PROVIDER_MAX_OUTPUT_TOKENS=128000
 fi
 
 if (( $+commands[ollama] )); then

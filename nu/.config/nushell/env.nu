@@ -45,10 +45,6 @@ if (which copilot | length) > 0 {
     $env.COPILOT_PROVIDER_MAX_OUTPUT_TOKENS = "128000"
 }
 
-if (which aichat | length) > 0 {
-    $env.DEEPSEEK_API_KEY = $anthropic_auth_token
-}
-
 # fzf integration
 if (which fzf | length) > 0 {
     let bat_cmd = (if (which batcat | length) > 0 { "batcat --color=always" } else { "bat --color=always" })

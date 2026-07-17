@@ -49,8 +49,10 @@ messages trigger an external editor (nvim by default); the text appears
 pre-populated — save/close with `:wq` Enter. Cancel the editor with
 `:cq` Enter.
 
-**Copilot TUI** — `Enter` submits. May show transient API errors and retry
-automatically; no special handling needed.
+**Copilot TUI** — `Enter` submits fresh messages (typed after `C-c`/`C-u`).
+Sending `Enter` alone on pre-existing prompt text does NOT submit — the
+`C-c; C-u; text; Enter` sequence must be used every time. May show transient
+API errors and retry automatically.
 
 To send a message regardless of length without triggering an editor, write the
 content to a shared file in `.shared/agent/messages/` first, then send a short
