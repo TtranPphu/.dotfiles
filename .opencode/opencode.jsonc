@@ -40,6 +40,11 @@
       "description": "Coordinate AI agents across tmux panes via natural language",
       "template": "Load the coordinate skill and follow its instructions. If a message or receiving agent is specified, craft an inline message or shared file accordingly.",
       "subtask": true
+    },
+    "fire": {
+      "description": "Run a long-running command in another pane with background watchdog",
+      "template": "Load the fire skill and follow its instructions to dispatch the command, launch the watchdog, and handle the completion notification.",
+      "subtask": true
     }
   },
   "provider": {
