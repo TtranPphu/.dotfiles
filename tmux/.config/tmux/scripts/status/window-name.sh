@@ -7,6 +7,7 @@ app_name_rules=(
   'claude:claude'
   'copilot:copilot'
   'opencode:opencode'
+  'pi:pi'
 )
 
 matched_app=""

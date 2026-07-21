@@ -153,3 +153,6 @@ if [ -z "$TMUX" ] && [ -z "$ZELLIJ" ] && [ -z "$DOTFILES_SHELL_PICKED" ]; then
 fi
 
 
+
+# Pi
+export PATH="/home/phut/.local/share/pi-node/node-v22.23.1-linux-x64/bin:$PATH"

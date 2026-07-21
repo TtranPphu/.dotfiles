@@ -1,0 +1,7 @@
+{
+  "theme": "tokyo-night",
+  "skills": [
+    "../.shared/agent/skills"
+  ],
+  "enableSkillCommands": true
+}

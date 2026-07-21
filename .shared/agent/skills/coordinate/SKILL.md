@@ -5,7 +5,7 @@ description: Coordinate AI agents across tmux panes via natural language. Agents
 
 ## Overview
 
-AI agents (opencode, Claude, Copilot, etc.) communicate with each other by
+AI agents (opencode, Claude, Copilot, pi, etc.) communicate with each other by
 sending natural language messages across tmux panes. Each agent runs in its own
 pane and uses `tmux send-keys` to deliver messages to other panes.
 
@@ -15,7 +15,7 @@ between agent-to-agent and user-to-agent traffic.
 ## Pane layout convention
 
 Agents use the `session-presets` workflow (see `session-presets.zsh`) where
-each project window contains separate panes for opencode, nvim, etc. Additional
+each project window contains separate panes for opencode, nvim, pi, etc. Additional
 agent panes can be split from an existing window.
 
 ## Message protocol
