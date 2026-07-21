@@ -5,18 +5,40 @@ description: Coordinate AI agents across tmux panes via natural language. Agents
 
 ## Overview
 
-AI agents (opencode, Claude, Copilot, pi, etc.) communicate with each other by
+AI agents (opencode, claude, copilot, pi, etc.) communicate with each other by
 sending natural language messages across tmux panes. Each agent runs in its own
 pane and uses `tmux send-keys` to deliver messages to other panes.
 
 Agents MUST self-identify in every message so recipients can distinguish
 between agent-to-agent and user-to-agent traffic.
 
-## Pane layout convention
+## Identifying your own pane
 
-Agents use the `session-presets` workflow (see `session-presets.zsh`) where
-each project window contains separate panes for opencode, nvim, pi, etc. Additional
-agent panes can be split from an existing window.
+Each agent needs to know its own pane ID to self-identify in messages.
+**Do NOT use `tmux display-message -p '#{pane_id}'`** — it returns the tmux
+client pane, not the pane where the agent process runs. Instead, find yourself
+in the pane list by matching your process name:
+
+```
+tmux list-panes -a -F '#{pane_id} #{pane_current_command}' | grep -w <process-name> | awk '{print $1}'
+```
+
+For example, pi would run:
+
+```
+tmux list-panes -a -F '#{pane_id} #{pane_current_command}' | grep -w 'pi' | awk '{print $1}'
+```
+
+## Discovering other panes
+
+List all panes to identify which pane hosts which agent:
+
+```
+tmux list-panes -a -F '#{pane_id} #{session_name}:#{window_index}.#{pane_index} #{pane_current_command}'
+```
+
+Cache this at the start of a coordination session but re-check if
+communication fails.
 
 ## Message protocol
 
@@ -24,43 +46,31 @@ agent panes can be split from an existing window.
 
 Format:
 ```
-tmux send-keys -t <target-pane-id> "Pane <source-pane-id> agent: <message>" Enter
+tmux send-keys -t <target-pane-id> "This is <name> agent from pane <source-pane-id>: <message>" Enter
 ```
 
-- Every message starts with `Pane %<id> agent:` prefix.
+- Every message starts with `This is <name> agent from pane <id>:` prefix.
 - `<target-pane-id>` is the tmux pane id (`%0`, `%1`, etc.).
 - `<source-pane-id>` is the sender's own pane id.
+- `<name>` is the agent's name (opencode, claude, copilot, pi, etc.).
 - Target pane ids are discovered via `tmux list-panes -a -F '#{pane_id} #{pane_current_command}'`.
 
 ### TUI-specific behavior
 
-Different agent TUIs handle incoming `send-keys` differently.
-The general send sequence is:
-
-1. Send `C-c` to cancel any ongoing operation.
-2. Send `C-u` to clear any residual text in the prompt.
-3. Send the message text.
-4. Send the submit key (below).
+Different agents handle `send-keys` differently. Send sequence: `C-u` to clear residual text, then the message, then the submit key.
 
 **opencode TUI** — `Enter` submits directly.
 
-**Claude Code TUI** — `Enter` submits short messages directly. Longer
-messages trigger an external editor (nvim by default); the text appears
-pre-populated — save/close with `:wq` Enter. Cancel the editor with
-`:cq` Enter.
+**claude TUI** — `Enter` submits directly. For longer content, write a
+shared file instead of inline.
 
-**Copilot TUI** — `Enter` submits fresh messages (typed after `C-c`/`C-u`).
-Sending `Enter` alone on pre-existing prompt text does NOT submit — the
-`C-c; C-u; text; Enter` sequence must be used every time. May show transient
-API errors and retry automatically.
+**pi TUI** — `Enter` submits directly.
 
-To send a message regardless of length without triggering an editor, write the
-content to a shared file in `.shared/agent/messages/` first, then send a short
-inline notification referencing it.
+**copilot TUI** — Not working at the moment.
 
-Example — opencode in pane `%3` sends to Claude in pane `%2`:
+Example — opencode in pane `%3` sends to claude in pane `%2`:
 ```
-tmux send-keys -t %2 "Pane %3 opencode agent: I've updated the API types in types.ts. Can you regenerate the mock data?" Enter
+tmux send-keys -t %2 "This is opencode agent from pane %3: I've updated the API types in types.ts. Can you regenerate the mock data?" Enter
 ```
 
 ### Shared files (detailed, persistent)
@@ -70,20 +80,20 @@ agents write markdown files to `.shared/agent/messages/` instead of inline.
 
 After writing, the agent sends an inline notification:
 ```
-tmux send-keys -t %5 "Pane %3 agent: I posted the refactoring plan in .shared/agent/messages/refactoring-plan-2026-07-17.md" Enter
+tmux send-keys -t %5 "This is opencode agent from pane %3: I posted the refactoring plan in .shared/agent/messages/2026-07-17-143052-refactoring-plan.md" Enter
 ```
 
 #### File naming convention
 
 ```
-.shared/agent/messages/<topic>-<YYYY-MM-DD>[-<seq>].md
+.shared/agent/messages/<YYYY-MM-DD-HHMMSS>-<topic>.md
 ```
 
 Examples:
 ```
-.shared/agent/messages/auth-flow-spec-2026-07-17.md
-.shared/agent/messages/deployment-checklist-2026-07-17.md
-.shared/agent/messages/refactoring-plan-2026-07-17-2.md
+.shared/agent/messages/2026-07-17-143052-auth-flow-spec.md
+.shared/agent/messages/2026-07-17-153120-deployment-checklist.md
+.shared/agent/messages/2026-07-21-110435-refactoring-plan.md
 ```
 
 #### File format
@@ -93,9 +103,9 @@ Each shared message file starts with a header block:
 ```markdown
 # <Title>
 
-**From:** Pane %<id> (<agent-type>)
-**To:** Pane %<id> (<agent-type>)
-**Date:** <YYYY-MM-DD>
+**From:** <agent-type> (pane %<id>)
+**To:** <agent-type> (pane %<id>)
+**Date:** <YYYY-MM-DD-HHMMSS>
 
 <body>
 ```
@@ -108,29 +118,8 @@ diagrams, etc.
 When an agent receives a message via `tmux send-keys` (i.e. text appears in its
 pane), it MUST:
 
-1. Check if the line starts with `Pane %<id> agent:` — if so, it is an
-   agent-to-agent message.
+1. Check if the line starts with `This is <name> agent from pane <id>:` — if
+   so, it is an agent-to-agent message.
 2. If the message references a file in `.shared/agent/messages/`, read that
    file for the full content.
 3. Respond or act on the message as appropriate.
-4. The agent MUST NOT respond to its own messages (identified by its own pane
-   id).
-
-## Discovering panes
-
-List all panes and their running commands to identify which pane hosts which
-agent:
-
-```
-tmux list-panes -a -F '#{pane_id} #{session_name}:#{window_index}.#{pane_index} #{pane_current_command}'
-```
-
-This helps resolve which pane id to target. Agents cache this at the start of a
-coordination session but should re-check if communication fails.
-
-## User inspection
-
-All shared markdown files in `.shared/agent/messages/` are checked into the
-repo (via the `.shared/` stow package). The user can review them at any time.
-Agents SHOULD write clear, self-contained messages so the user can follow the
-conversation even without the inline chat history.

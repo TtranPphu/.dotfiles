@@ -55,7 +55,7 @@ exits.
 ### 3. Receiving the notification
 
 ```
-Pane %1 watchdog: "build" completed in pane %6. Inspect the results. Over.
+This is watchdog from pane %1: "build" completed in pane %6. Inspect the results.
 ```
 
 Inspect results with:

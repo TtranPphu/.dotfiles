@@ -33,7 +33,7 @@ if [[ ! -f "$PID_FILE" ]]; then
     LOCATION=""
   fi
   tmux send-keys -t "$NOTIFY_PANE" \
-    "Pane $NOTIFY_PANE watchdog: \"$LABEL\" failed$LOCATION — PID file never appeared. Over." Enter
+    "This is watchdog from pane $NOTIFY_PANE: \"$LABEL\" failed$LOCATION — PID file never appeared." Enter
   exit 1
 fi
 
@@ -54,4 +54,4 @@ else
 fi
 
 tmux send-keys -t "$NOTIFY_PANE" \
-  "Pane $NOTIFY_PANE watchdog: \"$LABEL\" completed$LOCATION. Inspect the results. Over." Enter
+  "This is watchdog from pane $NOTIFY_PANE: \"$LABEL\" completed$LOCATION. Inspect the results." Enter
