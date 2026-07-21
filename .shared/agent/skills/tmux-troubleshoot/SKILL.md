@@ -1,6 +1,6 @@
 ---
 name: tmux-troubleshoot
-description: Investigate tmux panes: capture visible output, check saved logs, inspect status lines.
+description: "Investigate tmux panes: capture visible output, check saved logs, inspect status lines."
 user-invocable: true
 allowed-tools: [Bash, Read, Grep]
 ---
