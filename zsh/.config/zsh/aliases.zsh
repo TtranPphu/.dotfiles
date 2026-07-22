@@ -4,7 +4,7 @@ pg() { "${PAGER:-less}" "$@"; }
 alias gs='git status' # What the f*ck is GhostScript, anyway?
 
 # Confirm if output exceeds 64 lines: y/N/p (p = pager)
-confirm() {
+_confirm() {
   local output
   output=$("$@") || return
   local lines=${#${(f)output}}
@@ -25,17 +25,12 @@ confirm() {
 if command -v eza &>/dev/null; then
   alias ls='eza -ah --icons'
 
-  alias la='confirm eza -lah --icons --group --color=always'
-  alias lt='confirm eza -lah --tree --icons --ignore-glob=".git|node_modules" --group --color=always'
-  alias ld='confirm eza -lah --only-dirs --icons --group --color=always'
-  alias lf='confirm eza -lah --only-files --icons --group --color=always'
-  alias lh='confirm eza -lad .* --icons --group --color=always'
+  alias la='_confirm eza -lah --icons --group --color=always'
+  alias lt='_confirm eza -lah --tree --icons --ignore-glob=".git|node_modules" --group --color=always'
+  alias ld='_confirm eza -lah --only-dirs --icons --group --color=always'
+  alias lf='_confirm eza -lah --only-files --icons --group --color=always'
+  alias lh='_confirm eza -lad .* --icons --group --color=always'
 
-  lap() { eza -lah --icons --group --color=always "$@" | ${PAGER:-less}; }
-  ltp() { eza -lah --tree --icons --ignore-glob='.git|node_modules' --group --color=always "$@" | ${PAGER:-less}; }
-  ldp() { eza -lah --only-dirs --icons --group --color=always "$@" | ${PAGER:-less}; }
-  lfp() { eza -lah --only-files --icons --group --color=always "$@" | ${PAGER:-less}; }
-  lhp() { eza -lad .* --icons --group --color=always "$@" | ${PAGER:-less}; }
 fi
 
 # Alias cat -> batcat/bat if available
