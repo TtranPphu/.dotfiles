@@ -1,4 +1,4 @@
-if (( $+commands[copilot] )); then
+if command -v copilot &>/dev/null; then
   local claude_settings=~/.claude/settings.json
   local base_url; base_url=$(jq -r '.env.ANTHROPIC_BASE_URL // empty' "$claude_settings" 2>/dev/null)
   base_url=${base_url:-https://api.deepseek.com/anthropic}
@@ -15,6 +15,6 @@ if (( $+commands[copilot] )); then
   export COPILOT_PROVIDER_MAX_OUTPUT_TOKENS=128000
 fi
 
-if (( $+commands[ollama] )); then
+if command -v ollama &>/dev/null; then
   alias aigc='git commit -m "$(AICHAT_MODEL="ollama:qwen3.5:9b-q4_K_M" ; echo "$(git diff --staged), $AICHAT_MODEL" | aichat -m "$AICHAT_MODEL" -r messager)"'
 fi
