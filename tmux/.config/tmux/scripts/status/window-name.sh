@@ -14,14 +14,15 @@ matched_app=""
 matched_branch=""
 
 while IFS=' ' read -r pid rest; do
+  cmd="${rest%% *}"
+  cmd="${cmd##*/}"
   for rule in "${app_name_rules[@]}"; do
     pattern="${rule%%:*}"
     name="${rule#*:}"
 
-    if [[ "$rest" == *"$pattern"* ]]; then
+    if [[ "$cmd" == "$pattern" ]]; then
       branch="$(git -C "/proc/$pid/cwd" branch --show-current 2>/dev/null)"
-      # If this process matches the active command, use it immediately
-      if [[ "$default_app" == *"$pattern"* ]]; then
+      if [[ "$default_app" == "$pattern" ]]; then
         if [[ -n "$branch" ]]; then
           printf '%s' "${name} 󰊢 ${branch}"
         else
@@ -29,7 +30,6 @@ while IFS=' ' read -r pid rest; do
         fi
         exit 0
       fi
-      # Otherwise, remember the first match as fallback
       [[ -z "$matched_app" ]] && matched_app="$name" && matched_branch="$branch"
       break
     fi
