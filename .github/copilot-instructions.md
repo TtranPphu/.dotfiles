@@ -23,7 +23,14 @@ See [conventions guide](.shared/agent/conventions.md).
 ### Shared Agent Resources
 
 Skills and handoffs live in `.shared/agent/`:
-- **Skills** — `/commit`, `/stow-deploy`, `/tmux-troubleshoot`, `/handoff`, `/merge`, `/coordinate`, `/fire` ([skills directory](.shared/agent/skills/))
+- **Skills** — Slash commands available to all agents ([skills directory](.shared/agent/skills/))
+  - **commit** — Create a git commit following project conventions, one per top-level component.
+  - **coordinate** — Message other AI agents across tmux panes via send-keys and shared markdown files.
+  - **fire** — Run a long command in a new tmux window with a watchdog that reports completion.
+  - **handoff** — Write or archive handoff documents for interrupted or deferred work.
+  - **merge** — Merge a feature branch into master with a conventional commit message.
+  - **stow-deploy** — Deploy, list, or preview GNU stow packages from this repo.
+  - **tmux-troubleshoot** — Investigate tmux panes: capture output, check logs, inspect status lines.
 - **Handoffs** — Context documents for multi-session tasks ([handoffs directory](.shared/agent/handoffs/))
 
 ### Config Quick Reference

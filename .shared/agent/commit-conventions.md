@@ -43,6 +43,14 @@ Examples:
 - Capitalize the first letter of each sentence, proper names, and short all-caps terms when appropriate.
 - Mention the key files or behavior changes when that helps explain the commit.
 - If the commit is trivial, keep the body brief rather than omitting it entirely.
-- End the body with a blank line followed by an agent signature matching the system prompt exactly
-  (e.g., `OpenCode - deepseek-v4-flash-free`, `Claude - deepseek-v4-flash[1m]`, or `Copilot - <model>`).
+- Only list the actual authors of the changes in the signature. An agent that merely executes
+  the commit (runs `git commit`) but did not contribute to the code or content changes is NOT
+  a co-author and MUST NOT be listed.
+- End the body with a blank line followed by a signature:
+  - If the agent authored the changes, use an agent signature matching the system prompt exactly
+    (e.g., `OpenCode - deepseek-v4-flash-free`, `Claude - deepseek-v4-flash[1m]`, or `Copilot - <model>`).
+  - If the user authored the changes and the agent is only committing, use the user's
+    git config `user.name` and `user.email` (e.g., `TtranPphu - ttranpphu0212@gmail.com`).
+  - If the changes are co-authored by the user and one or more agents, include one line per author
+    in this order: user, leading agent, remaining agents in alphabetical order.
 - Do NOT use `Co-Authored-By` or other signatures.

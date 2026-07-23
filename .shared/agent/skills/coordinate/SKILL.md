@@ -64,7 +64,7 @@ Different agents handle `send-keys` differently. Send sequence: `C-u` to clear r
 **claude TUI** — `Enter` submits directly. For longer content, write a
 shared file instead of inline.
 
-**pi TUI** — `Enter` submits directly.
+**pi TUI** — `Enter` does not always register on the first send; send the message text followed by two `Enter` keys (text + Enter + Enter) to ensure submission.
 
 **copilot TUI** — Not working at the moment.
 
