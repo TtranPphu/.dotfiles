@@ -10,18 +10,30 @@ resolve_app() {
   local key="$1"
   local dir="${2:-}"
   local cmd="$key"
-  if [[ "$key" == "opencode" ]]; then
-    if [[ -n "$dir" ]] && (( $+commands[sqlite3] )) && sqlite3 ~/.local/share/opencode/opencode.db \
-      "SELECT 1 FROM session s JOIN project p ON s.project_id = p.id WHERE p.worktree = '${dir//\'/\'}' LIMIT 1;" 2>/dev/null | grep -q 1; then
-      cmd="opencode --continue"
-    fi
-  fi
+  case "$key" in
+    opencode)
+      if [[ -n "$dir" ]] && (( $+commands[sqlite3] )) && sqlite3 ~/.local/share/opencode/opencode.db \
+        "SELECT 1 FROM session s JOIN project p ON s.project_id = p.id WHERE p.worktree = '${dir//\'/\'}' LIMIT 1;" 2>/dev/null | grep -q 1; then
+        cmd="opencode --continue"
+      fi ;;
+    claude)
+      local project_dir="${dir//[\/.]/-}"
+      local -a files=(~/.claude/projects/${project_dir}/*.jsonl(N))
+      if (( ${#files} )); then
+        cmd="claude --continue"
+      fi ;;
+    pi)
+      local -a sessions=(~/.pi/agent/sessions/*/(N))
+      if (( ${#sessions} )); then
+        cmd="pi --continue"
+      fi ;;
+  esac
   printf '%s' "$cmd"
 }
 
 typeset -A session_presets
 session_presets[_]="default|$(pwd)|"
-session_presets[d]="{d}otfiles|${HOME}/.dotfiles|nvim;opencode;"
+session_presets[d]="{d}otfiles|${HOME}/.dotfiles|nvim;opencode,claude,pi;"
 session_presets[t]="{t}iny-repository|${HOME}/Projects/tiny-repository|nvim;opencode;"
 session_presets[n]="ti{n}y-repository|${HOME}/projects/tiny-repository|nvim;opencode;"
 session_presets[k]="zmk-{k}eyboard-cornix|${HOME}/Projects/zmk-keyboard-cornix|nvim;opencode;"
@@ -71,20 +83,19 @@ create_from_preset() {
   tmux new-session -d -s "$session_name" -c "$dir" "$current_shell"
   tmux send-keys -t "${session_name}:1.1" "clear && $(resolve_app "${first_apps[1]}" "$dir")" Enter
 
-  local pane="1"
-  local -i total_apps=${#first_apps}
-  for (( i = 2; i <= total_apps; i++ )); do
+  local -i napps=${#first_apps}
+  local tmux_control
+  tmux_control=$(tmux start-server \; show-options -g @tmux-control 2>/dev/null)
+  tmux_control="${tmux_control#@tmux-control }"
+  local auto_script="${tmux_control:-$HOME/.config/tmux/scripts/control}/auto-split.sh"
+  local pane_id
+  pane_id=$(tmux display-message -p -t "${session_name}:1.1" '#{pane_id}')
+  for (( i = 2; i <= napps; i++ )); do
     local app="$(resolve_app "${first_apps[$i]}" "$dir")"
-    local pane_width pane_height
-    pane_width=$(tmux display-message -p -t "${session_name}:1.${pane}" '#{pane_width}')
-    pane_height=$(tmux display-message -p -t "${session_name}:1.${pane}" '#{pane_height}')
-    if (( pane_width > pane_height * 2 )); then
-      pane=$(tmux split-window -h -t "${session_name}:1.${pane}" -c "$dir" -P -F '#{pane_index}' "$current_shell")
-    else
-      pane=$(tmux split-window -v -t "${session_name}:1.${pane}" -c "$dir" -P -F '#{pane_index}' "$current_shell")
-    fi
-    tmux send-keys -t "${session_name}:1.${pane}" "clear && $app" Enter
+    bash "$auto_script" -t "$pane_id" "$app"
+    pane_id=$(tmux list-panes -t "${session_name}:1" -F '#{pane_id}' | tail -1)
   done
+  tmux select-pane -t "${session_name}:1.1"
 
   local -i win_idx=2
   for win_def in "${windows[@]:1}"; do
@@ -94,20 +105,15 @@ create_from_preset() {
       local -a apps=("${(@s:,:)win_def}")
       tmux new-window -t "$session_name" -c "$dir" "$current_shell"
       tmux send-keys -t "${session_name}:${win_idx}.1" "clear && $(resolve_app "${apps[1]}" "$dir")" Enter
-      local pane="1"
+      local pane_id
+      pane_id=$(tmux display-message -p -t "${session_name}:${win_idx}.1" '#{pane_id}')
       local -i napps=${#apps}
       for (( i = 2; i <= napps; i++ )); do
         local app="$(resolve_app "${apps[$i]}" "$dir")"
-        local pane_width pane_height
-        pane_width=$(tmux display-message -p -t "${session_name}:${win_idx}.${pane}" '#{pane_width}')
-        pane_height=$(tmux display-message -p -t "${session_name}:${win_idx}.${pane}" '#{pane_height}')
-        if (( pane_width > pane_height * 2 )); then
-          pane=$(tmux split-window -h -t "${session_name}:${win_idx}.${pane}" -c "$dir" -P -F '#{pane_index}' "$current_shell")
-        else
-          pane=$(tmux split-window -v -t "${session_name}:${win_idx}.${pane}" -c "$dir" -P -F '#{pane_index}' "$current_shell")
-        fi
-        tmux send-keys -t "${session_name}:${win_idx}.${pane}" "clear && $app" Enter
+        bash "$auto_script" -t "$pane_id" "$app"
+        pane_id=$(tmux list-panes -t "${session_name}:${win_idx}" -F '#{pane_id}' | tail -1)
       done
+      tmux select-pane -t "${session_name}:${win_idx}.1"
     fi
     ((win_idx++))
   done
