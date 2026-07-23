@@ -86,8 +86,10 @@ if (( $+commands[aichat] )) || (( $+commands[claude] )); then
     echo "$route" > /tmp/llm-route
     echo "$(( $(date +%s) + 300 ))|$route" > "$_llm_cache_file"
     case $route in
-      claude-pro) ANTHROPIC_MODEL=deepseek-v4-pro[1m] _claude_fallback "$@" ;;
-      claude-flash) ANTHROPIC_MODEL=deepseek-v4-flash[1m] _claude_fallback "$@" ;;
+      claude-pro)
+        ANTHROPIC_MODEL=deepseek-v4-pro[1m] _claude_fallback "$@" ;;
+      claude-flash)
+        ANTHROPIC_MODEL=deepseek-v4-flash[1m] _claude_fallback "$@" ;;
       aichat-qwen)
         aichat -m ollama:qwen3:4b-instruct -s qwenie -r general --save-session "$*" ;;
       opencode-free)
@@ -107,18 +109,14 @@ if (( $+commands[aichat] )) || (( $+commands[claude] )); then
       clean_words+=(${w%%[^[:alpha:]]*})
     done
 
-    if (( $clean_words[(Ie)probe] )) && (( $+commands[claude] )); then
-      _llm_dispatch claude-pro "$@"
-
-    elif (( $clean_words[(Ie)seekie] || $clean_words[(Ie)flashy] )) && (( $+commands[claude] )); then
-      _llm_dispatch claude-flash "$@"
-
+    if (( $clean_words[(Ie)seekie] || $clean_words[(Ie)freebie] )) && (( $+commands[opencode] )); then
+      _llm_dispatch opencode-free "$@"
     elif (( $clean_words[(Ie)qwenie] )) && (( $+commands[aichat] )); then
       _llm_dispatch aichat-qwen "$@"
-
-    elif (( $clean_words[(Ie)freebie] )) && (( $+commands[opencode] )); then
-      _llm_dispatch opencode-free "$@"
-
+    elif (( $clean_words[(Ie)flashy] )) && (( $+commands[claude] )); then
+      _llm_dispatch claude-flash "$@"
+    elif (( $clean_words[(Ie)probe] )) && (( $+commands[claude] )); then
+      _llm_dispatch claude-pro "$@"
     else
       printf "llm_fallback: command not found: %s\n" $1
     fi
