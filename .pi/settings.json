@@ -1,5 +1,7 @@
 {
   "theme": "tokyo-night",
+  "defaultProvider": "deepseek",
+  "defaultModel": "deepseek-v4-flash",
   "skills": [
     "../.shared/agent/skills"
   ],
