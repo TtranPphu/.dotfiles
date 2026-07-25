@@ -13,9 +13,10 @@ result=$(
   done < <(tmux list-sessions -F '#{session_name}') \
   | while IFS='|' read -r key tty cmd panes bell; do
       name=$("$wm_status/window-name.sh" "$tty" "$cmd")
+      session=${key%%:*}
       bell_icon=$([ "$bell" = "1" ] && echo "󰅸" || echo "")
       panes_suffix=$([ "${panes:-1}" -gt 1 ] && echo ": $panes panes" || echo "")
-      echo "$key $bell_icon $name$panes_suffix"
+      echo "$key  $session - $bell_icon $name$panes_suffix"
     done \
   | fzf-tmux -p 60%,60% --reverse --print-query \
       --wrap-sign='' --ellipsis='··' --preview-wrap-sign='' \
