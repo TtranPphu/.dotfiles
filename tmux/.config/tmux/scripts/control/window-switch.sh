@@ -5,11 +5,18 @@ preview_cmd='key=$(echo {} | cut -d" " -f1); '\
 'i=$(echo "$key" | cut -d: -f2); '\
 'tmux capture-pane -p -t "$s:$i" -e -J 2>/dev/null'
 
+wm_status="$HOME/.config/tmux/scripts/status"
+
 result=$(
   while read -r s; do
-    win_fmt="#{session_name}:#{window_index}  #{session_name} - #{?window_bell_flag,󰅸,} #{window_name}#{?#{>:#{window_panes},1},: #{window_panes} panes,}"
-    tmux list-windows -t "$s" -F "$win_fmt" 2>/dev/null
+    tmux list-windows -t "$s" -F '#{session_name}:#{window_index}|#{pane_tty}|#{pane_current_command}|#{window_panes}|#{window_bell_flag}' 2>/dev/null
   done < <(tmux list-sessions -F '#{session_name}') \
+  | while IFS='|' read -r key tty cmd panes bell; do
+      name=$("$wm_status/window-name.sh" "$tty" "$cmd")
+      bell_icon=$([ "$bell" = "1" ] && echo "󰅸" || echo "")
+      panes_suffix=$([ "${panes:-1}" -gt 1 ] && echo ": $panes panes" || echo "")
+      echo "$key $bell_icon $name$panes_suffix"
+    done \
   | fzf-tmux -p 60%,60% --reverse --print-query \
       --wrap-sign='' --ellipsis='··' --preview-wrap-sign='' \
       --preview "$preview_cmd" \

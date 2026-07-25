@@ -1,11 +1,9 @@
 #!/usr/bin/env bash
 
-win_fmt_act='-F "#{window_active} #{window_index}"'
-win_fmt_list='#{?window_bell_flag,󰅸,} #{window_name}'\
-'#{?#{>:#{window_panes},1}, (#{window_panes} panes),}'
+wm_status="$HOME/.config/tmux/scripts/status"
 
 preview_cmd='s=$(echo {} | awk "{print \$2}" | cut -d: -f1); '\
-'i=$(tmux list-windows -t "$s" '"$win_fmt_act"' '\
+'i=$(tmux list-windows -t "$s" -F "#{window_active} #{window_index}" '\
 '  2>/dev/null | sort -k1 -rn | head -1 | cut -d" " -f2); '\
 'tmux capture-pane -p -t "$s:$i" -e -J 2>/dev/null'
 
@@ -13,14 +11,17 @@ result=$(
   tmux list-sessions -F "#{session_name}" \
   | while read -r s; do
       windows=$(tmux list-windows -t "$s" \
-        -F "$win_fmt_list" \
-        2>/dev/null | paste -sd '|' | sed 's/|/ | /g')
-      if tmux list-windows -t "$s" -F '#{window_bell_flag}' 2>/dev/null | grep -q 1; then
-        icon="󰅸"
-      else
-        icon=""
-      fi
-      echo "$icon $s: $windows"
+        -F '#{pane_tty}|#{pane_current_command}|#{window_panes}|#{window_bell_flag}' \
+        2>/dev/null \
+        | while IFS='|' read -r tty cmd panes bell; do
+            name=$("$wm_status/window-name.sh" "$tty" "$cmd")
+            bell_icon=$([ "$bell" = "1" ] && echo "󰅸" || echo "")
+            panes_suffix=$([ "${panes:-1}" -gt 1 ] && echo " ($panes panes)" || echo "")
+            echo "$bell_icon $name$panes_suffix"
+          done \
+        | paste -sd '|' | sed 's/|/ | /g')
+      session_icon=$(tmux list-windows -t "$s" -F '#{window_bell_flag}' 2>/dev/null | grep -q 1 && echo "󰅸" || echo "")
+      echo "$session_icon $s: $windows"
     done \
   | fzf-tmux -p 60%,60% --reverse --print-query \
       --wrap-sign='' --ellipsis='··' --preview-wrap-sign='' \
