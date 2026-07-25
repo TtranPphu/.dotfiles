@@ -476,24 +476,48 @@ do
   -- NOTE: You can install multiple plugins at once
   vim.pack.add(telescope_plugins)
 
+  local ignore_lua_patterns = {
+    -- git / node
+    '.git/', 'node_modules/',
+    -- python cache
+    '__pycache__/', '%.pyc', '%.pyo',
+    '.pytest_cache/', '.mypy_cache/', '.ruff_cache/',
+    -- rust build
+    'target/debug/', 'target/release/', 'target/.fingerprint/',
+    'target/.rustc_info.json', 'target/flycheck', 'target/CACHEDIR.TAG',
+    -- mongodb / wiredtiger
+    '%.wt', 'WiredTiger', 'journal/', 'diagnostic.data/',
+  }
+
+  local ignore_rg_globs = {
+    -- git / node
+    '!.git', '!node_modules',
+    -- python cache
+    '!__pycache__', '!*.pyc', '!*.pyo',
+    '!.pytest_cache', '!.mypy_cache', '!.ruff_cache',
+    -- rust build
+    '!target/debug', '!target/release', '!target/.fingerprint',
+    '!target/.rustc_info.json', '!**/target/flycheck*', '!target/CACHEDIR.TAG',
+    -- mongodb / wiredtiger
+    '!*.wt', '!WiredTiger*', '!journal', '!diagnostic.data',
+  }
+
   -- See `:help telescope` and `:help telescope.setup()`
   require('telescope').setup {
-    -- You can put your default mappings / updates / etc. in here
-    --  All the info you're looking for is in `:help telescope.setup()`
-    --
-    -- defaults = {
-    --   mappings = {
-    --     i = { ['<c-enter>'] = 'to_fuzzy_refine' },
-    --   },
-    -- },
     pickers = {
       find_files = {
         hidden = true,
         no_ignore = true,
-        file_ignore_patterns = { '.git/', 'node_modules/' },
+        file_ignore_patterns = ignore_lua_patterns,
       },
       live_grep = {
-        additional_args = function(_) return { '--hidden', '--no-ignore', '-g', '!.git', '-g', '!node_modules' } end,
+        additional_args = function(_)
+          local args = { '--hidden', '--no-ignore' }
+          for _, p in ipairs(ignore_rg_globs) do
+            vim.list_extend(args, { '-g', p })
+          end
+          return args
+        end,
       },
     },
     extensions = {
