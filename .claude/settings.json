@@ -1,8 +1,5 @@
 {
   "permissions": {
-    "defaultMode": "plan",
-    "allow": [
-      "Write(path:.claude/plans/*)"
-    ]
+    "defaultMode": "auto"
   }
 }
