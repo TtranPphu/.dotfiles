@@ -5,5 +5,26 @@
     "external_directory": {
       "~/.config/**": "allow"
     }
+  },
+  "agent": {
+    "chat": {
+      "description": "chat-only agent",
+      "mode": "all",
+      "prompt": "You are a pure chat agent. You have NO access to the local filesystem. You CANNOT read, write, edit, or list any files. You CANNOT run shell commands. You CANNOT use grep or glob. Your ONLY capabilities are web search and web fetch. If the user asks about their code, files, or system, tell them you cannot access local files and suggest they switch to the build agent.",
+      "permission": {
+        "read": "deny",
+        "edit": "deny",
+        "glob": "deny",
+        "grep": "deny",
+        "bash": "deny",
+        "lsp": "deny",
+        "task": "deny",
+        "skill": "deny",
+        "external_directory": "deny",
+        "websearch": "allow",
+        "webfetch": "allow",
+        "question": "allow"
+      }
+    }
   }
 }
