@@ -86,14 +86,14 @@ if (( $+commands[aichat] )) || (( $+commands[claude] )); then
     echo "$route" > /tmp/llm-route
     echo "$(( $(date +%s) + 300 ))|$route" > "$_llm_cache_file"
     case $route in
-      claude-pro)
-        ANTHROPIC_MODEL=deepseek-v4-pro[1m] _claude_fallback "$@" ;;
-      claude-flash)
-        ANTHROPIC_MODEL=deepseek-v4-flash[1m] _claude_fallback "$@" ;;
-      aichat-qwen)
-        aichat -m ollama:qwen3:4b-instruct -s qwenie -r general --save-session "$*" ;;
       opencode-free)
         opencode run -m opencode/deepseek-v4-flash-free -c "$@" ;;
+      aichat-qwen)
+        aichat -m ollama:qwen3:4b-instruct -s qwenie -r general --save-session "$*" ;;
+      claude-flash)
+        ANTHROPIC_MODEL=deepseek-v4-flash[1m] _claude_fallback "$@" ;;
+      claude-pro)
+        ANTHROPIC_MODEL=deepseek-v4-pro[1m] _claude_fallback "$@" ;;
     esac
     echo "$(( $(date +%s) + 300 ))|$route" > "$_llm_cache_file"
   }
