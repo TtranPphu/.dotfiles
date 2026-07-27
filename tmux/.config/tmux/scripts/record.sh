@@ -7,11 +7,27 @@ TRANSFILE="/tmp/tmux-speech-transcribing"
 PLAYERFILE="/tmp/tmux-speech-players"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
+coding_agents=('claude' 'copilot' 'opencode' 'pi')
+
+is_coding_agent() {
+    local cmd
+    cmd=$(tmux display-message -p '#{pane_current_command}' 2>/dev/null)
+    for agent in "${coding_agents[@]}"; do
+        [[ "$cmd" == "$agent" ]] && return 0
+    done
+    return 1
+}
+
 pause_players() {
     if ! command -v playerctl &>/dev/null; then
         return
     fi
-    playerctl --list-all 2>/dev/null > "$PLAYERFILE"
+    > "$PLAYERFILE"
+    while IFS= read -r player; do
+        if playerctl --player="$player" status 2>/dev/null | grep -q "Playing"; then
+            echo "$player" >> "$PLAYERFILE"
+        fi
+    done < <(playerctl --list-all 2>/dev/null)
     playerctl --all-players pause 2>/dev/null
 }
 
@@ -109,7 +125,11 @@ stop() {
     fi
 
     echo "$TEXT" > "$TEXTFILE"
-    tmux send-keys "$TEXT"
+    if is_coding_agent; then
+        tmux send-keys "$TEXT"
+    else
+        tmux display-message "Not a coding agent pane — text saved to $TEXTFILE"
+    fi
 }
 
 case "${1:-}" in
