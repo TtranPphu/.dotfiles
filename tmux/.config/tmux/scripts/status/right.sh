@@ -22,6 +22,9 @@ fi
 
 printf '#[fg=blue]'
 
+# Speech recording indicator
+"$script_dir/speech.sh"
+
 printf '#[fg=blue,bg=brightblack,bold]  %s #[default]' "${pane_id#%}"
 
 # DeepSeek balance
