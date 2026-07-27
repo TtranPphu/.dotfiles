@@ -33,7 +33,7 @@ resolve_app() {
 
 typeset -A session_presets
 session_presets[_]="default|$(pwd)|"
-session_presets[d]="{d}otfiles|${HOME}/.dotfiles|nvim;opencode,claude,pi;"
+session_presets[d]="{d}otfiles|${HOME}/.dotfiles|;nvim;opencode;claude;pi"
 session_presets[t]="{t}iny-repository|${HOME}/Projects/tiny-repository|nvim;opencode;"
 session_presets[n]="ti{n}y-repository|${HOME}/projects/tiny-repository|nvim;opencode;"
 session_presets[k]="zmk-{k}eyboard-cornix|${HOME}/Projects/zmk-keyboard-cornix|nvim;opencode;"
@@ -72,42 +72,30 @@ create_from_preset() {
   local -a windows
   IFS=';' read -rA windows <<< "$windows_str"
 
-  if [[ ${#windows} -eq 0 || -z "${windows[1]}" ]]; then
+  if [[ -z "$windows_str" ]]; then
     tmux new-session -d -s "$session_name" -c "$dir" "$current_shell"
     clear; exec tmux attach-session -t "$session_name"
   fi
 
-  local first_win="${windows[1]}"
-  local -a first_apps=("${(@s:,:)first_win}")
-
   tmux new-session -d -s "$session_name" -c "$dir" "$current_shell"
-  tmux send-keys -t "${session_name}:1.1" "clear && $(resolve_app "${first_apps[1]}" "$dir")" Enter
 
-  local -i napps=${#first_apps}
-  local tmux_control
-  tmux_control=$(tmux start-server \; show-options -g @tmux-control 2>/dev/null)
-  tmux_control="${tmux_control#@tmux-control }"
-  local auto_script="${tmux_control:-$HOME/.config/tmux/scripts/control}/auto-split.sh"
-  local pane_id
-  pane_id=$(tmux display-message -p -t "${session_name}:1.1" '#{pane_id}')
-  for (( i = 2; i <= napps; i++ )); do
-    local app="$(resolve_app "${first_apps[$i]}" "$dir")"
-    bash "$auto_script" -t "$pane_id" "$app"
-    pane_id=$(tmux list-panes -t "${session_name}:1" -F '#{pane_id}' | tail -1)
-  done
-  tmux select-pane -t "${session_name}:1.1"
-
-  local -i win_idx=2
-  for win_def in "${windows[@]:1}"; do
-    if [[ -z "$win_def" ]]; then
+  local -i win_idx=1
+  for win_def in "${windows[@]}"; do
+    if (( win_idx > 1 )); then
       tmux new-window -t "$session_name" -c "$dir" "$current_shell"
-    else
+    fi
+
+    if [[ -n "$win_def" ]]; then
       local -a apps=("${(@s:,:)win_def}")
-      tmux new-window -t "$session_name" -c "$dir" "$current_shell"
       tmux send-keys -t "${session_name}:${win_idx}.1" "clear && $(resolve_app "${apps[1]}" "$dir")" Enter
+
+      local -i napps=${#apps}
+      local tmux_control
+      tmux_control=$(tmux start-server \; show-options -g @tmux-control 2>/dev/null)
+      tmux_control="${tmux_control#@tmux-control }"
+      local auto_script="${tmux_control:-$HOME/.config/tmux/scripts/control}/auto-split.sh"
       local pane_id
       pane_id=$(tmux display-message -p -t "${session_name}:${win_idx}.1" '#{pane_id}')
-      local -i napps=${#apps}
       for (( i = 2; i <= napps; i++ )); do
         local app="$(resolve_app "${apps[$i]}" "$dir")"
         bash "$auto_script" -t "$pane_id" "$app"
