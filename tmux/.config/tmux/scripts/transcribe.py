@@ -1,13 +1,19 @@
-#!/home/ttranpphu/.local/share/pipx/venvs/faster-whisper/bin/python3
+#!/usr/bin/env python3
+import re
+import subprocess
 import sys
-from faster_whisper import WhisperModel
 
-model = WhisperModel("large-v3", device="cpu", compute_type="int8")
+wav = sys.argv[1]
+model = "/mnt/shared/whisper-models/ggml-large-v3.bin"
 
-segments, info = model.transcribe(sys.argv[1], beam_size=5)
-text = " ".join(seg.text for seg in segments)
+result = subprocess.run(
+    ["whisper-cli", "-m", model, "-f", wav, "-t", "8", "-dev", "1", "-np"],
+    capture_output=True, text=True
+)
 
-if len(text.strip()) < 3:
+text = re.sub(r"\[\d+:\d+:\d+\.\d+ --> \d+:\d+:\d+\.\d+\]\s*", "", result.stdout).strip()
+
+if not text or len(text) < 3:
     sys.exit(2)
 
-print(text.strip())
+print(text)
