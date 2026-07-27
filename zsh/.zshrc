@@ -108,6 +108,9 @@ source $ZSH/oh-my-zsh.sh
 
 unsetopt autocd nomatch
 
+export PATH="$HOME/.opencode/bin:$PATH"
+export PATH="$HOME/.local/share/pi-node/current/bin:$PATH"
+
 # Source all zsh configuration files from ~/.config/zsh/
 for config in ~/.config/zsh/*.zsh; do
   [ -f "$config" ] && source "$config"
@@ -118,9 +121,6 @@ unset config
 eval "$(starship init zsh)"
 export STARSHIP_CONFIG=~/.config/starship/starship.toml
 ZLE_RPROMPT_INDENT=0
-
-# opencode
-export PATH=/home/ttranpphu/.opencode/bin:$PATH
 
 # Picker — choose shell (zsh/nushell) and multiplexer (tmux/zellij) at startup
 if [ -z "$TMUX" ] && [ -z "$ZELLIJ" ] && [ -z "$DOTFILES_SHELL_PICKED" ]; then
@@ -151,8 +151,3 @@ if [ -z "$TMUX" ] && [ -z "$ZELLIJ" ] && [ -z "$DOTFILES_SHELL_PICKED" ]; then
     clear
   fi
 fi
-
-
-
-# Pi (installed via mise node)
-export PATH="/home/ttranpphu/.local/share/mise/installs/node/26.1.0/bin:$PATH"
