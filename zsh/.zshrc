@@ -110,6 +110,7 @@ unsetopt autocd nomatch
 
 export PATH="$HOME/.opencode/bin:$PATH"
 export PATH="$HOME/.local/share/pi-node/current/bin:$PATH"
+export PATH="$HOME/.local/share/mise/installs/node/latest/bin:$PATH"
 
 # Source all zsh configuration files from ~/.config/zsh/
 for config in ~/.config/zsh/*.zsh; do
