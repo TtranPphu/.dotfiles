@@ -1,14 +1,3 @@
-# Export DeepSeek API key for pi coding agent (same key as the anthropic proxy)
-# Priority: existing env > claude settings.json > fallback
-if [[ -z "$DEEPSEEK_API_KEY" && -n "$ANTHROPIC_AUTH_TOKEN" ]]; then
-  export DEEPSEEK_API_KEY="$ANTHROPIC_AUTH_TOKEN"
-elif [[ -z "$DEEPSEEK_API_KEY" && -f "$HOME/.claude/settings.json" ]]; then
-  local _key
-  _key="$(sed -n 's/.*"DEEPSEEK_API_KEY"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' "$HOME/.claude/settings.json" 2>/dev/null)"
-  [[ -n "$_key" ]] && export DEEPSEEK_API_KEY="$_key"
-  unset _key
-fi
-
 if command -v copilot &>/dev/null && [[ -n "$ANTHROPIC_BASE_URL" && -n "$ANTHROPIC_AUTH_TOKEN" ]]; then
   export COPILOT_PROVIDER_TYPE=anthropic
   export COPILOT_PROVIDER_BASE_URL="$ANTHROPIC_BASE_URL"
