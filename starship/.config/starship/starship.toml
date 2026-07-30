@@ -82,7 +82,8 @@ $character\
 """
 
 right_format = """
-${custom.deepseek_balance}\
+${custom.kimi}\
+${custom.deepseek}\
 $username\
 ${custom.hostname}\
 ${custom.docker_host}\
@@ -597,11 +598,18 @@ success_symbol = "[](bold green)"
 error_symbol = "[](bold red)"
 
 
-[custom.deepseek_balance]
+[custom.deepseek]
 command = '${STARSHIP_CONFIG%/*}/scripts/deepseek.sh'
 when = 'test -z "${TMUX-}${ZELLIJ-}" && grep -q deepseek.com $HOME/.claude/settings.json 2>/dev/null'
 shell = ["bash"]
 style = "bright-blue"
+format = " [ $output]($style)"
+
+[custom.kimi]
+command = '${STARSHIP_CONFIG%/*}/scripts/kimi.sh'
+when = 'test -z "${TMUX-}${ZELLIJ-}"'
+shell = ["bash"]
+style = "bright-cyan"
 format = " [ $output]($style)"
 
 [username]

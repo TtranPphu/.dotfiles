@@ -27,6 +27,9 @@ printf '#[fg=blue]'
 
 printf '#[fg=blue,bg=brightblack,bold]  %s #[default]' "${pane_id#%}"
 
+# Kimi balance
+"$script_dir/kimi.sh"
+
 # DeepSeek balance
 "$script_dir/deepseek.sh"
 

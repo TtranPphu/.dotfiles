@@ -1,26 +1,26 @@
 #!/bin/bash
 
-# Starship custom module: DeepSeek account balance
+# Starship custom module: Kimi account balance
 set -euo pipefail
 
 KEYS_FILE="$HOME/.config/keys.zsh"
 [ -f "$KEYS_FILE" ] && source "$KEYS_FILE"
 LOCAL_KEYS="$HOME/.config/keys.local.zsh"
 [ -f "$LOCAL_KEYS" ] && source "$LOCAL_KEYS"
-TOKEN="${DEEPSEEK_API_KEY:-}"
+TOKEN="${KIMI_API_KEY:-}"
 
 STATE_DIR="$HOME/.local/state/starship"
-STATE_FILE="$STATE_DIR/deepseek-balance.json"
+STATE_FILE="$STATE_DIR/kimi-balance.json"
 CACHE_TTL=300
 
 refresh_cache() {
   mkdir -p "$STATE_DIR"
   local tmp
   tmp=$(mktemp) || return 1
-  curl -sfL -X GET 'https://api.deepseek.com/user/balance' \
+  curl -sfL -X GET 'https://api.moonshot.ai/v1/users/me/balance' \
     -H 'Accept: application/json' \
     -H "Authorization: Bearer $TOKEN" 2>/dev/null |
-    jq '{total_balance: (.balance_infos[0].total_balance | tonumber), last_update: (now | floor)}' >"$tmp" &&
+    jq '{total_balance: (.data.available_balance | tonumber), last_update: (now | floor)}' >"$tmp" &&
     mv "$tmp" "$STATE_FILE" ||
     rm -f "$tmp"
 }
