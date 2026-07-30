@@ -1,13 +1,15 @@
 #!/usr/bin/env python3
+import os
 import re
 import subprocess
 import sys
 
 wav = sys.argv[1]
-model = "/mnt/shared/whisper-models/ggml-large-v3.bin"
+model = os.environ.get("WHISPER_MODEL", "/mnt/shared/whisper-models/ggml-large-v3.bin")
+args = os.environ.get("WHISPER_ARGS", "-t 8 -dev 1 -np").split()
 
 result = subprocess.run(
-    ["whisper-cli", "-m", model, "-f", wav, "-t", "8", "-dev", "1", "-np"],
+    ["whisper-cli", "-m", model, "-f", wav] + args,
     capture_output=True, text=True
 )
 

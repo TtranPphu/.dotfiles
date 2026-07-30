@@ -6,8 +6,13 @@ TEXTFILE="${WAVFILE%.wav}.txt"
 TRANSFILE="/tmp/tmux-speech-transcribing"
 PLAYERFILE="/tmp/tmux-speech-players"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+WSL_SCRIPT="$SCRIPT_DIR/record-wsl.ps1"
 
 coding_agents=('claude' 'copilot' 'opencode' 'pi')
+
+is_wsl() {
+    grep -qi microsoft /proc/version 2>/dev/null
+}
 
 is_coding_agent() {
     local cmd
@@ -48,6 +53,15 @@ start() {
         exit 0
     fi
 
+    if is_wsl; then
+        rm -f "$WAVFILE"
+        powershell.exe -NoProfile -NoLogo -ExecutionPolicy Bypass -File "$(wslpath -w "$WSL_SCRIPT")" -Action start &>/dev/null &
+        PID=$!
+        echo "$PID" > "$PIDFILE"
+        tmux refresh-client
+        return
+    fi
+
     if ! command -v ffmpeg &>/dev/null; then
         exit 1
     fi
@@ -69,7 +83,54 @@ start() {
     tmux refresh-client
 }
 
+wsl_resolve_wav() {
+    local win_temp wav
+    win_temp=$(powershell.exe -NoProfile -NoLogo -Command '$env:TEMP' 2>/dev/null | tr -d '\r\n')
+    [[ -z "$win_temp" ]] && return 1
+    wav=$(wslpath "${win_temp}\\tmux-speech.wav" 2>/dev/null) || return 1
+    printf '%s' "$wav"
+}
+
 stop() {
+    if is_wsl; then
+        powershell.exe -NoProfile -NoLogo -ExecutionPolicy Bypass -File "$(wslpath -w "$WSL_SCRIPT")" -Action stop &>/dev/null
+        rm -f "$PIDFILE"
+        WAVFILE=$(wsl_resolve_wav) || { echo "wsl_resolve_wav failed" > /tmp/speech-debug.log; exit 1; }
+
+        if [ ! -f "$WAVFILE" ]; then
+            echo "WAV not found: $WAVFILE" > /tmp/speech-debug.log
+            exit 1
+        fi
+
+        touch "$TRANSFILE"
+        tmux refresh-client
+
+        (
+            export WHISPER_MODEL="${HOME}/.local/share/whisper/ggml-medium.en.bin"
+            export WHISPER_ARGS="-t 8"
+
+            TEXT=$("$SCRIPT_DIR/transcribe.py" "$WAVFILE" 2>/dev/null)
+            RET=$?
+
+            rm -f "$TRANSFILE"
+            tmux refresh-client
+
+            if [ $RET -eq 2 ]; then
+                echo "$(date): transcribe.py returned 2 (blank audio)" >> /tmp/speech-debug.log
+                exit 2
+            fi
+
+            echo "$TEXT" > "$TEXTFILE"
+            echo "$(date): transcribed OK: ${TEXT:0:50}..." >> /tmp/speech-debug.log
+            if is_coding_agent; then
+                tmux send-keys "$TEXT"
+            else
+                tmux display-message "Not a coding agent pane — text saved to $TEXTFILE"
+            fi
+        ) & disown
+        return
+    fi
+
     if [ ! -f "$PIDFILE" ]; then
         exit 0
     fi
