@@ -5,6 +5,7 @@ WAVFILE="/tmp/tmux-speech.wav"
 TEXTFILE="${WAVFILE%.wav}.txt"
 TRANSFILE="/tmp/tmux-speech-transcribing"
 PLAYERFILE="/tmp/tmux-speech-players"
+PANEFILE="/tmp/tmux-speech-pane"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 WSL_SCRIPT="$SCRIPT_DIR/record-wsl.ps1"
 
@@ -58,6 +59,7 @@ start() {
         powershell.exe -NoProfile -NoLogo -ExecutionPolicy Bypass -File "$(wslpath -w "$WSL_SCRIPT")" -Action start &>/dev/null &
         PID=$!
         echo "$PID" > "$PIDFILE"
+        tmux display-message -p '#{pane_id}' > "$PANEFILE"
         tmux refresh-client
         return
     fi
@@ -79,6 +81,7 @@ start() {
     ffmpeg -y -f pulse -i "$PULSE_SOURCE" -ac 1 -ar 16000 "$WAVFILE" &
     PID=$!
     echo "$PID" > "$PIDFILE"
+    tmux display-message -p '#{pane_id}' > "$PANEFILE"
 
     tmux refresh-client
 }
@@ -122,11 +125,13 @@ stop() {
 
             echo "$TEXT" > "$TEXTFILE"
             echo "$(date): transcribed OK: ${TEXT:0:50}..." >> /tmp/speech-debug.log
-            if is_coding_agent; then
-                tmux send-keys "$TEXT"
+            PANE_ID=$(cat "$PANEFILE" 2>/dev/null)
+            if [ -n "$PANE_ID" ]; then
+                tmux send-keys -t "$PANE_ID" "$TEXT"
             else
                 tmux display-message "Not a coding agent pane — text saved to $TEXTFILE"
             fi
+            rm -f "$PANEFILE"
         ) & disown
         return
     fi
@@ -186,11 +191,13 @@ stop() {
     fi
 
     echo "$TEXT" > "$TEXTFILE"
-    if is_coding_agent; then
-        tmux send-keys "$TEXT"
+    PANE_ID=$(cat "$PANEFILE" 2>/dev/null)
+    if [ -n "$PANE_ID" ]; then
+        tmux send-keys -t "$PANE_ID" "$TEXT"
     else
         tmux display-message "Not a coding agent pane — text saved to $TEXTFILE"
     fi
+    rm -f "$PANEFILE"
 }
 
 case "${1:-}" in
@@ -199,8 +206,11 @@ case "${1:-}" in
     *)
         if [ -f "$PIDFILE" ] && kill -0 "$(cat "$PIDFILE")" 2>/dev/null; then
             stop
-        else
+        elif is_coding_agent; then
             start
+        else
+            tmux display-message "Speech-to-Text only support coding agents!"
+            exit 0
         fi
         ;;
 esac
