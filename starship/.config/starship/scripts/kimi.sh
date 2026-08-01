@@ -30,7 +30,7 @@ WIDTH="${WIDTH:-999}"
 
 render() {
   local balance=$1
-  if (( WIDTH < 100 )); then
+  if (( WIDTH < 144 )); then
     printf "%s" "${balance%.*}"
   else
     printf " %.2f" "$balance"
