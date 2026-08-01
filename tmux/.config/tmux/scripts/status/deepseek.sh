@@ -28,7 +28,7 @@ refresh_cache() {
 
 render() {
   local balance=$1 width=${STATUS_WIDTH:-999}
-  if (( width < 120 )); then
+  if (( width < 100 )); then
     printf '#[fg=brightblack,bold,bg=blue] %d #[default]' "${balance%.*}"
   else
     printf '#[fg=brightblack,bold,bg=blue]  %.2f #[default]' "$balance"

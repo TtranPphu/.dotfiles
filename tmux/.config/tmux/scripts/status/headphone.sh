@@ -19,7 +19,7 @@ idx=$(( (val - 1) / 10 ))
 WIDE_ICON='󱡏'
 NARROW_ICON='󰎇'
 
-if [[ $(tmux display -p '#{window_width}' 2>/dev/null || echo 120) -lt 120 ]]; then
+if [[ $(tmux display -p '#{window_width}' 2>/dev/null || echo 100) -lt 100 ]]; then
   printf '#[fg=brightblack,bold,bg=%s] %s #[default]' "${colors[$idx]}" "$NARROW_ICON"
 else
   printf '#[fg=brightblack,bold,bg=%s] %s %s #[default]' "${colors[$idx]}" "$WIDE_ICON" "$val"

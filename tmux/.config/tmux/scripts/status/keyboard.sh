@@ -20,7 +20,7 @@ idx_right=$(( (right - 1) / 10 ))
 [[ idx_left  -ge 0 ]] && [[ idx_left  -lt 10 ]] || idx_left=0
 [[ idx_right -ge 0 ]] && [[ idx_right -lt 10 ]] || idx_right=0
 
-if [[ $(tmux display -p '#{window_width}' 2>/dev/null || echo 120) -lt 120 ]]; then
+if [[ $(tmux display -p '#{window_width}' 2>/dev/null || echo 100) -lt 100 ]]; then
   printf '#[fg=brightblack,bold,bg=%s]  #[default]' "${colors[$idx_left]}"
   printf '#[fg=brightblack,bold,bg=%s]  #[default]' "${colors[$idx_right]}"
 else

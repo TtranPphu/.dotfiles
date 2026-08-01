@@ -19,7 +19,7 @@ right="${data##* }"
 case "${1:-}" in
   --display)
     [[ $# -lt 2 ]] && usage
-    if [[ $(stty size < /dev/tty 2>/dev/null | cut -d" " -f2 || echo 120) -lt 120 ]]; then
+    if [[ $(stty size < /dev/tty 2>/dev/null | cut -d" " -f2 || echo 100) -lt 100 ]]; then
       printf ''
     elif [[ "$2" == "left" ]]; then
       printf ' %s' "$left"

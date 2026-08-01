@@ -15,7 +15,7 @@ colors=(
 
 idx=$(( (cap - 1) / 10 ))
 
-if [[ $(tmux display -p '#{window_width}' 2>/dev/null || echo 120) -lt 120 ]]; then
+if [[ $(tmux display -p '#{window_width}' 2>/dev/null || echo 100) -lt 100 ]]; then
   printf '#[fg=brightblack,bold,bg=%s] 󰍽 #[default]' "${colors[$idx]}"
 else
   printf '#[fg=brightblack,bold,bg=%s] 󰍽 %s #[default]' "${colors[$idx]}" "$cap"
