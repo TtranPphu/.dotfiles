@@ -1,43 +1,29 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-UTIL="$SCRIPT_DIR/llm-util.sh"
+script_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 
-data=$("$UTIL") || exit 1
-type="${data%% *}"
-value="${data#* }"
+# Only shown when the status line is too narrow for separate kimi/deepseek modules
+guard() {
+  local width=${STATUS_WIDTH:-999}
+  (( width < 144 ))
+}
 
-if [[ $type == route ]]; then
-  case "$value" in
-    claude-pro)      color="red" ;;
-    claude-flash)    color="purple" ;;
-    aichat-qwen)     color="white" ;;
-    opencode-free)   color="green" ;;
-    *)               color="colour239" ;;
-  esac
-  printf '#[fg=colour233,bold,bg=%s]  ▐#[default]' "$color"
-else
-  case "$value" in
-    alpine)       icon="" ;;
-    amzn)         icon="" ;;
-    android)      icon="" ;;
-    arch|artix)   icon="󰣇" ;;
-    centos)       icon="" ;;
-    darwin)       icon="󰀵" ;;
-    debian)       icon="󰣚" ;;
-    fedora)       icon="󰣛" ;;
-    gentoo)       icon="󰣨" ;;
-    manjaro)      icon="" ;;
-    mint)         icon="󰣭" ;;
-    nixos)        icon="" ;;
-    opensuse*)    icon="" ;;
-    raspbian)     icon="󰐿" ;;
-    rhel|redhat)  icon="󱄛" ;;
-    rocky)        icon="" ;;
-    sles)         icon="" ;;
-    ubuntu)       icon="" ;;
-    *)            icon="󰌽" ;;
-  esac
-  printf '#[fg=colour233,bold,bg=brightblack] %s ▐#[default]' "$icon"
+if [[ "${1:-}" == --guard ]]; then
+  if guard; then exit 0; else exit 1; fi
 fi
+
+# Keep the per-provider caches fresh; their own output is discarded here
+"$script_dir/kimi.sh" >/dev/null 2>&1 || true
+"$script_dir/deepseek.sh" >/dev/null 2>&1 || true
+
+cache_dir="$HOME/.local/state/starship"
+kimi=$(jq -r '.total_balance // empty' "$cache_dir/kimi-balance.json" 2>/dev/null) || kimi=""
+deepseek=$(jq -r '.total_balance // empty' "$cache_dir/deepseek-balance.json" 2>/dev/null) || deepseek=""
+
+if [[ -z "$kimi" && -z "$deepseek" ]]; then
+  exit 1
+fi
+
+total=$(awk -v a="${kimi:-0}" -v b="${deepseek:-0}" 'BEGIN { printf "%.2f", a + b }')
+printf '#[fg=brightblack,bold,bg=magenta] 󰭦 %.2f #[default]' "$total"

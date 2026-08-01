@@ -27,15 +27,16 @@ printf '#[fg=blue]'
 
 printf '#[fg=blue,bg=brightblack,bold]  %s #[default]' "${pane_id#%}"
 
-# Balance modules collapse when the status line is narrow
+# Balance modules: combined LLM quota when narrow, per-provider when wide
 export STATUS_WIDTH
 STATUS_WIDTH=$(tmux -S "$socket_path" list-clients -t "$current_session" -F '#{client_width}' 2>/dev/null | sort -rn | head -1)
 
-# Kimi balance
-"$script_dir/kimi.sh"
-
-# DeepSeek balance
-"$script_dir/deepseek.sh"
+if (( STATUS_WIDTH < 144 )); then
+  "$script_dir/llm.sh"
+else
+  "$script_dir/kimi.sh"
+  "$script_dir/deepseek.sh"
+fi
 
 # Battery indicator
 "$script_dir/battery.sh"

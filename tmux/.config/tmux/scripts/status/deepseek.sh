@@ -1,6 +1,13 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+# Exit 0 only when wide enough for the standalone module
+if [[ "${1:-}" == --guard ]]; then
+  width=${STATUS_WIDTH:-999}
+  [[ $width -ge 144 ]] || exit 1
+  exit 0
+fi
+
 settings_file="$HOME/.claude/settings.json"
 cache="$HOME/.local/state/starship/deepseek-balance.json"
 cache_ttl=300

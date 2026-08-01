@@ -3,6 +3,15 @@
 # Starship custom module: Kimi account balance
 set -euo pipefail
 
+WIDTH="${COLUMNS:-$(stty size < /dev/tty 2>/dev/null | cut -d' ' -f2)}"
+WIDTH="${WIDTH:-999}"
+
+# Exit 0 only when wide enough for the standalone module
+if [ "${1:-}" = "--guard" ]; then
+  [ "$WIDTH" -ge 144 ] || exit 1
+  exit 0
+fi
+
 KEYS_FILE="$HOME/.config/keys.zsh"
 [ -f "$KEYS_FILE" ] && source "$KEYS_FILE"
 LOCAL_KEYS="$HOME/.config/keys.local.zsh"
@@ -24,9 +33,6 @@ refresh_cache() {
     mv "$tmp" "$STATE_FILE" ||
     rm -f "$tmp"
 }
-
-WIDTH="${COLUMNS:-$(stty size < /dev/tty 2>/dev/null | cut -d' ' -f2)}"
-WIDTH="${WIDTH:-999}"
 
 render() {
   local balance=$1

@@ -82,6 +82,7 @@ $character\
 """
 
 right_format = """
+${custom.llm}\
 ${custom.kimi}\
 ${custom.deepseek}\
 $username\
@@ -598,16 +599,23 @@ success_symbol = "[](bold green)"
 error_symbol = "[](bold red)"
 
 
+[custom.llm]
+command = '${STARSHIP_CONFIG%/*}/scripts/llm.sh'
+when = '[ -z "$TMUX" ] && [ -z "$ZELLIJ" ] && ${STARSHIP_CONFIG%/*}/scripts/llm.sh --guard'
+shell = ["bash"]
+style = "bold purple"
+format = " [$output]($style)"
+
 [custom.deepseek]
 command = '${STARSHIP_CONFIG%/*}/scripts/deepseek.sh'
-when = 'test -z "${TMUX-}${ZELLIJ-}" && grep -q deepseek.com $HOME/.claude/settings.json 2>/dev/null'
+when = 'test -z "${TMUX-}${ZELLIJ-}" && grep -q deepseek.com $HOME/.claude/settings.json 2>/dev/null && ${STARSHIP_CONFIG%/*}/scripts/deepseek.sh --guard'
 shell = ["bash"]
 style = "bright-blue"
 format = " [$output]($style)"
 
 [custom.kimi]
 command = '${STARSHIP_CONFIG%/*}/scripts/kimi.sh'
-when = 'test -z "${TMUX-}${ZELLIJ-}"'
+when = 'test -z "${TMUX-}${ZELLIJ-}" && ${STARSHIP_CONFIG%/*}/scripts/kimi.sh --guard'
 shell = ["bash"]
 style = "bright-cyan"
 format = " [$output]($style)"
