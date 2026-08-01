@@ -603,14 +603,14 @@ command = '${STARSHIP_CONFIG%/*}/scripts/deepseek.sh'
 when = 'test -z "${TMUX-}${ZELLIJ-}" && grep -q deepseek.com $HOME/.claude/settings.json 2>/dev/null'
 shell = ["bash"]
 style = "bright-blue"
-format = " [ $output]($style)"
+format = " [$output]($style)"
 
 [custom.kimi]
 command = '${STARSHIP_CONFIG%/*}/scripts/kimi.sh'
 when = 'test -z "${TMUX-}${ZELLIJ-}"'
 shell = ["bash"]
 style = "bright-cyan"
-format = " [ $output]($style)"
+format = " [$output]($style)"
 
 [username]
 show_always = true

@@ -26,6 +26,15 @@ refresh_cache() {
     rm -f "$tmp"
 }
 
+render() {
+  local balance=$1 width=${STATUS_WIDTH:-999}
+  if (( width < 120 )); then
+    printf '#[fg=brightblack,bold,bg=blue] %d #[default]' "${balance%.*}"
+  else
+    printf '#[fg=brightblack,bold,bg=blue]  %.2f #[default]' "$balance"
+  fi
+}
+
 if [[ -f $cache ]]; then
   balance=$(jq -r '.total_balance // empty' "$cache" 2>/dev/null) || balance=""
   cache_time=$(jq -r '.last_update // 0' "$cache" 2>/dev/null) || cache_time=0
@@ -36,7 +45,7 @@ if [[ -f $cache ]]; then
     if (( age >= cache_ttl )); then
       refresh_cache &>/dev/null &
     fi
-    printf '#[fg=brightblack,bold,bg=blue]  %.2f #[default]' "$balance"
+    render "$balance"
     exit 0
   fi
 fi
@@ -45,7 +54,7 @@ fi
 refresh_cache 2>/dev/null || true
 balance=$(jq -r '.total_balance // empty' "$cache" 2>/dev/null) || balance=""
 if [[ -n "$balance" ]]; then
-  printf '#[fg=brightblack,bold,bg=blue]  %.2f #[default]' "$balance"
+  render "$balance"
   exit 0
 fi
 exit 1

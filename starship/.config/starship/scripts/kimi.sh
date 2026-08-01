@@ -25,6 +25,18 @@ refresh_cache() {
     rm -f "$tmp"
 }
 
+WIDTH="${COLUMNS:-$(stty size < /dev/tty 2>/dev/null | cut -d' ' -f2)}"
+WIDTH="${WIDTH:-999}"
+
+render() {
+  local balance=$1
+  if (( WIDTH < 120 )); then
+    printf "%s" "${balance%.*}"
+  else
+    printf " %.2f" "$balance"
+  fi
+}
+
 if [ -f "$STATE_FILE" ]; then
   BALANCE=$(jq -r '.total_balance // empty' "$STATE_FILE" 2>/dev/null) || BALANCE=""
   CACHE_TIME=$(jq -r '.last_update // 0' "$STATE_FILE" 2>/dev/null) || CACHE_TIME=0
@@ -35,7 +47,7 @@ if [ -f "$STATE_FILE" ]; then
     if [ "$AGE" -ge "$CACHE_TTL" ]; then
       refresh_cache &>/dev/null &
     fi
-    printf "%.2f" "$BALANCE"
+    render "$BALANCE"
     exit 0
   fi
 fi
@@ -44,7 +56,7 @@ fi
 refresh_cache 2>/dev/null || true
 BALANCE=$(jq -r '.total_balance // empty' "$STATE_FILE" 2>/dev/null) || BALANCE=""
 if [ -n "$BALANCE" ]; then
-  printf "%.2f" "$BALANCE"
+  render "$BALANCE"
   exit 0
 fi
 exit 1

@@ -27,6 +27,10 @@ printf '#[fg=blue]'
 
 printf '#[fg=blue,bg=brightblack,bold]  %s #[default]' "${pane_id#%}"
 
+# Balance modules collapse when the status line is narrow
+export STATUS_WIDTH
+STATUS_WIDTH=$(tmux -S "$socket_path" list-clients -t "$current_session" -F '#{client_width}' 2>/dev/null | sort -rn | head -1)
+
 # Kimi balance
 "$script_dir/kimi.sh"
 
