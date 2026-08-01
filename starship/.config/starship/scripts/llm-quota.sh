@@ -24,4 +24,4 @@ if [ -z "$KIMI" ] && [ -z "$DEEPSEEK" ]; then
 fi
 
 TOTAL=$(awk -v a="${KIMI:-0}" -v b="${DEEPSEEK:-0}" 'BEGIN { printf "%.2f", a + b }')
-printf "󰭦 %s" "$TOTAL"
+printf "%s" "$TOTAL"

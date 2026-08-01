@@ -32,7 +32,7 @@ export STATUS_WIDTH
 STATUS_WIDTH=$(tmux -S "$socket_path" list-clients -t "$current_session" -F '#{client_width}' 2>/dev/null | sort -rn | head -1)
 
 if (( STATUS_WIDTH < 144 )); then
-  "$script_dir/llm.sh"
+  "$script_dir/llm-quota.sh"
 else
   "$script_dir/kimi.sh"
   "$script_dir/deepseek.sh"

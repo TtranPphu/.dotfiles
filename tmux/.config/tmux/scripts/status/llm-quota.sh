@@ -26,4 +26,4 @@ if [[ -z "$kimi" && -z "$deepseek" ]]; then
 fi
 
 total=$(awk -v a="${kimi:-0}" -v b="${deepseek:-0}" 'BEGIN { printf "%.2f", a + b }')
-printf '#[fg=brightblack,bold,bg=magenta] 󰭦 %.2f #[default]' "$total"
+printf '#[fg=brightblack,bold,bg=magenta] %.2f #[default]' "$total"

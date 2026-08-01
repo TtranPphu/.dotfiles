@@ -82,7 +82,7 @@ $character\
 """
 
 right_format = """
-${custom.llm}\
+${custom.llm_quota}\
 ${custom.kimi}\
 ${custom.deepseek}\
 $username\
@@ -92,50 +92,50 @@ ${custom.docker_host}\
 
 
 [custom.llm_os]
-command = '${STARSHIP_CONFIG%/*}/scripts/llm.sh --display os'
-when = '[ -z "$TMUX" ] && [ -z "$ZELLIJ" ] && ${STARSHIP_CONFIG%/*}/scripts/llm.sh --guard os'
+command = '${STARSHIP_CONFIG%/*}/scripts/llm-cache.sh --display os'
+when = '[ -z "$TMUX" ] && [ -z "$ZELLIJ" ] && ${STARSHIP_CONFIG%/*}/scripts/llm-cache.sh --guard os'
 shell = ["bash"]
 style = "bold"
 format = "[$output]($style)  "
 
 [custom.llm_pro]
-command = '${STARSHIP_CONFIG%/*}/scripts/llm.sh --display pro'
-when = '[ -z "$TMUX" ] && [ -z "$ZELLIJ" ] && ${STARSHIP_CONFIG%/*}/scripts/llm.sh --guard pro'
+command = '${STARSHIP_CONFIG%/*}/scripts/llm-cache.sh --display pro'
+when = '[ -z "$TMUX" ] && [ -z "$ZELLIJ" ] && ${STARSHIP_CONFIG%/*}/scripts/llm-cache.sh --guard pro'
 shell = ["bash"]
 style = "red"
 format = "[$output]($style)  "
 
 [custom.llm_flash]
-command = '${STARSHIP_CONFIG%/*}/scripts/llm.sh --display flash'
-when = '[ -z "$TMUX" ] && [ -z "$ZELLIJ" ] && ${STARSHIP_CONFIG%/*}/scripts/llm.sh --guard flash'
+command = '${STARSHIP_CONFIG%/*}/scripts/llm-cache.sh --display flash'
+when = '[ -z "$TMUX" ] && [ -z "$ZELLIJ" ] && ${STARSHIP_CONFIG%/*}/scripts/llm-cache.sh --guard flash'
 shell = ["bash"]
 style = "purple"
 format = "[$output]($style)  "
 
 [custom.llm_reasoner]
-command = '${STARSHIP_CONFIG%/*}/scripts/llm.sh --display reasoner'
-when = '[ -z "$TMUX" ] && [ -z "$ZELLIJ" ] && ${STARSHIP_CONFIG%/*}/scripts/llm.sh --guard reasoner'
+command = '${STARSHIP_CONFIG%/*}/scripts/llm-cache.sh --display reasoner'
+when = '[ -z "$TMUX" ] && [ -z "$ZELLIJ" ] && ${STARSHIP_CONFIG%/*}/scripts/llm-cache.sh --guard reasoner'
 shell = ["bash"]
 style = "blue"
 format = "[$output]($style)  "
 
 [custom.llm_chat]
-command = '${STARSHIP_CONFIG%/*}/scripts/llm.sh --display chat'
-when = '[ -z "$TMUX" ] && [ -z "$ZELLIJ" ] && ${STARSHIP_CONFIG%/*}/scripts/llm.sh --guard chat'
+command = '${STARSHIP_CONFIG%/*}/scripts/llm-cache.sh --display chat'
+when = '[ -z "$TMUX" ] && [ -z "$ZELLIJ" ] && ${STARSHIP_CONFIG%/*}/scripts/llm-cache.sh --guard chat'
 shell = ["bash"]
 style = "cyan"
 format = "[$output]($style)  "
 
 [custom.llm_qwen]
-command = '${STARSHIP_CONFIG%/*}/scripts/llm.sh --display qwen'
-when = '[ -z "$TMUX" ] && [ -z "$ZELLIJ" ] && ${STARSHIP_CONFIG%/*}/scripts/llm.sh --guard qwen'
+command = '${STARSHIP_CONFIG%/*}/scripts/llm-cache.sh --display qwen'
+when = '[ -z "$TMUX" ] && [ -z "$ZELLIJ" ] && ${STARSHIP_CONFIG%/*}/scripts/llm-cache.sh --guard qwen'
 shell = ["bash"]
 style = "white"
 format = "[$output]($style)  "
 
 [custom.llm_free]
-command = '${STARSHIP_CONFIG%/*}/scripts/llm.sh --display free'
-when = '[ -z "$TMUX" ] && [ -z "$ZELLIJ" ] && ${STARSHIP_CONFIG%/*}/scripts/llm.sh --guard free'
+command = '${STARSHIP_CONFIG%/*}/scripts/llm-cache.sh --display free'
+when = '[ -z "$TMUX" ] && [ -z "$ZELLIJ" ] && ${STARSHIP_CONFIG%/*}/scripts/llm-cache.sh --guard free'
 shell = ["bash"]
 style = "green"
 format = "[$output]($style)  "
@@ -599,9 +599,9 @@ success_symbol = "[](bold green)"
 error_symbol = "[](bold red)"
 
 
-[custom.llm]
-command = '${STARSHIP_CONFIG%/*}/scripts/llm.sh'
-when = '[ -z "$TMUX" ] && [ -z "$ZELLIJ" ] && ${STARSHIP_CONFIG%/*}/scripts/llm.sh --guard'
+[custom.llm_quota]
+command = '${STARSHIP_CONFIG%/*}/scripts/llm-quota.sh'
+when = '[ -z "$TMUX" ] && [ -z "$ZELLIJ" ] && ${STARSHIP_CONFIG%/*}/scripts/llm-quota.sh --guard'
 shell = ["bash"]
 style = "bold purple"
 format = " [$output]($style)"
