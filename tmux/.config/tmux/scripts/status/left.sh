@@ -5,7 +5,7 @@ current_session="$2"
 script_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 
 # LLM / OS route indicator
-"$script_dir/llm.sh"
+"$script_dir/llm-cache.sh"
 
 adjacent_sessions="$("$script_dir/session-list.sh" "$socket_path" "$current_session" next)"
 
