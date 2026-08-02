@@ -6,7 +6,7 @@ alias gs='git status' # What the f*ck is GhostScript, anyway?
 # Alias eza -> ls if available
 if command -v eza &>/dev/null; then
   # Confirm if output exceeds 64 lines: y/N/p (p = pager)
-  local _confirm() {
+  local _eza_confirm() {
     local output
     output=$("$@") || return
     local lines=${#${(f)output}}
@@ -23,14 +23,15 @@ if command -v eza &>/dev/null; then
     fi
     echo "$output"
   }
+  compdef _eza _eza_confirm
 
   alias ls='eza -ah --icons'
 
-  alias la='_confirm eza -lah --icons --group --color=always'
-  alias lt='_confirm eza -lah --tree --icons --ignore-glob=".git|node_modules" --group --color=always'
-  alias ld='_confirm eza -lah --only-dirs --icons --group --color=always'
-  alias lf='_confirm eza -lah --only-files --icons --group --color=always'
-  alias lh='_confirm eza -lad .* --icons --group --color=always'
+  alias la='_eza_confirm eza -lah --icons --group --color=always'
+  alias lt='_eza_confirm eza -lah --tree --icons --ignore-glob=".git|node_modules" --group --color=always'
+  alias ld='_eza_confirm eza -lah --only-dirs --icons --group --color=always'
+  alias lf='_eza_confirm eza -lah --only-files --icons --group --color=always'
+  alias lh='_eza_confirm eza -lad .* --icons --group --color=always'
 
 fi
 

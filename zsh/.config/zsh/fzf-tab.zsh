@@ -13,7 +13,7 @@ if command -v fzf &> /dev/null; then
   # Detect eza availability
   local ls_cmd
   if command -v eza &>/dev/null; then
-    ls_cmd='eza -lah --icons'
+    ls_cmd='eza -lah --icons=always'
   else
     ls_cmd='ls -lah'
   fi
@@ -40,4 +40,6 @@ if command -v fzf &> /dev/null; then
   zstyle ':fzf-tab:complete:cd:*' fzf-preview "$ls_cmd \$realpath 2>/dev/null"
   zstyle ':fzf-tab:complete:z:*' fzf-preview "$ls_cmd \$realpath 2>/dev/null"
   zstyle ':fzf-tab:complete:_files' fzf-preview "[[ -f \$realpath ]] && $cat_cmd \$realpath 2>/dev/null || $ls_cmd \$realpath 2>/dev/null"
+  # The _eza_confirm-wrapped aliases (la/lt/ld/lf/lh) dispatch on _eza_confirm
+  zstyle ':fzf-tab:complete:_eza_confirm:*' fzf-preview "[[ -f \$realpath ]] && $cat_cmd \$realpath 2>/dev/null || $ls_cmd \$realpath 2>/dev/null"
 fi
