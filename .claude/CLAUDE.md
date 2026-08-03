@@ -12,6 +12,10 @@ A GNU Stow-style dotfiles collection. Each top-level directory is a stow package
 
 See [communication style guide](.shared/agent/communication-style.md).
 
+## Speech Input
+
+See [speech input guide](.shared/agent/speech-input.md).
+
 ## Keywords
 
 See [keywords reference](.shared/agent/keywords.md).
