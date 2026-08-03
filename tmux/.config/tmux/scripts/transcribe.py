@@ -24,7 +24,13 @@ result = subprocess.run(
 
 text = re.sub(r"\[\d+:\d+:\d+\.\d+ --> \d+:\d+:\d+\.\d+\]\s*", "", result.stdout).strip()
 
-if not text or len(text) < 3:
+
+def is_hallucination(text: str) -> bool:
+    words = re.findall(r"[a-z]+", text.lower())
+    return len(words) >= 4 and len(set(words)) == 1
+
+
+if not text or len(text) < 3 or is_hallucination(text):
     sys.exit(2)
 
 print(text)
