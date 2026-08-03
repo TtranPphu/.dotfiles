@@ -14,4 +14,4 @@ grep -q 'deepseek.com' "$settings_file" 2>/dev/null || exit 1
 
 script_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 balance=$("$script_dir/llm-quota-util.sh" --get deepseek) || exit 1
-printf '#[fg=brightblack,bold,bg=blue]  %.2f #[default]' "$balance"
+printf '#[fg=#000000,bold,bg=blue]  %.2f #[default]' "$balance"

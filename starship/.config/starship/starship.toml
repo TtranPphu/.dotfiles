@@ -12,6 +12,9 @@ ${custom.llm_reasoner}\
 ${custom.llm_chat}\
 ${custom.llm_qwen}\
 ${custom.llm_free}\
+${custom.llm_quota}\
+${custom.deepseek}\
+${custom.kimi}\
 $shell\
 ${custom.compress_path}\
 ${custom.git_remote}\
@@ -82,9 +85,6 @@ $character\
 """
 
 right_format = """
-${custom.llm_quota}\
-${custom.kimi}\
-${custom.deepseek}\
 $username\
 ${custom.hostname}\
 ${custom.docker_host}\
@@ -96,49 +96,70 @@ command = '${STARSHIP_CONFIG%/*}/scripts/llm-cache.sh --display os'
 when = '[ -z "$TMUX" ] && [ -z "$ZELLIJ" ] && ${STARSHIP_CONFIG%/*}/scripts/llm-cache.sh --guard os'
 shell = ["bash"]
 style = "bold"
-format = "[$output]($style)  "
+format = "[$output]($style) "
 
 [custom.llm_pro]
 command = '${STARSHIP_CONFIG%/*}/scripts/llm-cache.sh --display pro'
 when = '[ -z "$TMUX" ] && [ -z "$ZELLIJ" ] && ${STARSHIP_CONFIG%/*}/scripts/llm-cache.sh --guard pro'
 shell = ["bash"]
 style = "red"
-format = "[$output]($style)  "
+format = "[$output]($style) "
 
 [custom.llm_flash]
 command = '${STARSHIP_CONFIG%/*}/scripts/llm-cache.sh --display flash'
 when = '[ -z "$TMUX" ] && [ -z "$ZELLIJ" ] && ${STARSHIP_CONFIG%/*}/scripts/llm-cache.sh --guard flash'
 shell = ["bash"]
 style = "purple"
-format = "[$output]($style)  "
+format = "[$output]($style) "
 
 [custom.llm_reasoner]
 command = '${STARSHIP_CONFIG%/*}/scripts/llm-cache.sh --display reasoner'
 when = '[ -z "$TMUX" ] && [ -z "$ZELLIJ" ] && ${STARSHIP_CONFIG%/*}/scripts/llm-cache.sh --guard reasoner'
 shell = ["bash"]
 style = "blue"
-format = "[$output]($style)  "
+format = "[$output]($style) "
 
 [custom.llm_chat]
 command = '${STARSHIP_CONFIG%/*}/scripts/llm-cache.sh --display chat'
 when = '[ -z "$TMUX" ] && [ -z "$ZELLIJ" ] && ${STARSHIP_CONFIG%/*}/scripts/llm-cache.sh --guard chat'
 shell = ["bash"]
 style = "cyan"
-format = "[$output]($style)  "
+format = "[$output]($style) "
 
 [custom.llm_qwen]
 command = '${STARSHIP_CONFIG%/*}/scripts/llm-cache.sh --display qwen'
 when = '[ -z "$TMUX" ] && [ -z "$ZELLIJ" ] && ${STARSHIP_CONFIG%/*}/scripts/llm-cache.sh --guard qwen'
 shell = ["bash"]
 style = "white"
-format = "[$output]($style)  "
+format = "[$output]($style) "
 
 [custom.llm_free]
 command = '${STARSHIP_CONFIG%/*}/scripts/llm-cache.sh --display free'
 when = '[ -z "$TMUX" ] && [ -z "$ZELLIJ" ] && ${STARSHIP_CONFIG%/*}/scripts/llm-cache.sh --guard free'
 shell = ["bash"]
 style = "green"
-format = "[$output]($style)  "
+format = "[$output]($style) "
+
+[custom.llm_quota]
+command = '${STARSHIP_CONFIG%/*}/scripts/llm-quota.sh'
+when = '[ -z "$TMUX" ] && [ -z "$ZELLIJ" ] && ${STARSHIP_CONFIG%/*}/scripts/llm-quota.sh --guard'
+shell = ["bash"]
+style = "bold purple"
+format = "[$output]($style) "
+
+[custom.deepseek]
+command = '${STARSHIP_CONFIG%/*}/scripts/deepseek.sh'
+when = 'test -z "${TMUX-}${ZELLIJ-}" && grep -q deepseek.com $HOME/.claude/settings.json 2>/dev/null && ${STARSHIP_CONFIG%/*}/scripts/deepseek.sh --guard'
+shell = ["bash"]
+style = "bright-blue"
+format = "[$output]($style) "
+
+[custom.kimi]
+command = '${STARSHIP_CONFIG%/*}/scripts/kimi.sh'
+when = 'test -z "${TMUX-}${ZELLIJ-}" && ${STARSHIP_CONFIG%/*}/scripts/kimi.sh --guard'
+shell = ["bash"]
+style = "bright-cyan"
+format = "[$output]($style) "
 
 [shell]
 disabled = false
@@ -597,28 +618,6 @@ format = " [$output]($style)"
 [character]
 success_symbol = "[](bold green)"
 error_symbol = "[](bold red)"
-
-
-[custom.llm_quota]
-command = '${STARSHIP_CONFIG%/*}/scripts/llm-quota.sh'
-when = '[ -z "$TMUX" ] && [ -z "$ZELLIJ" ] && ${STARSHIP_CONFIG%/*}/scripts/llm-quota.sh --guard'
-shell = ["bash"]
-style = "bold purple"
-format = " [$output]($style)"
-
-[custom.deepseek]
-command = '${STARSHIP_CONFIG%/*}/scripts/deepseek.sh'
-when = 'test -z "${TMUX-}${ZELLIJ-}" && grep -q deepseek.com $HOME/.claude/settings.json 2>/dev/null && ${STARSHIP_CONFIG%/*}/scripts/deepseek.sh --guard'
-shell = ["bash"]
-style = "bright-blue"
-format = " [$output]($style)"
-
-[custom.kimi]
-command = '${STARSHIP_CONFIG%/*}/scripts/kimi.sh'
-when = 'test -z "${TMUX-}${ZELLIJ-}" && ${STARSHIP_CONFIG%/*}/scripts/kimi.sh --guard'
-shell = ["bash"]
-style = "bright-cyan"
-format = " [$output]($style)"
 
 [username]
 show_always = true

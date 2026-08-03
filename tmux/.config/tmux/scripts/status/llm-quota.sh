@@ -11,4 +11,4 @@ if [[ "${1:-}" == --guard ]]; then
 fi
 
 total=$("$script_dir/llm-quota-util.sh" --total) || exit 1
-printf '#[fg=brightblack,bold,bg=magenta] %.2f #[default]' "$total"
+printf '#[fg=#000000,bold,bg=magenta] %.2f #[default]' "$total"
