@@ -8,6 +8,7 @@ PLAYERFILE="/tmp/tmux-speech-players"
 PANEFILE="/tmp/tmux-speech-pane"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 WSL_SCRIPT="$SCRIPT_DIR/record-wsl.ps1"
+SPEECH_PREFIX="This is the user via speech: "
 
 coding_agents=('claude' 'copilot' 'opencode' 'pi')
 
@@ -127,7 +128,7 @@ stop() {
             echo "$(date): transcribed OK: ${TEXT:0:50}..." >> /tmp/speech-debug.log
             PANE_ID=$(cat "$PANEFILE" 2>/dev/null)
             if [ -n "$PANE_ID" ]; then
-                tmux send-keys -t "$PANE_ID" "$TEXT"
+                tmux send-keys -t "$PANE_ID" "$SPEECH_PREFIX$TEXT" Enter
             else
                 tmux display-message "Not a coding agent pane — text saved to $TEXTFILE"
             fi
@@ -193,7 +194,7 @@ stop() {
     echo "$TEXT" > "$TEXTFILE"
     PANE_ID=$(cat "$PANEFILE" 2>/dev/null)
     if [ -n "$PANE_ID" ]; then
-        tmux send-keys -t "$PANE_ID" "$TEXT"
+        tmux send-keys -t "$PANE_ID" "$SPEECH_PREFIX$TEXT" Enter
     else
         tmux display-message "Not a coding agent pane — text saved to $TEXTFILE"
     fi
