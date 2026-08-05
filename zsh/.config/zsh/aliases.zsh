@@ -23,7 +23,9 @@ if command -v eza &>/dev/null; then
     fi
     echo "$output"
   }
-  compdef _eza _eza_confirm
+
+  setopt completealiases
+  compdef _eza ls la lt ld lf lh
 
   alias ls='eza -ah --icons'
 
