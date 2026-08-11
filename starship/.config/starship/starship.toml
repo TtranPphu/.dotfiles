@@ -12,9 +12,6 @@ ${custom.llm_reasoner}\
 ${custom.llm_chat}\
 ${custom.llm_qwen}\
 ${custom.llm_free}\
-${custom.llm_quota}\
-${custom.deepseek}\
-${custom.kimi}\
 $shell\
 ${custom.compress_path}\
 ${custom.git_remote}\
@@ -85,6 +82,9 @@ $character\
 """
 
 right_format = """
+${custom.llm_quota}\
+${custom.deepseek}\
+${custom.kimi}\
 $username\
 ${custom.hostname}\
 ${custom.docker_host}\
@@ -138,27 +138,6 @@ command = '${STARSHIP_CONFIG%/*}/scripts/llm-cache.sh --display free'
 when = '[ -z "$TMUX" ] && [ -z "$ZELLIJ" ] && ${STARSHIP_CONFIG%/*}/scripts/llm-cache.sh --guard free'
 shell = ["bash"]
 style = "green"
-format = "[$output]($style) "
-
-[custom.llm_quota]
-command = '${STARSHIP_CONFIG%/*}/scripts/llm-quota.sh'
-when = '[ -z "$TMUX" ] && [ -z "$ZELLIJ" ] && ${STARSHIP_CONFIG%/*}/scripts/llm-quota.sh --guard'
-shell = ["bash"]
-style = "bold purple"
-format = "[$output]($style) "
-
-[custom.deepseek]
-command = '${STARSHIP_CONFIG%/*}/scripts/deepseek.sh'
-when = 'test -z "${TMUX-}${ZELLIJ-}" && grep -q deepseek.com $HOME/.claude/settings.json 2>/dev/null && ${STARSHIP_CONFIG%/*}/scripts/deepseek.sh --guard'
-shell = ["bash"]
-style = "bright-blue"
-format = "[$output]($style) "
-
-[custom.kimi]
-command = '${STARSHIP_CONFIG%/*}/scripts/kimi.sh'
-when = 'test -z "${TMUX-}${ZELLIJ-}" && ${STARSHIP_CONFIG%/*}/scripts/kimi.sh --guard'
-shell = ["bash"]
-style = "bright-cyan"
 format = "[$output]($style) "
 
 [shell]
@@ -618,6 +597,27 @@ format = " [$output]($style)"
 [character]
 success_symbol = "[](bold green)"
 error_symbol = "[](bold red)"
+
+[custom.llm_quota]
+command = '${STARSHIP_CONFIG%/*}/scripts/llm-quota.sh'
+when = '[ -z "$TMUX" ] && [ -z "$ZELLIJ" ] && ${STARSHIP_CONFIG%/*}/scripts/llm-quota.sh --guard'
+shell = ["bash"]
+style = "bold purple"
+format = " [$output]($style)"
+
+[custom.deepseek]
+command = '${STARSHIP_CONFIG%/*}/scripts/deepseek.sh'
+when = 'test -z "${TMUX-}${ZELLIJ-}" && grep -q deepseek.com $HOME/.claude/settings.json 2>/dev/null && ${STARSHIP_CONFIG%/*}/scripts/deepseek.sh --guard'
+shell = ["bash"]
+style = "bright-blue"
+format = " [$output]($style)"
+
+[custom.kimi]
+command = '${STARSHIP_CONFIG%/*}/scripts/kimi.sh'
+when = 'test -z "${TMUX-}${ZELLIJ-}" && ${STARSHIP_CONFIG%/*}/scripts/kimi.sh --guard'
+shell = ["bash"]
+style = "bright-cyan"
+format = " [$output]($style)"
 
 [username]
 show_always = true

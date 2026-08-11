@@ -13,25 +13,25 @@ value="${data#* }"
 
 os_icon() {
   case "${1:-linux}" in
-    alpine)       echo " " ;;
-    amzn)         echo " " ;;
-    android)      echo " " ;;
-    arch|artix)   echo "󰣇 " ;;
-    centos)       echo " " ;;
-    darwin)       echo "󰀵 " ;;
-    debian)       echo "󰣚 " ;;
-    fedora)       echo "󰣛 " ;;
-    gentoo)       echo "󰣨 " ;;
-    manjaro)      echo " " ;;
-    mint)         echo "󰣭 " ;;
-    nixos)        echo " " ;;
-    opensuse*)    echo " " ;;
-    raspbian)     echo "󰐿 " ;;
-    rhel|redhat)  echo "󱄛 " ;;
-    rocky)        echo " " ;;
-    sles)         echo " " ;;
-    ubuntu)       echo " " ;;
-    *)            echo "󰌽 " ;;
+    alpine)       echo " ▐" ;;
+    amzn)         echo " ▐" ;;
+    android)      echo " ▐" ;;
+    arch|artix)   echo "󰣇 ▐" ;;
+    centos)       echo " ▐" ;;
+    darwin)       echo "󰀵 ▐" ;;
+    debian)       echo "󰣚 ▐" ;;
+    fedora)       echo "󰣛 ▐" ;;
+    gentoo)       echo "󰣨 ▐" ;;
+    manjaro)      echo " ▐" ;;
+    mint)         echo "󰣭 ▐" ;;
+    nixos)        echo " ▐" ;;
+    opensuse*)    echo " ▐" ;;
+    raspbian)     echo "󰐿 ▐" ;;
+    rhel|redhat)  echo "󱄛 ▐" ;;
+    rocky)        echo " ▐" ;;
+    sles)         echo " ▐" ;;
+    ubuntu)       echo " ▐" ;;
+    *)            echo "󰌽 ▐" ;;
   esac
 }
 
@@ -43,7 +43,7 @@ case "${1:-}" in
       os_icon "$value"
     else
       [[ $type == route ]] || exit 1
-      echo " "
+      echo " ▐"
     fi
     ;;
   --guard)
