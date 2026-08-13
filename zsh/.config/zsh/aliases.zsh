@@ -5,12 +5,12 @@ alias gs='git status' # What the f*ck is GhostScript, anyway?
 
 # Alias eza -> ls if available
 if command -v eza &>/dev/null; then
-  # Confirm if output exceeds 64 lines: y/N/p (p = pager)
+  # Confirm if output exceeds terminal height - 5 lines: y/N/p (p = pager)
   local _eza_confirm() {
     local output
     output=$("$@") || return
     local lines=${#${(f)output}}
-    if (( lines > 64 )); then
+    if (( lines > ${LINES:-64} - 5 )); then
       local reply
       echo -n "Display ${lines} lines of output? [y/N/p/e] "
       read -k 1 reply; echo
