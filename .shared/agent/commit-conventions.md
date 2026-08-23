@@ -47,7 +47,7 @@ Examples:
   a co-author and MUST NOT be listed.
 - End the body with a blank line followed by a signature:
   - If the agent authored the changes, use an agent signature matching the system prompt exactly
-    (e.g., `OpenCode - deepseek-v4-flash-free`, `Claude - deepseek-v4-flash[1m]`).
+    (e.g., `OpenCode - deepseek-v4-flash`, `Claude - deepseek-v4-flash[1m]`).
   - If the user authored the changes and the agent is only committing, use the user's
     git config `user.name` and `user.email` (e.g., `TtranPphu - ttranpphu0212@gmail.com`).
   - If the changes are co-authored by the user and one or more agents, include one line per author
