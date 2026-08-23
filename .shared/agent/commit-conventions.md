@@ -5,7 +5,7 @@
 - For files under a top-level directory, use the first path segment as the component owner.
   - Examples: `hypr/...` -> `Hypr`, `tmux/...` -> `Tmux`, `nvim/...` -> `Nvim`, `opencode/...` -> `OpenCode`.
 - For `.github/...`, use `GitHub`.
-- For changes to agent configuration or documentation files (e.g., `.claude/`, `.github/skills/`), use `Agent`.
+- For changes to agent configuration or documentation files (e.g., `.claude/`), use `Agent`.
 - For root-level files that are not inside a component directory, use `Repo`.
 - Prefer a human-readable component label in title case inside the commit subject.
 - When changes span multiple tightly-coupled components (e.g., removing an old file in one component
