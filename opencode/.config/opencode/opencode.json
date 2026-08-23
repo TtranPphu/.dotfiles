@@ -8,88 +8,8 @@
     }
   },
   "agent": {
-    "build": {
-      "mode": "primary",
-      "permission": {
-        "websearch": "allow",
-        "webfetch": "allow",
-        "question": "allow",
-        "read": "allow",
-        "glob": "allow",
-        "grep": "allow",
-        "list": "allow",
-        "edit": "allow",
-        "bash": "allow",
-        "task": "allow",
-        "lsp": "allow",
-        "todowrite": "allow",
-        "skill": "allow",
-        "doom_loop": "allow",
-        "external_directory": "allow"
-      }
-    },
-    "plan": {
-      "mode": "primary",
-      "permission": {
-        "websearch": "allow",
-        "webfetch": "allow",
-        "question": "allow",
-        "read": "allow",
-        "glob": "allow",
-        "grep": "allow",
-        "list": "allow",
-        "edit": "ask",
-        "bash": "ask",
-        "task": "allow",
-        "lsp": "allow",
-        "todowrite": "allow",
-        "skill": "allow",
-        "doom_loop": "allow",
-        "external_directory": "allow"
-      }
-    },
-    "general": {
-      "mode": "subagent",
-      "permission": {
-        "websearch": "allow",
-        "webfetch": "allow",
-        "question": "allow",
-        "read": "allow",
-        "glob": "allow",
-        "grep": "allow",
-        "list": "allow",
-        "edit": "allow",
-        "bash": "allow",
-        "task": "allow",
-        "lsp": "allow",
-        "todowrite": "deny",
-        "skill": "allow",
-        "doom_loop": "allow",
-        "external_directory": "allow"
-      }
-    },
-    "explore": {
-      "mode": "subagent",
-      "permission": {
-        "websearch": "allow",
-        "webfetch": "allow",
-        "question": "allow",
-        "read": "allow",
-        "glob": "allow",
-        "grep": "allow",
-        "list": "allow",
-        "edit": "deny",
-        "bash": "deny",
-        "task": "allow",
-        "lsp": "allow",
-        "todowrite": "deny",
-        "skill": "allow",
-        "doom_loop": "allow",
-        "external_directory": "allow"
-      }
-    },
     "chat": {
-      "mode": "all",
+      "mode": "primary",
       "prompt": "You are a pure chat agent. You have NO access to the local filesystem. You CANNOT read, write, edit, or list any files. You CANNOT run shell commands. You CANNOT use grep or glob. Your ONLY capabilities are web search and web fetch. If the user asks about their code, files, or system, tell them you cannot access local files and suggest they switch to the build agent. You should address user as `comrade` and talk in communist/socialist tone.",
       "permission": {
         "websearch": "allow",
