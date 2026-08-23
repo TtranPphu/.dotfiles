@@ -38,6 +38,15 @@ Skills and handoffs live in `.shared/agent/`:
   - **tmux-troubleshoot** — Investigate tmux panes: capture output, check logs, inspect status lines.
 - **Handoffs** — Context documents for multi-session tasks ([handoffs directory](.shared/agent/handoffs/))
 
+### Delegation
+
+- The build agent explores and scopes package work itself, then hands execution
+  to the owning subagent: `.opencode/agent/shell-packages.md` for terminal/shell
+  packages, `.opencode/agent/system-packages.md` for desktop/system packages.
+- Subagents do not commit. After they return their changed-file report, the
+  build agent commits with the commit skill.
+- Only run package work directly when the owning subagent cannot handle it.
+
 ### Config Quick Reference
 
 - **Desktop** (compositors, bars, launchers, themes) — See [desktop.md](.shared/agent/desktop.md)
