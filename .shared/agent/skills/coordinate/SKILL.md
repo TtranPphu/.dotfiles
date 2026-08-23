@@ -5,7 +5,7 @@ description: Coordinate AI agents across tmux panes via natural language. Agents
 
 ## Overview
 
-AI agents (opencode, claude, pi, etc.) communicate with each other by
+AI agents (opencode, claude, etc.) communicate with each other by
 sending natural language messages across tmux panes. Each agent runs in its own
 pane and uses `tmux send-keys` to deliver messages to other panes.
 
@@ -23,10 +23,10 @@ in the pane list by matching your process name:
 tmux list-panes -a -F '#{pane_id} #{pane_current_command}' | grep -w <process-name> | awk '{print $1}'
 ```
 
-For example, pi would run:
+For example, opencode would run:
 
 ```
-tmux list-panes -a -F '#{pane_id} #{pane_current_command}' | grep -w 'pi' | awk '{print $1}'
+tmux list-panes -a -F '#{pane_id} #{pane_current_command}' | grep -w 'opencode' | awk '{print $1}'
 ```
 
 ## Discovering other panes
@@ -52,7 +52,7 @@ tmux send-keys -t <target-pane-id> "This is <name> agent from pane <source-pane-
 - Every message starts with `This is <name> agent from pane <id>:` prefix.
 - `<target-pane-id>` is the tmux pane id (`%0`, `%1`, etc.).
 - `<source-pane-id>` is the sender's own pane id.
-- `<name>` is the agent's name (opencode, claude, pi, etc.).
+- `<name>` is the agent's name (opencode, claude, etc.).
 - Target pane ids are discovered via `tmux list-panes -a -F '#{pane_id} #{pane_current_command}'`.
 
 ### TUI-specific behavior
@@ -63,8 +63,6 @@ Different agents handle `send-keys` differently. Send sequence: `C-u` to clear r
 
 **claude TUI** — `Enter` submits directly. For longer content, write a
 shared file instead of inline.
-
-**pi TUI** — `Enter` does not always register on the first send; send the message text followed by two `Enter` keys (text + Enter + Enter) to ensure submission.
 
 Example — opencode in pane `%3` sends to claude in pane `%2`:
 ```

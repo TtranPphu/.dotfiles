@@ -6,7 +6,6 @@ default_app="${2:-}"
 app_name_rules=(
   'claude:claude'
   'opencode:opencode'
-  'pi:pi'
 )
 
 matched_app=""

@@ -22,11 +22,6 @@ resolve_app() {
       if (( ${#files} )); then
         cmd="claude --continue"
       fi ;;
-    pi)
-      local -a sessions=(~/.pi/agent/sessions/*/(N))
-      if (( ${#sessions} )); then
-        cmd="pi --continue"
-      fi ;;
   esac
   printf '%s' "$cmd"
 }

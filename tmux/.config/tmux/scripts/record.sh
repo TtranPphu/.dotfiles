@@ -10,7 +10,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 WSL_SCRIPT="$SCRIPT_DIR/record-wsl.ps1"
 SPEECH_PREFIX="This is the user via speech: "
 
-coding_agents=('claude' 'opencode' 'pi')
+coding_agents=('claude' 'opencode')
 
 is_wsl() {
     grep -qi microsoft /proc/version 2>/dev/null
