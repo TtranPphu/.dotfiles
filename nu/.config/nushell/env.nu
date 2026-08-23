@@ -30,21 +30,6 @@ $env.EZA_COLORS = (
     + ":xx=37:da=36:in=37:bl=37:hd=33:lp=36:cc=37:bO=90:ff=37:Sn=37:Su=37:Sr=37:St=37:Sl=37"
 )
 
-# LLM provider environment variables
-let claude_settings = (try { open ~/.claude/settings.json } catch { null })
-let anthropic_base_url = ($claude_settings | default {} | get --optional env | default {} | get --optional ANTHROPIC_BASE_URL | default "https://api.deepseek.com/anthropic")
-let anthropic_auth_token = ($claude_settings | default {} | get --optional env | default {} | get --optional ANTHROPIC_AUTH_TOKEN | default "")
-
-if (which copilot | length) > 0 {
-    $env.COPILOT_PROVIDER_TYPE = "anthropic"
-    $env.COPILOT_PROVIDER_BASE_URL = $anthropic_base_url
-    $env.COPILOT_PROVIDER_API_KEY = $anthropic_auth_token
-    $env.COPILOT_MODEL = "deepseek-v4-flash[1m]"
-    $env.COPILOT_OFFLINE = true
-    $env.COPILOT_PROVIDER_MAX_PROMPT_TOKENS = "840000"
-    $env.COPILOT_PROVIDER_MAX_OUTPUT_TOKENS = "128000"
-}
-
 # fzf integration
 if (which fzf | length) > 0 {
     let bat_cmd = (if (which batcat | length) > 0 { "batcat --color=always" } else { "bat --color=always" })

@@ -6,7 +6,7 @@
   - Examples: `hypr/...` -> `Hypr`, `tmux/...` -> `Tmux`, `nvim/...` -> `Nvim`, `opencode/...` -> `OpenCode`.
 - For `.github/...`, use `GitHub`.
 - For `.pi/...`, use `Pi`.
-- For changes to agent configuration or documentation files (e.g., `.claude/`, `.github/skills/`, `.github/copilot-instructions.md`), use `Agent`.
+- For changes to agent configuration or documentation files (e.g., `.claude/`, `.github/skills/`), use `Agent`.
 - For root-level files that are not inside a component directory, use `Repo`.
 - Prefer a human-readable component label in title case inside the commit subject.
 - When changes span multiple tightly-coupled components (e.g., removing an old file in one component
@@ -48,7 +48,7 @@ Examples:
   a co-author and MUST NOT be listed.
 - End the body with a blank line followed by a signature:
   - If the agent authored the changes, use an agent signature matching the system prompt exactly
-    (e.g., `OpenCode - deepseek-v4-flash-free`, `Claude - deepseek-v4-flash[1m]`, or `Copilot - <model>`).
+    (e.g., `OpenCode - deepseek-v4-flash-free`, `Claude - deepseek-v4-flash[1m]`).
   - If the user authored the changes and the agent is only committing, use the user's
     git config `user.name` and `user.email` (e.g., `TtranPphu - ttranpphu0212@gmail.com`).
   - If the changes are co-authored by the user and one or more agents, include one line per author

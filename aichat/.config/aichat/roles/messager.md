@@ -19,7 +19,7 @@ Messager - <model name>
 - For files under a top-level directory, use the first path segment as the component owner.
   - Examples: `hypr/...` -> `Hypr`, `tmux/...` -> `Tmux`, `nvim/...` -> `Nvim`.
 - For `.github/...`, use `GitHub`.
-- For changes to agent configuration or documentation files (e.g., `.claude/`, `.github/skills/`, `.github/copilot-instructions.md`), use `Agent`.
+- For changes to agent configuration or documentation files (e.g., `.claude/`, `.github/skills/`), use `Agent`.
 
 ## Subject line
 

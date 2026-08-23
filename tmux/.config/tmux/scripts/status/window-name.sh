@@ -5,7 +5,6 @@ default_app="${2:-}"
 
 app_name_rules=(
   'claude:claude'
-  'copilot:copilot'
   'opencode:opencode'
   'pi:pi'
 )
