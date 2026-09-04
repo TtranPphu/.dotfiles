@@ -1,10 +1,19 @@
 #!/usr/bin/env bash
 PAGER=$(command -v batcat 2>/dev/null || command -v bat 2>/dev/null || echo less)
 
+# Page stdin or a file, always holding the screen (no auto-quit on short output).
+pager() {
+  if [[ "$PAGER" == "less" ]]; then
+    exec "$PAGER" -R "$@"
+  else
+    exec "$PAGER" --paging=always "$@"
+  fi
+}
+
 case "${1:-}" in
   tree)
     eza -lah --tree --icons --ignore-glob='.git|node_modules' --group --color=always |
-      "$PAGER"
+      pager
     ;;
   diff)
     # Diff against HEAD including untracked files, without touching the index.
@@ -16,9 +25,20 @@ case "${1:-}" in
     cp "$(git rev-parse --git-dir)/index" "$index"
     GIT_INDEX_FILE="$index" git add -N . >/dev/null
     if [[ "$PAGER" == "less" ]]; then
-      GIT_INDEX_FILE="$index" git -c color.ui=always diff HEAD | less -R
+      GIT_INDEX_FILE="$index" git -c color.ui=always diff HEAD | pager
     else
-      GIT_INDEX_FILE="$index" git diff HEAD | "$PAGER" -l diff
+      GIT_INDEX_FILE="$index" git diff HEAD | pager -l diff
+    fi
+    ;;
+  file)
+    pager "${2:?usage: popups file <path>}"
+    ;;
+  log)
+    git rev-parse --is-inside-work-tree >/dev/null 2>&1 || { echo "Not a git repository"; exit 0; }
+    if [[ "$PAGER" == "less" ]]; then
+      git -c color.ui=always log --graph --decorate --all | pager
+    else
+      git log --graph --decorate --all | pager -l log
     fi
     ;;
   *)
