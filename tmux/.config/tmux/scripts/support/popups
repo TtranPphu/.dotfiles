@@ -1,8 +1,25 @@
 #!/usr/bin/env bash
+PAGER=$(command -v batcat 2>/dev/null || command -v bat 2>/dev/null || echo less)
+
 case "${1:-}" in
   tree)
     eza -lah --tree --icons --ignore-glob='.git|node_modules' --group --color=always |
-      $(command -v batcat 2>/dev/null || command -v bat 2>/dev/null || echo less)
+      "$PAGER"
+    ;;
+  diff)
+    # Diff against HEAD including untracked files, without touching the index.
+    # ponytail: temp GIT_INDEX_FILE copy of the real index + intent-to-add.
+    root=$(git rev-parse --show-toplevel 2>/dev/null) || { echo "Not a git repository"; exit 0; }
+    cd "$root" || exit 0
+    index=$(mktemp) || exit 1
+    trap 'rm -f "$index"' EXIT
+    cp "$(git rev-parse --git-dir)/index" "$index"
+    GIT_INDEX_FILE="$index" git add -N . >/dev/null
+    if [[ "$PAGER" == "less" ]]; then
+      GIT_INDEX_FILE="$index" git -c color.ui=always diff HEAD | less -R
+    else
+      GIT_INDEX_FILE="$index" git diff HEAD | "$PAGER" -l diff
+    fi
     ;;
   *)
     exit 1
