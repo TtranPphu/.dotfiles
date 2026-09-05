@@ -6,19 +6,27 @@ default_app="${2:-}"
 app_name_rules=(
   'claude:claude'
   'opencode:opencode'
+  'dsh:deepseek'
 )
 
 matched_app=""
 matched_branch=""
+sudo_real_app=""
 
 while IFS=' ' read -r pid rest; do
   cmd="${rest%% *}"
   cmd="${cmd##*/}"
+  if [[ "$cmd" == "sudo" ]]; then
+    cmd="${rest#sudo }"
+    cmd="${cmd%% *}"
+    cmd="${cmd##*/}"
+    sudo_real_app="$cmd"
+  fi
   for rule in "${app_name_rules[@]}"; do
     pattern="${rule%%:*}"
     name="${rule#*:}"
 
-    if [[ "$cmd" == "$pattern" ]]; then
+    if [[ "$cmd" == "$pattern" || " $rest " == *" $pattern "* ]]; then
       branch="$(git -C "/proc/$pid/cwd" branch --show-current 2>/dev/null)"
       if [[ "$default_app" == "$pattern" ]]; then
         if [[ -n "$branch" ]]; then
@@ -44,4 +52,4 @@ if [[ -n "$matched_app" ]]; then
   exit 0
 fi
 
-printf '%s' "$default_app"
+printf '%s' "${sudo_real_app:-$default_app}"
