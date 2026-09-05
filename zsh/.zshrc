@@ -123,6 +123,7 @@ export STARSHIP_CONFIG=~/.config/starship/starship.toml
 ZLE_RPROMPT_INDENT=0
 
 # Picker — choose shell (zsh/nushell) and multiplexer (tmux/zellij) at startup
+clear
 if [ -z "$TMUX" ] && [ -z "$ZELLIJ" ] && [ -z "$DOTFILES_SHELL_PICKED" ]; then
   command -v tmux   >/dev/null 2>&1 && has_tmux=true    || has_tmux=false
   command -v zellij >/dev/null 2>&1 && has_zellij=true  || has_zellij=false

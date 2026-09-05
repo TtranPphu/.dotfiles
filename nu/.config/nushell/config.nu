@@ -140,6 +140,7 @@ def _session_picker [] {
 }
 
 # --- Picker: choose shell (nushell/zsh) and multiplexer (tmux/zellij) at startup ---
+clear
 if ((($env.TMUX? | is-empty) and ($env.ZELLIJ? | is-empty)) and ($env.DOTFILES_SHELL_PICKED? | is-empty)) {
     let has_tmux = (which tmux | length) > 0
     let has_zellij = (which zellij | length) > 0
