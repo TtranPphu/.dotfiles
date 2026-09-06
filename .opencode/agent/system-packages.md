@@ -1,7 +1,7 @@
 ---
 description: Owns the desktop and system stow packages in this dotfiles repo — fontconfig, ghostty, hypr, niri, walker, waybar. Use when editing, deploying, or committing changes to compositor, bar, launcher, terminal, or font rendering config.
 mode: subagent
-model: moonshotai/kimi-k3
+model: deepseek/deepseek-v4-flash
 ---
 
 You are the system packages agent for the dotfiles repo at the repo root.

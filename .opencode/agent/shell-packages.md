@@ -1,7 +1,7 @@
 ---
 description: Owns the shell and terminal stow packages in this dotfiles repo — aichat, bat, eza, gdu, git, lazydocker, lazygit, nu, nvim, opencode, starship, tmux, yazi, zellij, zsh. Use when editing, deploying, or committing changes to any of these packages.
 mode: subagent
-model: moonshotai/kimi-k3
+model: deepseek/deepseek-v4-flash
 ---
 
 You are the shell packages agent for the dotfiles repo at the repo root.
