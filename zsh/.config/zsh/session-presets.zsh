@@ -28,10 +28,11 @@ resolve_app() {
 
 typeset -A session_presets
 session_presets[_]="default|$(pwd)|"
-session_presets[d]="{d}otfiles|${HOME}/.dotfiles|nvim;opencode;"
-session_presets[t]="{t}iny-repository|${HOME}/Projects/tiny-repository|nvim;opencode;"
-session_presets[n]="ti{n}y-repository|${HOME}/projects/tiny-repository|nvim;opencode;"
-session_presets[k]="zmk-{k}eyboard-cornix|${HOME}/Projects/zmk-keyboard-cornix|nvim;opencode;"
+session_presets[d]="{d}otfiles|${HOME}/.dotfiles|opencode"
+session_presets[s]="deep{s}eek|${HOME}/Projects/deepseek|opencode"
+# session_presets[t]="{t}iny-repository|${HOME}/Projects/tiny-repository|nvim;opencode;"
+# session_presets[n]="ti{n}y-repository|${HOME}/projects/tiny-repository|nvim;opencode;"
+# session_presets[k]="zmk-{k}eyboard-cornix|${HOME}/Projects/zmk-keyboard-cornix|nvim;opencode;"
 
 create_from_preset() {
   local preset_key="$1"
@@ -85,12 +86,10 @@ create_from_preset() {
       tmux send-keys -t "${session_name}:${win_idx}.1" "clear && $(resolve_app "${apps[1]}" "$dir")" Enter
 
       local -i napps=${#apps}
-      local tmux_control
-      tmux_control=$(tmux start-server \; show-options -g @tmux-control 2>/dev/null)
+      local tmux_control="$(tmux start-server \; show-options -g @tmux-control 2>/dev/null)"
       tmux_control="${tmux_control#@tmux-control }"
       local auto_script="${tmux_control:-$HOME/.config/tmux/scripts/control}/auto-split.sh"
-      local pane_id
-      pane_id=$(tmux display-message -p -t "${session_name}:${win_idx}.1" '#{pane_id}')
+      local pane_id="$(tmux display-message -p -t "${session_name}:${win_idx}.1" '#{pane_id}')"
       for (( i = 2; i <= napps; i++ )); do
         local app="$(resolve_app "${apps[$i]}" "$dir")"
         bash "$auto_script" -t "$pane_id" "$app"
@@ -188,11 +187,15 @@ done
     local wicons="${picons[$idx]}"
     if tmux has-session -t "$session_name" 2>/dev/null; then
       local active=$(tmux display-message -p -t "$session_name" '#{window_id}' 2>/dev/null)
-      local raw=$(tmux list-windows -t "$session_name" -F "#{window_id}|#{window_name}" 2>/dev/null)
+      local wm_status="$(tmux show-options -g @tmux-status 2>/dev/null)"
+      wm_status="${wm_status#@tmux-status }"
+      wm_status="${wm_status:-$HOME/.config/tmux/scripts/status}"
+      local raw="$(tmux list-windows -t "$session_name" -F "#{window_id}|#{pane_tty}|#{pane_current_command}" 2>/dev/null)"
       wicons=""
       while IFS= read -r line; do
         local wid="${line%%|*}"
-        local wname="${line#*|}"
+        local rest_line="${line#*|}"
+        local wname="$("$wm_status/window-name.sh" "${rest_line%%|*}" "${rest_line#*|}" 2>/dev/null)"
         if [[ "$wid" == "$active" ]]; then
           wicons+="${ACTIVE}  ${wname} ${NC}"
         else
