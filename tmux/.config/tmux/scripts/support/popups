@@ -36,9 +36,9 @@ case "${1:-}" in
   log)
     git rev-parse --is-inside-work-tree >/dev/null 2>&1 || { echo "Not a git repository"; exit 0; }
     if [[ "$PAGER" == "less" ]]; then
-      git -c color.ui=always log --graph --decorate --all | pager
+      git -c color.ui=always log --stat | pager
     else
-      git log --graph --decorate --all | pager -l log
+      git log --stat | pager -l gitlog
     fi
     ;;
   *)
