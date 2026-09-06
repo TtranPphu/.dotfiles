@@ -19,4 +19,5 @@ fi
 
 SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 BALANCE=$("$SCRIPT_DIR/llm-quota-util.sh" --get deepseek) || exit 1
+awk -v v="${BALANCE:-0}" 'BEGIN { exit !(v > 0) }' || exit 1
 printf " %.2f" "$BALANCE"
