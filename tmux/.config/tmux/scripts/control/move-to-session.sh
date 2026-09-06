@@ -3,6 +3,7 @@ set -uo pipefail
 
 : "${DEBUG:=0}"
 log_file="${XDG_STATE_HOME:-$HOME/.local/state}/tmux/move-to-session.log"
+wm_status="$HOME/.config/tmux/scripts/status"
 
 debug_log() {
     [[ "$DEBUG" -ne 1 ]] && return 0
@@ -32,8 +33,6 @@ default_session="${default_session//[^a-zA-Z0-9_-]/-}"
 debug_log "default_session: $default_session"
 
 win_fmt_act='-F "#{window_active} #{window_index}"'
-win_fmt_list='#{?window_bell_flag,󰅸,} #{window_name}'\
-'#{?#{>:#{window_panes},1}, (#{window_panes} panes),}'
 
 preview_cmd='s=$(echo {} | awk "{print \$2}" | cut -d: -f1); '\
 'i=$(tmux list-windows -t "$s" '"$win_fmt_act"' '\
@@ -45,8 +44,15 @@ result=$(
   tmux list-sessions -F "#{session_name}" \
   | while read -r s; do
       windows=$(tmux list-windows -t "$s" \
-        -F "$win_fmt_list" \
-        2>/dev/null | paste -sd '|' | sed 's/|/ | /g')
+        -F '#{pane_tty}|#{pane_current_command}|#{window_panes}|#{window_bell_flag}' \
+        2>/dev/null \
+        | while IFS='|' read -r tty cmd panes bell; do
+            name=$("$wm_status/window-name.sh" "$tty" "$cmd")
+            bell_icon=$([ "$bell" = "1" ] && echo "󰅸" || echo "")
+            panes_suffix=$([ "${panes:-1}" -gt 1 ] && echo " ($panes panes)" || echo "")
+            echo "$bell_icon $name$panes_suffix"
+          done \
+        | paste -sd '|' | sed 's/|/ | /g')
       if tmux list-windows -t "$s" -F '#{window_bell_flag}' 2>/dev/null | grep -q 1; then
         icon="󰅸"
       else
