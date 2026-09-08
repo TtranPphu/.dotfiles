@@ -36,7 +36,7 @@ fetch_one() {
   esac
   [ -n "$token" ] || return 1
   tmp=$(mktemp) || return 1
-  if curl -sfL -X GET "$url" \
+  if curl -sfL --max-time 5 -X GET "$url" \
       -H 'Accept: application/json' \
       -H "Authorization: Bearer $token" 2>/dev/null |
       jq -r "$filter | tonumber" 2>/dev/null >"$tmp"; then
@@ -60,22 +60,23 @@ write_cache() {
 }
 
 refresh() {
-  # Fetch both balances and store, guarded by a lock so concurrent
-  # modules trigger at most one network round-trip
+  # Fetch both balances and store, guarded by an flock so concurrent modules
+  # trigger at most one network round-trip. flock (unlike a mkdir lock) is
+  # released automatically if the process dies, so it can never go stale.
   (
-    mkdir "$lock" 2>/dev/null || exit 0
+    exec 9>"$lock"
+    flock -n 9 || exit 0
     local kimi="" deepseek=""
     kimi=$(fetch_one kimi) || kimi=""
     deepseek=$(fetch_one deepseek) || deepseek=""
     if [[ -n "$kimi" || -n "$deepseek" ]]; then
       write_cache "$kimi" "$deepseek"
     fi
-    rmdir "$lock" 2>/dev/null || true
   )
 }
 
 get_balance() {
-  # $1: kimi|deepseek — prints cached balance; refreshes as needed
+  # $1: kimi|deepseek — prints cached balance; refreshes when stale
   local key=$1 val ts now
   now=$(date +%s)
   if [[ -f $cache ]]; then
@@ -86,7 +87,8 @@ get_balance() {
       printf '%s' "$val"
       return 0
     fi
-    refresh &>/dev/null &
+    refresh
+    val=$(jq -r --arg k "$key" '.[$k] // empty' "$cache" 2>/dev/null) || val=""
     [[ -n "$val" ]] || return 1
     printf '%s' "$val"
     return 0
