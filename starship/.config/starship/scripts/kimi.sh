@@ -6,9 +6,13 @@ set -euo pipefail
 WIDTH="${COLUMNS:-$(stty size < /dev/tty 2>/dev/null | cut -d' ' -f2)}"
 WIDTH="${WIDTH:-999}"
 
-# Exit 0 only when wide enough for the standalone module
+# Exit 0 only when wide enough and funded, so the module is skipped cleanly
+# instead of rendering its format's literal space around empty output.
 if [ "${1:-}" = "--guard" ]; then
   [ "$WIDTH" -ge 144 ] || exit 1
+  SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+  BALANCE=$("$SCRIPT_DIR/llm-quota-util.sh" --get kimi) || exit 1
+  awk -v v="${BALANCE:-0}" 'BEGIN { exit !(v > 0) }' || exit 1
   exit 0
 fi
 
