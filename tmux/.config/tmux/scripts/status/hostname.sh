@@ -22,7 +22,7 @@ for ((i=0; i<${#host_name}; i++)); do
 done
 bg=$((16 + (h % 216)))
 if (( (bg - 16) / 36 < 2 )); then
-  printf '#[fg=colour231,bg=colour%d] %s #[default]' "$bg" "$display_host"
+  printf '#[fg=colour231,bg=colour%d]▏%s▕#[default]' "$bg" "$display_host"
 else
-  printf '#[fg=colour232,bg=colour%d] %s #[default]' "$bg" "$display_host"
+  printf '#[fg=colour232,bg=colour%d]▏%s▕#[default]' "$bg" "$display_host"
 fi
