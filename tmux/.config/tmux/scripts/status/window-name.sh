@@ -30,7 +30,7 @@ while IFS=' ' read -r pid rest; do
       branch="$(git -C "/proc/$pid/cwd" branch --show-current 2>/dev/null)"
       if [[ "$default_app" == "$pattern" ]]; then
         if [[ -n "$branch" ]]; then
-          printf '%s' "${name} 󰊢 ${branch}"
+          printf '%s' "${name}  ${branch}"
         else
           printf '%s' "$name"
         fi
@@ -45,7 +45,7 @@ done < <(ps -t "$tty" -o pid= -o args= 2>/dev/null)
 # Use fallback if we found a background process match
 if [[ -n "$matched_app" ]]; then
   if [[ -n "$matched_branch" ]]; then
-    printf '%s' "${matched_app} 󰊢 ${matched_branch}"
+    printf '%s' "${matched_app}  ${matched_branch}"
   else
     printf '%s' "$matched_app"
   fi
