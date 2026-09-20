@@ -25,7 +25,7 @@ printf '#[fg=blue]'
 # Speech recording indicator
 "$script_dir/speech.sh"
 
-printf '#[fg=blue,bg=brightblack,bold]  %s #[default]' "${pane_id#%}"
+printf '#[fg=#000000,bg=blue,bold]▏#[fg=brightblack,bg=blue,bold] %s▕#[default]' "${pane_id#%}"
 
 # Battery indicator
 "$script_dir/battery.sh"
