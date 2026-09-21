@@ -14,7 +14,7 @@ if [[ $type == route ]]; then
     claude-flash)    color="purple" ;;
     aichat-qwen)     color="white" ;;
     opencode-free)   color="green" ;;
-    *)               color="colour239" ;;
+    *)               color="brightwhite" ;;
   esac
   printf '#[fg=colour233,bold,bg=%s]  ▐#[default]' "$color"
 else
@@ -39,5 +39,5 @@ else
     ubuntu)       icon="" ;;
     *)            icon="󰌽" ;;
   esac
-  printf '#[fg=colour233,bold,bg=brightblack] %s ▐#[default]' "$icon"
+  printf '#[fg=colour233,bold,bg=white] %s ▐#[default]' "$icon"
 fi
