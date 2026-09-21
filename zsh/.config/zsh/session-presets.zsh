@@ -38,6 +38,15 @@ create_from_preset() {
   local preset_key="$1"
   local def="${session_presets[$preset_key]}"
   [[ -z "$def" ]] && def="${session_presets[_]}"
+
+  # Fall back to the default preset when the preset's folder is gone, so a
+  # hidden (missing-dir) preset can't still be opened by its key.
+  local -a preset_parts=("${(@s:|:)def}")
+  if [[ ! -d "${preset_parts[2]}" ]]; then
+    def="${session_presets[_]}"
+    preset_parts=("${(@s:|:)def}")
+    [[ -d "${preset_parts[2]}" ]] || def="default|${HOME}|"
+  fi
   [[ -z "$def" ]] && return 1
 
   local IFS='|'
