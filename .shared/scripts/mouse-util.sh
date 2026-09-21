@@ -11,6 +11,9 @@ DBUS_PATH="/org/bluez/hci0"
 BATTERY_SVC_UUID="0000180f-0000-1000-8000-00805f9b34fb"
 BATTERY_LEVEL_UUID="00002a19-0000-1000-8000-00805f9b34fb"
 
+SCRIPT_DIR="$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")"
+WSL_PS1="$SCRIPT_DIR/mouse-battery-wsl.ps1"
+
 gdbus_prop() {
   local path="$1" iface="$2" prop="$3"
   local out
@@ -82,6 +85,30 @@ read_battery_gdbus() {
   return 1
 }
 
+read_battery_wsl() {
+  [[ -f "$WSL_PS1" ]] || return 1
+  command -v powershell.exe &>/dev/null || return 1
+  grep -qi microsoft /proc/version 2>/dev/null || return 1
+
+  local result val
+  result=$(timeout 10 powershell.exe -NoProfile -ExecutionPolicy Bypass -File "$WSL_PS1" 2>/dev/null | tr -d '\r') || return 1
+  val="${result%% *}"
+  [[ -z "$val" ]] && return 1
+  printf '%s' "$val"
+  return 0
+}
+
+read_batteries() {
+  if grep -qi microsoft /proc/version 2>/dev/null; then
+    read_battery_wsl && return 0
+    return 1
+  fi
+  if command -v gdbus &>/dev/null; then
+    read_battery_gdbus && return 0
+  fi
+  return 1
+}
+
 fetch_async() {
   (
     flock -xn 200 2>/dev/null || exit 1
@@ -97,7 +124,7 @@ fetch_async() {
     fi
 
     local result
-    result=$(read_battery_gdbus 2>/dev/null) || { rm -f "$CACHEFILE"; exit 1; }
+    result=$(read_batteries 2>/dev/null) || { rm -f "$CACHEFILE"; exit 1; }
     printf '%s %s\n' "$result" "$now" > "$CACHEFILE"
   ) 200>"$LOCKFILE" >/dev/null 2>&1 & disown
 }
