@@ -63,9 +63,6 @@ refresh() {
   # Fetch both balances and store, guarded by an flock so concurrent modules
   # trigger at most one network round-trip. flock (unlike a mkdir lock) is
   # released automatically if the process dies, so it can never go stale.
-  # Create the state dir first: write_cache() also does this, but it runs after
-  # the lock is opened, so on a fresh machine the lock would fail and the dir
-  # would never be created.
   mkdir -p "$cache_dir"
   (
     exec 9>"$lock"
@@ -114,10 +111,6 @@ total() {
 }
 
 configured() {
-  # $1: kimi|deepseek — succeed when this provider is set up in opencode.
-  # The status modules used to ask ~/.claude/settings.json whether deepseek was
-  # the active provider. DeepSeek is driven through opencode here, so opencode's
-  # credential store is the source of truth instead.
   case "${1:-}" in
     kimi|deepseek) ;;
     *) return 1 ;;

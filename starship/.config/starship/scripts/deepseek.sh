@@ -3,10 +3,6 @@
 # Starship custom module: DeepSeek account balance
 set -euo pipefail
 
-# Width decides which modules render: combined below 144 columns, per-provider
-# above. COLUMNS is rarely exported, and the controlling terminal is the right
-# source rather than stdin, which starship does not attach to a tty. The probe
-# is wrapped so its failure cannot abort under set -e before the fallback.
 WIDTH="${COLUMNS:-}"
 if [ -z "$WIDTH" ]; then
   WIDTH=$( { stty size < /dev/tty 2>/dev/null; } 2>/dev/null | cut -d' ' -f2 || true)
