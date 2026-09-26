@@ -21,12 +21,12 @@ case "${1:-}" in
   --display)
     if [[ $(stty size < /dev/tty 2>/dev/null | cut -d" " -f2 || echo 144) -lt 144 ]]; then
       printf '%s%s\033[0m %s%s\033[0m' \
-        "$(level_color "$left")" $'\uee57' \
-        "$(level_color "$right")" $'\uee57'
+        "$(level_color "$left")"  \
+        "$(level_color "$right")" 
     else
       printf '%s%s%s\033[0m %s%s%s\033[0m' \
-        "$(level_color "$left")" $'\uee57' " $left"$'\uf295' \
-        "$(level_color "$right")" $'\uee57' " $right"$'\uf295'
+        "$(level_color "$left")"  " $left" \
+        "$(level_color "$right")"  " $right"
     fi
     ;;
   --guard)
