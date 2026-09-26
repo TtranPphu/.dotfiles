@@ -182,7 +182,7 @@ error_symbol = "[](bold red)"
 command = '${STARSHIP_CONFIG%/*}/scripts/llm-quota.sh'
 when = '[ -z "$TMUX" ] && [ -z "$ZELLIJ" ] && ${STARSHIP_CONFIG%/*}/scripts/llm-quota.sh --guard'
 shell = ["bash"]
-style = "bold purple"
+style = "purple"
 format = " [$output]($style)"
 
 [custom.deepseek]
