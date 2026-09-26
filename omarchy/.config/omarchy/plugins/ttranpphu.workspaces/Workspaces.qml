@@ -23,7 +23,7 @@ BarWidget {
 
     for (var i = 0; i < values.length; i++) {
       var id = values[i].id
-      if (id > 0 && id <= 10 && ids.indexOf(id) === -1) ids.push(id)
+      if (id > 0 && ids.indexOf(id) === -1) ids.push(id)
     }
 
     ids.sort(function(left, right) { return left - right })
@@ -60,11 +60,13 @@ BarWidget {
 
         bar: root.bar
         // {icon} {name}: default "󰏠" (U+F03E0), active "󱥟" (U+F195F).
-        text: (focused ? "\uDB86\uDD5F" : "\uDB80\uDFE0") + " " + (modelData === 10 ? "0" : String(modelData))
+        text: (focused ? "\uDB86\uDD5F" : "\uDB80\uDFE0") + " " + String(modelData)
         opacity: occupied || focused ? 1 : 0.25
         horizontalMargin: 6
         verticalPadding: 6
-        fixedWidth: root.vertical ? root.barSize : Style.space(20)
+        // Let the horizontal button size to its label, since "{icon} {name}" is
+        // wider than the bare digit Style.space(20) was sized for.
+        fixedWidth: root.vertical ? root.barSize : -1
         fixedHeight: root.barSize
         onPressed: function() { root.focusWorkspace(modelData) }
       }
