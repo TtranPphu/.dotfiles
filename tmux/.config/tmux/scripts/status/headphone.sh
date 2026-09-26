@@ -16,7 +16,7 @@ colors=(
 idx=$(( (val - 1) / 10 ))
 [[ idx -ge 0 ]] && [[ idx -lt 10 ]] || idx=0
 
-WIDE_ICON='󰎇'
+WIDE_ICON='󱡏'
 NARROW_ICON='󰎇'
 
 if [[ $(tmux display -p '#{window_width}' 2>/dev/null || echo 144) -lt 144 ]]; then

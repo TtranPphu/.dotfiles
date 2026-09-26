@@ -30,7 +30,10 @@ case "${1:-}" in
     fi
 
     if [[ $(stty size < /dev/tty 2>/dev/null | cut -d" " -f2 || echo 144) -lt 144 ]]; then
-      text="$icon"
+      case "$raw_status" in
+        charging | pending-charge | fully-charged) text="󰂄" ;;
+        *) text="$icon" ;;
+      esac
     else
       text="$icon $bat"$'\uf295'
     fi

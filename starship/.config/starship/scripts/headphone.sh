@@ -16,7 +16,7 @@ data=$("$UTIL") || exit 1
 [[ -z "$data" || "$data" -eq 0 ]] && exit 1
 val="$data"
 
-WIDE_ICON='󰎇'
+WIDE_ICON='󱡏'
 NARROW_ICON='󰎇'
 
 case "${1:-}" in
