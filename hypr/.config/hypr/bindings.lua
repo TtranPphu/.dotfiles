@@ -36,7 +36,7 @@ hl.unbind("SUPER + SHIFT + M")
 hl.unbind("SUPER + SHIFT + SLASH")
 
 -- Menus
-o.bind("SUPER + SPACE", "Launch apps", "omarchy-launch-walker")
+o.bind("SUPER + SPACE", "Launch apps", "omarchy-menu toggle apps")
 o.bind("SUPER + ALT + SPACE", "Omarchy menu", "omarchy-menu")
 
 -- Focus
