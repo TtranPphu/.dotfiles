@@ -1,5 +1,32 @@
 -- Change the default Omarchy look'n'feel.
 
+hl.config({
+  general = {
+    gaps_in = 2,
+    gaps_out = 4,
+
+    -- Change to niri-like side-scrolling layout.
+    layout = "scrolling",
+  },
+})
+
+hl.config({
+  decoration = {
+    rounding = 8,
+  },
+})
+
+hl.config({
+  scrolling = {
+    -- Default column width (fraction of screen width).
+    column_width = 0.8,
+
+    -- Center the focused column instead of only fitting it into view.
+    -- 0 = center, 1 = fit.
+    focus_fit_method = 0,
+  },
+})
+
 -- https://wiki.hypr.land/Configuring/Basics/Variables/#general
 -- hl.config({
 --   general = {
