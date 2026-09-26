@@ -4,6 +4,8 @@
 -- Unbind Omarchy defaults that this keymap replaces or drops.
 hl.unbind("SUPER + SPACE")
 hl.unbind("SUPER + ALT + SPACE")
+hl.unbind("SUPER + ALT + K")
+hl.unbind("SUPER + CTRL + K")
 hl.unbind("SUPER + CTRL + BACKSPACE")
 hl.unbind("SUPER + mouse:272")
 hl.unbind("SUPER + mouse:273")
