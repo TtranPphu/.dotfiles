@@ -187,7 +187,7 @@ format = " [$output]($style)"
 
 [custom.deepseek]
 command = '${STARSHIP_CONFIG%/*}/scripts/deepseek.sh'
-when = 'test -z "${TMUX-}${ZELLIJ-}" && grep -q deepseek.com $HOME/.claude/settings.json 2>/dev/null && ${STARSHIP_CONFIG%/*}/scripts/deepseek.sh --guard'
+when = 'test -z "${TMUX-}${ZELLIJ-}" && ${STARSHIP_CONFIG%/*}/scripts/llm-quota-util.sh --configured deepseek && ${STARSHIP_CONFIG%/*}/scripts/deepseek.sh --guard'
 shell = ["bash"]
 style = "bright-blue"
 format = " [$output]($style)"
