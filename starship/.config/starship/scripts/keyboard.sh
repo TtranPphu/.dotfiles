@@ -3,9 +3,10 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 UTIL="$SCRIPT_DIR/keyboard-util.sh"
+source "$SCRIPT_DIR/level-color.sh"
 
 usage() {
-  echo "Usage: $(basename "$0") --display <left|right> | --guard <tier> <left|right>"
+  echo "Usage: $(basename "$0") --display | --guard"
   exit 1
 }
 
@@ -18,29 +19,18 @@ right="${data##* }"
 
 case "${1:-}" in
   --display)
-    [[ $# -lt 2 ]] && usage
     if [[ $(stty size < /dev/tty 2>/dev/null | cut -d" " -f2 || echo 144) -lt 144 ]]; then
-      printf ''
-    elif [[ "$2" == "left" ]]; then
-      printf ' %s' "$left"
-    elif [[ "$2" == "right" ]]; then
-      printf ' %s' "$right"
+      printf '%s%s\033[0m %s%s\033[0m' \
+        "$(level_color "$left")" $'\uee57' \
+        "$(level_color "$right")" $'\uee57'
     else
-      usage
+      printf '%s%s%s\033[0m %s%s%s\033[0m' \
+        "$(level_color "$left")" $'\uee57' " $left"$'\uf295' \
+        "$(level_color "$right")" $'\uee57' " $right"$'\uf295'
     fi
     ;;
   --guard)
-    [[ $# -lt 3 ]] && usage
-    tier="$2"
-    if [[ "$3" == "left" ]]; then
-      val="$left"
-    elif [[ "$3" == "right" ]]; then
-      val="$right"
-    else
-      usage
-    fi
-    idx=$(( (val - 1) / 10 ))
-    [[ "$idx" -eq "$tier" ]]
+    exit 0
     ;;
   *) usage ;;
 esac

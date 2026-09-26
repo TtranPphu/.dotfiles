@@ -5,13 +5,7 @@
 add_newline = true
 
 format = """
-${custom.llm_os}\
-${custom.llm_pro}\
-${custom.llm_flash}\
-${custom.llm_reasoner}\
-${custom.llm_chat}\
-${custom.llm_qwen}\
-${custom.llm_free}\
+${custom.os}\
 $shell\
 ${custom.compress_path}\
 ${custom.git_remote}\
@@ -27,56 +21,10 @@ $rust\
 $cmd_duration\
 ${custom.date}\
 ${custom.clock}\
-${custom.battery_9}\
-${custom.battery_8}\
-${custom.battery_7}\
-${custom.battery_6}\
-${custom.battery_5}\
-${custom.battery_4}\
-${custom.battery_3}\
-${custom.battery_2}\
-${custom.battery_1}\
-${custom.battery_0}\
-${custom.keyboard_9}\
-${custom.keyboard_8}\
-${custom.keyboard_7}\
-${custom.keyboard_6}\
-${custom.keyboard_5}\
-${custom.keyboard_4}\
-${custom.keyboard_3}\
-${custom.keyboard_2}\
-${custom.keyboard_1}\
-${custom.keyboard_0}\
-${custom.keyboard_right_9}\
-${custom.keyboard_right_8}\
-${custom.keyboard_right_7}\
-${custom.keyboard_right_6}\
-${custom.keyboard_right_5}\
-${custom.keyboard_right_4}\
-${custom.keyboard_right_3}\
-${custom.keyboard_right_2}\
-${custom.keyboard_right_1}\
-${custom.keyboard_right_0}\
-${custom.mouse_9}\
-${custom.mouse_8}\
-${custom.mouse_7}\
-${custom.mouse_6}\
-${custom.mouse_5}\
-${custom.mouse_4}\
-${custom.mouse_3}\
-${custom.mouse_2}\
-${custom.mouse_1}\
-${custom.mouse_0}\
-${custom.headphone_9}\
-${custom.headphone_8}\
-${custom.headphone_7}\
-${custom.headphone_6}\
-${custom.headphone_5}\
-${custom.headphone_4}\
-${custom.headphone_3}\
-${custom.headphone_2}\
-${custom.headphone_1}\
-${custom.headphone_0}\
+${custom.battery}\
+${custom.headphone}\
+${custom.mouse}\
+${custom.keyboard}\
 $line_break\
 $character\
 """
@@ -91,53 +39,11 @@ ${custom.docker_host}\
 """
 
 
-[custom.llm_os]
-command = '${STARSHIP_CONFIG%/*}/scripts/llm-cache.sh --display os'
-when = '[ -z "$TMUX" ] && [ -z "$ZELLIJ" ] && ${STARSHIP_CONFIG%/*}/scripts/llm-cache.sh --guard os'
+[custom.os]
+command = '${STARSHIP_CONFIG%/*}/scripts/os.sh'
+when = '[ -z "$TMUX" ] && [ -z "$ZELLIJ" ]'
 shell = ["bash"]
 style = "bold"
-format = "[$output]($style) "
-
-[custom.llm_pro]
-command = '${STARSHIP_CONFIG%/*}/scripts/llm-cache.sh --display pro'
-when = '[ -z "$TMUX" ] && [ -z "$ZELLIJ" ] && ${STARSHIP_CONFIG%/*}/scripts/llm-cache.sh --guard pro'
-shell = ["bash"]
-style = "red"
-format = "[$output]($style) "
-
-[custom.llm_flash]
-command = '${STARSHIP_CONFIG%/*}/scripts/llm-cache.sh --display flash'
-when = '[ -z "$TMUX" ] && [ -z "$ZELLIJ" ] && ${STARSHIP_CONFIG%/*}/scripts/llm-cache.sh --guard flash'
-shell = ["bash"]
-style = "purple"
-format = "[$output]($style) "
-
-[custom.llm_reasoner]
-command = '${STARSHIP_CONFIG%/*}/scripts/llm-cache.sh --display reasoner'
-when = '[ -z "$TMUX" ] && [ -z "$ZELLIJ" ] && ${STARSHIP_CONFIG%/*}/scripts/llm-cache.sh --guard reasoner'
-shell = ["bash"]
-style = "blue"
-format = "[$output]($style) "
-
-[custom.llm_chat]
-command = '${STARSHIP_CONFIG%/*}/scripts/llm-cache.sh --display chat'
-when = '[ -z "$TMUX" ] && [ -z "$ZELLIJ" ] && ${STARSHIP_CONFIG%/*}/scripts/llm-cache.sh --guard chat'
-shell = ["bash"]
-style = "cyan"
-format = "[$output]($style) "
-
-[custom.llm_qwen]
-command = '${STARSHIP_CONFIG%/*}/scripts/llm-cache.sh --display qwen'
-when = '[ -z "$TMUX" ] && [ -z "$ZELLIJ" ] && ${STARSHIP_CONFIG%/*}/scripts/llm-cache.sh --guard qwen'
-shell = ["bash"]
-style = "white"
-format = "[$output]($style) "
-
-[custom.llm_free]
-command = '${STARSHIP_CONFIG%/*}/scripts/llm-cache.sh --display free'
-when = '[ -z "$TMUX" ] && [ -z "$ZELLIJ" ] && ${STARSHIP_CONFIG%/*}/scripts/llm-cache.sh --guard free'
-shell = ["bash"]
-style = "green"
 format = "[$output]($style) "
 
 [shell]
@@ -244,355 +150,29 @@ format = " [$output]($style)"
 [battery]
 disabled = true
 
-[custom.battery_9]
+[custom.battery]
 command = '${STARSHIP_CONFIG%/*}/scripts/battery.sh --display'
-when = '[ -z "$TMUX" ] && [ -z "$ZELLIJ" ] && ${STARSHIP_CONFIG%/*}/scripts/battery.sh --guard 9'
+when = '[ -z "$TMUX" ] && [ -z "$ZELLIJ" ] && ${STARSHIP_CONFIG%/*}/scripts/battery.sh --guard'
 shell = ["bash"]
-style = "bold #9ece6a"
-format = " [$output]($style)"
+format = " $output"
 
-[custom.battery_8]
-command = '${STARSHIP_CONFIG%/*}/scripts/battery.sh --display'
-when = '[ -z "$TMUX" ] && [ -z "$ZELLIJ" ] && ${STARSHIP_CONFIG%/*}/scripts/battery.sh --guard 8'
-shell = ["bash"]
-style = "bold #afc66a"
-format = " [$output]($style)"
-
-[custom.battery_7]
-command = '${STARSHIP_CONFIG%/*}/scripts/battery.sh --display'
-when = '[ -z "$TMUX" ] && [ -z "$ZELLIJ" ] && ${STARSHIP_CONFIG%/*}/scripts/battery.sh --guard 7'
-shell = ["bash"]
-style = "bold #bfbf69"
-format = " [$output]($style)"
-
-[custom.battery_6]
-command = '${STARSHIP_CONFIG%/*}/scripts/battery.sh --display'
-when = '[ -z "$TMUX" ] && [ -z "$ZELLIJ" ] && ${STARSHIP_CONFIG%/*}/scripts/battery.sh --guard 6'
-shell = ["bash"]
-style = "bold #d0b769"
-format = " [$output]($style)"
-
-[custom.battery_5]
-command = '${STARSHIP_CONFIG%/*}/scripts/battery.sh --display'
-when = '[ -z "$TMUX" ] && [ -z "$ZELLIJ" ] && ${STARSHIP_CONFIG%/*}/scripts/battery.sh --guard 5'
-shell = ["bash"]
-style = "bold #e0af68"
-format = " [$output]($style)"
-
-[custom.battery_4]
-command = '${STARSHIP_CONFIG%/*}/scripts/battery.sh --display'
-when = '[ -z "$TMUX" ] && [ -z "$ZELLIJ" ] && ${STARSHIP_CONFIG%/*}/scripts/battery.sh --guard 4'
-shell = ["bash"]
-style = "bold #e5a370"
-format = " [$output]($style)"
-
-[custom.battery_3]
-command = '${STARSHIP_CONFIG%/*}/scripts/battery.sh --display'
-when = '[ -z "$TMUX" ] && [ -z "$ZELLIJ" ] && ${STARSHIP_CONFIG%/*}/scripts/battery.sh --guard 3'
-shell = ["bash"]
-style = "bold #e99877"
-format = " [$output]($style)"
-
-[custom.battery_2]
-command = '${STARSHIP_CONFIG%/*}/scripts/battery.sh --display'
-when = '[ -z "$TMUX" ] && [ -z "$ZELLIJ" ] && ${STARSHIP_CONFIG%/*}/scripts/battery.sh --guard 2'
-shell = ["bash"]
-style = "bold #ee8d7f"
-format = " [$output]($style)"
-
-[custom.battery_1]
-command = '${STARSHIP_CONFIG%/*}/scripts/battery.sh --display'
-when = '[ -z "$TMUX" ] && [ -z "$ZELLIJ" ] && ${STARSHIP_CONFIG%/*}/scripts/battery.sh --guard 1'
-shell = ["bash"]
-style = "bold #f28186"
-format = " [$output]($style)"
-
-[custom.battery_0]
-command = '${STARSHIP_CONFIG%/*}/scripts/battery.sh --display'
-when = '[ -z "$TMUX" ] && [ -z "$ZELLIJ" ] && ${STARSHIP_CONFIG%/*}/scripts/battery.sh --guard 0'
-shell = ["bash"]
-style = "bold #f7768e"
-format = " [$output]($style)"
-
-[custom.keyboard_9]
-command = '${STARSHIP_CONFIG%/*}/scripts/keyboard.sh --display left'
-when = '[ -z "$TMUX" ] && ${STARSHIP_CONFIG%/*}/scripts/keyboard.sh --guard 9 left'
-shell = ["bash"]
-style = "bold #9ece6a"
-format = " [$output]($style)"
-
-[custom.keyboard_8]
-command = '${STARSHIP_CONFIG%/*}/scripts/keyboard.sh --display left'
-when = '[ -z "$TMUX" ] && ${STARSHIP_CONFIG%/*}/scripts/keyboard.sh --guard 8 left'
-shell = ["bash"]
-style = "bold #afc66a"
-format = " [$output]($style)"
-
-[custom.keyboard_7]
-command = '${STARSHIP_CONFIG%/*}/scripts/keyboard.sh --display left'
-when = '[ -z "$TMUX" ] && ${STARSHIP_CONFIG%/*}/scripts/keyboard.sh --guard 7 left'
-shell = ["bash"]
-style = "bold #bfbf69"
-format = " [$output]($style)"
-
-[custom.keyboard_6]
-command = '${STARSHIP_CONFIG%/*}/scripts/keyboard.sh --display left'
-when = '[ -z "$TMUX" ] && ${STARSHIP_CONFIG%/*}/scripts/keyboard.sh --guard 6 left'
-shell = ["bash"]
-style = "bold #d0b769"
-format = " [$output]($style)"
-
-[custom.keyboard_5]
-command = '${STARSHIP_CONFIG%/*}/scripts/keyboard.sh --display left'
-when = '[ -z "$TMUX" ] && ${STARSHIP_CONFIG%/*}/scripts/keyboard.sh --guard 5 left'
-shell = ["bash"]
-style = "bold #e0af68"
-format = " [$output]($style)"
-
-[custom.keyboard_4]
-command = '${STARSHIP_CONFIG%/*}/scripts/keyboard.sh --display left'
-when = '[ -z "$TMUX" ] && ${STARSHIP_CONFIG%/*}/scripts/keyboard.sh --guard 4 left'
-shell = ["bash"]
-style = "bold #e5a370"
-format = " [$output]($style)"
-
-[custom.keyboard_3]
-command = '${STARSHIP_CONFIG%/*}/scripts/keyboard.sh --display left'
-when = '[ -z "$TMUX" ] && ${STARSHIP_CONFIG%/*}/scripts/keyboard.sh --guard 3 left'
-shell = ["bash"]
-style = "bold #e99877"
-format = " [$output]($style)"
-
-[custom.keyboard_2]
-command = '${STARSHIP_CONFIG%/*}/scripts/keyboard.sh --display left'
-when = '[ -z "$TMUX" ] && ${STARSHIP_CONFIG%/*}/scripts/keyboard.sh --guard 2 left'
-shell = ["bash"]
-style = "bold #ee8d7f"
-format = " [$output]($style)"
-
-[custom.keyboard_1]
-command = '${STARSHIP_CONFIG%/*}/scripts/keyboard.sh --display left'
-when = '[ -z "$TMUX" ] && ${STARSHIP_CONFIG%/*}/scripts/keyboard.sh --guard 1 left'
-shell = ["bash"]
-style = "bold #f28186"
-format = " [$output]($style)"
-
-[custom.keyboard_0]
-command = '${STARSHIP_CONFIG%/*}/scripts/keyboard.sh --display left'
-when = '[ -z "$TMUX" ] && ${STARSHIP_CONFIG%/*}/scripts/keyboard.sh --guard 0 left'
-shell = ["bash"]
-style = "bold #f7768e"
-format = " [$output]($style)"
-
-[custom.keyboard_right_9]
-command = '${STARSHIP_CONFIG%/*}/scripts/keyboard.sh --display right'
-when = '[ -z "$TMUX" ] && ${STARSHIP_CONFIG%/*}/scripts/keyboard.sh --guard 9 right'
-shell = ["bash"]
-style = "bold #9ece6a"
-format = " [$output]($style)"
-
-[custom.keyboard_right_8]
-command = '${STARSHIP_CONFIG%/*}/scripts/keyboard.sh --display right'
-when = '[ -z "$TMUX" ] && ${STARSHIP_CONFIG%/*}/scripts/keyboard.sh --guard 8 right'
-shell = ["bash"]
-style = "bold #afc66a"
-format = " [$output]($style)"
-
-[custom.keyboard_right_7]
-command = '${STARSHIP_CONFIG%/*}/scripts/keyboard.sh --display right'
-when = '[ -z "$TMUX" ] && ${STARSHIP_CONFIG%/*}/scripts/keyboard.sh --guard 7 right'
-shell = ["bash"]
-style = "bold #bfbf69"
-format = " [$output]($style)"
-
-[custom.keyboard_right_6]
-command = '${STARSHIP_CONFIG%/*}/scripts/keyboard.sh --display right'
-when = '[ -z "$TMUX" ] && ${STARSHIP_CONFIG%/*}/scripts/keyboard.sh --guard 6 right'
-shell = ["bash"]
-style = "bold #d0b769"
-format = " [$output]($style)"
-
-[custom.keyboard_right_5]
-command = '${STARSHIP_CONFIG%/*}/scripts/keyboard.sh --display right'
-when = '[ -z "$TMUX" ] && ${STARSHIP_CONFIG%/*}/scripts/keyboard.sh --guard 5 right'
-shell = ["bash"]
-style = "bold #e0af68"
-format = " [$output]($style)"
-
-[custom.keyboard_right_4]
-command = '${STARSHIP_CONFIG%/*}/scripts/keyboard.sh --display right'
-when = '[ -z "$TMUX" ] && ${STARSHIP_CONFIG%/*}/scripts/keyboard.sh --guard 4 right'
-shell = ["bash"]
-style = "bold #e5a370"
-format = " [$output]($style)"
-
-[custom.keyboard_right_3]
-command = '${STARSHIP_CONFIG%/*}/scripts/keyboard.sh --display right'
-when = '[ -z "$TMUX" ] && ${STARSHIP_CONFIG%/*}/scripts/keyboard.sh --guard 3 right'
-shell = ["bash"]
-style = "bold #e99877"
-format = " [$output]($style)"
-
-[custom.keyboard_right_2]
-command = '${STARSHIP_CONFIG%/*}/scripts/keyboard.sh --display right'
-when = '[ -z "$TMUX" ] && ${STARSHIP_CONFIG%/*}/scripts/keyboard.sh --guard 2 right'
-shell = ["bash"]
-style = "bold #ee8d7f"
-format = " [$output]($style)"
-
-[custom.keyboard_right_1]
-command = '${STARSHIP_CONFIG%/*}/scripts/keyboard.sh --display right'
-when = '[ -z "$TMUX" ] && ${STARSHIP_CONFIG%/*}/scripts/keyboard.sh --guard 1 right'
-shell = ["bash"]
-style = "bold #f28186"
-format = " [$output]($style)"
-
-[custom.keyboard_right_0]
-command = '${STARSHIP_CONFIG%/*}/scripts/keyboard.sh --display right'
-when = '[ -z "$TMUX" ] && ${STARSHIP_CONFIG%/*}/scripts/keyboard.sh --guard 0 right'
-shell = ["bash"]
-style = "bold #f7768e"
-format = " [$output]($style)"
-
-[custom.mouse_9]
-command = '${STARSHIP_CONFIG%/*}/scripts/mouse.sh --display'
-when = '[ -z "$TMUX" ] && ${STARSHIP_CONFIG%/*}/scripts/mouse.sh --guard 9'
-shell = ["bash"]
-style = "bold #9ece6a"
-format = " [$output]($style)"
-
-[custom.mouse_8]
-command = '${STARSHIP_CONFIG%/*}/scripts/mouse.sh --display'
-when = '[ -z "$TMUX" ] && ${STARSHIP_CONFIG%/*}/scripts/mouse.sh --guard 8'
-shell = ["bash"]
-style = "bold #afc66a"
-format = " [$output]($style)"
-
-[custom.mouse_7]
-command = '${STARSHIP_CONFIG%/*}/scripts/mouse.sh --display'
-when = '[ -z "$TMUX" ] && ${STARSHIP_CONFIG%/*}/scripts/mouse.sh --guard 7'
-shell = ["bash"]
-style = "bold #bfbf69"
-format = " [$output]($style)"
-
-[custom.mouse_6]
-command = '${STARSHIP_CONFIG%/*}/scripts/mouse.sh --display'
-when = '[ -z "$TMUX" ] && ${STARSHIP_CONFIG%/*}/scripts/mouse.sh --guard 6'
-shell = ["bash"]
-style = "bold #d0b769"
-format = " [$output]($style)"
-
-[custom.mouse_5]
-command = '${STARSHIP_CONFIG%/*}/scripts/mouse.sh --display'
-when = '[ -z "$TMUX" ] && ${STARSHIP_CONFIG%/*}/scripts/mouse.sh --guard 5'
-shell = ["bash"]
-style = "bold #e0af68"
-format = " [$output]($style)"
-
-[custom.mouse_4]
-command = '${STARSHIP_CONFIG%/*}/scripts/mouse.sh --display'
-when = '[ -z "$TMUX" ] && ${STARSHIP_CONFIG%/*}/scripts/mouse.sh --guard 4'
-shell = ["bash"]
-style = "bold #e5a370"
-format = " [$output]($style)"
-
-[custom.mouse_3]
-command = '${STARSHIP_CONFIG%/*}/scripts/mouse.sh --display'
-when = '[ -z "$TMUX" ] && ${STARSHIP_CONFIG%/*}/scripts/mouse.sh --guard 3'
-shell = ["bash"]
-style = "bold #e99877"
-format = " [$output]($style)"
-
-[custom.mouse_2]
-command = '${STARSHIP_CONFIG%/*}/scripts/mouse.sh --display'
-when = '[ -z "$TMUX" ] && ${STARSHIP_CONFIG%/*}/scripts/mouse.sh --guard 2'
-shell = ["bash"]
-style = "bold #ee8d7f"
-format = " [$output]($style)"
-
-[custom.mouse_1]
-command = '${STARSHIP_CONFIG%/*}/scripts/mouse.sh --display'
-when = '[ -z "$TMUX" ] && ${STARSHIP_CONFIG%/*}/scripts/mouse.sh --guard 1'
-shell = ["bash"]
-style = "bold #f28186"
-format = " [$output]($style)"
-
-[custom.mouse_0]
-command = '${STARSHIP_CONFIG%/*}/scripts/mouse.sh --display'
-when = '[ -z "$TMUX" ] && ${STARSHIP_CONFIG%/*}/scripts/mouse.sh --guard 0'
-shell = ["bash"]
-style = "bold #f7768e"
-format = " [$output]($style)"
-
-[custom.headphone_9]
+[custom.headphone]
 command = '${STARSHIP_CONFIG%/*}/scripts/headphone.sh --display'
-when = '[ -z "$TMUX" ] && ${STARSHIP_CONFIG%/*}/scripts/headphone.sh --guard 9'
+when = '[ -z "$TMUX" ] && [ -z "$ZELLIJ" ] && ${STARSHIP_CONFIG%/*}/scripts/headphone.sh --guard'
 shell = ["bash"]
-style = "bold #9ece6a"
-format = " [$output]($style)"
+format = " $output"
 
-[custom.headphone_8]
-command = '${STARSHIP_CONFIG%/*}/scripts/headphone.sh --display'
-when = '[ -z "$TMUX" ] && ${STARSHIP_CONFIG%/*}/scripts/headphone.sh --guard 8'
+[custom.mouse]
+command = '${STARSHIP_CONFIG%/*}/scripts/mouse.sh --display'
+when = '[ -z "$TMUX" ] && [ -z "$ZELLIJ" ] && ${STARSHIP_CONFIG%/*}/scripts/mouse.sh --guard'
 shell = ["bash"]
-style = "bold #afc66a"
-format = " [$output]($style)"
+format = " $output"
 
-[custom.headphone_7]
-command = '${STARSHIP_CONFIG%/*}/scripts/headphone.sh --display'
-when = '[ -z "$TMUX" ] && ${STARSHIP_CONFIG%/*}/scripts/headphone.sh --guard 7'
+[custom.keyboard]
+command = '${STARSHIP_CONFIG%/*}/scripts/keyboard.sh --display'
+when = '[ -z "$TMUX" ] && [ -z "$ZELLIJ" ] && ${STARSHIP_CONFIG%/*}/scripts/keyboard.sh --guard'
 shell = ["bash"]
-style = "bold #bfbf69"
-format = " [$output]($style)"
-
-[custom.headphone_6]
-command = '${STARSHIP_CONFIG%/*}/scripts/headphone.sh --display'
-when = '[ -z "$TMUX" ] && ${STARSHIP_CONFIG%/*}/scripts/headphone.sh --guard 6'
-shell = ["bash"]
-style = "bold #d0b769"
-format = " [$output]($style)"
-
-[custom.headphone_5]
-command = '${STARSHIP_CONFIG%/*}/scripts/headphone.sh --display'
-when = '[ -z "$TMUX" ] && ${STARSHIP_CONFIG%/*}/scripts/headphone.sh --guard 5'
-shell = ["bash"]
-style = "bold #e0af68"
-format = " [$output]($style)"
-
-[custom.headphone_4]
-command = '${STARSHIP_CONFIG%/*}/scripts/headphone.sh --display'
-when = '[ -z "$TMUX" ] && ${STARSHIP_CONFIG%/*}/scripts/headphone.sh --guard 4'
-shell = ["bash"]
-style = "bold #e5a370"
-format = " [$output]($style)"
-
-[custom.headphone_3]
-command = '${STARSHIP_CONFIG%/*}/scripts/headphone.sh --display'
-when = '[ -z "$TMUX" ] && ${STARSHIP_CONFIG%/*}/scripts/headphone.sh --guard 3'
-shell = ["bash"]
-style = "bold #e99877"
-format = " [$output]($style)"
-
-[custom.headphone_2]
-command = '${STARSHIP_CONFIG%/*}/scripts/headphone.sh --display'
-when = '[ -z "$TMUX" ] && ${STARSHIP_CONFIG%/*}/scripts/headphone.sh --guard 2'
-shell = ["bash"]
-style = "bold #ee8d7f"
-format = " [$output]($style)"
-
-[custom.headphone_1]
-command = '${STARSHIP_CONFIG%/*}/scripts/headphone.sh --display'
-when = '[ -z "$TMUX" ] && ${STARSHIP_CONFIG%/*}/scripts/headphone.sh --guard 1'
-shell = ["bash"]
-style = "bold #f28186"
-format = " [$output]($style)"
-
-[custom.headphone_0]
-command = '${STARSHIP_CONFIG%/*}/scripts/headphone.sh --display'
-when = '[ -z "$TMUX" ] && ${STARSHIP_CONFIG%/*}/scripts/headphone.sh --guard 0'
-shell = ["bash"]
-style = "bold #f7768e"
-format = " [$output]($style)"
+format = " $output"
 
 [character]
 success_symbol = "[](bold green)"
@@ -621,15 +201,15 @@ format = " [$output]($style)"
 
 [username]
 show_always = true
-style_user = "bold cyan"
-style_root = "bold purple"
+style_user = "cyan"
+style_root = "purple"
 format = " [ $user]($style)"
 
 [custom.hostname]
 command = '${STARSHIP_CONFIG%/*}/scripts/hostname.sh'
 when = '[ -z "$TMUX" ] && ([ -n "$SSH_CONNECTION" ] || test -f /.dockerenv)'
 shell = ["bash"]
-style = "bold dimmed green"
+style = "dimmed green"
 format = " [$output]($style)"
 
 
@@ -637,7 +217,7 @@ format = " [$output]($style)"
 command = 'echo "${CONTAINER_NAME:-${COMPOSE_SERVICE}}"'
 when = "test -f /.dockerenv"
 shell = ["bash"]
-style = "bold dimmed blue"
+style = "dimmed blue"
 format = " [󰡨 $output]($style)"
 
 
