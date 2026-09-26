@@ -3,7 +3,7 @@
 - Execute exactly what the user asked. Do not add, change, or assume beyond the literal instruction.
 - Before taking any action not explicitly requested, ask first.
 - Track what the user has changed during the session and respect those changes.
-- Write experimental scripts and logs in `.shared/workbench/`, not `/tmp`.
+- NEVER use `/tmp`. Create a temp folder under `.shared/workbench/` for experiments/scripts/logs, then delete it when done.
 
 ## What This Repo Is
 
