@@ -8,7 +8,7 @@ allowed-tools: [Bash, Read]
 Use this skill when the task is to merge a feature branch into master.
 
 This skill merges a branch with `--no-ff`, producing a merge commit that follows the
-[commit message conventions](.shared/agent/commit-conventions.md).
+[commit message conventions](.opencode/docs/commit-conventions.md).
 
 ## Workflow
 
@@ -18,7 +18,7 @@ This skill merges a branch with `--no-ff`, producing a merge commit that follows
 4. Check that the branch is rebased on master (`git merge-base --is-ancestor master <branch>`).
    - If not (exit code 1), stop and tell the user to ask the branch's agent to rebase first.
 5. Check what commits are on the branch but not on master (`git log --oneline master..<branch>`).
-6. Determine the component label per [commit-conventions.md](.shared/agent/commit-conventions.md):
+6. Determine the component label per [commit-conventions.md](.opencode/docs/commit-conventions.md):
    - For a single-component branch, use that component.
    - If changes span multiple components, combine with `/` (e.g. `Agent/OpenCode`).
    - If the branch is a general integration branch, use `Agent`.

@@ -10,7 +10,7 @@ Use this skill when you need to document in-progress work so another agent can p
 
 ## Where handoffs live
 
-Active handoffs go in `.shared/agent/handoffs/H<NN>-<topic>.md`, archived ones in `.shared/agent/handoffs/archive/A<NN>-<topic>.md`. For handoffs, `<NN>` is the smallest 2-digit number (01, 02, ...) not already used in `.shared/agent/handoffs/`. For archives, `<NN>` is the smallest 2-digit number not already used in `.shared/agent/handoffs/archive/`. Check the *target* directory, not the source.
+Active handoffs go in `.opencode/handoffs/H<NN>-<topic>.md`, archived ones in `.opencode/handoffs/archive/A<NN>-<topic>.md`. For handoffs, `<NN>` is the smallest 2-digit number (01, 02, ...) not already used in `.opencode/handoffs/`. For archives, `<NN>` is the smallest 2-digit number not already used in `.opencode/handoffs/archive/`. Check the *target* directory, not the source.
 
 ## When to write a handoff
 
@@ -39,10 +39,10 @@ Every handoff should include these sections when applicable:
 
 When asked to summarize or archive handoffs:
 
-1. **Find handoffs** — Search `.shared/agent/handoffs/` for handoffs matching the topic (by name or keyword). Match against both the `NN-topic` filename and the `# Title`.
+1. **Find handoffs** — Search `.opencode/handoffs/` for handoffs matching the topic (by name or keyword). Match against both the `NN-topic` filename and the `# Title`.
 2. **Read handoffs** — Read all matching handoffs in full.
 3. **Read referenced files** — For each handoff, read the current state of the files it references so the archive reflects what's actually on disk.
-4. **Produce archive** — Write to `.shared/agent/handoffs/archive/A<NN>-<topic>.md` with this structure:
+4. **Produce archive** — Write to `.opencode/handoffs/archive/A<NN>-<topic>.md` with this structure:
 
    ```
    # <Topic>
@@ -60,7 +60,7 @@ When asked to summarize or archive handoffs:
    <bullet list of what's left, edge cases, or potential improvements>
    ```
 
-5. **Remove original** — Delete the original handoff file from `.shared/agent/handoffs/`.
+5. **Remove original** — Delete the original handoff file from `.opencode/handoffs/`.
 6. **Report** — Tell the user the archive is written.
 
 ## Formatting rules
@@ -74,4 +74,4 @@ When asked to summarize or archive handoffs:
 
 ## Reference
 
-See the existing handoff at `.shared/agent/handoffs/H07-tmux-session-presets.md` for a complete example.
+See the existing handoff at `.opencode/handoffs/H07-tmux-session-presets.md` for a complete example.

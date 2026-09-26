@@ -20,24 +20,24 @@ A GNU Stow-style dotfiles collection. Each top-level directory is a stow package
 
 ### Communication Style
 
-See [communication style guide](.shared/agent/communication-style.md).
+See [communication style guide](.opencode/docs/communication-style.md).
 
 ### Speech Input
 
-See [speech input guide](.shared/agent/speech-input.md).
+See [speech input guide](.opencode/docs/speech-input.md).
 
 ### Keywords
 
-See [keywords reference](.shared/agent/keywords.md).
+See [keywords reference](.opencode/docs/keywords.md).
 
 ### Conventions
 
-See [conventions guide](.shared/agent/conventions.md).
+See [conventions guide](.opencode/docs/conventions.md).
 
 ### Shared Agent Resources
 
-Skills and handoffs live in `.shared/agent/`:
-- **Skills** — Slash commands available to all agents ([skills directory](.shared/agent/skills/))
+Skills and handoffs live under `.opencode/`:
+- **Skills** — Slash commands available to all agents ([skills directory](.opencode/skills/))
   - **commit** — Create a git commit following project conventions, one per top-level component.
   - **coordinate** — Message other AI agents across tmux panes via send-keys and shared markdown files.
   - **fire** — Run a long command in a new tmux window with a watchdog that reports completion.
@@ -45,9 +45,9 @@ Skills and handoffs live in `.shared/agent/`:
   - **merge** — Merge a feature branch into master with a conventional commit message.
   - **stow-deploy** — Deploy, list, or preview GNU stow packages from this repo.
   - **tmux-troubleshoot** — Investigate tmux panes: capture output, check logs, inspect status lines.
-- **Handoffs** — Context documents for multi-session tasks ([handoffs directory](.shared/agent/handoffs/))
+- **Handoffs** — Context documents for multi-session tasks ([handoffs directory](.opencode/handoffs/))
 
 ### Config Quick Reference
 
-- **Desktop** (compositors, bars, launchers, themes) — See [desktop.md](.shared/agent/desktop.md)
-- **Terminal** (shell, editor, tmux, tools) — See [terminal.md](.shared/agent/terminal.md)
+- **Desktop** (compositors, bars, launchers, themes) — See [desktop.md](.opencode/docs/desktop.md)
+- **Terminal** (shell, editor, tmux, tools) — See [terminal.md](.opencode/docs/terminal.md)

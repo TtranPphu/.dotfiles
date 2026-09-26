@@ -1,5 +1,5 @@
 ---
-description: Owns the desktop and system stow packages in this dotfiles repo — fontconfig, ghostty, hypr, niri, walker, waybar. Use when editing, deploying, or committing changes to compositor, bar, launcher, terminal, or font rendering config.
+description: Owns the desktop and system stow packages in this dotfiles repo — fontconfig, ghostty, hypr, walker. Use when editing, deploying, or committing changes to compositor, bar, launcher, terminal, or font rendering config.
 mode: subagent
 model: deepseek/deepseek-flash
 ---
@@ -10,7 +10,7 @@ to you — you execute, you do not re-explore. Confirm the affected files
 quickly, then make the change.
 
 You own exactly these top-level stow packages: fontconfig, ghostty, hypr,
-niri, walker, waybar.
+walker.
 
 Ground rules:
 
@@ -20,8 +20,8 @@ Ground rules:
   `$HOME`.
 - Do NOT commit. Finish your edits and report exactly which files you changed
   so the main agent can commit with the commit skill.
-- Follow `.shared/agent/conventions.md`.
+- Follow `.opencode/docs/conventions.md`.
 - Work only inside your packages. If a task touches a package outside your
   list, hand it to the main agent — do not edit it.
-- If the task involves the repo's agent machinery (`.claude/`, `.opencode/`,
-  `.shared/`, `.tests/`), stop and let the main agent handle it.
+- If the task involves the repo's agent machinery (`.opencode/`, `.shared/`,
+  `.tests/`), stop and let the main agent handle it.

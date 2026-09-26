@@ -9,8 +9,7 @@ GNU Stow-style dotfiles. Every top-level directory is a stow package whose inter
 ## Shell
 
 - **Zsh** (default) — Chain: `.zshrc` → Oh My Zsh → `.config/zsh/*.zsh` → Starship.
-- **Nushell** (alternative) — Config in `nu/.config/nushell/config.nu`.
-- **Picker** — At startup, `.zshrc` lets you choose shell (zsh/nushell) and multiplexer (tmux/zellij). See `keywords.md` "picker".
+- **Picker** — At startup, `.zshrc` lets you choose the multiplexer (tmux). See `keywords.md` "picker".
 - `batcat` on Debian/Ubuntu, `bat` elsewhere.
 - Shell scripts: Bash shebang, 2-space indentation. Format with `shfmt -i 2`.
 
@@ -21,7 +20,6 @@ GNU Stow-style dotfiles. Every top-level directory is a stow package whose inter
 ## Multiplexer
 
 - **Tmux** — Config: `tmux.conf` sources `bindings.conf` + `theme.conf`. Scripts in `tmux/.config/tmux/scripts/`. Gate `extended-keys-format` behind tmux >= 3.5. Pane output auto-logs to `~/.local/state/tmux/pane-logs/`.
-- **Zellij** (alternative) — Config in `zellij/.config/zellij/`.
 
 ## Prompt
 
@@ -38,4 +36,3 @@ GNU Stow-style dotfiles. Every top-level directory is a stow package whose inter
 | git | `git/.config/git/` | |
 | lazydocker | `lazydocker/.config/lazydocker/` | |
 | lazygit | `lazygit/.config/lazygit/` | |
-| aichat | `aichat/.config/aichat/` | |

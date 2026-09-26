@@ -72,24 +72,24 @@ tmux send-keys -t %2 "This is opencode agent from pane %3: I've updated the API 
 ### Shared files (detailed, persistent)
 
 For specs, requirements, procedures, or any content longer than a few lines,
-agents write markdown files to `.shared/agent/messages/` instead of inline.
+agents write markdown files to `.opencode/messages/` instead of inline.
 
 After writing, the agent sends an inline notification:
 ```
-tmux send-keys -t %5 "This is opencode agent from pane %3: I posted the refactoring plan in .shared/agent/messages/2026-07-17-143052-refactoring-plan.md" Enter
+tmux send-keys -t %5 "This is opencode agent from pane %3: I posted the refactoring plan in .opencode/messages/2026-07-17-143052-refactoring-plan.md" Enter
 ```
 
 #### File naming convention
 
 ```
-.shared/agent/messages/<YYYY-MM-DD-HHMMSS>-<topic>.md
+.opencode/messages/<YYYY-MM-DD-HHMMSS>-<topic>.md
 ```
 
 Examples:
 ```
-.shared/agent/messages/2026-07-17-143052-auth-flow-spec.md
-.shared/agent/messages/2026-07-17-153120-deployment-checklist.md
-.shared/agent/messages/2026-07-21-110435-refactoring-plan.md
+.opencode/messages/2026-07-17-143052-auth-flow-spec.md
+.opencode/messages/2026-07-17-153120-deployment-checklist.md
+.opencode/messages/2026-07-21-110435-refactoring-plan.md
 ```
 
 #### File format
@@ -116,6 +116,6 @@ pane), it MUST:
 
 1. Check if the line starts with `This is <name> agent from pane <id>:` — if
    so, it is an agent-to-agent message.
-2. If the message references a file in `.shared/agent/messages/`, read that
+2. If the message references a file in `.opencode/messages/`, read that
    file for the full content.
 3. Respond or act on the message as appropriate.

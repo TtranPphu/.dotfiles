@@ -1,1 +1,0 @@
-../../../.shared/agent/skills/stow-deploy/SKILL.md

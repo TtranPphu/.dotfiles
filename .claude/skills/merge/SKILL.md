@@ -1,1 +1,0 @@
-../../../.shared/agent/skills/merge/SKILL.md

@@ -14,7 +14,7 @@ This repository is organized around top-level components. When making commits:
 3. Create one commit per top-level component whenever the changes are not tightly coupled.
 4. Do not mix unrelated top-level components into the same commit unless the user explicitly asks for that.
 
-See [commit-conventions.md](.shared/agent/commit-conventions.md) for the shared message format rules.
+See [commit-conventions.md](.opencode/docs/commit-conventions.md) for the shared message format rules.
 
 ## Workflow
 

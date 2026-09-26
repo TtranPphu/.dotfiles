@@ -45,7 +45,7 @@ tmux list-panes -F '#{pane_id} #{window_name}' | grep "<label>" | awk '{print $1
 Then launch the watchdog:
 
 ```
-.shared/agent/scripts/fire-watchdog.sh /tmp/fire-<label>.pid <initiator-pane-id> "<label>" <target-pane-id> [interval] & disown
+.opencode/scripts/fire-watchdog.sh /tmp/fire-<label>.pid <initiator-pane-id> "<label>" <target-pane-id> [interval] & disown
 ```
 
 `interval` is the polling rate in seconds (default: 1). The watchdog waits
@@ -64,7 +64,7 @@ Inspect results with:
 
 ## Watchdog script
 
-`.shared/agent/scripts/fire-watchdog.sh`
+`.opencode/scripts/fire-watchdog.sh`
 
 | Parameter | Description |
 |-----------|-------------|

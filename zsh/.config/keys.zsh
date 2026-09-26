@@ -1,1 +1,1 @@
-../../.shared/agent/keys.zsh
+../../.shared/keys.zsh
