@@ -3,7 +3,14 @@
 # Starship custom module: combined LLM account balance on narrow terminals
 set -euo pipefail
 
-WIDTH="${COLUMNS:-$(stty size < /dev/tty 2>/dev/null | cut -d' ' -f2)}"
+# Width decides which modules render: combined below 144 columns, per-provider
+# above. COLUMNS is rarely exported, and the controlling terminal is the right
+# source rather than stdin, which starship does not attach to a tty. The probe
+# is wrapped so its failure cannot abort under set -e before the fallback.
+WIDTH="${COLUMNS:-}"
+if [ -z "$WIDTH" ]; then
+  WIDTH=$( { stty size < /dev/tty 2>/dev/null; } 2>/dev/null | cut -d' ' -f2 || true)
+fi
 WIDTH="${WIDTH:-999}"
 
 # Exit 0 only when narrow enough and a total exists, so the module is skipped

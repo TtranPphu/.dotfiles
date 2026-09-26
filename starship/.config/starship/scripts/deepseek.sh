@@ -3,13 +3,13 @@
 # Starship custom module: DeepSeek account balance
 set -euo pipefail
 
-# COLUMNS is usually not exported and starship runs without a controlling tty,
-# so only probe stty when stdin really is a terminal. Referring to /dev/tty
-# directly would make the redirect itself fail and abort under set -e, which
-# made the 999 fallback below unreachable.
+# Width decides which modules render: combined below 144 columns, per-provider
+# above. COLUMNS is rarely exported, and the controlling terminal is the right
+# source rather than stdin, which starship does not attach to a tty. The probe
+# is wrapped so its failure cannot abort under set -e before the fallback.
 WIDTH="${COLUMNS:-}"
-if [ -z "$WIDTH" ] && [ -t 0 ]; then
-  WIDTH=$(stty size | cut -d' ' -f2 || true)
+if [ -z "$WIDTH" ]; then
+  WIDTH=$( { stty size < /dev/tty 2>/dev/null; } 2>/dev/null | cut -d' ' -f2 || true)
 fi
 WIDTH="${WIDTH:-999}"
 
