@@ -33,10 +33,3 @@ left_prompt:
 right_prompt:
   '{color.light_blue}{?session  {?consume_tokens {consume_percent}%}}{color.reset}'
 
-model: ollama:qwen3:4b-instruct
-clients:
-- type: openai-compatible
-  name: ollama
-  api_base: http://localhost:11434/v1
-  models:
-    - name: qwen3:4b-instruct
