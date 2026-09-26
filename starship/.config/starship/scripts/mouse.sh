@@ -21,7 +21,7 @@ case "${1:-}" in
     if [[ $(stty size < /dev/tty 2>/dev/null | cut -d" " -f2 || echo 144) -lt 144 ]]; then
       text="󰍽"
     else
-      text="󰍽 $cap"$'\uf295'
+      text="󰍽 $cap"
     fi
     printf '%s%s\033[0m' "$(level_color "$cap")" "$text"
     ;;

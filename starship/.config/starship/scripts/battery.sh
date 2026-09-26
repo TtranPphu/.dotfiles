@@ -35,7 +35,7 @@ case "${1:-}" in
         *) text="$icon" ;;
       esac
     else
-      text="$icon $bat"$'\uf295'
+      text="$icon $bat"
     fi
 
     printf '%s%s\033[0m' "$(level_color "$bat")" "$text"
