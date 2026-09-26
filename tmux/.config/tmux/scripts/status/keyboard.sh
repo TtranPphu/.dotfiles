@@ -24,6 +24,6 @@ if [[ $(tmux display -p '#{window_width}' 2>/dev/null || echo 144) -lt 144 ]]; t
   printf '#[fg=brightblack,bold,bg=%s]▏▕#[default]' "${colors[$idx_left]}"
   printf '#[fg=brightblack,bold,bg=%s]▏▕#[default]' "${colors[$idx_right]}"
 else
-  printf '#[fg=brightblack,bold,bg=%s]▏ %s▕#[default]' "${colors[$idx_left]}" "$left"
-  printf '#[fg=brightblack,bold,bg=%s]▏ %s▕#[default]' "${colors[$idx_right]}" "$right"
+  printf '#[fg=brightblack,bold,bg=%s]▏ %s▕#[default]' "${colors[$idx_left]}" "$left"
+  printf '#[fg=brightblack,bold,bg=%s]▏ %s▕#[default]' "${colors[$idx_right]}" "$right"
 fi

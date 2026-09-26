@@ -30,14 +30,14 @@ printf '#[fg=#000000,bg=blue,bold]▏#[fg=brightblack,bg=blue,bold] %s▕#[de
 # Battery indicator
 "$script_dir/battery.sh"
 
-# Keyboard battery
-"$script_dir/keyboard.sh"
+# Headphone battery
+"$script_dir/headphone.sh"
 
 # Mouse battery
 "$script_dir/mouse.sh"
 
-# Headphone battery
-"$script_dir/headphone.sh"
+# Keyboard battery
+"$script_dir/keyboard.sh"
 
 if tmux -S "$socket_path" show-environment -t "$current_session" SSH_CONNECTION 2>/dev/null | grep -q '^SSH_CONNECTION='; then
   "$script_dir/hostname.sh"

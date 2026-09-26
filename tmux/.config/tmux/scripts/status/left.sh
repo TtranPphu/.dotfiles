@@ -4,8 +4,8 @@ socket_path="$1"
 current_session="$2"
 script_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 
-# LLM / OS route indicator
-"$script_dir/llm-cache.sh"
+# OS indicator
+"$script_dir/os.sh"
 
 # Balance modules: combined LLM quota when narrow, per-provider when wide
 export STATUS_WIDTH
