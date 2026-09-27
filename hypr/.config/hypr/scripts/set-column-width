@@ -1,0 +1,35 @@
+#!/bin/bash
+
+# Set the scrolling layout's column width and remember it across reloads.
+# The Display widget's COLUMN selector calls this with one of its presets.
+# looknfeel.lua reads the state file so `hyprctl reload` restores the choice;
+# a reload would otherwise re-apply the config default.
+#
+# Existing columns keep their old width until the layout reflows, so after
+# persisting we dispatch `colresize all` to rebuild every column at the new
+# width while floating windows keep their geometry untouched.
+
+set -euo pipefail
+
+STATE_DIR="${XDG_STATE_HOME:-$HOME/.local/state}/omarchy"
+STATE_FILE="$STATE_DIR/column-width"
+value="${1:-}"
+
+case "$value" in
+  0.3 | 0.5 | 0.6 | 0.8) ;;
+  *)
+    echo "Usage: $(basename "$0") {0.3|0.5|0.6|0.8}" >&2
+    exit 1
+    ;;
+esac
+
+# The Lua config parser rejects `hyprctl keyword`, so apply via eval.
+mkdir -p "$STATE_DIR"
+printf '%s\n' "$value" >"$STATE_FILE"
+hyprctl eval "hl.config({ scrolling = { column_width = ${value} } })" >/dev/null
+
+# Force the reflow so every existing column adopts the new width now. A config
+# reload only updates the option; it does not resize columns that already
+# exist. The scrolling layout's `colresize all <width>` message resizes every
+# column on the workspace directly, leaving floating windows untouched.
+hyprctl dispatch "hl.dsp.layout(\"colresize all ${value}\")" >/dev/null

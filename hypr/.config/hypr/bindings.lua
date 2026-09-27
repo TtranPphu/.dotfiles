@@ -7,6 +7,7 @@ hl.unbind("SUPER + ALT + SPACE")
 hl.unbind("SUPER + ALT + K")
 hl.unbind("SUPER + CTRL + K")
 hl.unbind("SUPER + CTRL + BACKSPACE")
+hl.unbind("SUPER + CTRL + DELETE")
 hl.unbind("SUPER + mouse:272")
 hl.unbind("SUPER + mouse:273")
 hl.unbind("SUPER + LEFT")
@@ -70,6 +71,11 @@ o.bind("SUPER + Q", "Close window", hl.dsp.window.close())
 o.bind("SUPER + SEMICOLON", "Toggle window split", hl.dsp.layout("togglesplit"))
 o.bind("SUPER + BACKSLASH", "Toggle workspace layout", "omarchy-hyprland-workspace-layout-toggle")
 o.bind("SUPER + SHIFT + SLASH", "Show key bindings", "omarchy-menu-keybindings")
+
+-- Displays
+-- Replaces Omarchy's laptop-display toggle; enables every display even when
+-- the screen is blank (see the script for details).
+o.bind("SUPER + CTRL + DELETE", "Enable all displays", os.getenv("HOME") .. "/.config/hypr/scripts/enable-all-displays")
 
 -- Apps
 o.bind("SUPER + SHIFT + T", "Terminal", "omarchy-launch-or-focus ghostty")
