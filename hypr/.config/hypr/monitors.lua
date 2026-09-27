@@ -2,10 +2,15 @@
 -- List current monitors and supported resolutions with: hyprctl monitors all
 
 local omarchy_gdk_scale = 2
-local omarchy_monitor_scale = 2
+local omarchy_monitor_scale = 1.6
 
 hl.env("GDK_SCALE", tostring(omarchy_gdk_scale))
 hl.monitor({ output = "", mode = "preferred", position = "auto", scale = omarchy_monitor_scale })
+
+-- Specific rule for the LG ultrawide external, after the catch-all.
+-- 3440/1.6 = 2150, 1440/1.6 = 900 logical; top-centre above the laptop panel:
+-- x = (1600 - 2150) / 2 = -275, y = 0 - 900 = -900.
+hl.monitor({ output = "HDMI-A-1", mode = "preferred", scale = 1.6, position = "-275x-900" })
 
 -- Configure a specific monitor.
 -- hl.monitor({ output = "DP-2", mode = "2560x1440@144", position = "0x0", scale = 1 })
