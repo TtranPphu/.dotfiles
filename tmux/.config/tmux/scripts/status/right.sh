@@ -10,14 +10,14 @@ reversed=""
 while read -r s; do
   [[ "$s" == "$current_session" ]] && break
   if tmux -S "$socket_path" list-windows -t "$s" -F '#{window_bell_flag}' 2>/dev/null | grep -q 1; then
-    reversed='#[fg=green] 󰅸 '"$s"' #[default]'"${reversed:+$reversed}"
+    reversed='#[fg=green] 󰅸 '"$s"' #[default]'"${reversed:+#[fg=brightblack,bold]┋$reversed}"
   else
-    reversed='#[fg=brightblack]  '"$s"' #[default]'"${reversed:+$reversed}"
+    reversed='#[fg=brightblack]  '"$s"' #[default]'"${reversed:+#[fg=brightblack,bold]┋$reversed}"
   fi
 done < <(tmux -S "$socket_path" list-sessions -F '#{session_name}')
 
 if [[ -n "$reversed" ]]; then
-  printf '%s' "$reversed"
+  printf '#[fg=brightblack,bold]┋%s' "$reversed"
 fi
 
 printf '#[fg=blue]'
@@ -25,7 +25,7 @@ printf '#[fg=blue]'
 # Speech recording indicator
 "$script_dir/speech.sh"
 
-printf '#[fg=#000000,bg=blue,bold]▏#[fg=brightblack,bg=blue,bold] %s▕#[default]' "${pane_id#%}"
+printf '#[fg=#000000,bg=blue,bold]▏#[fg=brightblack,bg=blue,bold] %02d▕#[default]' "${pane_id#%}"
 
 # Battery indicator
 "$script_dir/battery.sh"

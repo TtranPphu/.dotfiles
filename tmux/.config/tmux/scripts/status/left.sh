@@ -21,7 +21,8 @@ fi
 adjacent_sessions="$("$script_dir/session-list.sh" "$socket_path" "$current_session" next)"
 
 if [[ -n "$adjacent_sessions" ]]; then
-  printf '#[fg=brightblack]%s' "$adjacent_sessions"
+  printf '#[fg=brightblack]%s#[fg=brightblack,bold]┋' "$adjacent_sessions"
 fi
 
 printf '#[fg=#000000,bg=blue,bold]▏ %s▕#[bg=default]' "$current_session"
+printf '#[fg=brightblack,bold]┋'
