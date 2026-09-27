@@ -75,6 +75,7 @@ o.bind("SUPER + Q", "Close window", hl.dsp.window.close())
 o.bind("SUPER + SEMICOLON", "Toggle window split", hl.dsp.layout("togglesplit"))
 o.bind("SUPER + BACKSLASH", "Toggle workspace layout", "omarchy-hyprland-workspace-layout-toggle")
 o.bind("SUPER + SHIFT + SLASH", "Show key bindings", "omarchy-menu-keybindings")
+o.bind("SUPER + mouse:273", "Move window", hl.dsp.window.drag(), { mouse = true })
 
 -- Displays
 -- Replaces Omarchy's laptop-display toggle; enables every display even when
