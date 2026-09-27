@@ -16,10 +16,32 @@ hl.config({
   },
 })
 
+-- The Display widget's WIDTH selector persists its choice here; reading it back
+-- makes the selection survive `hyprctl reload` (which re-runs this file and
+-- would otherwise reset the width to the default).
+local function remembered_column_width()
+  local state_home = os.getenv("XDG_STATE_HOME")
+  if state_home == nil or state_home == "" then
+    state_home = (os.getenv("HOME") or "") .. "/.local/state"
+  end
+
+  local file = io.open(state_home .. "/omarchy/column-width", "r")
+  if file == nil then return nil end
+
+  local value = tonumber(file:read("*a"))
+  file:close()
+  if value == nil or value < 0.3 or value > 1 then return nil end
+  return value
+end
+
 hl.config({
   scrolling = {
-    -- Default column width (fraction of screen width).
-    column_width = 0.8,
+    -- Default column width (fraction of screen width), overridden by the
+    -- Display widget's remembered choice when present.
+    column_width = remembered_column_width() or 0.8,
+
+    -- Keep a lone column at column_width instead of stretching it to full width.
+    fullscreen_on_one_column = false,
 
     -- Center the focused column instead of only fitting it into view.
     -- 0 = center, 1 = fit.
