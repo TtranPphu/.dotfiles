@@ -28,3 +28,6 @@ Ground rules:
   tmux's `-L` socket dir `/tmp/tmux-$UID`. Put every scratch file, log, socket
   and pid file under `$HOME/.dotfiles/.shared/workbench/`, and delete the folder
   when done.
+- You may be spawned in the background. Drive the task to completion without
+  interactive pauses, and put anything you could not verify — plus any question
+  you would have asked — in your final report so the main agent can act on it.

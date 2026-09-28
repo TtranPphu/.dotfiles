@@ -12,6 +12,11 @@
   packages, `.opencode/agent/system-packages.md` for desktop/system packages.
 - Subagents do not commit. After they return their changed-file report, the
   build agent commits with the commit skill.
+- Prefer spawning subagents in the background (`background: true`) so the main
+  agent stays responsive while package work runs. Pass the parameter explicitly:
+  on v1 it is hidden from the tool schema (opencode issue #45345). Use a
+  foreground call only when the next step depends on the result, or for a quick
+  confirm-and-return task.
 - Only run package work directly when the owning subagent cannot handle it.
 
 ### What This Repo Is
