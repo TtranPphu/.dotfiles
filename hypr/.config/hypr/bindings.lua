@@ -41,6 +41,12 @@ hl.unbind("SUPER + SHIFT + L")
 hl.unbind("SUPER + SHIFT + N")
 hl.unbind("SUPER + SHIFT + M")
 hl.unbind("SUPER + SHIFT + SLASH")
+hl.unbind("SUPER + code:20")
+hl.unbind("SUPER + code:21")
+hl.unbind("SUPER + ALT + code:20")
+hl.unbind("SUPER + ALT + code:21")
+hl.unbind("SUPER + CTRL + code:20")
+hl.unbind("SUPER + CTRL + code:21")
 
 -- Menus
 o.bind("SUPER + SPACE", "Launch apps", "omarchy-menu toggle apps")
@@ -76,6 +82,18 @@ o.bind("SUPER + SEMICOLON", "Toggle window split", hl.dsp.layout("togglesplit"))
 o.bind("SUPER + BACKSLASH", "Toggle workspace layout", "omarchy-hyprland-workspace-layout-toggle")
 o.bind("SUPER + SHIFT + SLASH", "Show key bindings", "omarchy-menu-keybindings")
 o.bind("SUPER + mouse:273", "Move window", hl.dsp.window.drag(), { mouse = true })
+
+-- Resize the focused column. Omarchy's window.resize only moves one edge; in
+-- the scrolling layout the `colresize` layout message changes the column width
+-- and re-centres it, so both edges move about the centre. The values are
+-- fractions of the monitor's width (100px / 1280px = 0.078125 on this display):
+-- ±100 plain, ±25 ALT, ±300 CTRL.
+o.bind("SUPER + code:20", "Shrink window", hl.dsp.layout("colresize -0.078125"))
+o.bind("SUPER + code:21", "Expand window", hl.dsp.layout("colresize +0.078125"))
+o.bind("SUPER + ALT + code:20", "Shrink window a little", hl.dsp.layout("colresize -0.01953125"))
+o.bind("SUPER + ALT + code:21", "Expand window a little", hl.dsp.layout("colresize +0.01953125"))
+o.bind("SUPER + CTRL + code:20", "Shrink window a lot", hl.dsp.layout("colresize -0.234375"))
+o.bind("SUPER + CTRL + code:21", "Expand window a lot", hl.dsp.layout("colresize +0.234375"))
 
 -- Displays
 -- Replaces Omarchy's laptop-display toggle; enables every display even when
