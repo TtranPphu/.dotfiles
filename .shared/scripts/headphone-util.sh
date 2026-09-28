@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-LOCKFILE="/tmp/headphone-battery.lock"
-CACHEFILE="/tmp/headphone-battery.json"
+RUNTIME_DIR="${XDG_RUNTIME_DIR:-/run/user/$(id -u)}"
+LOCKFILE="$RUNTIME_DIR/headphone-battery.lock"
+CACHEFILE="$RUNTIME_DIR/headphone-battery.json"
 CACHE_TTL=5
 DBUS_TIMEOUT=2
 
@@ -172,7 +173,7 @@ fetch_async() {
 }
 
 main() {
-  mkdir -p /tmp
+  mkdir -p "$RUNTIME_DIR"
 
   local now ts val
   now=$(date +%s)
