@@ -20,7 +20,7 @@ Then capture using session:window.pane format:
 tmux capture-pane -t dotfiles:4.1 -p
 ```
 
-Save to file: `tmux capture-pane -p > /tmp/pane-capture.txt`
+Save to file: `tmux capture-pane -p > "$HOME/.dotfiles/.shared/workbench/pane-capture.txt"`
 
 ## Pane logs
 

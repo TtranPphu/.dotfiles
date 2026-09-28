@@ -25,3 +25,7 @@ Ground rules:
   list, hand it to the main agent — do not edit it.
 - If the task involves the repo's agent machinery (`.opencode/`, `.shared/`,
   `.tests/`), stop and let the main agent handle it.
+- Scratch space: NEVER use `/tmp`, including tools' implicit defaults — e.g.
+  tmux's `-L` socket dir `/tmp/tmux-$UID`. Put every scratch file, log, socket
+  and pid file under `$HOME/.dotfiles/.shared/workbench/`, and delete the folder
+  when done.

@@ -23,13 +23,13 @@ This keeps the shell alive after the command finishes for result inspection.
 
 ```
 tmux new-window -n "<label>" -c <working-dir>
-tmux send-keys -t <pane-id> "sh -c 'echo \$\$ > /tmp/fire-<label>.pid; exec <command>'" Enter
+tmux send-keys -t <pane-id> "sh -c 'echo \$\$ > $HOME/.dotfiles/.shared/workbench/fire-<label>.pid; exec <command>'" Enter
 ```
 
 If the user specified a pane, send directly to that pane instead:
 
 ```
-tmux send-keys -t <pane-id> "sh -c 'echo \$\$ > /tmp/fire-<label>.pid; exec <command>'" Enter
+tmux send-keys -t <pane-id> "sh -c 'echo \$\$ > $HOME/.dotfiles/.shared/workbench/fire-<label>.pid; exec <command>'" Enter
 ```
 
 If the targeted pane is busy (not a shell), create a new window instead.
@@ -45,7 +45,7 @@ tmux list-panes -F '#{pane_id} #{window_name}' | grep "<label>" | awk '{print $1
 Then launch the watchdog:
 
 ```
-.opencode/scripts/fire-watchdog.sh /tmp/fire-<label>.pid <initiator-pane-id> "<label>" <target-pane-id> [interval] & disown
+.opencode/scripts/fire-watchdog.sh $HOME/.dotfiles/.shared/workbench/fire-<label>.pid <initiator-pane-id> "<label>" <target-pane-id> [interval] & disown
 ```
 
 `interval` is the polling rate in seconds (default: 1). The watchdog waits
