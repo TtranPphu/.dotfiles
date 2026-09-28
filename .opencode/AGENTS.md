@@ -3,7 +3,7 @@
 - Execute exactly what the user asked. Do not add, change, or assume beyond the literal instruction.
 - Before taking any action not explicitly requested, ask first.
 - Track what the user has changed during the session and respect those changes.
-- NEVER use `/tmp`. Create a temp folder under `.shared/workbench/` for experiments/scripts/logs, then delete it when done.
+- NEVER use `/tmp` in any way — no writing, reading, listing or inspecting files there, debugging spelunking included. Create a temp folder under `.shared/workbench/` for experiments/scripts/logs, then delete it when done. If a tool or script keeps its own state in `/tmp`, leave it alone and ask the user.
 
 ### Delegation
 

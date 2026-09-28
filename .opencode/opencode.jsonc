@@ -1,5 +1,17 @@
 {
   "$schema": "https://opencode.ai/config.json",
+  "permission": {
+    "bash": {
+      "*/tmp*": "deny",
+      "/tmp*": "deny"
+    },
+    "read": { "/tmp*": "deny" },
+    "edit": { "/tmp*": "deny" },
+    "list": { "/tmp*": "deny" },
+    "glob": { "/tmp*": "deny" },
+    "grep": { "/tmp*": "deny" },
+    "external_directory": { "/tmp*": "deny" }
+  },
   "lsp": {
     "jsonls": {
       "command": ["vscode-json-language-server", "--stdio"],
