@@ -1,11 +1,13 @@
 #!/usr/bin/env bash
 
-PIDFILE="/tmp/tmux-speech.pid"
-WAVFILE="/tmp/tmux-speech.wav"
+RUNTIME_DIR="${XDG_RUNTIME_DIR:-/run/user/$(id -u)}"
+PIDFILE="$RUNTIME_DIR/tmux-speech.pid"
+WAVFILE="$RUNTIME_DIR/tmux-speech.wav"
 TEXTFILE="${WAVFILE%.wav}.txt"
-TRANSFILE="/tmp/tmux-speech-transcribing"
-PLAYERFILE="/tmp/tmux-speech-players"
-PANEFILE="/tmp/tmux-speech-pane"
+TRANSFILE="$RUNTIME_DIR/tmux-speech-transcribing"
+PLAYERFILE="$RUNTIME_DIR/tmux-speech-players"
+PANEFILE="$RUNTIME_DIR/tmux-speech-pane"
+DEBUGLOG="$RUNTIME_DIR/speech-debug.log"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 WSL_SCRIPT="$SCRIPT_DIR/record-wsl.ps1"
 SPEECH_PREFIX="This is the user via speech: "
@@ -99,10 +101,10 @@ stop() {
     if is_wsl; then
         powershell.exe -NoProfile -NoLogo -ExecutionPolicy Bypass -File "$(wslpath -w "$WSL_SCRIPT")" -Action stop &>/dev/null
         rm -f "$PIDFILE"
-        WAVFILE=$(wsl_resolve_wav) || { echo "wsl_resolve_wav failed" > /tmp/speech-debug.log; exit 1; }
+        WAVFILE=$(wsl_resolve_wav) || { echo "wsl_resolve_wav failed" > "$DEBUGLOG"; exit 1; }
 
         if [ ! -f "$WAVFILE" ]; then
-            echo "WAV not found: $WAVFILE" > /tmp/speech-debug.log
+            echo "WAV not found: $WAVFILE" > "$DEBUGLOG"
             exit 1
         fi
 
@@ -113,19 +115,26 @@ stop() {
             export WHISPER_MODEL="${HOME}/.local/share/whisper/ggml-medium.en.bin"
             export WHISPER_ARGS="-t 8"
 
-            TEXT=$("$SCRIPT_DIR/transcribe.py" "$WAVFILE" 2>/dev/null)
+            TEXT=$("$SCRIPT_DIR/transcribe.py" "$WAVFILE" 2>>"$DEBUGLOG")
             RET=$?
 
             rm -f "$TRANSFILE"
             tmux refresh-client
 
-            if [ $RET -eq 2 ]; then
-                echo "$(date): transcribe.py returned 2 (blank audio)" >> /tmp/speech-debug.log
-                exit 2
+            if [ $RET -ne 0 ]; then
+                echo "$(date): transcribe.py exited $RET" >> "$DEBUGLOG"
+                tmux display-message "Speech-to-Text failed (exit $RET) — nothing sent"
+                exit "$RET"
+            fi
+
+            if [ -z "${TEXT//[[:space:]]/}" ]; then
+                echo "$(date): transcribe.py returned blank text" >> "$DEBUGLOG"
+                tmux display-message "Speech-to-Text heard nothing — nothing sent"
+                exit 1
             fi
 
             echo "$TEXT" > "$TEXTFILE"
-            echo "$(date): transcribed OK: ${TEXT:0:50}..." >> /tmp/speech-debug.log
+            echo "$(date): transcribed OK: ${TEXT:0:50}..." >> "$DEBUGLOG"
             PANE_ID=$(cat "$PANEFILE" 2>/dev/null)
             if [ -n "$PANE_ID" ]; then
                 tmux send-keys -t "$PANE_ID" "$SPEECH_PREFIX$TEXT" Enter
@@ -181,14 +190,22 @@ stop() {
         exit 1
     fi
 
-    TEXT=$("$SCRIPT_DIR/transcribe.py" "$WAVFILE" 2>/dev/null)
+    TEXT=$("$SCRIPT_DIR/transcribe.py" "$WAVFILE" 2>>"$DEBUGLOG")
     RET=$?
 
     rm -f "$TRANSFILE"
     tmux refresh-client
 
-    if [ $RET -eq 2 ]; then
-        exit 2
+    if [ $RET -ne 0 ]; then
+        echo "$(date): transcribe.py exited $RET" >> "$DEBUGLOG"
+        tmux display-message "Speech-to-Text failed (exit $RET) — nothing sent"
+        exit "$RET"
+    fi
+
+    if [ -z "${TEXT//[[:space:]]/}" ]; then
+        echo "$(date): transcribe.py returned blank text" >> "$DEBUGLOG"
+        tmux display-message "Speech-to-Text heard nothing — nothing sent"
+        exit 1
     fi
 
     echo "$TEXT" > "$TEXTFILE"

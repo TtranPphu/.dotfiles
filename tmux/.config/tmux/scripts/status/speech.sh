@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
-PIDFILE="/tmp/tmux-speech.pid"
-TRANSFILE="/tmp/tmux-speech-transcribing"
+RUNTIME_DIR="${XDG_RUNTIME_DIR:-/run/user/$(id -u)}"
+PIDFILE="$RUNTIME_DIR/tmux-speech.pid"
+TRANSFILE="$RUNTIME_DIR/tmux-speech-transcribing"
 
 if [ -f "$TRANSFILE" ]; then
     printf '#[fg=brightblack,bold,bg=yellow] 󰔮 ▐#[default]'
