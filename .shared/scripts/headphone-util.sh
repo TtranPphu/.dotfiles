@@ -14,7 +14,12 @@ BATTERY_USER_DESC="00002901-0000-1000-8000-00805f9b34fb"
 
 # Device name pattern for gdbus matching (Linux path).
 # Override via HEADPHONE_DEVICE env var for your headphone model.
-DEVICE_PATTERN="${HEADPHONE_DEVICE:-*OPPO Enco*}"
+# Accept either headphone set. HEADPHONE_DEVICE overrides the whole list.
+if [[ -n ${HEADPHONE_DEVICE:-} ]]; then
+  DEVICE_PATTERNS=("$HEADPHONE_DEVICE")
+else
+  DEVICE_PATTERNS=("*Nothing Ear*" "*OPPO Enco*")
+fi
 
 SCRIPT_DIR="$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")"
 WSL_PS1="$SCRIPT_DIR/headphone-battery-wsl.ps1"
@@ -66,7 +71,11 @@ read_batteries_gdbus() {
     name=$(gdbus_prop "$DBUS_PATH/$dev" org.bluez.Device1 Alias) || continue
     con=$(gdbus_prop "$DBUS_PATH/$dev" org.bluez.Device1 Connected) || continue
     if [[ "$con" != "true" ]]; then continue; fi
-    if [[ "$name" != $DEVICE_PATTERN ]]; then continue; fi
+    local matched=0 p
+    for p in "${DEVICE_PATTERNS[@]}"; do
+      [[ "$name" == $p ]] && { matched=1; break; }
+    done
+    (( matched )) || continue
     dev_path="$DBUS_PATH/$dev"
     break
   done < <(gdbus introspect --system --only-properties \
