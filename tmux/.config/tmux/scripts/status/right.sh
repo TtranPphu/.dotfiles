@@ -3,6 +3,7 @@
 socket_path="$1"
 current_session="$2"
 pane_id="$3"
+part="${4:-}"
 script_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 
 # Build reversed list of sessions before current (newest first on status right)
@@ -16,14 +17,17 @@ while read -r s; do
   fi
 done < <(tmux -S "$socket_path" list-sessions -F '#{session_name}')
 
-if [[ -n "$reversed" ]]; then
+if [[ -z $part || $part == sessions ]]; then
   printf '#[fg=brightblack,bold]┋%s' "$reversed"
 fi
+
+[[ $part == sessions ]] && exit 0
 
 printf '#[fg=blue]'
 
 # Speech recording indicator
 "$script_dir/speech.sh"
+
 
 printf '#[fg=#000000,bg=blue,bold]▏#[fg=brightblack,bg=blue,bold] %02d▕#[default]' "${pane_id#%}"
 
