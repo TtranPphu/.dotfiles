@@ -8,7 +8,8 @@ hl.env("GDK_SCALE", tostring(omarchy_gdk_scale))
 hl.monitor({ output = "", mode = "preferred", position = "auto", scale = omarchy_monitor_scale })
 
 -- Laptop panel runs at 2; specific rules come after the catch-all.
-hl.monitor({ output = "eDP-2", mode = "preferred", position = "auto", scale = 2 })
+-- Pinned to 0x0 so the ultrawide's -435 x-offset centres over it.
+hl.monitor({ output = "eDP-2", mode = "preferred", position = "0x0", scale = 2 })
 
 -- Specific rule for the LG ultrawide external, after the catch-all.
 -- 3440/1.6 = 2150, 1440/1.6 = 900 logical; top-centre above the laptop panel
