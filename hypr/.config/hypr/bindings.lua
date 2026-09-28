@@ -94,43 +94,62 @@ o.bind("SUPER + mouse:273", "Move window", hl.dsp.window.drag(), { mouse = true 
 -- floating window (which has no column) gets its own path. Hyprland's own
 -- relative resize rounds the half-delta on every step, which walks the centre
 -- by a pixel on odd steps, so for a float the goal rect is set exactly: resize
--- to the new size, then move to the half-delta-shifted position. On a float
--- the plain/ALT/CTRL chords resize both dimensions at once; on a tiled column
--- they stay width-only and the SHIFT chords stay Omarchy's relative y resize.
--- Values keep the old magnitudes: ±100 plain, ±25 ALT, ±300 CTRL; colresize
--- takes fractions of the monitor's width (100px / 1280px = 0.078125).
+-- to the new size, then move to the half-delta-shifted position. The x-axis
+-- chords resize the width and scale the height to keep the ratio the window had
+-- when the key was pressed; on a tiled column they stay width-only and the
+-- SHIFT chords stay Omarchy's relative y resize. Values keep the old x
+-- magnitudes: ±100 plain, ±25 ALT, ±300 CTRL; colresize takes fractions of the
+-- monitor's width (100px / 1280px = 0.078125).
 local function half(step)
   -- Truncated, so shrink then expand returns to the exact original rect.
   return step < 0 and -math.floor(-step / 2) or math.floor(step / 2)
 end
 
+-- Height that keeps the window's current ratio when its width becomes new_w.
+local function proportional_height(new_w, size_x, size_y)
+  return math.floor(new_w * size_y / size_x + 0.5)
+end
+
 local function resize(step_x, step_y, column_fraction)
   return function()
     local window = hl.get_active_window()
-    if column_fraction and (not window or not window.floating) then
-      return hl.dispatch(hl.dsp.layout("colresize " .. column_fraction))
-    end
-    if not window or not window.floating then
+    if column_fraction then
+      if not window or not window.floating then
+        -- Tiled column: width-only, re-centred by the layout.
+        return hl.dispatch(hl.dsp.layout("colresize " .. column_fraction))
+      end
+    elseif not window or not window.floating then
+      -- Tiled y-axis: Omarchy's relative resize.
       return hl.dispatch(hl.dsp.window.resize({ x = step_x, y = step_y, relative = true }))
     end
 
-    local size_x, size_y = window.size.x + step_x, window.size.y + step_y
+    -- Floating: set the goal rect exactly, centred on both axes. A function
+    -- step_y derives the new height from the new width.
+    local size_x, size_y = window.size.x, window.size.y
     if size_x < 1 or size_y < 1 then
       return
     end
-    local position_x, position_y = window.at.x - half(step_x), window.at.y - half(step_y)
 
-    hl.dispatch(hl.dsp.window.resize({ x = size_x, y = size_y }))
+    local new_w = size_x + step_x
+    local new_h = type(step_y) == "function" and step_y(new_w, size_x, size_y) or size_y + step_y
+    if new_w < 1 or new_h < 1 then
+      return
+    end
+
+    local position_x = window.at.x - half(new_w - size_x)
+    local position_y = window.at.y - half(new_h - size_y)
+
+    hl.dispatch(hl.dsp.window.resize({ x = new_w, y = new_h }))
     return hl.dispatch(hl.dsp.window.move({ x = position_x, y = position_y }))
   end
 end
 
-o.bind("SUPER + code:20", "Shrink window", resize(-100, -100, "-0.078125"))
-o.bind("SUPER + code:21", "Expand window", resize(100, 100, "+0.078125"))
-o.bind("SUPER + ALT + code:20", "Shrink window a little", resize(-25, -25, "-0.01953125"))
-o.bind("SUPER + ALT + code:21", "Expand window a little", resize(25, 25, "+0.01953125"))
-o.bind("SUPER + CTRL + code:20", "Shrink window a lot", resize(-300, -300, "-0.234375"))
-o.bind("SUPER + CTRL + code:21", "Expand window a lot", resize(300, 300, "+0.234375"))
+o.bind("SUPER + code:20", "Shrink window", resize(-100, proportional_height, "-0.078125"))
+o.bind("SUPER + code:21", "Expand window", resize(100, proportional_height, "+0.078125"))
+o.bind("SUPER + ALT + code:20", "Shrink window a little", resize(-25, proportional_height, "-0.01953125"))
+o.bind("SUPER + ALT + code:21", "Expand window a little", resize(25, proportional_height, "+0.01953125"))
+o.bind("SUPER + CTRL + code:20", "Shrink window a lot", resize(-300, proportional_height, "-0.234375"))
+o.bind("SUPER + CTRL + code:21", "Expand window a lot", resize(300, proportional_height, "+0.234375"))
 
 o.bind("SUPER + SHIFT + code:20", "Shrink window up", resize(0, -100))
 o.bind("SUPER + SHIFT + code:21", "Expand window down", resize(0, 100))
