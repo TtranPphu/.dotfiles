@@ -47,6 +47,12 @@ hl.unbind("SUPER + ALT + code:20")
 hl.unbind("SUPER + ALT + code:21")
 hl.unbind("SUPER + CTRL + code:20")
 hl.unbind("SUPER + CTRL + code:21")
+hl.unbind("SUPER + SHIFT + code:20")
+hl.unbind("SUPER + SHIFT + code:21")
+hl.unbind("SUPER + SHIFT + ALT + code:20")
+hl.unbind("SUPER + SHIFT + ALT + code:21")
+hl.unbind("SUPER + CTRL + SHIFT + code:20")
+hl.unbind("SUPER + CTRL + SHIFT + code:21")
 
 -- Menus
 o.bind("SUPER + SPACE", "Launch apps", "omarchy-menu toggle apps")
@@ -83,17 +89,55 @@ o.bind("SUPER + BACKSLASH", "Toggle workspace layout", "omarchy-hyprland-workspa
 o.bind("SUPER + SHIFT + SLASH", "Show key bindings", "omarchy-menu-keybindings")
 o.bind("SUPER + mouse:273", "Move window", hl.dsp.window.drag(), { mouse = true })
 
--- Resize the focused column. Omarchy's window.resize only moves one edge; in
--- the scrolling layout the `colresize` layout message changes the column width
--- and re-centres it, so both edges move about the centre. The values are
--- fractions of the monitor's width (100px / 1280px = 0.078125 on this display):
--- ±100 plain, ±25 ALT, ±300 CTRL.
-o.bind("SUPER + code:20", "Shrink window", hl.dsp.layout("colresize -0.078125"))
-o.bind("SUPER + code:21", "Expand window", hl.dsp.layout("colresize +0.078125"))
-o.bind("SUPER + ALT + code:20", "Shrink window a little", hl.dsp.layout("colresize -0.01953125"))
-o.bind("SUPER + ALT + code:21", "Expand window a little", hl.dsp.layout("colresize +0.01953125"))
-o.bind("SUPER + CTRL + code:20", "Shrink window a lot", hl.dsp.layout("colresize -0.234375"))
-o.bind("SUPER + CTRL + code:21", "Expand window a lot", hl.dsp.layout("colresize +0.234375"))
+-- Resize the focused window about its centre. In the scrolling layout the
+-- x-axis keys change the focused column's width and re-centre it, so a
+-- floating window (which has no column) gets its own path. Hyprland's own
+-- relative resize rounds the half-delta on every step, which walks the centre
+-- by a pixel on odd steps, so for a float the goal rect is set exactly: resize
+-- to the new size, then move to the half-delta-shifted position. On a float
+-- the plain/ALT/CTRL chords resize both dimensions at once; on a tiled column
+-- they stay width-only and the SHIFT chords stay Omarchy's relative y resize.
+-- Values keep the old magnitudes: ±100 plain, ±25 ALT, ±300 CTRL; colresize
+-- takes fractions of the monitor's width (100px / 1280px = 0.078125).
+local function half(step)
+  -- Truncated, so shrink then expand returns to the exact original rect.
+  return step < 0 and -math.floor(-step / 2) or math.floor(step / 2)
+end
+
+local function resize(step_x, step_y, column_fraction)
+  return function()
+    local window = hl.get_active_window()
+    if column_fraction and (not window or not window.floating) then
+      return hl.dispatch(hl.dsp.layout("colresize " .. column_fraction))
+    end
+    if not window or not window.floating then
+      return hl.dispatch(hl.dsp.window.resize({ x = step_x, y = step_y, relative = true }))
+    end
+
+    local size_x, size_y = window.size.x + step_x, window.size.y + step_y
+    if size_x < 1 or size_y < 1 then
+      return
+    end
+    local position_x, position_y = window.at.x - half(step_x), window.at.y - half(step_y)
+
+    hl.dispatch(hl.dsp.window.resize({ x = size_x, y = size_y }))
+    return hl.dispatch(hl.dsp.window.move({ x = position_x, y = position_y }))
+  end
+end
+
+o.bind("SUPER + code:20", "Shrink window", resize(-100, -100, "-0.078125"))
+o.bind("SUPER + code:21", "Expand window", resize(100, 100, "+0.078125"))
+o.bind("SUPER + ALT + code:20", "Shrink window a little", resize(-25, -25, "-0.01953125"))
+o.bind("SUPER + ALT + code:21", "Expand window a little", resize(25, 25, "+0.01953125"))
+o.bind("SUPER + CTRL + code:20", "Shrink window a lot", resize(-300, -300, "-0.234375"))
+o.bind("SUPER + CTRL + code:21", "Expand window a lot", resize(300, 300, "+0.234375"))
+
+o.bind("SUPER + SHIFT + code:20", "Shrink window up", resize(0, -100))
+o.bind("SUPER + SHIFT + code:21", "Expand window down", resize(0, 100))
+o.bind("SUPER + SHIFT + ALT + code:20", "Shrink window up a little", resize(0, -25))
+o.bind("SUPER + SHIFT + ALT + code:21", "Expand window down a little", resize(0, 25))
+o.bind("SUPER + CTRL + SHIFT + code:20", "Shrink window up a lot", resize(0, -300))
+o.bind("SUPER + CTRL + SHIFT + code:21", "Expand window down a lot", resize(0, 300))
 
 -- Displays
 -- Replaces Omarchy's laptop-display toggle; enables every display even when
