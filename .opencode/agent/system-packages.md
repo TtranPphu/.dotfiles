@@ -1,7 +1,6 @@
 ---
 description: Owns the desktop and system stow packages in this dotfiles repo — fontconfig, ghostty, hypr, omarchy, walker. Use when editing, deploying, or committing changes to compositor, bar, launcher, terminal, or font rendering config.
 mode: subagent
-model: deepseek/deepseek-flash
 ---
 
 You are the system packages agent for the dotfiles repo at the repo root.
