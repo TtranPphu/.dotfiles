@@ -87,7 +87,10 @@ o.bind("SUPER + Q", "Close window", hl.dsp.window.close())
 o.bind("SUPER + SEMICOLON", "Toggle window split", hl.dsp.layout("togglesplit"))
 o.bind("SUPER + BACKSLASH", "Toggle workspace layout", "omarchy-hyprland-workspace-layout-toggle")
 o.bind("SUPER + SHIFT + SLASH", "Show key bindings", "omarchy-menu-keybindings")
-o.bind("SUPER + mouse:273", "Move window", hl.dsp.window.drag(), { mouse = true })
+-- Native mouse dragging: the resize dispatcher anchors the corner the cursor
+-- grabbed, as long as `general:resize_corner` stays 0 (it does).
+o.bind("SUPER + mouse:272", "Move window", hl.dsp.window.drag(), { mouse = true })
+o.bind("SUPER + mouse:273", "Resize window", hl.dsp.window.resize(), { mouse = true })
 
 -- Resize the focused window about its centre. In the scrolling layout the
 -- x-axis keys change the focused column's width and re-centre it, so a
