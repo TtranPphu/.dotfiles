@@ -90,6 +90,11 @@ if command -v fzf &> /dev/null; then
   }
   zle -N fzf-commit-widget
 
+  # fzf-tab owns tab completion when installed; the fzf --zsh above bound its
+  # own completion. Source order is fzf-tab.zsh then fzf.zsh, so without this
+  # fzf-completion would win ^I and the fzf-tab configuration would never fire.
+  (( $+widgets[fzf-tab-complete] )) && bindkey '^I' fzf-tab-complete
+
   # Bind Ctrl+S to mirror Ctrl+R for history search
   bindkey '^S' fzf-history-widget
 

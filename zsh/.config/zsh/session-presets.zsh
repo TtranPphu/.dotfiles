@@ -16,12 +16,6 @@ resolve_app() {
         "SELECT 1 FROM session s JOIN project p ON s.project_id = p.id WHERE p.worktree = '${dir//\'/\'}' LIMIT 1;" 2>/dev/null | grep -q 1; then
         cmd="opencode --continue"
       fi ;;
-    claude)
-      local project_dir="${dir//[\/.]/-}"
-      local -a files=(~/.claude/projects/${project_dir}/*.jsonl(N))
-      if (( ${#files} )); then
-        cmd="claude --continue"
-      fi ;;
   esac
   printf '%s' "$cmd"
 }

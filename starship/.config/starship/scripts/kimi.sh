@@ -3,7 +3,10 @@
 # Starship custom module: Kimi account balance
 set -euo pipefail
 
-WIDTH="${COLUMNS:-$(stty size < /dev/tty 2>/dev/null | cut -d' ' -f2)}"
+WIDTH="${COLUMNS:-}"
+if [ -z "$WIDTH" ]; then
+  WIDTH=$( { stty size < /dev/tty 2>/dev/null; } 2>/dev/null | cut -d' ' -f2 || true)
+fi
 WIDTH="${WIDTH:-999}"
 
 # Exit 0 only when wide enough and funded, so the module is skipped cleanly

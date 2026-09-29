@@ -7,7 +7,7 @@ lock="$cache_dir/llm-quota.lock"
 ttl=300
 
 usage() {
-  echo "usage: llm-quota-util.sh --get kimi|deepseek|--total" >&2
+  echo "usage: llm-quota-util.sh --get kimi|deepseek | --total | --configured kimi|deepseek" >&2
   exit 1
 }
 
@@ -63,6 +63,7 @@ refresh() {
   # Fetch both balances and store, guarded by an flock so concurrent modules
   # trigger at most one network round-trip. flock (unlike a mkdir lock) is
   # released automatically if the process dies, so it can never go stale.
+  mkdir -p "$cache_dir"
   (
     exec 9>"$lock"
     flock -n 9 || exit 0
@@ -109,9 +110,18 @@ total() {
   awk -v a="${kimi:-0}" -v b="${deepseek:-0}" 'BEGIN { printf "%.2f", a + b }'
 }
 
+configured() {
+  case "${1:-}" in
+    kimi|deepseek) ;;
+    *) return 1 ;;
+  esac
+  jq -e --arg k "$1" '.[$k]' "$HOME/.local/share/opencode/auth.json" >/dev/null 2>&1
+}
+
 load_keys
 case "${1:-}" in
   --get) [ $# -eq 2 ] || usage; get_balance "$2" ;;
   --total) total ;;
+  --configured) [ $# -eq 2 ] || usage; configured "$2" ;;
   *) usage ;;
 esac

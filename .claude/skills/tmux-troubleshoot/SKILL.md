@@ -1,1 +1,0 @@
-../../../.shared/agent/skills/tmux-troubleshoot/SKILL.md

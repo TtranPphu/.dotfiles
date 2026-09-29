@@ -1,0 +1,1 @@
+- **picker** — The shell/multiplexer picker at startup: `zsh/.zshrc`. Lets you choose between zsh and tmux.

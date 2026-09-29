@@ -3,6 +3,7 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 UTIL="$SCRIPT_DIR/battery-util.sh"
+source "$SCRIPT_DIR/level-color.sh"
 
 usage() { exit 1; }
 
@@ -29,16 +30,18 @@ case "${1:-}" in
     fi
 
     if [[ $(stty size < /dev/tty 2>/dev/null | cut -d" " -f2 || echo 144) -lt 144 ]]; then
-      printf '%s' "$icon"
+      case "$raw_status" in
+        charging | pending-charge | fully-charged) text="󰂄" ;;
+        *) text="$icon" ;;
+      esac
     else
-      printf '%s %s' "$icon" "$bat"
+      text="$icon $bat"
     fi
+
+    printf '%s%s\033[0m' "$(level_color "$bat")" "$text"
     ;;
   --guard)
-    [[ $# -lt 2 ]] && usage
-    lvl="$2"
-    idx=$(( (bat - 1) / 10 ))
-    [ "$idx" -eq "$lvl" ]
+    exit 0
     ;;
   *) usage ;;
 esac

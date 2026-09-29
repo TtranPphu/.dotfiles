@@ -1,1 +1,0 @@
-- **picker** — The shell/multiplexer picker at startup: `zsh/.zshrc` (zsh) and `nu/.config/nushell/config.nu` (nushell). Lets you choose between zsh/nushell shells and tmux/zellij multiplexers.

@@ -3,7 +3,6 @@
 #
 # Usage:
 #   session-switch          - Print current session and usage
-#   session-switch niri     - Set SDDM autologin to niri
 #   session-switch omarchy  - Set SDDM autologin to omarchy (Hyprland)
 #   session-switch --menu   - Interactive fzf selection
 
@@ -55,14 +54,11 @@ EOF
 }
 
 case "${1:-}" in
-  niri)
-    set_session "niri"
-    ;;
   omarchy)
     set_session "omarchy"
     ;;
   --menu)
-    selected=$(printf "omarchy\nniri" | fzf --prompt="Select session > " --height=10)
+    selected=$(printf "omarchy\n" | fzf --prompt="Select session > " --height=10)
     if [ -n "$selected" ]; then
       set_session "$selected"
     else
@@ -72,6 +68,6 @@ case "${1:-}" in
   *)
     echo "Current session: $(get_current_session)"
     echo ""
-    echo "Usage: session-switch <niri|omarchy|--menu>"
+    echo "Usage: session-switch <omarchy|--menu>"
     ;;
 esac
