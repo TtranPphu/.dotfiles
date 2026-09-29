@@ -43,6 +43,12 @@ printf '#[fg=#000000,bg=blue,bold]▏#[fg=brightblack,bg=blue,bold] %02d▕#[
 # Keyboard battery
 "$script_dir/keyboard.sh"
 
-if tmux -S "$socket_path" show-environment -t "$current_session" SSH_CONNECTION 2>/dev/null | grep -q '^SSH_CONNECTION='; then
-  "$script_dir/hostname.sh"
-fi
+# Host pill: only when a client attached to this session is actually remote.
+# Check the client process environment rather than the session environment,
+# which can hold a stale SSH_CONNECTION long after the SSH client detached.
+for client_pid in $(tmux -S "$socket_path" list-clients -t "$current_session" -F '#{client_pid}' 2>/dev/null); do
+  if tr '\0' '\n' < "/proc/$client_pid/environ" 2>/dev/null | grep -q '^SSH_CONNECTION='; then
+    "$script_dir/hostname.sh"
+    break
+  fi
+done
