@@ -4,6 +4,7 @@ set -euo pipefail
 LOCKFILE="/tmp/keyboard-battery.lock"
 CACHEFILE="/tmp/keyboard-battery.json"
 CACHE_TTL=5
+REMOTE_CACHE_TTL=60
 DBUS_TIMEOUT=2
 
 DBUS_CONN="org.bluez"
@@ -14,6 +15,57 @@ BATTERY_USER_DESC="00002901-0000-1000-8000-00805f9b34fb"
 
 SCRIPT_DIR="$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")"
 WSL_PS1="$SCRIPT_DIR/keyboard-battery-wsl.ps1"
+
+# Remote battery reads: when this machine is reached over SSH from a tailnet
+# client (e.g. the WSL laptop), the Bluetooth devices belong to that client.
+# Run the local WSL PowerShell script there instead of reading local BlueZ.
+# The client is referenced by its Tailscale host name; the SSH user comes from
+# ~/.ssh/config (or the BT_REMOTE_SSH_USER override), so none is pinned here.
+RUNTIME_DIR="${XDG_RUNTIME_DIR:-/run/user/$(id -u)}"
+REMOTE_POWERSHELL="/mnt/c/Windows/System32/WindowsPowerShell/v1.0/powershell.exe"
+
+ssh_client_ip() {
+  local conn="${SSH_CONNECTION:-}"
+  if [[ -z "$conn" && -n "${TMUX:-}" ]] && command -v tmux &>/dev/null; then
+    conn=$(tmux show-environment SSH_CONNECTION 2>/dev/null | sed -n 's/^SSH_CONNECTION=//p')
+  fi
+  [[ -n "$conn" ]] || return 1
+  printf '%s' "${conn%% *}"
+}
+
+# Tailscale host name for a client address, or the address itself.
+ssh_client_host() {
+  local ip="$1" host
+  if command -v tailscale &>/dev/null && command -v jq &>/dev/null; then
+    host=$(tailscale status --json 2>/dev/null |
+      jq -r --arg ip "$ip" '.Peer[]? | select(.TailscaleIPs | index($ip)) | .DNSName // empty' 2>/dev/null |
+      head -n 1)
+    host="${host%.}"
+  fi
+  printf '%s' "${host:-$ip}"
+}
+
+# Known-hosts file built from the host keys Tailscale advertises for the peer,
+# so the connection is verified without trusting keys on first use.
+remote_known_hosts() {
+  local ip="$1" host="$2" file="$RUNTIME_DIR/remote-ssh-known_hosts"
+  command -v tailscale &>/dev/null || return 1
+  command -v jq &>/dev/null || return 1
+  tailscale status --json 2>/dev/null |
+    jq -r --arg ip "$ip" --arg host "$host" \
+      '.Peer[]? | select(.TailscaleIPs | index($ip)) | .sshHostKeys[]? | "\($host) \(.)"' \
+      > "$file" 2>/dev/null || true
+  [[ -s "$file" ]] || return 1
+  printf '%s' "$file"
+}
+
+cache_ttl() {
+  if ssh_client_ip &>/dev/null; then
+    printf '%s' "$REMOTE_CACHE_TTL"
+  else
+    printf '%s' "$CACHE_TTL"
+  fi
+}
 
 usage() { exit 1; }
 err_exit() { exit 1; }
@@ -163,6 +215,34 @@ read_batteries_wsl_sync() {
   return 0
 }
 
+read_batteries_remote() {
+  [[ -f "$WSL_PS1" ]] || return 1
+  command -v ssh &>/dev/null || return 1
+
+  local client_ip host dest kh b64 result left right
+  client_ip=$(ssh_client_ip) || return 1
+  host=$(ssh_client_host "$client_ip") || return 1
+  dest="${BT_REMOTE_SSH_USER:+$BT_REMOTE_SSH_USER@}$host"
+  [[ -n "$dest" ]] || return 1
+  b64=$(iconv -f UTF-8 -t UTF-16LE "$WSL_PS1" | base64 -w0) || return 1
+  [[ -n "$b64" ]] || return 1
+
+  local ssh_opts=(-o BatchMode=yes -o ConnectTimeout=5)
+  if kh=$(remote_known_hosts "$client_ip" "$host"); then
+    ssh_opts+=(-o StrictHostKeyChecking=yes -o UserKnownHostsFile="$kh")
+  fi
+
+  result=$(timeout 20 ssh "${ssh_opts[@]}" "$dest" \
+    "$REMOTE_POWERSHELL -NoProfile -NonInteractive -ExecutionPolicy Bypass -EncodedCommand $b64" \
+    2>/dev/null | tr -d '\r') || return 1
+
+  left="${result%% *}"
+  right="${result##* }"
+  [[ -z "$left" ]] && return 1
+  printf '%s %s' "$left" "${right:-0}"
+  return 0
+}
+
 read_batteries() {
   if grep -qi microsoft /proc/version 2>/dev/null; then
     if [[ -z "${TMUX-}" ]]; then
@@ -172,6 +252,7 @@ read_batteries() {
     fi
     return 1
   fi
+  read_batteries_remote && return 0
   if command -v gdbus &>/dev/null; then
     read_batteries_gdbus && return 0
   fi
@@ -187,7 +268,7 @@ fetch_async() {
 
     if [[ -f "$CACHEFILE" ]]; then
       read -r left right ts < "$CACHEFILE" 2>/dev/null || true
-      if [[ -n "$left" ]] && [[ $(( now - ts )) -lt "$CACHE_TTL" ]]; then
+      if [[ -n "$left" ]] && [[ $(( now - ts )) -lt "$(cache_ttl)" ]]; then
         exit 0
       fi
     fi
@@ -209,7 +290,7 @@ main() {
   if [[ -f "$CACHEFILE" ]]; then
     read -r left right ts < "$CACHEFILE" 2>/dev/null || true
     if [[ -n "$left" ]]; then
-      if [[ $(( now - ts )) -lt "$CACHE_TTL" ]]; then
+      if [[ $(( now - ts )) -lt "$(cache_ttl)" ]]; then
         printf '%s %s\n' "$left" "${right:-0}"
         return 0
       fi
