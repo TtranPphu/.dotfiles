@@ -14,3 +14,6 @@ export PYPERCLIP_USE_WL_CLIPBOARD=1
 # OpenCode: background (async) subagents — the parent keeps its turn and is
 # notified when the child finishes. Experimental; pass background: true explicitly.
 export OPENCODE_EXPERIMENTAL_BACKGROUND_SUBAGENTS=true
+
+# OpenCode: disable mouse input in the TUI — no mouse capture, clicks or scroll.
+export OPENCODE_DISABLE_MOUSE=true
