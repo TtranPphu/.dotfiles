@@ -33,7 +33,7 @@ right_format = """
 ${custom.llm_quota}\
 ${custom.deepseek}\
 ${custom.kimi}\
-$username\
+${custom.user}\
 ${custom.hostname}\
 ${custom.docker_host}\
 """
@@ -41,7 +41,7 @@ ${custom.docker_host}\
 
 [custom.os]
 command = '${STARSHIP_CONFIG%/*}/scripts/os.sh'
-when = '[ -z "$TMUX" ] && [ -z "$ZELLIJ" ]'
+when = '${STARSHIP_CONFIG%/*}/scripts/os.sh --guard'
 shell = ["bash"]
 style = "bold"
 format = "[$output]($style) "
@@ -132,7 +132,7 @@ disabled = true
 
 [custom.date]
 command = "date '+%y-%m-%d %a'"
-when = 'c=$(stty size < /dev/tty 2>/dev/null | cut -d" " -f2); [ "${c:-144}" -ge 144 ]'
+when = '! ${STARSHIP_CONFIG%/*}/scripts/layout.sh is narrow'
 shell = ["bash"]
 style = "dimmed bright-cyan"
 format = " [󰃭 $output]($style)"
@@ -142,7 +142,7 @@ command = """
 icons=("" "" "" "" "" "" "" "" "" "" "" "" "")
 echo "${icons[$(date +%-I)]} $(date +'%I:%M %p')"
 """
-when = "true"
+when = '! ${STARSHIP_CONFIG%/*}/scripts/layout.sh is narrow'
 shell = ["bash"]
 style = "dimmed bright-cyan"
 format = " [$output]($style)"
@@ -152,25 +152,25 @@ disabled = true
 
 [custom.battery]
 command = '${STARSHIP_CONFIG%/*}/scripts/battery.sh --display'
-when = '[ -z "$TMUX" ] && [ -z "$ZELLIJ" ] && ${STARSHIP_CONFIG%/*}/scripts/battery.sh --guard'
+when = '${STARSHIP_CONFIG%/*}/scripts/battery.sh --guard'
 shell = ["bash"]
 format = " $output"
 
 [custom.headphone]
 command = '${STARSHIP_CONFIG%/*}/scripts/headphone.sh --display'
-when = '[ -z "$TMUX" ] && [ -z "$ZELLIJ" ] && ${STARSHIP_CONFIG%/*}/scripts/headphone.sh --guard'
+when = '${STARSHIP_CONFIG%/*}/scripts/headphone.sh --guard'
 shell = ["bash"]
 format = " $output"
 
 [custom.mouse]
 command = '${STARSHIP_CONFIG%/*}/scripts/mouse.sh --display'
-when = '[ -z "$TMUX" ] && [ -z "$ZELLIJ" ] && ${STARSHIP_CONFIG%/*}/scripts/mouse.sh --guard'
+when = '${STARSHIP_CONFIG%/*}/scripts/mouse.sh --guard'
 shell = ["bash"]
 format = " $output"
 
 [custom.keyboard]
 command = '${STARSHIP_CONFIG%/*}/scripts/keyboard.sh --display'
-when = '[ -z "$TMUX" ] && [ -z "$ZELLIJ" ] && ${STARSHIP_CONFIG%/*}/scripts/keyboard.sh --guard'
+when = '${STARSHIP_CONFIG%/*}/scripts/keyboard.sh --guard'
 shell = ["bash"]
 format = " $output"
 
@@ -180,34 +180,37 @@ error_symbol = "[](bold red)"
 
 [custom.llm_quota]
 command = '${STARSHIP_CONFIG%/*}/scripts/llm-quota.sh'
-when = '[ -z "$TMUX" ] && [ -z "$ZELLIJ" ] && ${STARSHIP_CONFIG%/*}/scripts/llm-quota.sh --guard'
+when = '${STARSHIP_CONFIG%/*}/scripts/llm-quota.sh --guard'
 shell = ["bash"]
 style = "purple"
 format = " [$output]($style)"
 
 [custom.deepseek]
 command = '${STARSHIP_CONFIG%/*}/scripts/deepseek.sh'
-when = 'test -z "${TMUX-}${ZELLIJ-}" && ${STARSHIP_CONFIG%/*}/scripts/llm-quota-util.sh --configured deepseek && ${STARSHIP_CONFIG%/*}/scripts/deepseek.sh --guard'
+when = '${STARSHIP_CONFIG%/*}/scripts/deepseek.sh --guard'
 shell = ["bash"]
 style = "bright-blue"
 format = " [$output]($style)"
 
 [custom.kimi]
 command = '${STARSHIP_CONFIG%/*}/scripts/kimi.sh'
-when = 'test -z "${TMUX-}${ZELLIJ-}" && ${STARSHIP_CONFIG%/*}/scripts/kimi.sh --guard'
+when = '${STARSHIP_CONFIG%/*}/scripts/kimi.sh --guard'
 shell = ["bash"]
 style = "bright-cyan"
 format = " [$output]($style)"
 
 [username]
-show_always = true
-style_user = "cyan"
-style_root = "purple"
-format = " [ $user]($style)"
+disabled = true
+
+[custom.user]
+command = '${STARSHIP_CONFIG%/*}/scripts/user.sh --display'
+when = '${STARSHIP_CONFIG%/*}/scripts/user.sh --guard'
+shell = ["bash"]
+format = " $output"
 
 [custom.hostname]
 command = '${STARSHIP_CONFIG%/*}/scripts/hostname.sh'
-when = '[ -z "$TMUX" ] && ([ -n "$SSH_CONNECTION" ] || test -f /.dockerenv)'
+when = '${STARSHIP_CONFIG%/*}/scripts/hostname.sh --guard'
 shell = ["bash"]
 style = "dimmed green"
 format = " [$output]($style)"
