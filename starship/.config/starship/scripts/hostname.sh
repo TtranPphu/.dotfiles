@@ -3,6 +3,7 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 UTIL="$SCRIPT_DIR/hostname-util.sh"
+source "$SCRIPT_DIR/icons.sh"
 
 case "${1:-}" in
   --guard)
@@ -16,4 +17,4 @@ esac
 data=$("$UTIL") || exit 1
 [[ -z "$data" ]] && exit 1
 
-printf '󰢹 %s' "$data"
+printf '%s %s' "$(icon host)" "$data"

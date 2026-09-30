@@ -28,6 +28,9 @@ session_presets[s]="deep{s}eek|${HOME}/Projects/deepseek|opencode"
 # session_presets[n]="ti{n}y-repository|${HOME}/projects/tiny-repository|nvim;opencode;"
 # session_presets[k]="zmk-{k}eyboard-cornix|${HOME}/Projects/zmk-keyboard-cornix|nvim;opencode;"
 
+ICON_WIN="$("$HOME/.config/zsh/icons.sh" get win)"
+ICON_SESSION="$("$HOME/.config/zsh/icons.sh" get session)"
+
 create_from_preset() {
   local preset_key="$1"
   local def="${session_presets[$preset_key]}"
@@ -158,15 +161,15 @@ tmux_session_picker() {
 for w in "${wins[@]}"; do
   if [[ -z "$w" ]]; then
     if $first_win; then
-      wicons+="${ACTIVE}  ${shell_name} ${NC}"
+      wicons+="${ACTIVE} ${ICON_WIN} ${shell_name} ${NC}"
     else
-      wicons+="  ${shell_name} "
+      wicons+=" ${ICON_WIN} ${shell_name} "
     fi
   else
     if $first_win; then
-      wicons+="${ACTIVE}  ${w%%,*} ${NC}"
+      wicons+="${ACTIVE} ${ICON_WIN} ${w%%,*} ${NC}"
     else
-      wicons+="  ${w%%,*} "
+      wicons+=" ${ICON_WIN} ${w%%,*} "
     fi
   fi
   first_win=false
@@ -200,15 +203,15 @@ done
         local rest_line="${line#*|}"
         local wname="$("$wm_status/window-name.sh" "${rest_line%%|*}" "${rest_line#*|}" 2>/dev/null)"
         if [[ "$wid" == "$active" ]]; then
-          wicons+="${ACTIVE}  ${wname} ${NC}"
+          wicons+="${ACTIVE} ${ICON_WIN} ${wname} ${NC}"
         else
-          wicons+="  ${wname} "
+          wicons+=" ${ICON_WIN} ${wname} "
         fi
       done <<< "$raw"
     fi
     local pad=$(( max_len - ${#plain} + 1 ))
     local padding=$(printf '%*s' $pad '')
-    echo "   ${display}:${padding}${wicons}"
+    echo "  ${ICON_SESSION} ${display}:${padding}${wicons}"
     ((idx++))
   done
 

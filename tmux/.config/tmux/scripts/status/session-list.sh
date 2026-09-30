@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+script_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+source "$script_dir/icons.sh"
+
 socket_path="$1"
 current_session="$2"
 direction="$3"
@@ -43,9 +46,9 @@ if (( ${#selected[@]} > 0 )); then
     fi
     if tmux -S "$socket_path" list-windows -t "$session" \
       -F '#{window_bell_flag}' 2>/dev/null | grep -q 1; then
-      printf ' #[fg=green,bold]󰅸 %s ' "$session"
+      printf ' #[fg=green,bold]%s %s ' "$(icon bell)" "$session"
     else
-      printf ' #[bold] %s ' "$session"
+      printf ' #[bold]%s %s ' "$(icon session)" "$session"
     fi
   done
 fi
