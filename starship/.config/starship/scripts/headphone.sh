@@ -4,6 +4,7 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 UTIL="$SCRIPT_DIR/headphone-util.sh"
 source "$SCRIPT_DIR/level-color.sh"
+source "$SCRIPT_DIR/icons.sh"
 
 usage() {
   echo "Usage: $(basename "$0") --display | --guard"
@@ -16,15 +17,15 @@ data=$("$UTIL") || exit 1
 [[ -z "$data" || "$data" -eq 0 ]] && exit 1
 val="$data"
 
-WIDE_ICON='󱡏'
-NARROW_ICON='󰎇'
+WIDE_ICON="$(icon headphone)"
+NARROW_ICON="$(icon headphone.narrow)"
 
 case "${1:-}" in
   --display)
     if [[ "$("$SCRIPT_DIR/layout.sh" size)" != wide ]]; then
       text="$NARROW_ICON"
     else
-      text="$WIDE_ICON $val"
+      text="$WIDE_ICON $val$(icon plug)"
     fi
     printf '%s%s\033[0m' "$(level_color "$val")" "$text"
     ;;

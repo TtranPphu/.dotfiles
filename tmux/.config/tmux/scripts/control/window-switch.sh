@@ -6,6 +6,8 @@ preview_cmd='key=$(echo {} | cut -d" " -f1); '\
 'tmux capture-pane -p -t "$s:$i" -e -J 2>/dev/null'
 
 wm_status="$HOME/.config/tmux/scripts/status"
+script_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+source "$script_dir/icons.sh"
 
 result=$(
   while read -r s; do
@@ -14,7 +16,7 @@ result=$(
   | while IFS='|' read -r key tty cmd panes bell; do
       name=$("$wm_status/window-name.sh" "$tty" "$cmd")
       session=${key%%:*}
-      bell_icon=$([ "$bell" = "1" ] && echo "󰅸" || echo "")
+      bell_icon=$([ "$bell" = "1" ] && icon bell || icon win)
       panes_suffix=""
       if (( ${panes:-1} > 1 )); then
         extra=$((panes - 1))
@@ -22,7 +24,7 @@ result=$(
         (( extra > 1 )) && unit=panes
         panes_suffix=" + $extra $unit"
       fi
-      echo "$key  $session - $bell_icon $name$panes_suffix"
+      echo "$key $(icon session) $session - $bell_icon $name$panes_suffix"
     done \
   | fzf-tmux -p 60%,60% --reverse --print-query \
       --wrap-sign='' --ellipsis='··' --preview-wrap-sign='' \

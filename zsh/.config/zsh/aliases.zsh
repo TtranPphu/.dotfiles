@@ -27,13 +27,19 @@ if command -v eza &>/dev/null; then
   setopt completealiases
   compdef _eza ls la lt ld lf lh
 
-  alias ls='eza -ah --icons'
+  if [[ "${DOTFILES_ICONS:-nerd}" == plain ]]; then
+    _eza_icons=""
+  else
+    _eza_icons="--icons"
+  fi
 
-  alias la='_eza_confirm eza -lah --icons --group --color=always'
-  alias lt='_eza_confirm eza -lah --tree --icons --ignore-glob=".git|node_modules" --group --color=always'
-  alias ld='_eza_confirm eza -lah --only-dirs --icons --group --color=always'
-  alias lf='_eza_confirm eza -lah --only-files --icons --group --color=always'
-  alias lh='_eza_confirm eza -lad .* --icons --group --color=always'
+  alias ls="eza -ah ${_eza_icons}"
+
+  alias la="_eza_confirm eza -lah ${_eza_icons} --group --color=always"
+  alias lt="_eza_confirm eza -lah --tree ${_eza_icons} --ignore-glob=\".git|node_modules\" --group --color=always"
+  alias ld="_eza_confirm eza -lah --only-dirs ${_eza_icons} --group --color=always"
+  alias lf="_eza_confirm eza -lah --only-files ${_eza_icons} --group --color=always"
+  alias lh="_eza_confirm eza -lad .* ${_eza_icons} --group --color=always"
 
 fi
 

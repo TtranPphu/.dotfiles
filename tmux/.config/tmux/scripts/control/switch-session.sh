@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 
 wm_status="$HOME/.config/tmux/scripts/status"
+script_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+source "$script_dir/icons.sh"
 
 preview_cmd='s=$(echo {} | awk "{print \$2}" | cut -d: -f1); '\
 'i=$(tmux list-windows -t "$s" -F "#{window_active} #{window_index}" '\
@@ -15,7 +17,7 @@ result=$(
         2>/dev/null \
         | while IFS='|' read -r tty cmd panes bell; do
             name=$("$wm_status/window-name.sh" "$tty" "$cmd")
-            bell_icon=$([ "$bell" = "1" ] && echo "󰅸" || echo "")
+            bell_icon=$([ "$bell" = "1" ] && icon bell || icon win)
             panes_suffix=""
             if (( ${panes:-1} > 1 )); then
               extra=$((panes - 1))
@@ -26,7 +28,7 @@ result=$(
             echo "$bell_icon $name$panes_suffix"
           done \
         | paste -sd '|' | sed 's/|/ ┊ /g')
-      session_icon=$(tmux list-windows -t "$s" -F '#{window_bell_flag}' 2>/dev/null | grep -q 1 && echo "󰅸" || echo "")
+      session_icon=$(tmux list-windows -t "$s" -F '#{window_bell_flag}' 2>/dev/null | grep -q 1 && icon bell || icon session)
       echo "$session_icon $s: $windows"
     done \
   | fzf-tmux -p 60%,60% --reverse --print-query \

@@ -2,6 +2,7 @@
 set -euo pipefail
 
 script_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+source "$script_dir/icons.sh"
 
 # Only shown when the status line is too narrow for separate kimi-quota/deepseek-quota modules
 if [[ "${1:-}" == --guard ]]; then
@@ -11,4 +12,4 @@ fi
 
 total=$("$script_dir/llm-quota-util.sh" --total) || exit 1
 awk -v v="${total:-0}" 'BEGIN { exit !(v > 0) }' || exit 1
-printf '#[fg=#000000,bold,bg=magenta]▏%.2f▕#[default]' "$total"
+printf '#[fg=#000000,bold,bg=magenta]▏%s%.2f▕#[default]' "$(icon money)" "$total"

@@ -3,6 +3,7 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 UTIL="$SCRIPT_DIR/headphone-util.sh"
+source "$SCRIPT_DIR/icons.sh"
 
 data=$("$UTIL") || exit 1
 [[ -z "$data" || "$data" -eq 0 ]] && exit 1
@@ -16,11 +17,11 @@ colors=(
 idx=$(( (val - 1) / 10 ))
 [[ idx -ge 0 ]] && [[ idx -lt 10 ]] || idx=0
 
-WIDE_ICON='󱡏'
-NARROW_ICON='󰎇'
+WIDE_ICON="$(icon headphone)"
+NARROW_ICON="$(icon headphone.narrow)"
 
 if [[ $(tmux display -p '#{window_width}' 2>/dev/null || echo 144) -lt 144 ]]; then
   printf '#[fg=brightblack,bold,bg=%s]▏%s▕#[default]' "${colors[$idx]}" "$NARROW_ICON"
 else
-  printf '#[fg=brightblack,bold,bg=%s]▏%s %s▕#[default]' "${colors[$idx]}" "$WIDE_ICON" "$val"
+  printf '#[fg=brightblack,bold,bg=%s]▏%s %s%s▕#[default]' "${colors[$idx]}" "$WIDE_ICON" "$val" "$(icon plug)"
 fi

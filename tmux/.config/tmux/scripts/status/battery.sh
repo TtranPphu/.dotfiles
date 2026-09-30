@@ -3,6 +3,7 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 UTIL="$SCRIPT_DIR/battery-util.sh"
+source "$SCRIPT_DIR/icons.sh"
 
 data=$("$UTIL") || exit 1
 cap="${data%% *}"
@@ -11,27 +12,25 @@ raw_status="${data##* }"
 
 idx=$(( (cap - 1) / 10 ))
 
-charging_icons=("󰢜" "󰂆" "󰂇" "󰂈" "󰢝" "󰂉" "󰢞" "󰂊" "󰂋" "󰂅")
-discharging_icons=("󱃍" "󰁻" "󰁼" "󰁽" "󰁾" "󰁿" "󰂀" "󰂁" "󰂂" "󰁹")
 colors=(
   "#f7768e" "#f28186" "#ee8d7f" "#e99877" "#e5a370"
   "#e0af68" "#d0b769" "#bfbf69" "#afc66a" "#9ece6a"
 )
 
 if [[ "${raw_status:-}" == "fully-charged" ]]; then
-  icon="󰂄"
+  icon="$(icon battery.full)"
 elif [[ "${raw_status:-}" == "charging" || "${raw_status:-}" == "pending-charge" ]]; then
-  icon="${charging_icons[$idx]}"
+  icon="$(icon "battery.charging.$idx")"
 else
-  icon="${discharging_icons[$idx]}"
+  icon="$(icon "battery.discharging.$idx")"
 fi
 color="${colors[$idx]}"
 
 if [[ $(tmux display -p '#{window_width}' 2>/dev/null || echo 144) -lt 144 ]]; then
   case "$raw_status" in
-    charging | pending-charge | fully-charged) icon="󰂄" ;;
+    charging | pending-charge | fully-charged) icon="$(icon battery.full)" ;;
   esac
   printf '#[fg=brightblack,bold,bg=%s]▏%s▕#[default]' "$color" "$icon"
 else
-  printf '#[fg=brightblack,bold,bg=%s]▏%s %s▕#[default]' "$color" "$icon" "$cap"
+  printf '#[fg=brightblack,bold,bg=%s]▏%s %s%s▕#[default]' "$color" "$icon" "$cap" "$(icon plug)"
 fi
