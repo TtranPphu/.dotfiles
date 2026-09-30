@@ -9,8 +9,9 @@ fi
 
 # Only show when deepseek is configured in opencode
 script_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+source "$script_dir/icons.sh"
 "$script_dir/llm-quota-util.sh" --configured deepseek || exit 1
 
 balance=$("$script_dir/llm-quota-util.sh" --get deepseek) || exit 1
 awk -v v="${balance:-0}" 'BEGIN { exit !(v > 0) }' || exit 1
-printf '#[fg=#000000,bold,bg=blue]▏󰫣 %.2f▕#[default]' "$balance"
+printf '#[fg=#000000,bold,bg=blue]▏%s %s%.2f▕#[default]' "$(icon deepseek)" "$(icon money)" "$balance"

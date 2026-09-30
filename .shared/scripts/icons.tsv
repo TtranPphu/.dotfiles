@@ -1,0 +1,64 @@
+win		
+session		
+bell	󰅸	!
+prefix	󰨙	
+copy		
+tree	󱏒	
+zoom	󱉶	
+branch		
+money		$
+kimi		$
+deepseek	󰫣	
+plug		
+battery.full	󰂄	=
+battery.charging.0	󰢜	+
+battery.charging.1	󰂆	+
+battery.charging.2	󰂇	+
+battery.charging.3	󰂈	+
+battery.charging.4	󰢝	+
+battery.charging.5	󰂉	+
+battery.charging.6	󰢞	+
+battery.charging.7	󰂊	+
+battery.charging.8	󰂋	+
+battery.charging.9	󰂅	+
+battery.discharging.0	󱃍	-
+battery.discharging.1	󰁻	-
+battery.discharging.2	󰁼	-
+battery.discharging.3	󰁽	-
+battery.discharging.4	󰁾	-
+battery.discharging.5	󰁿	-
+battery.discharging.6	󰂀	-
+battery.discharging.7	󰂁	-
+battery.discharging.8	󰂂	-
+battery.discharging.9	󰁹	-
+os.alpine		
+os.amzn		
+os.android		
+os.arch	󰣇	
+os.centos		
+os.darwin	󰀵	
+os.debian	󰣚	
+os.fedora	󰣛	
+os.gentoo	󰣨	
+os.manjaro		
+os.mint	󰣭	
+os.nixos		
+os.opensuse		
+os.raspbian	󰐿	
+os.rhel	󱄛	
+os.rocky		
+os.ubuntu		
+os.linux	󰌽	
+keyboard		k
+mouse	󰍽	m
+headphone	󱡏	h
+headphone.narrow	󰎇	h
+speech.transcribe	󰔮	r
+speech.record	󰦚	r
+remote.github		
+remote.gitlab		
+remote.bitbucket		
+remote.git	󰊢	
+host	󰢹	
+reload	󱑠	
+pane		

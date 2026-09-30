@@ -111,6 +111,12 @@ unsetopt autocd nomatch
 export PATH="$HOME/.opencode/bin:$PATH"
 export PATH="$HOME/.local/share/mise/installs/node/latest/bin:$PATH"
 
+# Icons mode: Nerd Font glyphs vs plain ASCII (nerd|plain|auto).
+# See .shared/scripts/icons.sh for the SSH allowlist detection.
+if [ -z "${DOTFILES_ICONS:-}" ]; then
+  export DOTFILES_ICONS="$("$HOME/.config/zsh/icons.sh" mode 2>/dev/null || echo nerd)"
+fi
+
 # Source all zsh configuration files from ~/.config/zsh/
 for config in ~/.config/zsh/*.zsh; do
   [ -f "$config" ] && source "$config"
@@ -119,7 +125,7 @@ unset config
 
 # Initialize starship
 eval "$(starship init zsh)"
-export STARSHIP_CONFIG=~/.config/starship/starship.toml
+export STARSHIP_CONFIG="${STARSHIP_CONFIG:-$HOME/.config/starship/starship.toml}"
 ZLE_RPROMPT_INDENT=0
 
 # Picker — choose multiplexer (tmux) at startup

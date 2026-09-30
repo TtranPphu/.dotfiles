@@ -6,11 +6,14 @@ pane_id="$3"
 width="${4:-}"
 part="${5:-}"
 script_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+source "$script_dir/icons.sh"
 
 if [[ -z "$width" ]]; then
   width=$(tmux -S "$socket_path" list-clients -t "$current_session" -F '#{client_width}' 2>/dev/null | sort -n | head -1)
 fi
 export STATUS_WIDTH="$width"
+export DOTFILES_ICONS="$("$script_dir/icons.sh" mode "$socket_path")"
+export ICON_SOCKET="$socket_path"
 size="$("$script_dir/layout.sh" size "$width")"
 
 # Build reversed list of sessions before current (newest first on status right)
@@ -19,9 +22,9 @@ if [[ "$size" != narrow ]]; then
   while read -r s; do
     [[ "$s" == "$current_session" ]] && break
     if tmux -S "$socket_path" list-windows -t "$s" -F '#{window_bell_flag}' 2>/dev/null | grep -q 1; then
-      reversed='#[fg=green] 󰅸 '"$s"' #[default]'"${reversed:+#[fg=brightblack,bold]┋$reversed}"
+      reversed="#[fg=green] $(icon bell) $s #[default]${reversed:+#[fg=brightblack,bold]┋$reversed}"
     else
-      reversed='#[fg=brightblack]  '"$s"' #[default]'"${reversed:+#[fg=brightblack,bold]┋$reversed}"
+      reversed="#[fg=brightblack] $(icon session) $s #[default]${reversed:+#[fg=brightblack,bold]┋$reversed}"
     fi
   done < <(tmux -S "$socket_path" list-sessions -F '#{session_name}')
 fi
@@ -38,7 +41,7 @@ printf '#[fg=blue]'
 # Speech recording indicator
 "$script_dir/speech.sh"
 
-printf '#[fg=#000000,bg=blue,bold]▏#[fg=brightblack,bg=blue,bold] %02d▕#[default]' "${pane_id#%}"
+printf '#[fg=#000000,bg=blue,bold]▏#[fg=brightblack,bg=blue,bold]%s %02d▕#[default]' "$(icon pane)" "${pane_id#%}"
 
 if [[ "$size" != narrow ]]; then
   # Battery indicator
