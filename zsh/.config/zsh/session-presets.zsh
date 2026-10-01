@@ -28,8 +28,8 @@ session_presets[s]="deep{s}eek|${HOME}/Projects/deepseek|opencode"
 # session_presets[n]="ti{n}y-repository|${HOME}/projects/tiny-repository|nvim;opencode;"
 # session_presets[k]="zmk-{k}eyboard-cornix|${HOME}/Projects/zmk-keyboard-cornix|nvim;opencode;"
 
-ICON_WIN="$("$HOME/.config/zsh/icons.sh" get win)"
-ICON_SESSION="$("$HOME/.config/zsh/icons.sh" get session)"
+ICON_WIN="$("$HOME/.config/zsh/nerd-font.sh" get win)"
+ICON_SESSION="$("$HOME/.config/zsh/nerd-font.sh" get session)"
 
 create_from_preset() {
   local preset_key="$1"

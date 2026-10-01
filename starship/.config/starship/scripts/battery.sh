@@ -4,7 +4,7 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 UTIL="$SCRIPT_DIR/battery-util.sh"
 source "$SCRIPT_DIR/level-color.sh"
-source "$SCRIPT_DIR/icons.sh"
+source "$SCRIPT_DIR/nerd-font.sh"
 
 usage() { exit 1; }
 
@@ -20,20 +20,20 @@ case "${1:-}" in
     idx=$(( (bat - 1) / 10 ))
 
     if [ "$raw_status" = "fully-charged" ]; then
-      icon="$(icon battery.full)"
+      icon="$(nerd_font_icon battery.full)"
     elif [ "$raw_status" = "charging" ] || [ "$raw_status" = "pending-charge" ]; then
-      icon="$(icon "battery.charging.$idx")"
+      icon="$(nerd_font_icon "battery.charging.$idx")"
     else
-      icon="$(icon "battery.discharging.$idx")"
+      icon="$(nerd_font_icon "battery.discharging.$idx")"
     fi
 
     if [[ "$("$SCRIPT_DIR/layout.sh" size)" != wide ]]; then
       case "$raw_status" in
-        charging | pending-charge | fully-charged) text="$(icon battery.full)" ;;
+        charging | pending-charge | fully-charged) text="$(nerd_font_icon battery.full)" ;;
         *) text="$icon" ;;
       esac
     else
-      text="$icon $bat$(icon plug)"
+      text="$icon $bat$(nerd_font_icon plug)"
     fi
 
     printf '%s%s\033[0m' "$(level_color "$bat")" "$text"

@@ -27,7 +27,7 @@ if command -v eza &>/dev/null; then
   setopt completealiases
   compdef _eza ls la lt ld lf lh
 
-  if [[ "${DOTFILES_ICONS:-nerd}" == plain ]]; then
+  if [[ "${DOTFILES_NERD_FONT:-nerd}" == plain ]]; then
     _eza_icons=""
   else
     _eza_icons="--icons"

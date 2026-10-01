@@ -5,7 +5,7 @@ set -uo pipefail
 log_file="${XDG_STATE_HOME:-$HOME/.local/state}/tmux/move-to-session.log"
 wm_status="$HOME/.config/tmux/scripts/status"
 script_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
-source "$script_dir/icons.sh"
+source "$script_dir/nerd-font.sh"
 
 debug_log() {
     [[ "$DEBUG" -ne 1 ]] && return 0
@@ -50,7 +50,7 @@ result=$(
         2>/dev/null \
         | while IFS='|' read -r tty cmd panes bell; do
             name=$("$wm_status/window-name.sh" "$tty" "$cmd")
-            bell_icon=$([ "$bell" = "1" ] && icon bell || icon win)
+            bell_icon=$([ "$bell" = "1" ] && nerd_font_icon bell || nerd_font_icon win)
             panes_suffix=""
             if (( ${panes:-1} > 1 )); then
               extra=$((panes - 1))
@@ -62,9 +62,9 @@ result=$(
           done \
         | paste -sd '|' | sed 's/|/ ┊ /g')
       if tmux list-windows -t "$s" -F '#{window_bell_flag}' 2>/dev/null | grep -q 1; then
-        icon="$(icon bell)"
+        icon="$(nerd_font_icon bell)"
       else
-        icon="$(icon session)"
+        icon="$(nerd_font_icon session)"
       fi
       echo "$icon $s: $windows"
     done \
