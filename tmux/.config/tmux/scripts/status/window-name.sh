@@ -10,10 +10,9 @@ app_name_rules=(
 )
 
 matched_app=""
-matched_branch=""
 sudo_real_app=""
 
-while IFS=' ' read -r pid rest; do
+while IFS= read -r rest; do
   cmd="${rest%% *}"
   cmd="${cmd##*/}"
   if [[ "$cmd" == "sudo" ]]; then
@@ -27,28 +26,19 @@ while IFS=' ' read -r pid rest; do
     name="${rule#*:}"
 
     if [[ "$cmd" == "$pattern" || " $rest " == *" $pattern "* ]]; then
-      branch="$(git -C "/proc/$pid/cwd" branch --show-current 2>/dev/null)"
       if [[ "$default_app" == "$pattern" ]]; then
-        if [[ -n "$branch" ]]; then
-          printf '%s' "${name}  ${branch}"
-        else
-          printf '%s' "$name"
-        fi
+        printf '%s' "$name"
         exit 0
       fi
-      [[ -z "$matched_app" ]] && matched_app="$name" && matched_branch="$branch"
+      [[ -z "$matched_app" ]] && matched_app="$name"
       break
     fi
   done
-done < <(ps -t "$tty" -o pid= -o args= 2>/dev/null)
+done < <(ps -t "$tty" -o args= 2>/dev/null)
 
 # Use fallback if we found a background process match
 if [[ -n "$matched_app" ]]; then
-  if [[ -n "$matched_branch" ]]; then
-    printf '%s' "${matched_app}  ${matched_branch}"
-  else
-    printf '%s' "$matched_app"
-  fi
+  printf '%s' "$matched_app"
   exit 0
 fi
 
