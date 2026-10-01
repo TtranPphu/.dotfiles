@@ -3,7 +3,7 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 UTIL="$SCRIPT_DIR/mouse-util.sh"
-source "$SCRIPT_DIR/icons.sh"
+source "$SCRIPT_DIR/nerd-font.sh"
 
 data=$("$UTIL") || exit 1
 cap="${data%% *}"
@@ -17,7 +17,7 @@ colors=(
 idx=$(( (cap - 1) / 10 ))
 
 if [[ $(tmux display -p '#{window_width}' 2>/dev/null || echo 144) -lt 144 ]]; then
-  printf '#[fg=brightblack,bold,bg=%s]▏%s▕#[default]' "${colors[$idx]}" "$(icon mouse)"
+  printf '#[fg=brightblack,bold,bg=%s]▏%s▕#[default]' "${colors[$idx]}" "$(nerd_font_icon mouse)"
 else
-  printf '#[fg=brightblack,bold,bg=%s]▏%s %s%s▕#[default]' "${colors[$idx]}" "$(icon mouse)" "$cap" "$(icon plug)"
+  printf '#[fg=brightblack,bold,bg=%s]▏%s %s%s▕#[default]' "${colors[$idx]}" "$(nerd_font_icon mouse)" "$cap" "$(nerd_font_icon plug)"
 fi

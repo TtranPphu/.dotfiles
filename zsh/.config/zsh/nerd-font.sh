@@ -1,0 +1,1 @@
+../../../.shared/scripts/nerd-font.sh
