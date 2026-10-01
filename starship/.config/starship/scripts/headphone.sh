@@ -21,7 +21,7 @@ NARROW_ICON='󰎇'
 
 case "${1:-}" in
   --display)
-    if [[ $(stty size < /dev/tty 2>/dev/null | cut -d" " -f2 || echo 144) -lt 144 ]]; then
+    if [[ "$("$SCRIPT_DIR/layout.sh" size)" != wide ]]; then
       text="$NARROW_ICON"
     else
       text="$WIDE_ICON $val"
@@ -29,6 +29,8 @@ case "${1:-}" in
     printf '%s%s\033[0m' "$(level_color "$val")" "$text"
     ;;
   --guard)
+    [ -n "${TMUX:-}${ZELLIJ:-}" ] && exit 1
+    "$SCRIPT_DIR/layout.sh" is narrow && exit 1
     exit 0
     ;;
   *) usage ;;
