@@ -7,7 +7,7 @@ preview_cmd='key=$(echo {} | cut -d" " -f1); '\
 
 wm_status="$HOME/.config/tmux/scripts/status"
 script_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
-source "$script_dir/icons.sh"
+source "$script_dir/nerd-font.sh"
 
 result=$(
   while read -r s; do
@@ -16,9 +16,9 @@ result=$(
   | while IFS='|' read -r key tty cmd panes bell; do
       name=$("$wm_status/window-name.sh" "$tty" "$cmd")
       session=${key%%:*}
-      bell_icon=$([ "$bell" = "1" ] && icon bell || icon win)
+      bell_icon=$([ "$bell" = "1" ] && nerd_font_icon bell || nerd_font_icon win)
       panes_suffix=$([ "${panes:-1}" -gt 1 ] && echo ": $panes panes" || echo "")
-      echo "$key $(icon session) $session - $bell_icon $name$panes_suffix"
+      echo "$key $(nerd_font_icon session) $session - $bell_icon $name$panes_suffix"
     done \
   | fzf-tmux -p 60%,60% --reverse --print-query \
       --wrap-sign='' --ellipsis='··' --preview-wrap-sign='' \

@@ -3,7 +3,7 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 UTIL="$SCRIPT_DIR/os-util.sh"
-source "$SCRIPT_DIR/icons.sh"
+source "$SCRIPT_DIR/nerd-font.sh"
 
 case "${1:-}" in
   --guard)
@@ -14,23 +14,23 @@ case "${1:-}" in
 esac
 
 case "$("$UTIL")" in
-  alpine)       echo "$(icon os.alpine) ┊" ;;
-  amzn)         echo "$(icon os.amzn) ┊" ;;
-  android)      echo "$(icon os.android) ┊" ;;
-  arch|artix)   echo "$(icon os.arch) ┊" ;;
-  centos)       echo "$(icon os.centos) ┊" ;;
-  darwin)       echo "$(icon os.darwin) ┊" ;;
-  debian)       echo "$(icon os.debian) ┊" ;;
-  fedora)       echo "$(icon os.fedora) ┊" ;;
-  gentoo)       echo "$(icon os.gentoo) ┊" ;;
-  manjaro)      echo "$(icon os.manjaro) ┊" ;;
-  mint)         echo "$(icon os.mint) ┊" ;;
-  nixos)        echo "$(icon os.nixos) ┊" ;;
-  opensuse*)    echo "$(icon os.opensuse) ┊" ;;
-  raspbian)     echo "$(icon os.raspbian) ┊" ;;
-  rhel|redhat)  echo "$(icon os.rhel) ┊" ;;
-  rocky)        echo "$(icon os.rocky) ┊" ;;
-  sles)         echo "$(icon os.opensuse) ┊" ;;
-  ubuntu)       echo "$(icon os.ubuntu) ┊" ;;
-  *)            echo "$(icon os.linux) ┊" ;;
+  alpine)       echo "$(nerd_font_icon os.alpine) ┊" ;;
+  amzn)         echo "$(nerd_font_icon os.amzn) ┊" ;;
+  android)      echo "$(nerd_font_icon os.android) ┊" ;;
+  arch|artix)   echo "$(nerd_font_icon os.arch) ┊" ;;
+  centos)       echo "$(nerd_font_icon os.centos) ┊" ;;
+  darwin)       echo "$(nerd_font_icon os.darwin) ┊" ;;
+  debian)       echo "$(nerd_font_icon os.debian) ┊" ;;
+  fedora)       echo "$(nerd_font_icon os.fedora) ┊" ;;
+  gentoo)       echo "$(nerd_font_icon os.gentoo) ┊" ;;
+  manjaro)      echo "$(nerd_font_icon os.manjaro) ┊" ;;
+  mint)         echo "$(nerd_font_icon os.mint) ┊" ;;
+  nixos)        echo "$(nerd_font_icon os.nixos) ┊" ;;
+  opensuse*)    echo "$(nerd_font_icon os.opensuse) ┊" ;;
+  raspbian)     echo "$(nerd_font_icon os.raspbian) ┊" ;;
+  rhel|redhat)  echo "$(nerd_font_icon os.rhel) ┊" ;;
+  rocky)        echo "$(nerd_font_icon os.rocky) ┊" ;;
+  sles)         echo "$(nerd_font_icon os.opensuse) ┊" ;;
+  ubuntu)       echo "$(nerd_font_icon os.ubuntu) ┊" ;;
+  *)            echo "$(nerd_font_icon os.linux) ┊" ;;
 esac

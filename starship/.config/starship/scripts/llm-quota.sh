@@ -4,7 +4,7 @@
 set -euo pipefail
 
 SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
-source "$SCRIPT_DIR/icons.sh"
+source "$SCRIPT_DIR/nerd-font.sh"
 
 if [ "${1:-}" = "--guard" ]; then
   [ -n "${TMUX:-}${ZELLIJ:-}" ] && exit 1
@@ -16,4 +16,4 @@ fi
 
 TOTAL=$("$SCRIPT_DIR/llm-quota-util.sh" --total) || exit 1
 awk -v v="${TOTAL:-0}" 'BEGIN { exit !(v > 0) }' || exit 1
-printf "%s%s" "$(icon money)" "$TOTAL"
+printf "%s%s" "$(nerd_font_icon money)" "$TOTAL"
