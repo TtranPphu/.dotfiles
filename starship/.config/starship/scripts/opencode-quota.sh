@@ -5,9 +5,9 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 pct=''
-rolling_icon='󰃶'
-weekly_icon='󰨳'
-monthly_icon='󰸗'
+rolling_icon='󰃶 '
+weekly_icon='󰨳 '
+monthly_icon='󰸗 '
 
 if [ "${1:-}" = "--guard" ]; then
   [ -n "${TMUX:-}${ZELLIJ:-}" ] && exit 1
@@ -23,5 +23,5 @@ SIZE=$("$SCRIPT_DIR/layout.sh" size)
 if [ "$SIZE" = wide ]; then
   printf "%s%s%s %s%s%s %s%s%s" "$rolling_icon" "$ROLLING" "$pct" "$weekly_icon" "$WEEKLY" "$pct" "$monthly_icon" "$MONTHLY" "$pct"
 else
-  printf "%s %s%s" "$monthly_icon" "$MONTHLY" "$pct"
+  printf "%s%s%s" "$monthly_icon" "$MONTHLY" "$pct"
 fi
