@@ -6,6 +6,7 @@ default_app="${2:-}"
 app_name_rules=(
   'claude:claude'
   'opencode:opencode'
+  'opencode.exe:opencode'
   'dsh:deepseek'
 )
 
