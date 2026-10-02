@@ -3,7 +3,7 @@ set -euo pipefail
 
 script_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 
-# Only shown when the status line is too narrow for separate kimi/deepseek modules
+# Only shown when the status line is too narrow for separate kimi-quota/deepseek-quota modules
 if [[ "${1:-}" == --guard ]]; then
   "$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)/layout.sh" is medium || exit 1
   exit 0

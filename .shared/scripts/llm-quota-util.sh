@@ -35,7 +35,8 @@ fetch_one() {
     *) return 1 ;;
   esac
   [ -n "$token" ] || return 1
-  tmp=$(mktemp) || return 1
+  mkdir -p "$cache_dir"
+  tmp=$(mktemp "$cache_dir/llm-quota.XXXXXX") || return 1
   if curl -sfL --max-time 5 -X GET "$url" \
       -H 'Accept: application/json' \
       -H "Authorization: Bearer $token" 2>/dev/null |
@@ -52,7 +53,7 @@ write_cache() {
   # $1: kimi balance, $2: deepseek balance
   mkdir -p "$cache_dir"
   local tmp
-  tmp=$(mktemp) || return 1
+  tmp=$(mktemp "$cache_dir/llm-quota.XXXXXX") || return 1
   jq -n --arg k "$1" --arg d "$2" --argjson t "$(date +%s)" \
     '{kimi: $k, deepseek: $d, last_update: $t}' >"$tmp" &&
     mv "$tmp" "$cache" ||
@@ -76,30 +77,31 @@ refresh() {
   )
 }
 
+refresh_async() {
+  # Stale-while-revalidate: fetch in a detached background process so callers
+  # return immediately. stdout/stderr are discarded so the background job does
+  # not hold the caller's pipe open (starship would otherwise wait for EOF).
+  refresh >/dev/null 2>&1 & disown
+}
+
 get_balance() {
-  # $1: kimi|deepseek — prints cached balance; refreshes when stale
+  # $1: kimi|deepseek — prints cached balance immediately; when the cache is
+  # stale, revalidates in the background and serves the stale value meanwhile
   local key=$1 val ts now
   now=$(date +%s)
   if [[ -f $cache ]]; then
     ts=$(jq -r '.last_update // 0' "$cache" 2>/dev/null) || ts=0
     val=$(jq -r --arg k "$key" '.[$k] // empty' "$cache" 2>/dev/null) || val=""
-    if (( now - ts < ttl )); then
-      [[ -n "$val" ]] || return 1
-      printf '%s' "$val"
-      return 0
+    if (( now - ts >= ttl )); then
+      refresh_async
     fi
-    refresh
-    val=$(jq -r --arg k "$key" '.[$k] // empty' "$cache" 2>/dev/null) || val=""
     [[ -n "$val" ]] || return 1
     printf '%s' "$val"
     return 0
   fi
-  # No cache — block on refresh so the module appears on first invocation
-  refresh
-  val=$(jq -r --arg k "$key" '.[$k] // empty' "$cache" 2>/dev/null) || val=""
-  [[ -n "$val" ]] || return 1
-  printf '%s' "$val"
-  return 0
+  # No cache — refresh in the background; the module appears on a later prompt
+  refresh_async
+  return 1
 }
 
 total() {

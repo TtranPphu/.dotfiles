@@ -30,9 +30,8 @@ $character\
 """
 
 right_format = """
-${custom.llm_quota}\
-${custom.deepseek}\
-${custom.kimi}\
+${custom.opencode-quota}\
+${custom.deepseek-quota}\
 ${custom.user}\
 ${custom.hostname}\
 ${custom.docker_host}\
@@ -178,23 +177,30 @@ format = " $output"
 success_symbol = "[](bold green)"
 error_symbol = "[](bold red)"
 
-[custom.llm_quota]
+[custom.opencode-quota]
+command = '${STARSHIP_CONFIG%/*}/scripts/opencode-quota.sh'
+when = '${STARSHIP_CONFIG%/*}/scripts/opencode-quota.sh --guard'
+shell = ["bash"]
+style = "white"
+format = " [$output]($style)"
+
+[custom.llm-quota]
 command = '${STARSHIP_CONFIG%/*}/scripts/llm-quota.sh'
 when = '${STARSHIP_CONFIG%/*}/scripts/llm-quota.sh --guard'
 shell = ["bash"]
 style = "purple"
 format = " [$output]($style)"
 
-[custom.deepseek]
-command = '${STARSHIP_CONFIG%/*}/scripts/deepseek.sh'
-when = '${STARSHIP_CONFIG%/*}/scripts/deepseek.sh --guard'
+[custom.deepseek-quota]
+command = '${STARSHIP_CONFIG%/*}/scripts/deepseek-quota.sh'
+when = '${STARSHIP_CONFIG%/*}/scripts/deepseek-quota.sh --guard'
 shell = ["bash"]
 style = "bright-blue"
 format = " [$output]($style)"
 
-[custom.kimi]
-command = '${STARSHIP_CONFIG%/*}/scripts/kimi.sh'
-when = '${STARSHIP_CONFIG%/*}/scripts/kimi.sh --guard'
+[custom.kimi-quota]
+command = '${STARSHIP_CONFIG%/*}/scripts/kimi-quota.sh'
+when = '${STARSHIP_CONFIG%/*}/scripts/kimi-quota.sh --guard'
 shell = ["bash"]
 style = "bright-cyan"
 format = " [$output]($style)"

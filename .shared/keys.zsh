@@ -8,3 +8,4 @@
 
 export DEEPSEEK_API_KEY="sk-your-deepseek-api-key"
 export KIMI_API_KEY="sk-your-kimi-api-key"
+export OPENCODE_API_KEY="oc_sk-your-opencode-api-key"

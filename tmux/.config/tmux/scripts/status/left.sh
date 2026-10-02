@@ -16,12 +16,19 @@ if [[ "$size" != narrow ]]; then
   "$script_dir/os.sh"
 fi
 
+# OpenCode Go quota
+if [[ "$size" != narrow ]]; then
+  "$script_dir/opencode-quota.sh"
+fi
+
 # Balance modules: combined quota in medium, per-provider in wide
 case "$size" in
-  medium) "$script_dir/llm-quota.sh" ;;
+  medium)
+    # "$script_dir/llm-quota.sh"
+    ;;
   wide)
-    "$script_dir/deepseek.sh"
-    "$script_dir/kimi.sh"
+    "$script_dir/deepseek-quota.sh"
+    # "$script_dir/kimi-quota.sh"
     ;;
 esac
 
