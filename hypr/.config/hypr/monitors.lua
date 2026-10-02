@@ -2,19 +2,29 @@
 -- List current monitors and supported resolutions with: hyprctl monitors all
 
 local omarchy_gdk_scale = 2
-local omarchy_monitor_scale = 1.6
+local omarchy_monitor_scale = 2
 
 hl.env("GDK_SCALE", tostring(omarchy_gdk_scale))
 hl.monitor({ output = "", mode = "preferred", position = "auto", scale = omarchy_monitor_scale })
 
--- Laptop panel runs at 2; specific rules come after the catch-all.
--- Pinned to 0x0 so the ultrawide's -435 x-offset centres over it.
-hl.monitor({ output = "eDP-2", mode = "preferred", position = "0x0", scale = 2 })
+-- The panels share omarchy_monitor_scale (the scaling widget drives it), so the
+-- ultrawide's top-centre anchor is recomputed from the scale on every reload.
+-- Physical modes: eDP-2 2560x1600, HDMI-A-1 3440x1440.
+local function round(value)
+  return math.floor(value + 0.5)
+end
+
+local laptop_width = round(2560 / omarchy_monitor_scale)
+local ultrawide_width = round(3440 / omarchy_monitor_scale)
+local ultrawide_height = round(1440 / omarchy_monitor_scale)
+local ultrawide_x = round((laptop_width - ultrawide_width) / 2)
+local ultrawide_y = -ultrawide_height
+
+-- Pinned to 0x0 so the ultrawide sits top-centre above it, edges touching.
+hl.monitor({ output = "eDP-2", mode = "preferred", position = "0x0", scale = omarchy_monitor_scale })
 
 -- Specific rule for the LG ultrawide external, after the catch-all.
--- 3440/1.6 = 2150, 1440/1.6 = 900 logical; top-centre above the laptop panel
--- (2560/2 = 1280 wide): x = (1280 - 2150) / 2 = -435, y = 0 - 900 = -900.
-hl.monitor({ output = "HDMI-A-1", mode = "preferred", scale = 1.6, position = "-435x-900" })
+hl.monitor({ output = "HDMI-A-1", mode = "preferred", position = ultrawide_x .. "x" .. ultrawide_y, scale = omarchy_monitor_scale })
 
 -- Configure a specific monitor.
 -- hl.monitor({ output = "DP-2", mode = "2560x1440@144", position = "0x0", scale = 1 })
