@@ -1,0 +1,52 @@
+#!/bin/bash
+
+# Persist a display on/off choice as a Hyprland toggle flag, then apply it.
+# The Display widget's Displays toggles call this; a runtime `hyprctl eval`
+# would be lost on the next config reload (e.g. a scale change), while every
+# *.lua in the toggles dir is loaded on each reload. The internal panel is
+# delegated to Omarchy's own toggle so the clamshell watcher keeps respecting
+# it.
+
+set -euo pipefail
+
+TOGGLES_DIR="${XDG_STATE_HOME:-$HOME/.local/state}/omarchy/toggles/hypr"
+output="${1:-}"
+action="${2:-}"
+
+usage() {
+  echo "Usage: $(basename "$0") <output> <enable|disable>" >&2
+  exit 1
+}
+
+# The output name is written into generated Lua below, so only a plain
+# connector name may pass; anything else could execute on the next reload.
+[[ $output =~ ^[A-Za-z0-9._-]+$ ]] || usage
+
+case "$action" in
+  enable | disable) ;;
+  *) usage ;;
+esac
+
+internal=$(omarchy-hyprland-monitor-laptop)
+
+if [[ -n $internal && $output == "$internal" ]]; then
+  # Omarchy owns this flag; the clamshell watcher and the Displays widget
+  # share it.
+  if [[ $action == disable ]]; then
+    omarchy-hyprland-monitor-internal off
+  else
+    omarchy-hyprland-monitor-internal on
+  fi
+  exit 0
+fi
+
+flag="$TOGGLES_DIR/display-$output-disabled.lua"
+
+if [[ $action == disable ]]; then
+  mkdir -p "$TOGGLES_DIR"
+  printf 'hl.monitor({ output = "%s", disabled = true })\n' "$output" >"$flag"
+else
+  rm -f "$flag"
+fi
+
+hyprctl reload

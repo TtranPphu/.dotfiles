@@ -323,10 +323,9 @@ Panel {
     if (!name) return
     if (enabled && root.enabledDisplayCount <= 1) return
 
-    // This config runs the Lua parser, which rejects `hyprctl keyword`; drive
-    // the monitor rule through eval instead. Shared by keyboard and mouse.
-    actionProc.command = ["hyprctl", "eval",
-      'hl.monitor({ output = "' + name + '", disabled = ' + (enabled ? "true" : "false") + " })"]
+    // Persist the choice as a toggle flag (survives config reloads, e.g. a
+    // scale change) and apply it live; the helper handles both.
+    actionProc.command = [Quickshell.env("HOME") + "/.config/hypr/scripts/toggle-display", name, enabled ? "disable" : "enable"]
     if (!actionProc.running) actionProc.running = true
   }
 
