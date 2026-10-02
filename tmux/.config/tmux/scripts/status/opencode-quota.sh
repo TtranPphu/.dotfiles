@@ -1,8 +1,10 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-pct=$'\uf295'
-icon=$'\U000F11D8'
+pct=''
+rolling_icon=' '
+weekly_icon='󰨳 '
+monthly_icon='󰸗 '
 
 # Exit 0 only when medium or wide enough for the quota pill
 if [[ "${1:-}" == --guard ]]; then
@@ -19,8 +21,8 @@ read -r rolling weekly monthly <<<"$values"
 size=$("$script_dir/layout.sh" size)
 [[ "$size" == narrow ]] && exit 1
 if [[ "$size" == wide ]]; then
-  out="$icon $rolling$pct/$weekly$pct/$monthly$pct"
+  out="$rolling_icon$rolling$pct▕▏$weekly_icon$weekly$pct▕▏$monthly_icon$monthly$pct"
 else
-  out="$icon $monthly$pct"
+  out="$monthly_icon$monthly$pct"
 fi
 printf '#[fg=#000000,bold,bg=black]▏#[fg=white,bold,bg=black]%s#[fg=#000000,bold,bg=black]▕#[default]' "$out"

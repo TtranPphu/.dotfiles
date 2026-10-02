@@ -4,8 +4,10 @@
 set -euo pipefail
 
 SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
-pct=$'\uf295'
-icon=$'\U000F11D8'
+pct=''
+rolling_icon='󰃶'
+weekly_icon='󰨳'
+monthly_icon='󰸗'
 
 if [ "${1:-}" = "--guard" ]; then
   [ -n "${TMUX:-}${ZELLIJ:-}" ] && exit 1
@@ -19,7 +21,7 @@ read -r ROLLING WEEKLY MONTHLY <<<"$VALUES"
 SIZE=$("$SCRIPT_DIR/layout.sh" size)
 [ "$SIZE" = narrow ] && exit 1
 if [ "$SIZE" = wide ]; then
-  printf "%s %s%s/%s%s/%s%s" "$icon" "$ROLLING" "$pct" "$WEEKLY" "$pct" "$MONTHLY" "$pct"
+  printf "%s%s%s %s%s%s %s%s%s" "$rolling_icon" "$ROLLING" "$pct" "$weekly_icon" "$WEEKLY" "$pct" "$monthly_icon" "$MONTHLY" "$pct"
 else
-  printf "%s %s%s" "$icon" "$MONTHLY" "$pct"
+  printf "%s %s%s" "$monthly_icon" "$MONTHLY" "$pct"
 fi
