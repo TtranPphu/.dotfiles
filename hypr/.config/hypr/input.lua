@@ -10,6 +10,15 @@ hl.config({
   },
 })
 
+-- Focus windows on click instead of on hover, and don't let the cursor
+-- crossing between tiled and floating windows steal focus.
+hl.config({
+  input = {
+    follow_mouse = 0,
+    float_switch_override_focus = 0,
+  },
+})
+
 -- Keyboard layout and options.
 -- See https://wiki.hypr.land/Configuring/Basics/Variables/#input
 -- hl.config({
