@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "id": "ttranpphu.monitor",
-  "name": "My Display",
+  "name": "Pp's Display",
   "version": "1.0.0",
   "author": "Omarchy",
   "description": "Brightness slider and laptop display controls",
@@ -12,7 +12,7 @@
     "barWidget": "Panel.qml"
   },
   "barWidget": {
-    "displayName": "My Display",
+    "displayName": "Pp's Display",
     "description": "Brightness slider and laptop display controls",
     "category": "System",
     "allowMultiple": false
