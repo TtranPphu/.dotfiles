@@ -11,34 +11,34 @@ fi
 export STATUS_WIDTH="$width"
 size="$("$script_dir/layout.sh" size "$width")"
 
-if [[ "$size" != narrow ]]; then
-  # OS indicator
-  "$script_dir/os.sh"
-fi
-
-# OpenCode Go quota
-if [[ "$size" != narrow ]]; then
-  "$script_dir/opencode-quota.sh"
-fi
-
-# Balance modules: combined quota in medium, per-provider in wide
-case "$size" in
-  medium)
-    # "$script_dir/llm-quota.sh"
-    ;;
-  wide)
-    "$script_dir/deepseek-quota.sh"
-    # "$script_dir/kimi-quota.sh"
-    ;;
-esac
-
-if [[ "$size" != narrow ]]; then
+# Sessions next to this one in the switcher, shown when there is room.
+print_adjacent_sessions() {
+  local adjacent_sessions
   adjacent_sessions="$("$script_dir/session-list.sh" "$socket_path" "$current_session" next)"
 
   if [[ -n "$adjacent_sessions" ]]; then
     printf '#[fg=brightblack]%s#[fg=brightblack,bold]┋' "$adjacent_sessions"
   fi
-fi
+}
+
+# Layout by width — the only place the size decides what shows.
+case "$size" in
+  narrow)
+    ;;
+  medium)
+    "$script_dir/os.sh"
+    "$script_dir/opencode-quota.sh"
+    # "$script_dir/llm-quota.sh"
+    print_adjacent_sessions
+    ;;
+  wide)
+    "$script_dir/os.sh"
+    "$script_dir/opencode-quota.sh"
+    # "$script_dir/deepseek-quota.sh"
+    # "$script_dir/kimi-quota.sh"
+    print_adjacent_sessions
+    ;;
+esac
 
 printf '#[fg=#000000,bg=blue,bold]▏ %s▕#[bg=default]' "$current_session"
 printf '#[fg=brightblack,bold]┋'
