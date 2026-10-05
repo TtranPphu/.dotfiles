@@ -59,28 +59,28 @@ o.bind("SUPER + SPACE", "Launch apps", "omarchy-menu toggle apps")
 o.bind("SUPER + ALT + SPACE", "Omarchy menu", "omarchy-menu")
 
 -- Focus
-o.bind("SUPER + A", "Focus on left window", hl.dsp.focus({ direction = "l" }))
-o.bind("SUPER + D", "Focus on right window", hl.dsp.focus({ direction = "r" }))
 o.bind("SUPER + J", "Focus on left window", hl.dsp.focus({ direction = "l" }))
 o.bind("SUPER + K", "Focus on right window", hl.dsp.focus({ direction = "r" }))
+-- o.bind("SUPER + A", "Focus on left window", hl.dsp.focus({ direction = "l" }))
+-- o.bind("SUPER + D", "Focus on right window", hl.dsp.focus({ direction = "r" }))
 
 -- Workspaces
 o.bind("SUPER + H", "Workspace previous", hl.dsp.focus({ workspace = "-1" }))
 o.bind("SUPER + L", "Workspace next", hl.dsp.focus({ workspace = "+1" }))
-o.bind("SUPER + W", "Workspace next", hl.dsp.focus({ workspace = "+1" }))
-o.bind("SUPER + S", "Workspace previous", hl.dsp.focus({ workspace = "-1" }))
+-- o.bind("SUPER + W", "Workspace next", hl.dsp.focus({ workspace = "+1" }))
+-- o.bind("SUPER + S", "Workspace previous", hl.dsp.focus({ workspace = "-1" }))
 
 -- Swap windows
-o.bind("SUPER + SHIFT + A", "Swap window left", hl.dsp.window.swap({ direction = "l" }))
-o.bind("SUPER + SHIFT + D", "Swap window right", hl.dsp.window.swap({ direction = "r" }))
 o.bind("SUPER + SHIFT + J", "Swap window left", hl.dsp.window.swap({ direction = "l" }))
 o.bind("SUPER + SHIFT + K", "Swap window right", hl.dsp.window.swap({ direction = "r" }))
+-- o.bind("SUPER + SHIFT + A", "Swap window left", hl.dsp.window.swap({ direction = "l" }))
+-- o.bind("SUPER + SHIFT + D", "Swap window right", hl.dsp.window.swap({ direction = "r" }))
 
 -- Move window to workspace
 o.bind("SUPER + SHIFT + H", "Move window to previous workspace", hl.dsp.window.move({ workspace = "-1" }))
 o.bind("SUPER + SHIFT + L", "Move window to next workspace", hl.dsp.window.move({ workspace = "+1" }))
-o.bind("SUPER + SHIFT + W", "Move window to next workspace", hl.dsp.window.move({ workspace = "+1" }))
-o.bind("SUPER + SHIFT + S", "Move window to previous workspace", hl.dsp.window.move({ workspace = "-1" }))
+-- o.bind("SUPER + SHIFT + W", "Move window to next workspace", hl.dsp.window.move({ workspace = "+1" }))
+-- o.bind("SUPER + SHIFT + S", "Move window to previous workspace", hl.dsp.window.move({ workspace = "-1" }))
 
 -- Windows and layout
 o.bind("SUPER + Q", "Close window", hl.dsp.window.close())
