@@ -12,6 +12,10 @@
     "grep": { "/tmp*": "deny" },
     "external_directory": { "/tmp*": "deny" }
   },
+  "permissions": [
+    { "action": "websearch", "resource": "*", "effect": "allow" },
+    { "action": "webfetch", "resource": "*", "effect": "allow" }
+  ],
   "lsp": {
     "jsonls": {
       "command": ["vscode-json-language-server", "--stdio"],

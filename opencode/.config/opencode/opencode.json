@@ -8,6 +8,10 @@
       "~/.config/**": "allow"
     }
   },
+  "permissions": [
+    { "action": "websearch", "resource": "*", "effect": "allow" },
+    { "action": "webfetch", "resource": "*", "effect": "allow" }
+  ],
   "agent": {
     "chat": {
       "mode": "primary",
