@@ -4,10 +4,9 @@
 set -euo pipefail
 
 SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+source "$SCRIPT_DIR/level-color.sh"
 pct=''
-rolling_icon='󰃶 '
-weekly_icon='󰨳 '
-monthly_icon='󰸗 '
+icon='󱇘 '
 
 if [ "${1:-}" = "--guard" ]; then
   [ -n "${TMUX:-}${ZELLIJ:-}" ] && exit 1
@@ -17,11 +16,9 @@ if [ "${1:-}" = "--guard" ]; then
 fi
 
 VALUES=$("$SCRIPT_DIR/opencode-quota-util.sh" --values) || exit 1
-read -r ROLLING WEEKLY MONTHLY <<<"$VALUES"
+read -r ROLLING _ MONTHLY <<<"$VALUES"
 SIZE=$("$SCRIPT_DIR/layout.sh" size)
 [ "$SIZE" = narrow ] && exit 1
-if [ "$SIZE" = wide ]; then
-  printf "%s%s%s %s%s%s %s%s%s" "$rolling_icon" "$ROLLING" "$pct" "$weekly_icon" "$WEEKLY" "$pct" "$monthly_icon" "$MONTHLY" "$pct"
-else
-  printf "%s%s%s" "$monthly_icon" "$MONTHLY" "$pct"
-fi
+
+# Rolling quota drives the foreground: low usage green, near limit red.
+printf '%s%s%s%s\033[0m' "$(level_color "$ROLLING")" "$icon" "$MONTHLY" "$pct"

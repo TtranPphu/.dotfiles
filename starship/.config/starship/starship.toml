@@ -31,7 +31,6 @@ $character\
 
 right_format = """
 ${custom.opencode-quota}\
-${custom.deepseek-quota}\
 ${custom.user}\
 ${custom.hostname}\
 ${custom.docker_host}\
