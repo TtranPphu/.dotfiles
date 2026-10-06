@@ -4,3 +4,4 @@ package-lock.json
 bun.lock
 .ponytail-active
 .gitignore
+service.json
