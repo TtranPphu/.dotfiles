@@ -117,6 +117,9 @@ for config in ~/.config/zsh/*.zsh; do
 done
 unset config
 
+# Collapse duplicate PATH entries from repeated prepends across shells
+path=("${(u)path[@]}")
+
 # Initialize starship
 eval "$(starship init zsh)"
 export STARSHIP_CONFIG=~/.config/starship/starship.toml

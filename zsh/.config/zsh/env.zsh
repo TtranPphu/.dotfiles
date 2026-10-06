@@ -10,6 +10,3 @@ export HF_HUB_CACHE=/mnt/shared/huggingface
 
 # Wayland clipboard for Python apps (pyperclip)
 export PYPERCLIP_USE_WL_CLIPBOARD=1
-
-# OpenCode: disable mouse input in the TUI — no mouse capture, clicks or scroll.
-export OPENCODE_DISABLE_MOUSE=true
