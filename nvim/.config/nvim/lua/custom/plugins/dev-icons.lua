@@ -1,3 +1,7 @@
+-- Upstream init.lua only mocks nvim-web-devicons via mini.icons; this config
+-- uses the real plugin (e.g. for telescope), so install it here.
+vim.pack.add { 'https://github.com/nvim-tree/nvim-web-devicons' }
+
 local devicons = require('nvim-web-devicons')
 
 local icons = devicons.get_icons()

@@ -4,9 +4,11 @@ local plugins = {
   'https://github.com/nvim-tree/nvim-web-devicons',
 }
 
-vim.pack.add(plugins)
-
+-- Must be set before the plugin loads; vim.pack.add() loads it immediately
+-- when called after init.lua.
 vim.g.barbar_auto_setup = false
+
+vim.pack.add(plugins)
 
 require('barbar').setup {
   opts = {
