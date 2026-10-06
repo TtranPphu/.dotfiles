@@ -14,10 +14,10 @@ case "${1:-}" in
     else
       day=$(date +%-d)
       case "$day" in
-        1 | 21 | 31) suffix='ˢᵗ' ;;
-        2 | 22) suffix='ⁿᵈ' ;;
-        3 | 23) suffix='ʳᵈ' ;;
-        *) suffix='ᵗʰ' ;;
+        1 | 21 | 31) suffix='st' ;;
+        2 | 22) suffix='nd' ;;
+        3 | 23) suffix='rd' ;;
+        *) suffix='th' ;;
       esac
       printf '%s%s' "$day" "$suffix"
     fi
