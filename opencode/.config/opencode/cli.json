@@ -11,5 +11,15 @@
     "scrollbar": false,
     "thinking": "hide"
   },
-  "animations": false
+  "animations": false,
+  "mouse": false,
+  "tabs": {
+    "indicators": "numbers",
+    "layout": "horizontal",
+    "scope": "cwd",
+    "mode": "off"
+  },
+  "prompt": {
+    "paste": "compact"
+  }
 }
