@@ -10,6 +10,8 @@
   `.shared/workbench/` for experiments/scripts/logs, then delete it when
   done. If a tool or script keeps its own state in `/tmp`, leave it alone
   and ask the user.
+- In Neovim, never edit the root `init.lua`; changes go in
+  `lua/custom/plugins/*.lua`.
 
 ### Delegation
 
