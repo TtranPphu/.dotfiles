@@ -13,23 +13,23 @@ case "${1:-}" in
 esac
 
 case "$("$UTIL")" in
-  alpine)       echo " ┊" ;;
-  amzn)         echo " ┊" ;;
-  android)      echo " ┊" ;;
-  arch|artix)   echo "󰣇 ┊" ;;
-  centos)       echo " ┊" ;;
-  darwin)       echo "󰀵 ┊" ;;
-  debian)       echo "󰣚 ┊" ;;
-  fedora)       echo "󰣛 ┊" ;;
-  gentoo)       echo "󰣨 ┊" ;;
-  manjaro)      echo " ┊" ;;
-  mint)         echo "󰣭 ┊" ;;
-  nixos)        echo " ┊" ;;
-  opensuse*)    echo " ┊" ;;
-  raspbian)     echo "󰐿 ┊" ;;
-  rhel|redhat)  echo "󱄛 ┊" ;;
-  rocky)        echo " ┊" ;;
-  sles)         echo " ┊" ;;
-  ubuntu)       echo " ┊" ;;
-  *)            echo "󰌽 ┊" ;;
+  alpine)              echo " ┊" ;;
+  amzn)                echo " ┊" ;;
+  android)             echo " ┊" ;;
+  arch|artix|omarchy)  echo "󰣇 ┊" ;;
+  centos)              echo " ┊" ;;
+  darwin)              echo "󰀵 ┊" ;;
+  debian)              echo "󰣚 ┊" ;;
+  fedora)              echo "󰣛 ┊" ;;
+  gentoo)              echo "󰣨 ┊" ;;
+  manjaro)             echo " ┊" ;;
+  mint)                echo "󰣭 ┊" ;;
+  nixos)               echo " ┊" ;;
+  opensuse*)           echo " ┊" ;;
+  raspbian)            echo "󰐿 ┊" ;;
+  rhel|redhat)         echo "󱄛 ┊" ;;
+  rocky)               echo " ┊" ;;
+  sles)                echo " ┊" ;;
+  ubuntu)              echo " ┊" ;;
+  *)                   echo "󰌽 ┊" ;;
 esac
