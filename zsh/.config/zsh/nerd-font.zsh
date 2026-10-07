@@ -3,40 +3,7 @@
 
 _nerd_font_sh() { "$HOME/.config/zsh/nerd-font.sh" "$@"; }
 
-_nerd_font_starship_config() {
-  local src="$HOME/.config/starship/starship.toml"
-  local out="$HOME/.config/starship/starship-plain.toml"
-  local catalog="$(dirname "$(readlink -f "$HOME/.config/zsh/nerd-font.sh")")/nerd-font.tsv"
-  if [[ -f "$src" && (! -f "$out" || "$src" -nt "$out" || "$catalog" -nt "$out") ]]; then
-    perl -CSD -e '
-      my %map;
-      open my $fh, "<:encoding(UTF-8)", $ARGV[0] or die "$ARGV[0]: $!";
-      while (<$fh>) {
-        chomp;
-        my ($key, $nerd, $plain) = split /\t/;
-        next unless defined $nerd && length $nerd;
-        $map{$nerd} = (defined $plain ? $plain : "");
-      }
-      close $fh;
-      local $/;
-      my $data = <STDIN>;
-      for my $g (keys %map) {
-        $data =~ s/\Q$g\E/$map{$g}/ge;
-      }
-      $data =~ s/[\x{e000}-\x{f8ff}\x{f0000}-\x{ffffd}]//g;
-      print $data;
-    ' "$catalog" < "$src" > "$out"
-  fi
-}
-
 _nerd_font_apply() {
-  local mode="$(_nerd_font_sh mode)"
-  if [[ "$mode" == plain ]]; then
-    _nerd_font_starship_config
-    export STARSHIP_CONFIG="$HOME/.config/starship/starship-plain.toml"
-  else
-    export STARSHIP_CONFIG="$HOME/.config/starship/starship.toml"
-  fi
   if [[ -n "${TMUX:-}" ]]; then
     "$HOME/.config/tmux/scripts/support/nerd-font-tmux.sh" "${TMUX%%,*}" >/dev/null 2>&1
   fi
