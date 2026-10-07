@@ -2,6 +2,7 @@
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "$SCRIPT_DIR/nerd-font.sh"
 
 usage() { exit 1; }
 
@@ -10,7 +11,7 @@ usage() { exit 1; }
 case "${1:-}" in
   --display)
     if [[ "$("$SCRIPT_DIR/layout.sh" size)" == wide ]]; then
-      date '+%y-%m-%d %a'
+      text="$(date '+%y-%m-%d %a')"
     else
       day=$(date +%-d)
       case "$day" in
@@ -19,7 +20,13 @@ case "${1:-}" in
         3 | 23) suffix='rd' ;;
         *) suffix='th' ;;
       esac
-      printf '%s%s' "$day" "$suffix"
+      text="${day}${suffix}"
+    fi
+    icon="$(nerd_font_icon date)"
+    if [[ -n "$icon" ]]; then
+      printf '%s %s' "$icon" "$text"
+    else
+      printf '%s' "$text"
     fi
     ;;
   --guard)
