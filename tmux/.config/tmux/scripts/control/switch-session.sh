@@ -25,11 +25,11 @@ result=$(
               (( extra > 1 )) && unit=panes
               panes_suffix=" + $extra $unit"
             fi
-            echo "$bell_icon $name$panes_suffix"
+            echo "$bell_icon$name$panes_suffix"
           done \
         | paste -sd '|' | sed 's/|/ ┊ /g')
       session_icon=$(tmux list-windows -t "$s" -F '#{window_bell_flag}' 2>/dev/null | grep -q 1 && nerd_font_icon bell || nerd_font_icon session)
-      echo "$session_icon $s: $windows"
+      echo "$session_icon$s: $windows"
     done \
   | fzf-tmux -p 60%,60% --reverse --print-query \
       --wrap-sign='' --ellipsis='··' --preview-wrap-sign='' \

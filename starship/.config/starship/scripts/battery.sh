@@ -33,7 +33,7 @@ case "${1:-}" in
         *) text="$icon" ;;
       esac
     else
-      text="$icon $bat$(nerd_font_icon plug)"
+      text="$icon $bat%$(nerd_font_icon plug)"
     fi
 
     printf '%s%s\033[0m' "$(level_color "$bat")" "$text"

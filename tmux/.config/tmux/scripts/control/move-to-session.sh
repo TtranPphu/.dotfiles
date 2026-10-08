@@ -58,7 +58,7 @@ result=$(
               (( extra > 1 )) && unit=panes
               panes_suffix=" + $extra $unit"
             fi
-            echo "$bell_icon $name$panes_suffix"
+            echo "$bell_icon$name$panes_suffix"
           done \
         | paste -sd '|' | sed 's/|/ ┊ /g')
       if tmux list-windows -t "$s" -F '#{window_bell_flag}' 2>/dev/null | grep -q 1; then
@@ -66,7 +66,7 @@ result=$(
       else
         icon="$(nerd_font_icon session)"
       fi
-      echo "$icon $s: $windows"
+      echo "$icon$s: $windows"
     done \
   | fzf-tmux -p 60%,60% --reverse --print-query \
       --query="$default_session" \

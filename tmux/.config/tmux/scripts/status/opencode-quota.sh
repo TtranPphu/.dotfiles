@@ -1,9 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-pct=''
-icon='󱇘 '
-
 # Exit 0 only when medium or wide enough for the quota pill
 if [[ "${1:-}" == --guard ]]; then
   script_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
@@ -13,6 +10,7 @@ if [[ "${1:-}" == --guard ]]; then
 fi
 
 script_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+source "$script_dir/nerd-font.sh"
 values=$("$script_dir/opencode-quota-util.sh" --values) || exit 1
 read -r rolling _ monthly <<<"$values"
 
@@ -29,6 +27,10 @@ colors=(
 idx=$(( (rolling - 1) / 10 ))
 (( idx < 0 )) && idx=0
 (( idx > 9 )) && idx=9
+
+pct="$(nerd_font_icon percent)"
+icon="$(nerd_font_icon opencode)"
+[[ -n "$icon" ]] && icon="$icon "
 
 out="$icon$monthly$pct"
 printf '#[fg=#000000,bold,bg=%s]▏%s▕#[default]' "${colors[$idx]}" "$out"

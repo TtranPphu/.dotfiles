@@ -22,7 +22,7 @@ case "${1:-}" in
     if [[ "$("$SCRIPT_DIR/layout.sh" size)" != wide ]]; then
       text="$(nerd_font_icon mouse)"
     else
-      text="$(nerd_font_icon mouse) $cap$(nerd_font_icon plug)"
+      text="$(nerd_font_icon mouse) $cap%$(nerd_font_icon plug)"
     fi
     printf '%s%s\033[0m' "$(level_color "$cap")" "$text"
     ;;

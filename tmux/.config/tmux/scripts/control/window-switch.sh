@@ -24,7 +24,7 @@ result=$(
         (( extra > 1 )) && unit=panes
         panes_suffix=" + $extra $unit"
       fi
-      echo "$key $(nerd_font_icon session) $session - $bell_icon $name$panes_suffix"
+      echo "$key $(nerd_font_icon session)$session - $bell_icon$name$panes_suffix"
     done \
   | fzf-tmux -p 60%,60% --reverse --print-query \
       --wrap-sign='' --ellipsis='··' --preview-wrap-sign='' \

@@ -22,9 +22,9 @@ if [[ "$size" != narrow ]]; then
   while read -r s; do
     [[ "$s" == "$current_session" ]] && break
     if tmux -S "$socket_path" list-windows -t "$s" -F '#{window_bell_flag}' 2>/dev/null | grep -q 1; then
-      reversed="#[fg=green] $(nerd_font_icon bell) $s #[default]${reversed:+#[fg=brightblack,bold]┋$reversed}"
+      reversed="#[fg=green] $(nerd_font_icon bell)$s #[default]${reversed:+#[fg=brightblack,bold]┋$reversed}"
     else
-      reversed="#[fg=brightblack] $(nerd_font_icon session) $s #[default]${reversed:+#[fg=brightblack,bold]┋$reversed}"
+      reversed="#[fg=brightblack] $(nerd_font_icon session)$s #[default]${reversed:+#[fg=brightblack,bold]┋$reversed}"
     fi
   done < <(tmux -S "$socket_path" list-sessions -F '#{session_name}')
 fi
@@ -41,7 +41,14 @@ printf '#[fg=blue]'
 # Speech recording indicator
 "$script_dir/speech.sh"
 
-printf '#[fg=#000000,bg=blue,bold]▏#[fg=brightblack,bg=blue,bold]%s %02d▕#[default]' "$(nerd_font_icon pane)" "${pane_id#%}"
+pane_num="$(printf '%02d' "${pane_id#%}")"
+pane_icon="$(nerd_font_icon pane)"
+if [[ -n "$pane_icon" ]]; then
+  pane_label="$pane_icon $pane_num"
+else
+  pane_label="%$pane_num"
+fi
+printf '#[fg=#000000,bg=blue,bold]▏#[fg=brightblack,bg=blue,bold]%s▕#[default]' "$pane_label"
 
 if [[ "$size" != narrow ]]; then
   # Battery indicator

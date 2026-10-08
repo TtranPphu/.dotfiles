@@ -32,5 +32,5 @@ if [[ $(tmux display -p '#{window_width}' 2>/dev/null || echo 144) -lt 144 ]]; t
   esac
   printf '#[fg=brightblack,bold,bg=%s]▏%s▕#[default]' "$color" "$icon"
 else
-  printf '#[fg=brightblack,bold,bg=%s]▏%s %s%s▕#[default]' "$color" "$icon" "$cap" "$(nerd_font_icon plug)"
+  printf '#[fg=brightblack,bold,bg=%s]▏%s %s%%%s▕#[default]' "$color" "$icon" "$cap" "$(nerd_font_icon plug)"
 fi

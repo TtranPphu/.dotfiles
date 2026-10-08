@@ -23,5 +23,5 @@ NARROW_ICON="$(nerd_font_icon headphone.narrow)"
 if [[ $(tmux display -p '#{window_width}' 2>/dev/null || echo 144) -lt 144 ]]; then
   printf '#[fg=brightblack,bold,bg=%s]▏%s▕#[default]' "${colors[$idx]}" "$NARROW_ICON"
 else
-  printf '#[fg=brightblack,bold,bg=%s]▏%s %s%s▕#[default]' "${colors[$idx]}" "$WIDE_ICON" "$val" "$(nerd_font_icon plug)"
+  printf '#[fg=brightblack,bold,bg=%s]▏%s %s%%%s▕#[default]' "${colors[$idx]}" "$WIDE_ICON" "$val" "$(nerd_font_icon plug)"
 fi
