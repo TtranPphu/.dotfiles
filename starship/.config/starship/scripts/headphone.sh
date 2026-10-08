@@ -25,7 +25,7 @@ case "${1:-}" in
     if [[ "$("$SCRIPT_DIR/layout.sh" size)" != wide ]]; then
       text="$NARROW_ICON"
     else
-      text="$WIDE_ICON $val$(nerd_font_icon plug)"
+      text="$WIDE_ICON $val%$(nerd_font_icon plug)"
     fi
     printf '%s%s\033[0m' "$(level_color "$val")" "$text"
     ;;

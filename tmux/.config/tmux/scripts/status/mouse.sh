@@ -19,5 +19,5 @@ idx=$(( (cap - 1) / 10 ))
 if [[ $(tmux display -p '#{window_width}' 2>/dev/null || echo 144) -lt 144 ]]; then
   printf '#[fg=brightblack,bold,bg=%s]▏%s▕#[default]' "${colors[$idx]}" "$(nerd_font_icon mouse)"
 else
-  printf '#[fg=brightblack,bold,bg=%s]▏%s %s%s▕#[default]' "${colors[$idx]}" "$(nerd_font_icon mouse)" "$cap" "$(nerd_font_icon plug)"
+  printf '#[fg=brightblack,bold,bg=%s]▏%s %s%%%s▕#[default]' "${colors[$idx]}" "$(nerd_font_icon mouse)" "$cap" "$(nerd_font_icon plug)"
 fi

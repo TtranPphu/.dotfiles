@@ -46,9 +46,9 @@ if (( ${#selected[@]} > 0 )); then
     fi
     if tmux -S "$socket_path" list-windows -t "$session" \
       -F '#{window_bell_flag}' 2>/dev/null | grep -q 1; then
-      printf ' #[fg=green,bold]%s %s ' "$(nerd_font_icon bell)" "$session"
+      printf ' #[fg=green,bold]%s%s ' "$(nerd_font_icon bell)" "$session"
     else
-      printf ' #[bold]%s %s ' "$(nerd_font_icon session)" "$session"
+      printf ' #[bold]%s%s ' "$(nerd_font_icon session)" "$session"
     fi
   done
 fi

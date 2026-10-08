@@ -26,8 +26,8 @@ case "${1:-}" in
         "$(level_color "$right")" "$(nerd_font_icon keyboard)"
     else
       printf '%s%s%s\033[0m %s%s%s\033[0m' \
-        "$(level_color "$left")" "$(nerd_font_icon keyboard)" " $left$(nerd_font_icon plug)" \
-        "$(level_color "$right")" "$(nerd_font_icon keyboard)" " $right$(nerd_font_icon plug)"
+        "$(level_color "$left")" "$(nerd_font_icon keyboard)" " $left%$(nerd_font_icon plug)" \
+        "$(level_color "$right")" "$(nerd_font_icon keyboard)" " $right%$(nerd_font_icon plug)"
     fi
     ;;
   --guard)
