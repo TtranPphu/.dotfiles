@@ -58,4 +58,8 @@
       "subtask": true
     }
   },
+  "agents": {
+    "general": { "disabled": true },
+    "explore": { "disabled": true }
+  }
 }

@@ -1,22 +1,19 @@
 ---
 description: Answers questions using the web only — no filesystem or shell access. Use for research, explanations, and general questions.
 mode: primary
-permission:
-  read: deny
-  edit: deny
-  glob: deny
-  grep: deny
-  list: deny
-  bash: deny
-  task: deny
-  external_directory: deny
-  lsp: deny
-  skill: deny
-  todowrite: deny
-  doom_loop: deny
-  webfetch: allow
-  websearch: allow
-  question: allow
+permissions:
+  - action: "*"
+    resource: "*"
+    effect: deny
+  - action: question
+    resource: "*"
+    effect: allow
+  - action: websearch
+    resource: "*"
+    effect: allow
+  - action: webfetch
+    resource: "*"
+    effect: allow
 ---
 
 You are the chat agent: a research companion that answers the user's questions
