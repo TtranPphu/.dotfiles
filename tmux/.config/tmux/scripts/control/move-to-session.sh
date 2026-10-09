@@ -36,7 +36,7 @@ debug_log "default_session: $default_session"
 
 win_fmt_act='-F "#{window_active} #{window_index}"'
 
-preview_cmd='s=$(echo {} | awk "{print \$2}" | cut -d: -f1); '\
+preview_cmd='s=$(echo {} | sed "s/:.*//" | awk "{print \$NF}"); '\
 'i=$(tmux list-windows -t "$s" '"$win_fmt_act"' '\
 '  2>/dev/null | sort -k1 -rn | head -1 | cut -d" " -f2); '\
 'tmux capture-pane -p -t "$s:$i" -e -J 2>/dev/null'
@@ -83,7 +83,7 @@ debug_log "fzf-tmux exited with: $fzf_exit"
 line_count=$(echo "$result" | wc -l)
 debug_log "result line_count: $line_count"
 if [[ "$line_count" -gt 1 ]]; then
-    target_session=$(echo "$result" | tail -1 | awk '{print $2}' | cut -d: -f1)
+    target_session=$(echo "$result" | tail -1 | sed 's/:.*//' | awk '{print $NF}')
 else
     target_session="$result"
 fi
