@@ -15,7 +15,13 @@ result=$(
       name=$("$wm_status/window-name.sh" "$tty" "$cmd")
       session=${key%%:*}
       bell_icon=$([ "$bell" = "1" ] && echo "󰅸" || echo "")
-      panes_suffix=$([ "${panes:-1}" -gt 1 ] && echo ": $panes panes" || echo "")
+      panes_suffix=""
+      if (( ${panes:-1} > 1 )); then
+        extra=$((panes - 1))
+        unit=pane
+        (( extra > 1 )) && unit=panes
+        panes_suffix=" + $extra $unit"
+      fi
       echo "$key  $session - $bell_icon $name$panes_suffix"
     done \
   | fzf-tmux -p 60%,60% --reverse --print-query \
