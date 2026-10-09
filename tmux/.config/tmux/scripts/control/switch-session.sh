@@ -4,7 +4,7 @@ wm_status="$HOME/.config/tmux/scripts/status"
 script_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 source "$script_dir/nerd-font.sh"
 
-preview_cmd='s=$(echo {} | awk "{print \$2}" | cut -d: -f1); '\
+preview_cmd='s=$(echo {} | sed "s/:.*//" | awk "{print \$NF}"); '\
 'i=$(tmux list-windows -t "$s" -F "#{window_active} #{window_index}" '\
 '  2>/dev/null | sort -k1 -rn | head -1 | cut -d" " -f2); '\
 'tmux capture-pane -p -t "$s:$i" -e -J 2>/dev/null'
@@ -45,7 +45,7 @@ selection=$(echo "$result" | tail -1)
 if [[ "$query" == "$selection" ]]; then
   session="$query"
 else
-  session=$(echo "$selection" | awk '{print $2}' | cut -d: -f1)
+  session=$(echo "$selection" | sed 's/:.*//' | awk '{print $NF}')
 fi
 session="${session/#\~/$HOME}"
 [[ -z "$session" ]] && exit 0
