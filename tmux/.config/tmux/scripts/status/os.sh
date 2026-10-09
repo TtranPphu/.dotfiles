@@ -30,7 +30,7 @@ case "$("$UTIL")" in
   *)            icon="$(nerd_font_icon os.linux)" ;;
 esac
 
-if [[ "$(nerd_font_mode)" == plain ]]; then
+if [[ "$(nerd_font_mode)" == lame ]]; then
   printf '#[fg=colour233,bold,bg=white]▏%s▕#[default]' "$icon"
 else
   printf '#[fg=colour233,bold,bg=white] %s ▐#[default]' "$icon"

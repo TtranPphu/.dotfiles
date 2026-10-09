@@ -10,7 +10,7 @@ if [[ -z "$width" ]]; then
   width=$(tmux -S "$socket_path" list-clients -t "$current_session" -F '#{client_width}' 2>/dev/null | sort -n | head -1)
 fi
 export STATUS_WIDTH="$width"
-export DOTFILES_NERD_FONT="$("$script_dir/nerd-font.sh" mode "$socket_path")"
+export DOTFILES_NERD_FONT="$("$script_dir/nerd-font.sh" type "$socket_path")"
 export NERD_FONT_SOCKET="$socket_path"
 size="$("$script_dir/layout.sh" size "$width")"
 
