@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 # Single source of truth for terminal-width layout thresholds.
 #
-#   narrow : width <  64   (hide optional modules)
-#   medium : 64 <= width < 144
+#   narrow : width <  88   (hide optional modules)
+#   medium : 88 <= width < 144
 #   wide   : width >= 144
 #
 # CLI:
@@ -15,7 +15,7 @@
 # then $COLUMNS, then tput. Unknown width is treated as "medium".
 set -u
 
-LAYOUT_NARROW=64
+LAYOUT_NARROW=88
 LAYOUT_WIDE=144
 
 layout_width() {
