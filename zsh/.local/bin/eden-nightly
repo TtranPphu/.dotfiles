@@ -1,0 +1,3 @@
+#!/bin/bash
+# Launch the Eden nightly build (FUSE-free extracted AppImage)
+exec "$HOME/.local/opt/eden-nightly/AppDir/AppRun" "$@"
