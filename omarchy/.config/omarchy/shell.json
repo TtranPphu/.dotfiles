@@ -39,7 +39,9 @@
       ],
       "right": [
         {
-          "id": "omarchy.tray"
+          "id": "omarchy.tray",
+          "pinned": [],
+          "hidden": []
         },
         {
           "id": "ttranpphu.tailscale"
