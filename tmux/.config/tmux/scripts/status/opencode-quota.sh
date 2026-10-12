@@ -30,7 +30,6 @@ idx=$(( (rolling - 1) / 10 ))
 
 pct="$(nerd_font_icon percent)"
 icon="$(nerd_font_icon opencode)"
-[[ -n "$icon" ]] && icon="$icon "
 
 out="$icon$monthly$pct"
 printf '#[fg=#000000,bold,bg=%s]▏%s▕#[default]' "${colors[$idx]}" "$out"

@@ -161,15 +161,15 @@ tmux_session_picker() {
 for w in "${wins[@]}"; do
   if [[ -z "$w" ]]; then
     if $first_win; then
-      wicons+="${ACTIVE} ${ICON_WIN} ${shell_name} ${NC}"
+      wicons+="${ACTIVE} ${ICON_WIN}${shell_name} ${NC}"
     else
-      wicons+=" ${ICON_WIN} ${shell_name} "
+      wicons+=" ${ICON_WIN}${shell_name} "
     fi
   else
     if $first_win; then
-      wicons+="${ACTIVE} ${ICON_WIN} ${w%%,*} ${NC}"
+      wicons+="${ACTIVE} ${ICON_WIN}${w%%,*} ${NC}"
     else
-      wicons+=" ${ICON_WIN} ${w%%,*} "
+      wicons+=" ${ICON_WIN}${w%%,*} "
     fi
   fi
   first_win=false
@@ -203,15 +203,15 @@ done
         local rest_line="${line#*|}"
         local wname="$("$wm_status/window-name.sh" "${rest_line%%|*}" "${rest_line#*|}" 2>/dev/null)"
         if [[ "$wid" == "$active" ]]; then
-          wicons+="${ACTIVE} ${ICON_WIN} ${wname} ${NC}"
+          wicons+="${ACTIVE} ${ICON_WIN}${wname} ${NC}"
         else
-          wicons+=" ${ICON_WIN} ${wname} "
+          wicons+=" ${ICON_WIN}${wname} "
         fi
       done <<< "$raw"
     fi
     local pad=$(( max_len - ${#plain} + 1 ))
     local padding=$(printf '%*s' $pad '')
-    echo "  ${ICON_SESSION} ${display}:${padding}${wicons}"
+    echo "  ${ICON_SESSION}${display}:${padding}${wicons}"
     ((idx++))
   done
 

@@ -24,7 +24,7 @@ case "${1:-}" in
     fi
     icon="$(nerd_font_icon date)"
     if [[ -n "$icon" ]]; then
-      printf '%s %s' "$icon" "$text"
+      printf '%s%s' "$icon" "$text"
     else
       printf '%s' "$text"
     fi

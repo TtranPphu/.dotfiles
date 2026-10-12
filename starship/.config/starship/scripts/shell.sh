@@ -7,7 +7,7 @@ source "$SCRIPT_DIR/nerd-font.sh"
 shell="${STARSHIP_SHELL:-unknown-shell}"
 icon="$(nerd_font_icon "shell.$shell")"
 if [[ -n "$icon" ]]; then
-  printf '%s %s\n' "$icon" "$shell"
+  printf '%s%s\n' "$icon" "$shell"
 else
   printf '%s\n' "$shell"
 fi

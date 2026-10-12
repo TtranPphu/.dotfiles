@@ -33,5 +33,5 @@ esac
 if [[ "$(nerd_font_mode)" == lame ]]; then
   printf '#[fg=colour233,bold,bg=white]▏%s▕#[default]' "$icon"
 else
-  printf '#[fg=colour233,bold,bg=white] %s ▐#[default]' "$icon"
+  printf '#[fg=colour233,bold,bg=white] %s▐#[default]' "$icon"
 fi

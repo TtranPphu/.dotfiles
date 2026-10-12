@@ -38,7 +38,7 @@ _nerd_font_ask() {
 # family from glyph questions instead of asking the user for a version.
 nerd_font_setup() {
   local id; id="$(_nerd_font_sh client-id)"
-  local type="" up3=$'\U000F0737' up2=$'\uFC35'
+  local type="" up3=$'\U000F0737'
   local down=$'\U000F0734' left=$'\U000F072E'
 
   print
@@ -69,32 +69,21 @@ nerd_font_setup() {
 
   if [[ -z "$type" ]]; then
     print
-    print -r -- "Let's try another one. Does this look like an upwards arrow?"
-    print -r -- "     --->  $up2  <---"
-    print -r -- "reference: https://www.nerdfonts.com/cheat-sheet"
-    print -r -- "   (y)  Yes"
-    print -r -- "   (n)  No"
-    _nerd_font_ask yn || { print -r -- "nerd-font: skipped (nothing stored)"; return 0; }
-    [[ "$REPLY" == y ]] && type=nerd-v2
-  fi
-
-  if [[ -z "$type" ]]; then
-    print
     print -r -- "No Nerd Font glyphs detected — using lame icons."
     type=lame
   fi
 
   if [[ "$type" != lame ]]; then
     local g1 g2 g3 g4 g5
-    g1="$(DOTFILES_NERD_FONT=nerd _nerd_font_sh get branch)"
-    g2="$(DOTFILES_NERD_FONT=nerd _nerd_font_sh get battery.full)"
-    g3="$(DOTFILES_NERD_FONT=nerd _nerd_font_sh get os.arch)"
-    g4="$(DOTFILES_NERD_FONT=nerd _nerd_font_sh get pane)"
-    g5="$(DOTFILES_NERD_FONT=nerd _nerd_font_sh get session)"
+    g1="$(DOTFILES_NERD_FONT=nerd-mono _nerd_font_sh get branch)"
+    g2="$(DOTFILES_NERD_FONT=nerd-mono _nerd_font_sh get battery.full)"
+    g3="$(DOTFILES_NERD_FONT=nerd-mono _nerd_font_sh get os.arch)"
+    g4="$(DOTFILES_NERD_FONT=nerd-mono _nerd_font_sh get pane)"
+    g5="$(DOTFILES_NERD_FONT=nerd-mono _nerd_font_sh get session)"
 
     print
     print -r -- "Do the icons fit between the crosses without overlapping them?"
-    print -r -- "     |X $g1 X $g2 X $g3 X $g4 X $g5 X|"
+    print -r -- "     |X${g1}X${g2}X${g3}X${g4}X${g5}X|"
     print -r -- "   (y)  Yes. Icons are very close to the crosses but there is no overlap."
     print -r -- "   (n)  No. Some icons overlap neighbouring crosses."
     _nerd_font_ask yn || { print -r -- "nerd-font: skipped (nothing stored)"; return 0; }
@@ -110,7 +99,6 @@ nerd_font_setup() {
 nerd-font() {
   case "${1:-}" in
     nerd | lame) export DOTFILES_NERD_FONT="$1" ;;
-    plain) export DOTFILES_NERD_FONT=lame ;;
     auto)
       unset DOTFILES_NERD_FONT
       ;;

@@ -2,23 +2,24 @@
 # Terminal font capability + icon catalog.
 #
 #   nerd-font mode [socket]     -> "nerd" | "lame"
-#   nerd-font type [socket]     -> resolved type (lame|nerd|nerd-v2|nerd-mono)
+#   nerd-font type [socket]     -> resolved type (lame|nerd|nerd-mono)
 #   nerd-font client-id [socket]-> client identifier (SSH client IP, else "local")
 #   nerd-font state-file        -> path to the client state file
-#   nerd-font lookup <id>       -> stored type (lame|nerd|nerd-v2|nerd-mono,
-#                                  legacy nf2|nf3|plain) or empty
+#   nerd-font lookup <id>       -> stored type (lame|nerd|nerd-mono) or empty
 #   nerd-font store <id> <type> -> record a type for a client id
 #   nerd-font get KEY           -> glyph for KEY in the resolved type
 #
 # Sourced from bash it also defines nerd_font_mode / nerd_font_type /
 # nerd_font_client_id / nerd_font_lookup / nerd_font_store / icon KEY.
 #
-# Resolution: $DOTFILES_NERD_FONT=nerd|lame wins (legacy plain means lame);
+# Resolution: $DOTFILES_NERD_FONT=nerd|nerd-mono|lame wins;
 # otherwise the client's stored type in the state file; unknown clients resolve
 # to "lame" until the shell setup prompt records a choice. State lines are
-# id<TAB>type. The catalog is next to this file (nerd-font.csv):
-# key;lame;nerd;nerd-v2;nerd-mono, with a matching header line. Empty nerd-v2
-# or nerd-mono cells fall back to the nerd column (same codepoints).
+# id<TAB>type. The catalog is next to this file (nerd-font.csv) with a matching
+# header line and a dummy column after every value column: space-filled after
+# the icon columns, empty after lame (the parser reads the odd columns):
+# key;nerd;nerd-mono;lame. Empty nerd-mono cells fall back to the nerd column
+# (same codepoints).
 set -u
 
 _nerd_font_self="$(readlink -f "${BASH_SOURCE[0]}")"
@@ -73,20 +74,16 @@ nerd_font_store() {
 }
 
 # Normalize a stored/override value to the current type vocabulary.
-# Legacy: nf3 -> nerd, nf2 -> nerd-v2, plain -> lame.
 nerd_font_type_normalize() {
   case "$1" in
-    nf3) printf nerd ;;
-    nf2) printf nerd-v2 ;;
-    plain) printf lame ;;
-    lame | nerd | nerd-v2 | nerd-mono) printf '%s' "$1" ;;
+    lame | nerd | nerd-mono) printf '%s' "$1" ;;
   esac
 }
 
 nerd_font_type_to_mode() {
   case "$1" in
-    lame | plain) printf lame ;;
-    nf2 | nf3 | nerd | nerd-v2 | nerd-mono) printf nerd ;;
+    lame) printf lame ;;
+    nerd | nerd-mono) printf nerd ;;
     *) printf lame ;;
   esac
 }
@@ -108,12 +105,11 @@ nerd_font_icon() {
   local col
   [ -n "$_nerd_font_type_cache" ] || _nerd_font_type_cache="$(nerd_font_type "${NERD_FONT_SOCKET:-}")"
   case "$_nerd_font_type_cache" in
-    lame) col=2 ;;
-    nerd-v2) col=4 ;;
     nerd-mono) col=5 ;;
+    lame) col=7 ;;
     *) col=3 ;;
   esac
-  awk -F';' -v k="$1" -v c="$col" 'NR > 1 && $1 == k { v = $c; if (v == "" && c > 3) v = $3; print v }' "$_nerd_font_catalog"
+  awk -F';' -v k="$1" -v c="$col" 'NR > 1 && $1 == k { v = $c; if (v == "" && c == 5) v = $3; print v }' "$_nerd_font_catalog"
 }
 
 if [ "${BASH_SOURCE[0]}" = "$0" ]; then

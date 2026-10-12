@@ -6,5 +6,5 @@ source "$SCRIPT_DIR/nerd-font.sh"
 
 name="${CONTAINER_NAME:-${COMPOSE_SERVICE:-}}"
 icon="$(nerd_font_icon docker)"
-[[ -n "$icon" && -n "$name" ]] && name="$icon $name"
+[[ -n "$icon" && -n "$name" ]] && name="$icon$name"
 printf '%s\n' "$name"

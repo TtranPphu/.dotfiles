@@ -21,7 +21,6 @@ SIZE=$("$SCRIPT_DIR/layout.sh" size)
 
 pct="$(nerd_font_icon percent)"
 icon="$(nerd_font_icon opencode)"
-[[ -n "$icon" ]] && icon="$icon "
 
 # Rolling quota drives the foreground: low usage green, near limit red.
 printf '%s%s%s%s\033[0m' "$(level_color "$ROLLING")" "$icon" "$MONTHLY" "$pct"

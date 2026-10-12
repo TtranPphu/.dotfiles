@@ -18,4 +18,4 @@ fi
 "$SCRIPT_DIR/llm-quota-util.sh" --configured deepseek || exit 1
 BALANCE=$("$SCRIPT_DIR/llm-quota-util.sh" --get deepseek) || exit 1
 awk -v v="${BALANCE:-0}" 'BEGIN { exit !(v > 0) }' || exit 1
-printf "%s %s%.2f" "$(nerd_font_icon deepseek)" "$(nerd_font_icon money)" "$BALANCE"
+printf "%s%s%.2f" "$(nerd_font_icon deepseek)" "$(nerd_font_icon money)" "$BALANCE"
