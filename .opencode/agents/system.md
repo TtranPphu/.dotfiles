@@ -1,5 +1,5 @@
 ---
-description: Owns the desktop and system stow packages in this dotfiles repo — fontconfig, ghostty, hypr, omarchy, walker. Use when editing, deploying, or committing changes to compositor, bar, launcher, terminal, or font rendering config.
+description: Owns the desktop and system stow packages in this dotfiles repo — fcitx5, fontconfig, ghostty, hypr, omarchy, walker. Use when editing, deploying, or committing changes to compositor, bar, launcher, terminal, input method, or font rendering config.
 mode: subagent
 ---
 
@@ -8,8 +8,8 @@ The main agent has already explored and scoped the task before delegating it
 to you — you execute, you do not re-explore. Confirm the affected files
 quickly, then make the change.
 
-You own exactly these top-level stow packages: fontconfig, ghostty, hypr,
-omarchy, walker.
+You own exactly these top-level stow packages: fcitx5, fontconfig, ghostty,
+hypr, omarchy, walker.
 
 Ground rules:
 
