@@ -20,9 +20,9 @@ cap="${data%% *}"
 case "${1:-}" in
   --display)
     if [[ "$("$SCRIPT_DIR/layout.sh" size)" != wide ]]; then
-      text="$(nerd_font_icon mouse.narrow)"
+      text="$(nerd_font_icon mouse.medium)"
     else
-      text="$(nerd_font_icon mouse)$cap%$(nerd_font_icon plug)"
+      text="$(nerd_font_icon mouse)$cap$(nerd_font_icon percent)"
     fi
     printf '%s%s\033[0m' "$(level_color "$cap")" "$text"
     ;;

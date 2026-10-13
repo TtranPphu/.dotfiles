@@ -14,4 +14,4 @@ source "$script_dir/nerd-font.sh"
 
 balance=$("$script_dir/llm-quota-util.sh" --get deepseek) || exit 1
 awk -v v="${balance:-0}" 'BEGIN { exit !(v > 0) }' || exit 1
-printf '#[fg=#000000,bold,bg=blue]▏%s%s%.2f▕#[default]' "$(nerd_font_icon deepseek)" "$(nerd_font_icon money)" "$balance"
+printf '#[fg=#000000,bold,bg=blue]▏%s%s%.2f▕#[default]' "$(nerd_font_icon deepseek)" "$(nerd_font_icon usd)" "$balance"

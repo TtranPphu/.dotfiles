@@ -12,4 +12,4 @@ fi
 
 total=$("$script_dir/llm-quota-util.sh" --total) || exit 1
 awk -v v="${total:-0}" 'BEGIN { exit !(v > 0) }' || exit 1
-printf '#[fg=#000000,bold,bg=magenta]▏%s%.2f▕#[default]' "$(nerd_font_icon money)" "$total"
+printf '#[fg=#000000,bold,bg=magenta]▏%s%.2f▕#[default]' "$(nerd_font_icon usd)" "$total"

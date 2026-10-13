@@ -18,10 +18,10 @@ idx=$(( (val - 1) / 10 ))
 [[ idx -ge 0 ]] && [[ idx -lt 10 ]] || idx=0
 
 WIDE_ICON="$(nerd_font_icon headphone)"
-NARROW_ICON="$(nerd_font_icon headphone.narrow)"
+MEDIUM_ICON="$(nerd_font_icon headphone.medium)"
 
-if [[ $(tmux display -p '#{window_width}' 2>/dev/null || echo 144) -lt 144 ]]; then
-  printf '#[fg=brightblack,bold,bg=%s]▏%s▕#[default]' "${colors[$idx]}" "$NARROW_ICON"
+if "$SCRIPT_DIR/layout.sh" is wide; then
+  printf '#[fg=brightblack,bold,bg=%s]▏%s%s%s▕#[default]' "${colors[$idx]}" "$WIDE_ICON" "$val" "$(nerd_font_icon percent)"
 else
-  printf '#[fg=brightblack,bold,bg=%s]▏%s%s%%%s▕#[default]' "${colors[$idx]}" "$WIDE_ICON" "$val" "$(nerd_font_icon plug)"
+  printf '#[fg=brightblack,bold,bg=%s]▏%s▕#[default]' "${colors[$idx]}" "$MEDIUM_ICON"
 fi

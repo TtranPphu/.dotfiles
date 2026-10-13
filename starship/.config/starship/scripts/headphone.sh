@@ -18,14 +18,14 @@ data=$("$UTIL") || exit 1
 val="$data"
 
 WIDE_ICON="$(nerd_font_icon headphone)"
-NARROW_ICON="$(nerd_font_icon headphone.narrow)"
+MEDIUM_ICON="$(nerd_font_icon headphone.medium)"
 
 case "${1:-}" in
   --display)
     if [[ "$("$SCRIPT_DIR/layout.sh" size)" != wide ]]; then
-      text="$NARROW_ICON"
+      text="$MEDIUM_ICON"
     else
-      text="$WIDE_ICON$val%$(nerd_font_icon plug)"
+      text="$WIDE_ICON$val$(nerd_font_icon percent)"
     fi
     printf '%s%s\033[0m' "$(level_color "$val")" "$text"
     ;;

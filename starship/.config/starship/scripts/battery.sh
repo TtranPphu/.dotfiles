@@ -28,9 +28,14 @@ case "${1:-}" in
     fi
 
     if [[ "$("$SCRIPT_DIR/layout.sh" size)" != wide ]]; then
-      text="$(nerd_font_icon battery.narrow)"
+      case "$raw_status" in
+        fully-charged)             icon="$(nerd_font_icon battery.full.medium)" ;;
+        charging | pending-charge) icon="$(nerd_font_icon battery.charging.medium)" ;;
+        *)                         icon="$(nerd_font_icon "battery.discharging.$idx.medium")" ;;
+      esac
+      text="$icon"
     else
-      text="$icon$bat%$(nerd_font_icon plug)"
+      text="$icon$bat$(nerd_font_icon percent)"
     fi
 
     printf '%s%s\033[0m' "$(level_color "$bat")" "$text"

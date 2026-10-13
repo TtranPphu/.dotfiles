@@ -44,11 +44,7 @@ printf '#[fg=blue]'
 
 pane_num="$(printf '%02d' "${pane_id#%}")"
 pane_icon="$(nerd_font_icon pane)"
-if [[ -n "$pane_icon" ]]; then
-  pane_label="$pane_icon$pane_num"
-else
-  pane_label="%$pane_num"
-fi
+pane_label="$pane_icon$pane_num"
 printf '#[fg=brightblack,bg=blue,bold]▏%s▕#[default]' "$pane_label"
 
 if [[ "$size" != narrow ]]; then

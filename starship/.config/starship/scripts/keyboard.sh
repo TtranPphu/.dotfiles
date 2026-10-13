@@ -21,13 +21,13 @@ right="${data##* }"
 case "${1:-}" in
   --display)
     if [[ "$("$SCRIPT_DIR/layout.sh" size)" != wide ]]; then
-      printf '%s%s\033[0m%s%s\033[0m' \
-        "$(level_color "$left")" "$(nerd_font_icon keyboard.narrow)" \
-        "$(level_color "$right")" "$(nerd_font_icon keyboard.narrow)"
+      printf '%s%s\033[0m%s %s\033[0m' \
+        "$(level_color "$left")" "$(nerd_font_icon keyboard.medium)" \
+        "$(level_color "$right")" "$(nerd_font_icon keyboard.medium)"
     else
       printf '%s%s%s\033[0m %s%s%s\033[0m' \
-        "$(level_color "$left")" "$(nerd_font_icon keyboard)" "$left%$(nerd_font_icon plug)" \
-        "$(level_color "$right")" "$(nerd_font_icon keyboard)" "$right%$(nerd_font_icon plug)"
+        "$(level_color "$left")" "$(nerd_font_icon keyboard)" "$left$(nerd_font_icon percent)" \
+        "$(level_color "$right")" "$(nerd_font_icon keyboard)" "$right$(nerd_font_icon percent)"
     fi
     ;;
   --guard)

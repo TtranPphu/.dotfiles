@@ -12,12 +12,7 @@ ${custom.git_remote}\
 $git_branch\
 $git_status\
 $fill\
-${custom.c_icon}$c\
-${custom.java_icon}$java\
-${custom.kotlin_icon}$kotlin\
-${custom.lua_icon}$lua\
-${custom.python_icon}$python\
-${custom.rust_icon}$rust\
+${custom.lang}\
 $cmd_duration\
 ${custom.date}\
 ${custom.clock}\
@@ -90,73 +85,11 @@ symbol = "·"
 style = "dimmed bright-black"
 
 
-[custom.c_icon]
-command = '${STARSHIP_CONFIG%/*}/scripts/nerd-font.sh get lang.c'
+[custom.lang]
+command = '${STARSHIP_CONFIG%/*}/scripts/language.sh'
+when = '${STARSHIP_CONFIG%/*}/scripts/language.sh --guard'
 shell = ["bash"]
-style = "bold 149"
-format = "([ $output]($style))"
-detect_files = ["CMakeLists.txt"]
-detect_extensions = ["c", "h", "cpp", "hpp"]
-
-[c]
-format = "([ $version]($style))"
-detect_files = ["CMakeLists.txt"]
-detect_extensions = ["c", "h", "cpp", "hpp"]
-
-[custom.java_icon]
-command = '${STARSHIP_CONFIG%/*}/scripts/nerd-font.sh get lang.java'
-shell = ["bash"]
-style = "dimmed red"
-format = "([ $output]($style))"
-detect_files = ["pom.xml", "build.gradle.kts", "build.sbt", ".java-version", "deps.edn", "project.clj", "build.boot", ".sdkmanrc"]
-detect_extensions = ["java", "class", "gradle", "jar", "cljs", "cljc"]
-
-[java]
-format = "([ $version]($style))"
-
-[custom.kotlin_icon]
-command = '${STARSHIP_CONFIG%/*}/scripts/nerd-font.sh get lang.kotlin'
-shell = ["bash"]
-style = "bold blue"
-format = "([ $output]($style))"
-detect_extensions = ["kt", "kts"]
-
-[kotlin]
-format = "([ $version]($style))"
-
-[custom.lua_icon]
-command = '${STARSHIP_CONFIG%/*}/scripts/nerd-font.sh get lang.lua'
-shell = ["bash"]
-style = "bold blue"
-format = "([ $output]($style))"
-detect_files = [".lua-version"]
-detect_extensions = ["lua"]
-detect_folders = ["lua"]
-
-[lua]
-format = "([ $version]($style))"
-
-[custom.python_icon]
-command = '${STARSHIP_CONFIG%/*}/scripts/nerd-font.sh get lang.python'
-shell = ["bash"]
-style = "bold yellow"
-format = "([ $output]($style))"
-detect_files = [".python-version", "Pipfile", "__init__.py", "pyproject.toml", "requirements.txt", "setup.py", "tox.ini"]
-detect_extensions = ["py", "ipynb"]
-
-[python]
-format = "([ $version($virtualenv)]($style))"
-
-[custom.rust_icon]
-command = '${STARSHIP_CONFIG%/*}/scripts/nerd-font.sh get lang.rust'
-shell = ["bash"]
-style = "bold red"
-format = "([ $output]($style))"
-detect_files = ["Cargo.toml"]
-detect_extensions = ["rs"]
-
-[rust]
-format = "([ $version]($style))"
+format = " $output"
 
 
 [cmd_duration]
