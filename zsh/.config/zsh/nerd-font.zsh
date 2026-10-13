@@ -75,19 +75,28 @@ nerd_font_setup() {
 
   if [[ "$type" != lame ]]; then
     local g1 g2 g3 g4 g5
-    g1="$(DOTFILES_NERD_FONT=nerd-mono _nerd_font_sh get branch)"
-    g2="$(DOTFILES_NERD_FONT=nerd-mono _nerd_font_sh get battery.full)"
-    g3="$(DOTFILES_NERD_FONT=nerd-mono _nerd_font_sh get os.arch)"
-    g4="$(DOTFILES_NERD_FONT=nerd-mono _nerd_font_sh get pane)"
-    g5="$(DOTFILES_NERD_FONT=nerd-mono _nerd_font_sh get session)"
+    g1="$(DOTFILES_NERD_FONT=mono _nerd_font_sh get branch)"
+    g2="$(DOTFILES_NERD_FONT=mono _nerd_font_sh get battery.full)"
+    g3="$(DOTFILES_NERD_FONT=mono _nerd_font_sh get os.arch)"
+    g4="$(DOTFILES_NERD_FONT=mono _nerd_font_sh get pane)"
+    g5="$(DOTFILES_NERD_FONT=mono _nerd_font_sh get session)"
 
     print
     print -r -- "Do the icons fit between the crosses without overlapping them?"
-    print -r -- "     |X${g1}X${g2}X${g3}X${g4}X${g5}X|"
+    print -r -- "     |x${g1}x${g2}x${g3}x${g4}x${g5}x|"
     print -r -- "   (y)  Yes. Icons are very close to the crosses but there is no overlap."
     print -r -- "   (n)  No. Some icons overlap neighbouring crosses."
     _nerd_font_ask yn || { print -r -- "nerd-font: skipped (nothing stored)"; return 0; }
-    [[ "$REPLY" == y && "$type" == nerd ]] && type=nerd-mono
+    if [[ "$REPLY" == y ]]; then
+      print
+      print -r -- "Do the icons render the same size in both lines?"
+      print -r -- "     x${g1} x${g2} x${g3} x${g4} x${g5}"
+      print -r -- "     ${g1}x ${g2}x ${g3}x ${g4}x ${g5}x"
+      print -r -- "   (y)  Yes. The icons are the same size on both sides."
+      print -r -- "   (n)  No. The icons render bigger on one side."
+      _nerd_font_ask yn || { print -r -- "nerd-font: skipped (nothing stored)"; return 0; }
+      [[ "$REPLY" == y ]] && type=mono
+    fi
   fi
 
   _nerd_font_sh store "$id" "$type"

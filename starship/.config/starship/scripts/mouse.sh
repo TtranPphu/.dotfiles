@@ -20,7 +20,7 @@ cap="${data%% *}"
 case "${1:-}" in
   --display)
     if [[ "$("$SCRIPT_DIR/layout.sh" size)" != wide ]]; then
-      text="$(nerd_font_icon mouse)"
+      text="$(nerd_font_icon mouse.narrow)"
     else
       text="$(nerd_font_icon mouse)$cap%$(nerd_font_icon plug)"
     fi

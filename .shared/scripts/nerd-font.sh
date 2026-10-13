@@ -2,23 +2,23 @@
 # Terminal font capability + icon catalog.
 #
 #   nerd-font mode [socket]     -> "nerd" | "lame"
-#   nerd-font type [socket]     -> resolved type (lame|nerd|nerd-mono)
+#   nerd-font type [socket]     -> resolved type (lame|nerd|mono)
 #   nerd-font client-id [socket]-> client identifier (SSH client IP, else "local")
 #   nerd-font state-file        -> path to the client state file
-#   nerd-font lookup <id>       -> stored type (lame|nerd|nerd-mono) or empty
+#   nerd-font lookup <id>       -> stored type (lame|nerd|mono) or empty
 #   nerd-font store <id> <type> -> record a type for a client id
 #   nerd-font get KEY           -> glyph for KEY in the resolved type
 #
 # Sourced from bash it also defines nerd_font_mode / nerd_font_type /
 # nerd_font_client_id / nerd_font_lookup / nerd_font_store / icon KEY.
 #
-# Resolution: $DOTFILES_NERD_FONT=nerd|nerd-mono|lame wins;
+# Resolution: $DOTFILES_NERD_FONT=nerd|mono|lame wins;
 # otherwise the client's stored type in the state file; unknown clients resolve
 # to "lame" until the shell setup prompt records a choice. State lines are
 # id<TAB>type. The catalog is next to this file (nerd-font.csv) with a matching
 # header line and a dummy column after every value column: space-filled after
 # the icon columns, empty after lame (the parser reads the odd columns):
-# key;nerd;nerd-mono;lame. Empty nerd-mono cells fall back to the nerd column
+# key;nerd;mono;lame. Empty mono cells fall back to the nerd column
 # (same codepoints).
 set -u
 
@@ -76,14 +76,14 @@ nerd_font_store() {
 # Normalize a stored/override value to the current type vocabulary.
 nerd_font_type_normalize() {
   case "$1" in
-    lame | nerd | nerd-mono) printf '%s' "$1" ;;
+    lame | nerd | mono) printf '%s' "$1" ;;
   esac
 }
 
 nerd_font_type_to_mode() {
   case "$1" in
     lame) printf lame ;;
-    nerd | nerd-mono) printf nerd ;;
+    nerd | mono) printf nerd ;;
     *) printf lame ;;
   esac
 }
@@ -105,7 +105,7 @@ nerd_font_icon() {
   local col
   [ -n "$_nerd_font_type_cache" ] || _nerd_font_type_cache="$(nerd_font_type "${NERD_FONT_SOCKET:-}")"
   case "$_nerd_font_type_cache" in
-    nerd-mono) col=5 ;;
+    mono) col=5 ;;
     lame) col=7 ;;
     *) col=3 ;;
   esac

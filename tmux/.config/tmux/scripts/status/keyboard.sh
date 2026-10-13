@@ -22,8 +22,8 @@ idx_right=$(( (right - 1) / 10 ))
 [[ idx_right -ge 0 ]] && [[ idx_right -lt 10 ]] || idx_right=0
 
 if [[ $(tmux display -p '#{window_width}' 2>/dev/null || echo 144) -lt 144 ]]; then
-  printf '#[fg=brightblack,bold,bg=%s]▏%s▕#[default]' "${colors[$idx_left]}" "$(nerd_font_icon keyboard)"
-  printf '#[fg=brightblack,bold,bg=%s]▏%s▕#[default]' "${colors[$idx_right]}" "$(nerd_font_icon keyboard)"
+  printf '#[fg=brightblack,bold,bg=%s]▏%s▕#[default]' "${colors[$idx_left]}" "$(nerd_font_icon keyboard.narrow)"
+  printf '#[fg=brightblack,bold,bg=%s]▏%s▕#[default]' "${colors[$idx_right]}" "$(nerd_font_icon keyboard.narrow)"
 else
   printf '#[fg=brightblack,bold,bg=%s]▏%s%s%%%s▕#[default]' "${colors[$idx_left]}" "$(nerd_font_icon keyboard)" "$left" "$(nerd_font_icon plug)"
   printf '#[fg=brightblack,bold,bg=%s]▏%s%s%%%s▕#[default]' "${colors[$idx_right]}" "$(nerd_font_icon keyboard)" "$right" "$(nerd_font_icon plug)"

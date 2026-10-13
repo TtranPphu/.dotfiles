@@ -27,10 +27,7 @@ fi
 color="${colors[$idx]}"
 
 if [[ $(tmux display -p '#{window_width}' 2>/dev/null || echo 144) -lt 144 ]]; then
-  case "$raw_status" in
-    charging | pending-charge | fully-charged) icon="$(nerd_font_icon battery.full)" ;;
-  esac
-  printf '#[fg=brightblack,bold,bg=%s]▏%s▕#[default]' "$color" "$icon"
+  printf '#[fg=brightblack,bold,bg=%s]▏%s▕#[default]' "$color" "$(nerd_font_icon battery.narrow)"
 else
   printf '#[fg=brightblack,bold,bg=%s]▏%s%s%%%s▕#[default]' "$color" "$icon" "$cap" "$(nerd_font_icon plug)"
 fi

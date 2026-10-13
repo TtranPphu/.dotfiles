@@ -28,10 +28,7 @@ case "${1:-}" in
     fi
 
     if [[ "$("$SCRIPT_DIR/layout.sh" size)" != wide ]]; then
-      case "$raw_status" in
-        charging | pending-charge | fully-charged) text="$(nerd_font_icon battery.full)" ;;
-        *) text="$icon" ;;
-      esac
+      text="$(nerd_font_icon battery.narrow)"
     else
       text="$icon$bat%$(nerd_font_icon plug)"
     fi
