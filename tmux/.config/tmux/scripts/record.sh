@@ -97,6 +97,44 @@ wsl_resolve_wav() {
     printf '%s' "$wav"
 }
 
+deliver_text() {
+    local text="$1"
+    local stripped="${text//[[:space:]]/}"
+
+    if [ -z "$stripped" ]; then
+        echo "$(date): transcribe.py returned blank text" >> "$DEBUGLOG"
+        tmux display-message "Speech-to-Text heard nothing — nothing sent"
+        exit 1
+    fi
+
+    if [[ "${stripped,,}" == "[blank_audio]" ]]; then
+        echo "$(date): transcribe.py returned silence marker" >> "$DEBUGLOG"
+        tmux display-message "Speech-to-Text heard nothing — nothing sent"
+        exit 1
+    fi
+
+    local -a words submit=()
+    read -ra words <<< "$text"
+    local last_word="${words[-1]%%[.,!?]*}"
+    if [[ "${last_word,,}" == "over" ]]; then
+        unset 'words[-1]'
+        text="${words[*]}"
+        submit=(Enter)
+    fi
+
+    echo "$text" > "$TEXTFILE"
+    echo "$(date): transcribed OK: ${text:0:50}..." >> "$DEBUGLOG"
+
+    local pane_id
+    pane_id=$(cat "$PANEFILE" 2>/dev/null)
+    if [ -n "$pane_id" ]; then
+        tmux send-keys -t "$pane_id" "$SPEECH_PREFIX$text" "${submit[@]}"
+    else
+        tmux display-message "Not a coding agent pane — text saved to $TEXTFILE"
+    fi
+    rm -f "$PANEFILE"
+}
+
 stop() {
     if is_wsl; then
         powershell.exe -NoProfile -NoLogo -ExecutionPolicy Bypass -File "$(wslpath -w "$WSL_SCRIPT")" -Action stop &>/dev/null
@@ -127,21 +165,7 @@ stop() {
                 exit "$RET"
             fi
 
-            if [ -z "${TEXT//[[:space:]]/}" ]; then
-                echo "$(date): transcribe.py returned blank text" >> "$DEBUGLOG"
-                tmux display-message "Speech-to-Text heard nothing — nothing sent"
-                exit 1
-            fi
-
-            echo "$TEXT" > "$TEXTFILE"
-            echo "$(date): transcribed OK: ${TEXT:0:50}..." >> "$DEBUGLOG"
-            PANE_ID=$(cat "$PANEFILE" 2>/dev/null)
-            if [ -n "$PANE_ID" ]; then
-                tmux send-keys -t "$PANE_ID" "$SPEECH_PREFIX$TEXT" Enter
-            else
-                tmux display-message "Not a coding agent pane — text saved to $TEXTFILE"
-            fi
-            rm -f "$PANEFILE"
+            deliver_text "$TEXT"
         ) & disown
         return
     fi
@@ -202,20 +226,7 @@ stop() {
         exit "$RET"
     fi
 
-    if [ -z "${TEXT//[[:space:]]/}" ]; then
-        echo "$(date): transcribe.py returned blank text" >> "$DEBUGLOG"
-        tmux display-message "Speech-to-Text heard nothing — nothing sent"
-        exit 1
-    fi
-
-    echo "$TEXT" > "$TEXTFILE"
-    PANE_ID=$(cat "$PANEFILE" 2>/dev/null)
-    if [ -n "$PANE_ID" ]; then
-        tmux send-keys -t "$PANE_ID" "$SPEECH_PREFIX$TEXT" Enter
-    else
-        tmux display-message "Not a coding agent pane — text saved to $TEXTFILE"
-    fi
-    rm -f "$PANEFILE"
+    deliver_text "$TEXT"
 }
 
 case "${1:-}" in
