@@ -9,7 +9,8 @@
   "session": {
     "sidebar": "hide",
     "scrollbar": false,
-    "thinking": "hide"
+    "thinking": "hide",
+    "grouping": "auto"
   },
   "animations": false,
   "mouse": false,
@@ -20,6 +21,6 @@
     "mode": "off"
   },
   "prompt": {
-    "paste": "compact"
+    "paste": "full"
   }
 }
