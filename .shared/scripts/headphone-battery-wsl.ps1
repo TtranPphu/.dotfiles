@@ -3,7 +3,7 @@
 #
 # Uses WinRT BluetoothDevice API to find connected device by name,
 # then reads battery via PnP DEVPKEY_Device_BatteryLevel.
-# Falls back to PnP-only scan if WinRT unavailable.
+# Reports nothing when no matching device is connected.
 
 $patterns = @("*OPPO Enco*", "*Nothing Ear*")
 
@@ -59,23 +59,4 @@ if ($connectedAddr) {
   exit 1
 }
 
-# Fallback: PnP-only scan (may return stale data for disconnected devices)
-foreach ($pattern in $patterns) {
-  $device = Get-PnpDevice -Class Bluetooth | Where-Object { $_.FriendlyName -like $pattern -and $_.Status -eq "OK" } | Select-Object -First 1
-  if (-not $device) { continue }
-  $instanceId = $device.InstanceId
-  if ($instanceId -match 'DEV_([0-9A-Fa-f]{12})') {
-    $mac = $matches[1]
-    $children = Get-PnpDevice | Where-Object {
-      $_.InstanceId -match $mac -and $_.InstanceId -notlike "BTHENUM\\DEV_*" -and $_.Class -ne "Bluetooth"
-    }
-    foreach ($child in $children) {
-      $level = Get-PnpDeviceProperty -InstanceId $child.InstanceId -KeyName "DEVPKEY_Device_BatteryLevel" -ErrorAction SilentlyContinue
-      if ($level -and $level.Data -match '^\d+$' -and [int]$level.Data -ge 0 -and [int]$level.Data -le 100) {
-        Write-Output "$([int]$level.Data) 0 0"
-        exit 0
-      }
-    }
-  }
-}
 exit 1
