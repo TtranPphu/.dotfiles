@@ -4,6 +4,7 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 UTIL="$SCRIPT_DIR/mouse-util.sh"
 source "$SCRIPT_DIR/level-color.sh"
+source "$SCRIPT_DIR/nerd-font.sh"
 
 usage() {
   echo "Usage: $(basename "$0") --display | --guard"
@@ -19,9 +20,9 @@ cap="${data%% *}"
 case "${1:-}" in
   --display)
     if [[ "$("$SCRIPT_DIR/layout.sh" size)" != wide ]]; then
-      text="󰍽"
+      text="$(nerd_font_icon mouse.medium)"
     else
-      text="󰍽 $cap"
+      text="$(nerd_font_icon mouse)$cap$(nerd_font_icon percent)"
     fi
     printf '%s%s\033[0m' "$(level_color "$cap")" "$text"
     ;;

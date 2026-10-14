@@ -1,8 +1,10 @@
 #!/usr/bin/env bash
 
 wm_status="$HOME/.config/tmux/scripts/status"
+script_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+source "$script_dir/nerd-font.sh"
 
-preview_cmd='s=$(echo {} | awk "{print \$2}" | cut -d: -f1); '\
+preview_cmd='s=$(echo {} | sed "s/:.*//" | awk "{print \$NF}"); '\
 'i=$(tmux list-windows -t "$s" -F "#{window_active} #{window_index}" '\
 '  2>/dev/null | sort -k1 -rn | head -1 | cut -d" " -f2); '\
 'tmux capture-pane -p -t "$s:$i" -e -J 2>/dev/null'
@@ -15,7 +17,7 @@ result=$(
         2>/dev/null \
         | while IFS='|' read -r tty cmd panes bell; do
             name=$("$wm_status/window-name.sh" "$tty" "$cmd")
-            bell_icon=$([ "$bell" = "1" ] && echo "󰅸" || echo "")
+            bell_icon=$([ "$bell" = "1" ] && nerd_font_icon bell || nerd_font_icon win)
             panes_suffix=""
             if (( ${panes:-1} > 1 )); then
               extra=$((panes - 1))
@@ -23,11 +25,11 @@ result=$(
               (( extra > 1 )) && unit=panes
               panes_suffix=" + $extra $unit"
             fi
-            echo "$bell_icon $name$panes_suffix"
+            echo "$bell_icon$name$panes_suffix"
           done \
         | paste -sd '|' | sed 's/|/ ┊ /g')
-      session_icon=$(tmux list-windows -t "$s" -F '#{window_bell_flag}' 2>/dev/null | grep -q 1 && echo "󰅸" || echo "")
-      echo "$session_icon $s: $windows"
+      session_icon=$(tmux list-windows -t "$s" -F '#{window_bell_flag}' 2>/dev/null | grep -q 1 && nerd_font_icon bell || nerd_font_icon session)
+      echo "$session_icon$s: $windows"
     done \
   | fzf-tmux -p 60%,60% --reverse --print-query \
       --wrap-sign='' --ellipsis='··' --preview-wrap-sign='' \
@@ -43,7 +45,7 @@ selection=$(echo "$result" | tail -1)
 if [[ "$query" == "$selection" ]]; then
   session="$query"
 else
-  session=$(echo "$selection" | awk '{print $2}' | cut -d: -f1)
+  session=$(echo "$selection" | sed 's/:.*//' | awk '{print $NF}')
 fi
 session="${session/#\~/$HOME}"
 [[ -z "$session" ]] && exit 0

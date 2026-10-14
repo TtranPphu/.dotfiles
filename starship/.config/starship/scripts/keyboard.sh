@@ -4,6 +4,7 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 UTIL="$SCRIPT_DIR/keyboard-util.sh"
 source "$SCRIPT_DIR/level-color.sh"
+source "$SCRIPT_DIR/nerd-font.sh"
 
 usage() {
   echo "Usage: $(basename "$0") --display | --guard"
@@ -20,13 +21,13 @@ right="${data##* }"
 case "${1:-}" in
   --display)
     if [[ "$("$SCRIPT_DIR/layout.sh" size)" != wide ]]; then
-      printf '%s%s\033[0m %s%s\033[0m' \
-        "$(level_color "$left")"  \
-        "$(level_color "$right")" 
+      printf '%s%s\033[0m%s %s\033[0m' \
+        "$(level_color "$left")" "$(nerd_font_icon keyboard.medium)" \
+        "$(level_color "$right")" "$(nerd_font_icon keyboard.medium)"
     else
       printf '%s%s%s\033[0m %s%s%s\033[0m' \
-        "$(level_color "$left")"  " $left" \
-        "$(level_color "$right")"  " $right"
+        "$(level_color "$left")" "$(nerd_font_icon keyboard)" "$left$(nerd_font_icon percent)" \
+        "$(level_color "$right")" "$(nerd_font_icon keyboard)" "$right$(nerd_font_icon percent)"
     fi
     ;;
   --guard)

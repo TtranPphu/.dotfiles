@@ -2,6 +2,7 @@
 set -euo pipefail
 
 script_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+source "$script_dir/nerd-font.sh"
 
 case "${1:-}" in
   --display)
@@ -11,7 +12,8 @@ case "${1:-}" in
     else
       color=$'\033[36m'
     fi
-    printf '%s\uf007 %s\033[0m' "$color" "$user"
+    icon="$(nerd_font_icon user)"
+    printf '%s%s%s\033[0m' "$color" "$icon" "$user"
     ;;
   --guard)
     "$script_dir/layout.sh" is narrow && exit 1

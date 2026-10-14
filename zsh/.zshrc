@@ -111,6 +111,7 @@ unsetopt autocd nomatch
 export PATH="$HOME/.opencode/bin:$PATH"
 export PATH="$HOME/.local/share/mise/installs/node/latest/bin:$PATH"
 
+
 # Source all zsh configuration files from ~/.config/zsh/
 for config in ~/.config/zsh/*.zsh; do
   [ -f "$config" ] && source "$config"
@@ -122,12 +123,18 @@ path=("${(u)path[@]}")
 
 # Initialize starship
 eval "$(starship init zsh)"
-export STARSHIP_CONFIG=~/.config/starship/starship.toml
+export STARSHIP_CONFIG="${STARSHIP_CONFIG:-$HOME/.config/starship/starship.toml}"
 ZLE_RPROMPT_INDENT=0
 
 # Picker — choose multiplexer (tmux) at startup
 clear
 if [ -z "$TMUX" ] && [ -z "$DOTFILES_SHELL_PICKED" ]; then
+  # First time this terminal client connects: ask about Nerd Font support.
+  if _nerd_font_needs_setup; then
+    nerd_font_setup
+    clear
+  fi
+
   command -v tmux   >/dev/null 2>&1 && has_tmux=true    || has_tmux=false
 
   if $has_tmux; then

@@ -5,6 +5,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 UTIL="$SCRIPT_DIR/hostname-util.sh"
 QUALITY="$SCRIPT_DIR/ssh-quality-util.sh"
 source "$SCRIPT_DIR/level-color.sh"
+source "$SCRIPT_DIR/nerd-font.sh"
 
 case "${1:-}" in
   --guard)
@@ -27,11 +28,11 @@ if level=$("$QUALITY" level 2>/dev/null); then
   ramp=$((level * 10))
   icon=$("$QUALITY" signal 2>/dev/null)
   if [[ $size == wide ]]; then
-    printf '%s%s 󰢹 %s\033[0m' "$(level_color "$ramp")" "$icon" "$data"
+    printf '%s%s %s%s\033[0m' "$(level_color "$ramp")" "$icon" "$(nerd_font_icon host)" "$data"
   else
     printf '%s%s\033[0m' "$(level_color "$ramp")" "$icon"
   fi
 else
   [[ $size == wide ]] || exit 1
-  printf '󰢹 %s' "$data"
+  printf '%s%s' "$(nerd_font_icon host)" "$data"
 fi

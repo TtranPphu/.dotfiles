@@ -4,6 +4,7 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 UTIL="$SCRIPT_DIR/battery-util.sh"
 source "$SCRIPT_DIR/level-color.sh"
+source "$SCRIPT_DIR/nerd-font.sh"
 
 usage() { exit 1; }
 
@@ -16,26 +17,25 @@ raw_status="${data##* }"
 
 case "${1:-}" in
   --display)
-    charging=("󰢜" "󰂆" "󰂇" "󰂈" "󰢝" "󰂉" "󰢞" "󰂊" "󰂋" "󰂅")
-    discharging=("󱃍" "󰁻" "󰁼" "󰁽" "󰁾" "󰁿" "󰂀" "󰂁" "󰂂" "󰁹")
-
     idx=$(( (bat - 1) / 10 ))
 
     if [ "$raw_status" = "fully-charged" ]; then
-      icon="󰂄"
+      icon="$(nerd_font_icon battery.full)"
     elif [ "$raw_status" = "charging" ] || [ "$raw_status" = "pending-charge" ]; then
-      icon="${charging[$idx]}"
+      icon="$(nerd_font_icon "battery.charging.$idx")"
     else
-      icon="${discharging[$idx]}"
+      icon="$(nerd_font_icon "battery.discharging.$idx")"
     fi
 
     if [[ "$("$SCRIPT_DIR/layout.sh" size)" != wide ]]; then
       case "$raw_status" in
-        charging | pending-charge | fully-charged) text="󰂄" ;;
-        *) text="$icon" ;;
+        fully-charged)             icon="$(nerd_font_icon battery.full.medium)" ;;
+        charging | pending-charge) icon="$(nerd_font_icon battery.charging.medium)" ;;
+        *)                         icon="$(nerd_font_icon "battery.discharging.$idx.medium")" ;;
       esac
+      text="$icon"
     else
-      text="$icon $bat"
+      text="$icon$bat$(nerd_font_icon percent)"
     fi
 
     printf '%s%s\033[0m' "$(level_color "$bat")" "$text"

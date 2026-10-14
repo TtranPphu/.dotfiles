@@ -13,6 +13,10 @@
 # background, so callers never block on ping.
 set -euo pipefail
 
+# The signal glyph comes from the shared icon catalog, so each
+# client type (nerd/mono/lame) resolves to its own glyph.
+source "$(dirname -- "$(readlink -f "${BASH_SOURCE[0]}")")/nerd-font.sh"
+
 CACHE_DIR="$HOME/.local/state/starship"
 CACHE="$CACHE_DIR/ssh-quality"
 LOCK="$CACHE_DIR/ssh-quality.lock"
@@ -92,14 +96,13 @@ ssh_quality_level() {
 }
 
 # 5 tiers at 20/40/60/80% of the level scale (1..10 -> 10..100).
-SIGNAL_ICONS=("󰣾" "󰣴" "󰣶" "󰣸" "󰣺")
 
 signal_icon() {
   local level p tier
   level=$(ssh_quality_level "${1:-}" "${2:-}") || return 1
   p=$((level * 10))
   tier=$((1 + (p >= 20) + (p >= 40) + (p >= 60) + (p >= 80)))
-  printf '%s' "${SIGNAL_ICONS[$((tier - 1))]}"
+  nerd_font_icon "signal.$tier"
 }
 
 case "${1:-}" in

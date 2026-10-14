@@ -7,11 +7,14 @@ width="${4:-}"
 part="${5:-}"
 client_pid="${6:-}"
 script_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+source "$script_dir/nerd-font.sh"
 
 if [[ -z "$width" ]]; then
   width=$(tmux -S "$socket_path" list-clients -t "$current_session" -F '#{client_width}' 2>/dev/null | sort -n | head -1)
 fi
 export STATUS_WIDTH="$width"
+export DOTFILES_NERD_FONT="$("$script_dir/nerd-font.sh" type "$socket_path")"
+export NERD_FONT_SOCKET="$socket_path"
 size="$("$script_dir/layout.sh" size "$width")"
 
 # Build reversed list of sessions before current (newest first on status right)
@@ -20,9 +23,9 @@ if [[ "$size" != narrow ]]; then
   while read -r s; do
     [[ "$s" == "$current_session" ]] && break
     if tmux -S "$socket_path" list-windows -t "$s" -F '#{window_bell_flag}' 2>/dev/null | grep -q 1; then
-      reversed='#[fg=green] 󰅸 '"$s"' #[default]'"${reversed:+#[fg=brightblack,bold]┋$reversed}"
+      reversed="#[fg=green] $(nerd_font_icon bell)$s #[default]${reversed:+#[fg=brightblack,bold]┋$reversed}"
     else
-      reversed='#[fg=brightblack]  '"$s"' #[default]'"${reversed:+#[fg=brightblack,bold]┋$reversed}"
+      reversed="#[fg=brightblack] $(nerd_font_icon session)$s #[default]${reversed:+#[fg=brightblack,bold]┋$reversed}"
     fi
   done < <(tmux -S "$socket_path" list-sessions -F '#{session_name}')
 fi
@@ -39,7 +42,10 @@ printf '#[fg=blue]'
 # Speech recording indicator
 "$script_dir/speech.sh"
 
-printf '#[fg=brightblack,bg=blue,bold]▏ %02d▕#[default]' "${pane_id#%}"
+pane_num="$(printf '%02d' "${pane_id#%}")"
+pane_icon="$(nerd_font_icon pane)"
+pane_label="$pane_icon$pane_num"
+printf '#[fg=brightblack,bg=blue,bold]▏%s▕#[default]' "$pane_label"
 
 if [[ "$size" != narrow ]]; then
   # Battery indicator

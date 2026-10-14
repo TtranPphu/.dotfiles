@@ -6,18 +6,13 @@ add_newline = true
 
 format = """
 ${custom.os}\
-$shell\
+${custom.shell}\
 ${custom.compress_path}\
 ${custom.git_remote}\
 $git_branch\
 $git_status\
 $fill\
-$c\
-$java\
-$kotlin\
-$lua\
-$python\
-$rust\
+${custom.lang}\
 $cmd_duration\
 ${custom.date}\
 ${custom.clock}\
@@ -44,15 +39,12 @@ shell = ["bash"]
 style = "bold"
 format = "[$output]($style) "
 
-[shell]
-disabled = false
+[custom.shell]
+command = '${STARSHIP_CONFIG%/*}/scripts/shell.sh'
+when = 'true'
+shell = ["bash"]
 style = "bold bright-black"
-format = "[$indicator]($style) "
-unknown_indicator = "unknown-shell"
-bash_indicator = " bash"
-fish_indicator = "󰈺 fish"
-nu_indicator = " nu"
-zsh_indicator = " zsh"
+format = "[$output]($style) "
 
 [custom.compress_path]
 command = '${STARSHIP_CONFIG%/*}/scripts/path.sh'
@@ -71,7 +63,7 @@ command = '${STARSHIP_CONFIG%/*}/scripts/git-remote.sh'
 when = "git rev-parse --is-inside-work-tree 2>/dev/null"
 shell = ["bash"]
 style = "bold white"
-format = "[$output]($style) "
+format = "([$output]($style))"
 
 [git_status]
 style = "bright-yellow"
@@ -93,36 +85,16 @@ symbol = "·"
 style = "dimmed bright-black"
 
 
-[c]
-symbol = " "
-format = " [$symbol($version)]($style)"
-detect_files = ["CMakeLists.txt"]
-detect_extensions = ["c", "h", "cpp", "hpp"]
-
-[java]
-symbol = "󰬷 "
-format = " [$symbol($version)]($style)"
-
-[kotlin]
-symbol = "󱈙 "
-format = " [$symbol($version)]($style)"
-
-[lua]
-symbol = "󰢱 "
-format = " [$symbol($version)]($style)"
-
-[python]
-symbol = "󰌠 "
-format = " [$symbol($version)($virtualenv)]($style)"
-
-[rust]
-symbol = "󱘗 "
-format = " [$symbol($version)]($style)"
+[custom.lang]
+command = '${STARSHIP_CONFIG%/*}/scripts/language.sh'
+when = '${STARSHIP_CONFIG%/*}/scripts/language.sh --guard'
+shell = ["bash"]
+format = " $output"
 
 
 [cmd_duration]
 min_time = 1000
-format = " [󰦖 $duration]($style)"
+format = " [$duration]($style)"
 style = "yellow"
 
 [time]
@@ -133,13 +105,10 @@ command = '${STARSHIP_CONFIG%/*}/scripts/date.sh --display'
 when = '${STARSHIP_CONFIG%/*}/scripts/date.sh --guard'
 shell = ["bash"]
 style = "dimmed bright-cyan"
-format = " [󰃭 $output]($style)"
+format = " [$output]($style)"
 
 [custom.clock]
-command = """
-icons=("" "" "" "" "" "" "" "" "" "" "" "" "")
-echo "${icons[$(date +%-I)]} $(date +'%I:%M %p')"
-"""
+command = '${STARSHIP_CONFIG%/*}/scripts/clock.sh'
 when = '! ${STARSHIP_CONFIG%/*}/scripts/layout.sh is narrow'
 shell = ["bash"]
 style = "dimmed bright-cyan"
@@ -173,8 +142,8 @@ shell = ["bash"]
 format = " $output"
 
 [character]
-success_symbol = "[](bold green)"
-error_symbol = "[](bold red)"
+success_symbol = "[❯](bold green)"
+error_symbol = "[✗](bold red)"
 
 [custom.opencode-quota]
 command = '${STARSHIP_CONFIG%/*}/scripts/opencode-quota.sh'
@@ -222,11 +191,11 @@ format = " [$output]($style)"
 
 
 [custom.docker_host]
-command = 'echo "${CONTAINER_NAME:-${COMPOSE_SERVICE}}"'
+command = '${STARSHIP_CONFIG%/*}/scripts/docker-host.sh'
 when = "test -f /.dockerenv"
 shell = ["bash"]
 style = "dimmed blue"
-format = " [󰡨 $output]($style)"
+format = " [$output]($style)"
 
 
 [palettes.p10k]

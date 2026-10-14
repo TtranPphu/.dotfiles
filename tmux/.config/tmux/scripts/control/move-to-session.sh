@@ -4,6 +4,8 @@ set -uo pipefail
 : "${DEBUG:=0}"
 log_file="${XDG_STATE_HOME:-$HOME/.local/state}/tmux/move-to-session.log"
 wm_status="$HOME/.config/tmux/scripts/status"
+script_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+source "$script_dir/nerd-font.sh"
 
 debug_log() {
     [[ "$DEBUG" -ne 1 ]] && return 0
@@ -34,7 +36,7 @@ debug_log "default_session: $default_session"
 
 win_fmt_act='-F "#{window_active} #{window_index}"'
 
-preview_cmd='s=$(echo {} | awk "{print \$2}" | cut -d: -f1); '\
+preview_cmd='s=$(echo {} | sed "s/:.*//" | awk "{print \$NF}"); '\
 'i=$(tmux list-windows -t "$s" '"$win_fmt_act"' '\
 '  2>/dev/null | sort -k1 -rn | head -1 | cut -d" " -f2); '\
 'tmux capture-pane -p -t "$s:$i" -e -J 2>/dev/null'
@@ -48,7 +50,7 @@ result=$(
         2>/dev/null \
         | while IFS='|' read -r tty cmd panes bell; do
             name=$("$wm_status/window-name.sh" "$tty" "$cmd")
-            bell_icon=$([ "$bell" = "1" ] && echo "󰅸" || echo "")
+            bell_icon=$([ "$bell" = "1" ] && nerd_font_icon bell || nerd_font_icon win)
             panes_suffix=""
             if (( ${panes:-1} > 1 )); then
               extra=$((panes - 1))
@@ -56,15 +58,15 @@ result=$(
               (( extra > 1 )) && unit=panes
               panes_suffix=" + $extra $unit"
             fi
-            echo "$bell_icon $name$panes_suffix"
+            echo "$bell_icon$name$panes_suffix"
           done \
         | paste -sd '|' | sed 's/|/ ┊ /g')
       if tmux list-windows -t "$s" -F '#{window_bell_flag}' 2>/dev/null | grep -q 1; then
-        icon="󰅸"
+        icon="$(nerd_font_icon bell)"
       else
-        icon=""
+        icon="$(nerd_font_icon session)"
       fi
-      echo "$icon $s: $windows"
+      echo "$icon$s: $windows"
     done \
   | fzf-tmux -p 60%,60% --reverse --print-query \
       --query="$default_session" \
@@ -81,7 +83,7 @@ debug_log "fzf-tmux exited with: $fzf_exit"
 line_count=$(echo "$result" | wc -l)
 debug_log "result line_count: $line_count"
 if [[ "$line_count" -gt 1 ]]; then
-    target_session=$(echo "$result" | tail -1 | awk '{print $2}' | cut -d: -f1)
+    target_session=$(echo "$result" | tail -1 | sed 's/:.*//' | awk '{print $NF}')
 else
     target_session="$result"
 fi
