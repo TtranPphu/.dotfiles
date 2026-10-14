@@ -1,6 +1,6 @@
 ---
 description: Answers questions using the web only — no filesystem or shell access. Use for research, explanations, and general questions.
-mode: primary
+mode: all
 permissions:
   - action: "*"
     resource: "*"

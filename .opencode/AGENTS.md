@@ -18,9 +18,10 @@
 - The main agent ALWAYS delegates task work to subagents — both investigation
   and implementation/fixing. It plans, coordinates, and commits; the two
   custom subagents do the exploring, editing, and fixing.
-- The only subagents in use are the two custom ones, routed by package
-  ownership: `.opencode/agents/shell.md` for terminal/shell packages,
-  `.opencode/agents/system.md` for desktop/system packages.
+- The subagents in use are the custom ones, routed by task:
+  `.opencode/agents/shell.md` for terminal/shell packages,
+  `.opencode/agents/system.md` for desktop/system packages, and
+  `.opencode/agents/chat.md` for web research and general questions.
 - Subagents do not commit. After they return their changed-file report, the
   main agent commits with the commit skill.
 - Prefer spawning subagents in the background (`background: true`) so the main
