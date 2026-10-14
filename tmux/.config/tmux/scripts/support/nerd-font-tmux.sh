@@ -16,5 +16,6 @@ export DOTFILES_NERD_FONT="$mode"
 for key in prefix copy tree zoom bell win reload; do
   "${tmux_cmd[@]}" set -g "@nerd_font_$key" "$("$dir/nerd-font.sh" get "$key")"
 done
+"${tmux_cmd[@]}" set -g @nerd_font_win_active "$("$dir/nerd-font.sh" get win.active)"
 
 "${tmux_cmd[@]}" refresh-client 2>/dev/null
