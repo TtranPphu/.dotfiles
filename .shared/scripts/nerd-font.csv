@@ -88,9 +88,9 @@ clock.11;                     ; ;   ;󰖉;    ;;
 clock.12;                     ; ;   ;󰖉;    ;;
 date;                         ;󰃭 ;   ;󰭤;    ;;
 # prompt: quotas
-kimi;                         ; ;   ;;    ;Km;
-deepseek;                     ;󰫣 ;   ;󰫣;    ;DS;
-opencode;                     ;󱇘 ;   ;󱇘;    ;OC;
+kimi;                         ; ;   ;;    ;Km ;
+deepseek;                     ;󰫣 ;   ;󰫣;    ;DS ;
+opencode;                     ;󱇘 ;   ;󱇘;    ;OC ;
 usd;                          ;;    ;;    ;$;
 percent;                      ;;    ;;    ;%;
 # os
