@@ -5,6 +5,7 @@ current_session="$2"
 pane_id="$3"
 width="${4:-}"
 part="${5:-}"
+client_pid="${6:-}"
 script_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 
 if [[ -z "$width" ]]; then
@@ -38,7 +39,7 @@ printf '#[fg=blue]'
 # Speech recording indicator
 "$script_dir/speech.sh"
 
-printf '#[fg=#000000,bg=blue,bold]▏#[fg=brightblack,bg=blue,bold] %02d▕#[default]' "${pane_id#%}"
+printf '#[fg=brightblack,bg=blue,bold]▏ %02d▕#[default]' "${pane_id#%}"
 
 if [[ "$size" != narrow ]]; then
   # Battery indicator
@@ -53,13 +54,22 @@ if [[ "$size" != narrow ]]; then
   # Keyboard battery
   "$script_dir/keyboard.sh"
 
-  # Host pill: only when a client attached to this session is actually remote.
-  # Check the client process environment rather than the session environment,
-  # which can hold a stale SSH_CONNECTION long after the SSH client detached.
-  for client_pid in $(tmux -S "$socket_path" list-clients -t "$current_session" -F '#{client_pid}' 2>/dev/null); do
-    if tr '\0' '\n' < "/proc/$client_pid/environ" 2>/dev/null | grep -q '^SSH_CONNECTION='; then
-      "$script_dir/hostname.sh"
-      break
+  # Host pill: when the rendering client is remote, so each client sees its own
+  # status, or when running in docker (matching starship's host condition).
+  # Without a client pid (manual invocations) fall back to any attached client.
+  # The /proc check avoids the session environment, which can hold a stale
+  # SSH_CONNECTION long after the SSH client detached.
+  if [ -f /.dockerenv ]; then
+    "$script_dir/hostname.sh" "$socket_path" "$current_session"
+  else
+    if [ -z "$client_pid" ]; then
+      client_pid=$(tmux -S "$socket_path" list-clients -t "$current_session" -F '#{client_pid}' 2>/dev/null)
     fi
-  done
+    for pid in $client_pid; do
+      if tr '\0' '\n' < "/proc/$pid/environ" 2>/dev/null | grep -q '^SSH_CONNECTION='; then
+        "$script_dir/hostname.sh" "$socket_path" "$current_session"
+        break
+      fi
+    done
+  fi
 fi

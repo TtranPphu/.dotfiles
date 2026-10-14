@@ -3,6 +3,13 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 UTIL="$SCRIPT_DIR/hostname-util.sh"
+QUALITY="$SCRIPT_DIR/ssh-quality-util.sh"
+source "$SCRIPT_DIR/level-color.sh"
+
+socket_path="${1:-}"
+current_session="${2:-}"
+size=$("$SCRIPT_DIR/layout.sh" size)
+[[ $size == narrow ]] && exit 1
 
 host_name=$("$UTIL") || exit 1
 [[ -z "$host_name" ]] && exit 1
@@ -14,15 +21,20 @@ else
   display_host="${host_name%%.*}"
 fi
 
-# Color hash the full hostname for stable color
-h=0
-for ((i=0; i<${#host_name}; i++)); do
-  printf -v c '%d' "'${host_name:$i:1}"
-  ((h = (h * 31 + c) % 2147483647))
-done
-bg=$((16 + (h % 216)))
-if (( (bg - 16) / 36 < 2 )); then
-  printf '#[fg=colour231,bg=colour%d]▏%s▕#[default]' "$bg" "$display_host"
-else
-  printf '#[fg=colour232,bg=colour%d]▏%s▕#[default]' "$bg" "$display_host"
+# Over SSH the pill background shows the connection quality (10 = green, 1 = red);
+# medium drops the name, narrow (handled above) hides the pill. Foreground matches
+# the battery-family pills (fg=brightblack over the same ramp).
+if level=$("$QUALITY" level "$socket_path" "$current_session" 2>/dev/null); then
+  ramp=$((level * 10))
+  icon=$("$QUALITY" signal "$socket_path" "$current_session" 2>/dev/null)
+  if [[ $size == wide ]]; then
+    printf '#[fg=brightblack,bg=%s]▏%s %s▕#[default]' "$(level_hex "$ramp")" "$icon" "$display_host"
+  else
+    printf '#[fg=brightblack,bg=%s]▏%s ▐#[default]' "$(level_hex "$ramp")" "$icon"
+  fi
+  exit 0
 fi
+
+# Local pill only in wide, neutral style like the pane-id/session pills.
+[[ $size == wide ]] || exit 1
+printf '#[fg=brightblack,bg=blue,bold]▏%s▕#[default]' "$display_host"
