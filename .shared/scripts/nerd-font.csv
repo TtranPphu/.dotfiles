@@ -1,9 +1,10 @@
 key;                          ;nerd; ;mono; ;lame;
 # tmux: windows, sessions, panes
-win;                          ; ;   ;;    ;;
+win;                          ; ;   ;;    ;;
+win.active;                   ; ;   ;;    ;;
 session;                      ; ;   ;;    ;;
 bell;                         ;󰅸 ;   ;󰅸;    ;!;
-pane;                         ; ;   ;;    ;%;
+pane;                         ; ;   ;;    ;%;
 prefix;                       ;󰨙 ;   ;󰨙;    ;P;
 copy;                         ; ;   ;;    ;C;
 tree;                         ;󱏒 ;   ;󱏒;    ;T;
@@ -51,10 +52,15 @@ keyboard;                     ; ;   ;;    ;K;
 keyboard.medium;              ;;    ;;    ;K;
 # tmux: speech
 speech.record;                ;󰔊 ;   ;󰍬;    ;R;
-speech.transcribe;            ;󰔮 ;   ;󱇧;    ;T;
+speech.transcribe;            ;󰑕 ;   ;󱇧;    ;T;
 # prompt: identity
 user;                         ; ;   ;;    ;;
 host;                         ;󰢹 ;   ;󰢹;    ;;
+signal.1;                     ;󰣾;    ;󰣾;    ;S;
+signal.2;                     ;󰣴;    ;󰣴;    ;S;
+signal.3;                     ;󰣶;    ;󰣶;    ;S;
+signal.4;                     ;󰣸;    ;󰣸;    ;S;
+signal.5;                     ;󰣺;    ;󰣺;    ;S;
 docker;                       ;󰡨 ;   ;󰡨;    ;;
 # prompt: git
 branch;                       ;;    ;;    ;;
