@@ -27,10 +27,12 @@ SCRIPT_DIR="$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")"
 WSL_PS1="$SCRIPT_DIR/headphone-battery-wsl.ps1"
 
 # Remote battery reads: when this machine is reached over SSH from a tailnet
-# client (e.g. the WSL laptop), the Bluetooth devices belong to that client.
-# Run the local WSL PowerShell script there instead of reading local BlueZ.
-# The client is referenced by its Tailscale host name; the SSH user comes from
-# ~/.ssh/config (or the BT_REMOTE_SSH_USER override), so none is pinned here.
+# client (e.g. the Omarchy laptop), the Bluetooth devices belong to that
+# client, so read them there first: Linux clients run this utility's own
+# BlueZ reader over SSH, Windows-side (WSL) clients run the bundled
+# PowerShell script. The client is referenced by its Tailscale host name;
+# the SSH user defaults to the tailnet's and can be overridden with
+# BT_REMOTE_SSH_USER.
 REMOTE_POWERSHELL="/mnt/c/Windows/System32/WindowsPowerShell/v1.0/powershell.exe"
 
 ssh_client_ip() {
@@ -193,21 +195,34 @@ read_batteries_wsl() {
 }
 
 read_batteries_remote() {
-  [[ -f "$WSL_PS1" ]] || return 1
   command -v ssh &>/dev/null || return 1
 
-  local client_ip host dest kh b64 result val
+  local client_ip host dest kh result val
   client_ip=$(ssh_client_ip) || return 1
   host=$(ssh_client_host "$client_ip") || return 1
-  dest="${BT_REMOTE_SSH_USER:+$BT_REMOTE_SSH_USER@}$host"
+  dest="${BT_REMOTE_SSH_USER:-ttranpphu}@$host"
   [[ -n "$dest" ]] || return 1
-  b64=$(iconv -f UTF-8 -t UTF-16LE "$WSL_PS1" | base64 -w0) || return 1
-  [[ -n "$b64" ]] || return 1
 
   local ssh_opts=(-o BatchMode=yes -o ConnectTimeout=5)
   if kh=$(remote_known_hosts "$client_ip" "$host"); then
     ssh_opts+=(-o StrictHostKeyChecking=yes -o UserKnownHostsFile="$kh")
   fi
+
+  # Linux clients: run this utility's BlueZ reader there.
+  result=$(timeout 20 ssh "${ssh_opts[@]}" "$dest" bash -s -- --print \
+    < "${BASH_SOURCE[0]}" 2>/dev/null | tr -d '\r') || result=""
+  result="${result%%$'\n'*}"
+  val="${result%% *}"
+  if [[ "$val" =~ ^[0-9]+$ ]]; then
+    printf '%s' "$val"
+    return 0
+  fi
+
+  # Windows-side clients: run the bundled WSL PowerShell reader there.
+  [[ -f "$WSL_PS1" ]] || return 1
+  local b64
+  b64=$(iconv -f UTF-8 -t UTF-16LE "$WSL_PS1" | base64 -w0) || return 1
+  [[ -n "$b64" ]] || return 1
 
   result=$(timeout 20 ssh "${ssh_opts[@]}" "$dest" \
     "$REMOTE_POWERSHELL -NoProfile -NonInteractive -ExecutionPolicy Bypass -EncodedCommand $b64" \
@@ -219,11 +234,11 @@ read_batteries_remote() {
 }
 
 read_batteries() {
+  read_batteries_remote && return 0
   if grep -qi microsoft /proc/version 2>/dev/null; then
     read_batteries_wsl && return 0
     return 1
   fi
-  read_batteries_remote && return 0
   if command -v gdbus &>/dev/null; then
     read_batteries_gdbus && return 0
   fi
@@ -273,4 +288,7 @@ main() {
   return 1
 }
 
-main "$@"
+case "${1:-}" in
+  --print) read_batteries_gdbus ;;
+  *) main "$@" ;;
+esac
