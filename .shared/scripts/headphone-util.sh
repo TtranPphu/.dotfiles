@@ -36,8 +36,8 @@ WSL_PS1="$SCRIPT_DIR/headphone-battery-wsl.ps1"
 REMOTE_POWERSHELL="/mnt/c/Windows/System32/WindowsPowerShell/v1.0/powershell.exe"
 
 ssh_client_ip() {
-  local conn="${SSH_CONNECTION:-}"
-  if [[ -z "$conn" && -n "${TMUX:-}" ]] && command -v tmux &>/dev/null; then
+  local conn="${DOTFILES_CLIENT_SSH-${SSH_CONNECTION:-}}"
+  if [[ -z "$conn" && ! -v DOTFILES_CLIENT_SSH && -n "${TMUX:-}" ]] && command -v tmux &>/dev/null; then
     conn=$(tmux show-environment SSH_CONNECTION 2>/dev/null | sed -n 's/^SSH_CONNECTION=//p')
   fi
   [[ -n "$conn" ]] || return 1

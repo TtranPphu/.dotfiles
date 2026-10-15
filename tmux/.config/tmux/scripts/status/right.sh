@@ -13,8 +13,13 @@ if [[ -z "$width" ]]; then
   width=$(tmux -S "$socket_path" list-clients -t "$current_session" -F '#{client_width}' 2>/dev/null | sort -n | head -1)
 fi
 export STATUS_WIDTH="$width"
-export DOTFILES_NERD_FONT="$("$script_dir/nerd-font.sh" type "$socket_path")"
+export DOTFILES_NERD_FONT="$("$script_dir/nerd-font.sh" type "$socket_path" "$client_pid")"
 export NERD_FONT_SOCKET="$socket_path"
+# Pin the rendering client's connection so device and signal reads resolve
+# its machine; empty for a local client (no tmux-env fallback then).
+if [ -n "$client_pid" ]; then
+  export DOTFILES_CLIENT_SSH="$(tr '\0' '\n' < "/proc/$client_pid/environ" 2>/dev/null | sed -n 's/^SSH_CONNECTION=//p')"
+fi
 size="$("$script_dir/layout.sh" size "$width")"
 
 # Build reversed list of sessions before current (newest first on status right)

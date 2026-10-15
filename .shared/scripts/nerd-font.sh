@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 # Terminal font capability + icon catalog.
 #
-#   nerd-font mode [socket]     -> "nerd" | "lame"
-#   nerd-font type [socket]     -> resolved type (lame|nerd|mono)
-#   nerd-font client-id [socket]-> client identifier (SSH client IP, else "local")
+#   nerd-font mode [socket] [pid]      -> "nerd" | "lame"
+#   nerd-font type [socket] [pid]      -> resolved type (lame|nerd|mono)
+#   nerd-font client-id [socket] [pid] -> client identifier (SSH client IP, else "local")
 #   nerd-font state-file        -> path to the client state file
 #   nerd-font lookup <id>       -> stored type (lame|nerd|mono) or empty
 #   nerd-font store <id> <type> -> record a type for a client id
@@ -14,8 +14,9 @@
 #
 # Resolution: $DOTFILES_NERD_FONT=nerd|mono|lame wins;
 # otherwise the client's stored type in the state file; unknown clients resolve
-# to "lame" until the shell setup prompt records a choice. State lines are
-# id<TAB>type. The catalog is next to this file (nerd-font.csv) with a matching
+# to "lame" until the shell setup prompt records a choice. A pid pins the
+# lookup to that tmux client's environment, so each rendering client
+# resolves its own type. State lines are id<TAB>type. The catalog is next to this file (nerd-font.csv) with a matching
 # header line and a dummy column after every value column: space-filled after
 # the icon columns, empty after lame (the parser reads the odd columns):
 # key;nerd;mono;lame. Empty mono cells fall back to the nerd column
@@ -32,7 +33,7 @@ nerd_font_state_file() {
 }
 
 nerd_font_client_id() {
-  local sock="${1:-${NERD_FONT_SOCKET:-}}" conn="" pid line
+  local sock="${1:-${NERD_FONT_SOCKET:-}}" pid="${2:-}" conn="" line
 
   clients_conn() {
     command -v tmux >/dev/null 2>&1 || return 1
@@ -44,6 +45,13 @@ nerd_font_client_id() {
     done
     return 1
   }
+
+  # A rendering client's pid is authoritative: read its own environment.
+  if [ -n "$pid" ]; then
+    conn=$(tr '\0' '\n' < "/proc/$pid/environ" 2>/dev/null | sed -n 's/^SSH_CONNECTION=//p')
+    if [ -n "$conn" ]; then printf '%s' "${conn%% *}"; else printf local; fi
+    return 0
+  fi
 
   if [ -n "$sock" ]; then
     # Called for a specific tmux server (status scripts): trust its clients.
@@ -90,10 +98,10 @@ nerd_font_type_to_mode() {
 
 # Resolved type: override wins, else the client's stored type, else lame.
 nerd_font_type() {
-  local sock="${1:-${NERD_FONT_SOCKET:-}}" type
+  local sock="${1:-${NERD_FONT_SOCKET:-}}" pid="${2:-}" type
   type=$(nerd_font_type_normalize "${DOTFILES_NERD_FONT:-}")
   [ -n "$type" ] && { printf '%s' "$type"; return 0; }
-  type=$(nerd_font_type_normalize "$(nerd_font_lookup "$(nerd_font_client_id "$sock")")")
+  type=$(nerd_font_type_normalize "$(nerd_font_lookup "$(nerd_font_client_id "$sock" "$pid")")")
   printf '%s' "${type:-lame}"
 }
 
@@ -116,7 +124,7 @@ if [ "${BASH_SOURCE[0]}" = "$0" ]; then
   case "${1:-}" in
     mode) shift; nerd_font_mode "$@" ;;
     type) shift; nerd_font_type "$@" ;;
-    client-id) shift; nerd_font_client_id "${1:-}" ;;
+    client-id) shift; nerd_font_client_id "${1:-}" "${2:-}" ;;
     state-file) nerd_font_state_file ;;
     lookup) nerd_font_lookup "${2:?usage: nerd-font lookup ID}" ;;
     store) nerd_font_store "${2:?usage: nerd-font store ID TYPE}" "${3:?usage: nerd-font store ID TYPE}" ;;

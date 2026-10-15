@@ -34,6 +34,13 @@ map_rtt() {
 
 client_ip() {
   local socket="${1:-}" session="${2:-}" pid conn
+  # A rendering client pinned by the status scripts wins over any scan.
+  if [[ -v DOTFILES_CLIENT_SSH ]]; then
+    conn="$DOTFILES_CLIENT_SSH"
+    [[ -n $conn ]] || return 1
+    printf '%s' "${conn%% *}"
+    return 0
+  fi
   if [[ -n $socket && -n $session ]]; then
     while read -r pid; do
       conn=$(tr '\0' '\n' < "/proc/$pid/environ" 2>/dev/null |
