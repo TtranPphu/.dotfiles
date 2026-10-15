@@ -22,5 +22,9 @@
   },
   "prompt": {
     "paste": "full"
+  },
+  "terminal": {
+    "title": false,
+    "copy": "manual"
   }
 }
