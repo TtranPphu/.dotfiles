@@ -75,7 +75,7 @@ nerd_font_setup() {
 
   if [[ "$type" != lame ]]; then
     local g1 g2 g3 g4 g5
-    g1="$(DOTFILES_NERD_FONT=mono _nerd_font_sh get branch)"
+    g1="$(DOTFILES_NERD_FONT=mono _nerd_font_sh get host)"
     g2="$(DOTFILES_NERD_FONT=mono _nerd_font_sh get battery.full)"
     g3="$(DOTFILES_NERD_FONT=mono _nerd_font_sh get os.arch)"
     g4="$(DOTFILES_NERD_FONT=mono _nerd_font_sh get pane)"

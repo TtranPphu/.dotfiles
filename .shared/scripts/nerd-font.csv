@@ -63,7 +63,6 @@ signal.4;                     ;󰣸;    ;󰣸;    ;S;
 signal.5;                     ;󰣺;    ;󰣺;    ;S;
 docker;                       ;󰡨 ;   ;󰡨;    ;;
 # prompt: git
-branch;                       ;;    ;;    ;;
 remote.github;                ; ;   ;;    ;;
 remote.gitlab;                ; ;   ;;    ;;
 remote.bitbucket;             ; ;   ;;    ;;
