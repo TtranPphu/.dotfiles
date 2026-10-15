@@ -5,6 +5,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 UTIL="$SCRIPT_DIR/hostname-util.sh"
 QUALITY="$SCRIPT_DIR/ssh-quality-util.sh"
 source "$SCRIPT_DIR/level-color.sh"
+source "$SCRIPT_DIR/nerd-font.sh"
 
 socket_path="${1:-}"
 current_session="${2:-}"
@@ -29,8 +30,10 @@ if level=$("$QUALITY" level "$socket_path" "$current_session" 2>/dev/null); then
   icon=$("$QUALITY" signal "$socket_path" "$current_session" 2>/dev/null)
   if [[ $size == wide ]]; then
     printf '#[fg=brightblack,bg=%s]▏%s %s▕#[default]' "$(level_hex "$ramp")" "$icon" "$display_host"
+  elif [[ "$(nerd_font_type)" == nerd ]]; then
+    printf '#[fg=brightblack,bg=%s]%s%s%s#[default]' "$(level_hex "$ramp")" "$(nerd_font_icon separator.head)" "$icon" "$(nerd_font_icon separator.tail)"
   else
-    printf '#[fg=brightblack,bg=%s]▏%s ▐#[default]' "$(level_hex "$ramp")" "$icon"
+    printf '#[fg=brightblack,bg=%s]%s%s%s#[default]' "$(level_hex "$ramp")" "$(nerd_font_icon separator.head)" "$icon" "$(nerd_font_icon separator.tail)"
   fi
   exit 0
 fi

@@ -1,16 +1,5 @@
 key;                          ;nerd; ;mono; ;lame;
-# tmux: windows, sessions, panes
-win;                          ; ;   ;;    ;;
-win.active;                   ; ;   ;;    ;;
-session;                      ; ;   ;;    ;;
-bell;                         ;󰅸 ;   ;󰅸;    ;!;
-pane;                         ; ;   ;;    ;%;
-prefix;                       ;󰨙 ;   ;󰨙;    ;P;
-copy;                         ; ;   ;;    ;C;
-tree;                         ;󱏒 ;   ;󱏒;    ;T;
-zoom;                         ;󱉶 ;   ;󱉶;    ;Z;
-reload;                       ;󱑠 ;   ;󱑠;    ;;
-# tmux: device battery pills
+# shared: device battery pills
 battery.full;                 ;󰂄 ;   ;󰂄;    ;=;
 battery.full.medium;          ;󰂄;    ;󰂄;    ;=;
 battery.charging.0;           ;󰢜 ;   ;󱐋;    ;+;
@@ -50,31 +39,74 @@ mouse;                        ;󰍽 ;   ;󰍽;    ;M;
 mouse.medium;                 ;󰍽;    ;󰍽;    ;M;
 keyboard;                     ; ;   ;;    ;K;
 keyboard.medium;              ;;    ;;    ;K;
+# shared: connection quality
+signal.1;                     ;󰣾;    ;󰣾;    ;poor;
+signal.2;                     ;󰣴;    ;󰣴;    ;weak;
+signal.3;                     ;󰣶;    ;󰣶;    ;normal;
+signal.4;                     ;󰣸;    ;󰣸;    ;good;
+signal.5;                     ;󰣺;    ;󰣺;    ;great;
+# shared: os
+os.alpine;                    ;;    ;;    ;Alpine;
+os.amzn;                      ;;    ;;    ;Amazon;
+os.android;                   ;;    ;;    ;Android;
+os.arch;                      ;󰣇;    ;󰣇;    ;Arch;
+os.artix;                     ;󰣇;    ;󰣇;    ;Artix;
+os.omarchy;                   ;󰣇;    ;󰣇;    ;Omarchy;
+os.centos;                    ;;    ;;    ;CentOS;
+os.darwin;                    ;󰀵;    ;󰀵;    ;macOS;
+os.debian;                    ;󰣚;    ;󰣚;    ;Debian;
+os.fedora;                    ;󰣛;    ;󰣛;    ;Fedora;
+os.gentoo;                    ;󰣨;    ;󰣨;    ;Gentoo;
+os.manjaro;                   ;;    ;;    ;Manjaro;
+os.mint;                      ;󰣭;    ;󰣭;    ;Mint;
+os.nixos;                     ;;    ;;    ;NixOS;
+os.opensuse;                  ;;    ;;    ;openSUSE;
+os.raspbian;                  ;󰐿;    ;󰐿;    ;Raspbian;
+os.rhel;                      ;󱄛;    ;󱄛;    ;RHEL;
+os.redhat;                    ;󱄛;    ;󱄛;    ;Red Hat;
+os.rocky;                     ;;    ;;    ;Rocky;
+os.ubuntu;                    ;;    ;;    ;Ubuntu;
+os.linux;                     ;󰌽;    ;󰌽;    ;Linux;
+# shared: quotas
+kimi;                         ; ;   ;;    ;Km ;
+deepseek;                     ;󰫣 ;   ;󰫣;    ;DS ;
+opencode;                     ;󱇘 ;   ;󱇘;    ;OC ;
+usd;                          ;;    ;;    ;$;
+percent;                      ;;    ;;    ;%;
+# tmux: windows, sessions, panes
+win;                          ; ;   ;;    ;;
+win.active;                   ; ;   ;;    ;;
+session;                      ; ;   ;;    ;;
+bell;                         ;󰅸 ;   ;󰅸;    ;!;
+pane;                         ; ;   ;;    ;%;
+prefix;                       ;󰨙;    ;󰨙;    ;P;
+copy;                         ;;    ;;    ;C;
+tree;                         ;󱏒;    ;󱏒;    ;T;
+zoom;                         ;󱉶;    ;󱉶;    ;Z;
+reload;                       ;󱑠 ;   ;󱑠;    ;;
 # tmux: speech
 speech.record;                ;󰔊 ;   ;󰍬;    ;R;
 speech.transcribe;            ;󰑕 ;   ;󱇧;    ;T;
-# prompt: identity
+# tmux: pill separators
+separator.head;               ;▏;    ;▏;    ;▏;
+separator.tail;               ; ▐;   ;▕;    ;▕;
+# starship: identity
 user;                         ; ;   ;;    ;;
 host;                         ;󰢹 ;   ;󰢹;    ;;
-signal.1;                     ;󰣾;    ;󰣾;    ;S;
-signal.2;                     ;󰣴;    ;󰣴;    ;S;
-signal.3;                     ;󰣶;    ;󰣶;    ;S;
-signal.4;                     ;󰣸;    ;󰣸;    ;S;
-signal.5;                     ;󰣺;    ;󰣺;    ;S;
 docker;                       ;󰡨 ;   ;󰡨;    ;;
-# prompt: git
+# starship: git
 remote.github;                ; ;   ;;    ;;
 remote.gitlab;                ; ;   ;;    ;;
 remote.bitbucket;             ; ;   ;;    ;;
 remote.git;                   ;󰊢 ;   ;󰊢;    ;;
-# prompt: languages
+# starship: languages
 lang.c;                       ; ;   ;;    ;C ;
 lang.java;                    ;󰬷 ;   ;󰬷;    ;Java ;
 lang.kotlin;                  ;󱈙 ;   ;󱈙;    ;Kotlin ;
 lang.lua;                     ;󰢱 ;   ;󰢱;    ;Lua ;
 lang.python;                  ;󰌠 ;   ;󰌠;    ;Python ;
 lang.rust;                    ;󱘗 ;   ;󱘗;    ;Rust ;
-# prompt: shell and time
+# starship: shell and time
 shell.bash;                   ; ;   ;;    ;;
 shell.fish;                   ;󰈺 ;   ;󰈺;    ;;
 shell.nu;                     ; ;   ;;    ;;
@@ -92,31 +124,3 @@ clock.10;                     ; ;   ;󰖉;    ;;
 clock.11;                     ; ;   ;󰖉;    ;;
 clock.12;                     ; ;   ;󰖉;    ;;
 date;                         ;󰃭 ;   ;󰭤;    ;;
-# prompt: quotas
-kimi;                         ; ;   ;;    ;Km ;
-deepseek;                     ;󰫣 ;   ;󰫣;    ;DS ;
-opencode;                     ;󱇘 ;   ;󱇘;    ;OC ;
-usd;                          ;;    ;;    ;$;
-percent;                      ;;    ;;    ;%;
-# os
-os.alpine;                    ; ;   ;;    ;Alpine;
-os.amzn;                      ; ;   ;;    ;Amazon;
-os.android;                   ; ;   ;;    ;Android;
-os.arch;                      ;󰣇 ;   ;󰣇;    ;Arch;
-os.artix;                     ;󰣇 ;   ;󰣇;    ;Artix;
-os.omarchy;                   ;󰣇 ;   ;󰣇;    ;Omarchy;
-os.centos;                    ; ;   ;;    ;CentOS;
-os.darwin;                    ;󰀵 ;   ;󰀵;    ;macOS;
-os.debian;                    ;󰣚 ;   ;󰣚;    ;Debian;
-os.fedora;                    ;󰣛 ;   ;󰣛;    ;Fedora;
-os.gentoo;                    ;󰣨 ;   ;󰣨;    ;Gentoo;
-os.manjaro;                   ; ;   ;;    ;Manjaro;
-os.mint;                      ;󰣭 ;   ;󰣭;    ;Mint;
-os.nixos;                     ; ;   ;;    ;NixOS;
-os.opensuse;                  ; ;   ;;    ;openSUSE;
-os.raspbian;                  ;󰐿 ;   ;󰐿;    ;Raspbian;
-os.rhel;                      ;󱄛 ;   ;󱄛;    ;RHEL;
-os.redhat;                    ;󱄛 ;   ;󱄛;    ;Red Hat;
-os.rocky;                     ; ;   ;;    ;Rocky;
-os.ubuntu;                    ; ;   ;;    ;Ubuntu;
-os.linux;                     ;󰌽 ;   ;󰌽;    ;Linux;
