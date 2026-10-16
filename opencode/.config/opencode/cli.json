@@ -23,6 +23,10 @@
   "prompt": {
     "paste": "full"
   },
+  "attention": {
+    "notifications": true,
+    "sound": false
+  },
   "terminal": {
     "title": false,
     "copy": "manual"
