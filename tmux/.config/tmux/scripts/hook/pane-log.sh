@@ -14,9 +14,13 @@ log_file_for() {
 attach_pipe() {
   socket_path="$1"
   pane_id="$2"
-  rm -f "$(log_file_for "$pane_id")"
-  touch "$(log_file_for "$pane_id")"
-  tmux -S "$socket_path" pipe-pane -t "$pane_id" "~/.config/tmux/scripts/hook/pane-log.sh write $pane_id"
+  local log_file
+  log_file="$(log_file_for "$pane_id")"
+  rm -f "$log_file"
+  touch "$log_file"
+  # tmux runs the pipe command under sh -c once per pane and keeps it alive;
+  # `exec cat` makes it a single process with no per-chunk shell work.
+  tmux -S "$socket_path" pipe-pane -t "$pane_id" "exec cat >> $(printf '%q' "$log_file")"
 }
 
 case "$action" in
