@@ -21,6 +21,7 @@ is_wsl() {
 is_coding_agent() {
     local cmd
     cmd=$(tmux display-message -p '#{pane_current_command}' 2>/dev/null)
+    cmd="${cmd%.exe}"
     for agent in "${coding_agents[@]}"; do
         [[ "$cmd" == "$agent" ]] && return 0
     done
