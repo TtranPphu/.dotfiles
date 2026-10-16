@@ -26,7 +26,7 @@ render() {
   [[ -z "$cap" || ! "$cap" =~ ^[0-9]+$ ]] && exit 1
 
   if [[ "$size" != wide ]]; then
-    text="$(nerd_font_icon mouse.medium)"
+    text="$(nerd_font_icon mouse)"; text="${text% }"
   else
     text="$(nerd_font_icon mouse)$cap$(nerd_font_icon percent)"
   fi

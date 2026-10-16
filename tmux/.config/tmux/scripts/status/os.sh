@@ -31,7 +31,7 @@ case "$("$UTIL")" in
 esac
 
 if [[ "$(nerd_font_type)" == nerd ]]; then
-  printf '#[fg=colour233,bold,bg=white] %s%s#[default]' "$icon" "$(nerd_font_icon separator.tail)"
+  printf '#[fg=colour233,bold,bg=white] %s %s#[default]' "$icon" "$(nerd_font_icon separator.tail)"
 else
   printf '#[fg=colour233,bold,bg=white]%s%s%s#[default]' "$(nerd_font_icon separator.head)" "$icon" "$(nerd_font_icon separator.tail)"
 fi

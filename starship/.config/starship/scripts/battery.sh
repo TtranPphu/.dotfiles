@@ -35,9 +35,9 @@ render() {
 
   if [[ "$size" != wide ]]; then
     case "$raw_status" in
-      fully-charged)             icon="$(nerd_font_icon battery.full.medium)" ;;
+      fully-charged)             icon="$(nerd_font_icon battery.full)"; icon="${icon% }" ;;
       charging | pending-charge) icon="$(nerd_font_icon battery.charging.medium)" ;;
-      *)                         icon="$(nerd_font_icon "battery.discharging.$idx.medium")" ;;
+      *)                         icon="$(nerd_font_icon "battery.discharging.$idx")"; icon="${icon% }" ;;
     esac
     text="$icon"
   else

@@ -25,6 +25,7 @@ if "$SCRIPT_DIR/layout.sh" is wide; then
   printf '#[fg=brightblack,bold,bg=%s]▏%s%s%s▕#[default]' "${colors[$idx_left]}" "$(nerd_font_icon keyboard)" "$left" "$(nerd_font_icon percent)"
   printf '#[fg=brightblack,bold,bg=%s]▏%s%s%s▕#[default]' "${colors[$idx_right]}" "$(nerd_font_icon keyboard)" "$right" "$(nerd_font_icon percent)"
 else
-  printf '#[fg=brightblack,bold,bg=%s]▏%s▕#[default]' "${colors[$idx_left]}" "$(nerd_font_icon keyboard.medium)"
-  printf '#[fg=brightblack,bold,bg=%s]▏%s▕#[default]' "${colors[$idx_right]}" "$(nerd_font_icon keyboard.medium)"
+  icon="$(nerd_font_icon keyboard)"; icon="${icon% }"
+  printf '#[fg=brightblack,bold,bg=%s]▏%s▕#[default]' "${colors[$idx_left]}" "$icon"
+  printf '#[fg=brightblack,bold,bg=%s]▏%s▕#[default]' "${colors[$idx_right]}" "$icon"
 fi

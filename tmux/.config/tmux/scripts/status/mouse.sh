@@ -19,5 +19,6 @@ idx=$(( (cap - 1) / 10 ))
 if "$SCRIPT_DIR/layout.sh" is wide; then
   printf '#[fg=brightblack,bold,bg=%s]▏%s%s%s▕#[default]' "${colors[$idx]}" "$(nerd_font_icon mouse)" "$cap" "$(nerd_font_icon percent)"
 else
-  printf '#[fg=brightblack,bold,bg=%s]▏%s▕#[default]' "${colors[$idx]}" "$(nerd_font_icon mouse.medium)"
+  icon="$(nerd_font_icon mouse)"; icon="${icon% }"
+  printf '#[fg=brightblack,bold,bg=%s]▏%s▕#[default]' "${colors[$idx]}" "$icon"
 fi

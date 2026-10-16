@@ -1,7 +1,6 @@
 key;                          ;nerd; ;mono; ;lame;
 # shared: device battery pills
 battery.full;                 ;󰂄 ;   ;󰂄;    ;=;
-battery.full.medium;          ;󰂄;    ;󰂄;    ;=;
 battery.charging.0;           ;󰢜 ;   ;󱐋;    ;+;
 battery.charging.1;           ;󰂆 ;   ;󱐋;    ;+;
 battery.charging.2;           ;󰂇 ;   ;󱐋;    ;+;
@@ -23,22 +22,10 @@ battery.discharging.6;        ;󰂀 ;   ;󰂀;    ;-;
 battery.discharging.7;        ;󰂁 ;   ;󰂁;    ;-;
 battery.discharging.8;        ;󰂂 ;   ;󰂂;    ;-;
 battery.discharging.9;        ;󰁹 ;   ;󰁹;    ;-;
-battery.discharging.0.medium; ;󰂎;    ;󰂎;    ;!;
-battery.discharging.1.medium; ;󰁻;    ;󰁻;    ;-;
-battery.discharging.2.medium; ;󰁼;    ;󰁼;    ;-;
-battery.discharging.3.medium; ;󰁽;    ;󰁽;    ;-;
-battery.discharging.4.medium; ;󰁾;    ;󰁾;    ;-;
-battery.discharging.5.medium; ;󰁿;    ;󰁿;    ;-;
-battery.discharging.6.medium; ;󰂀;    ;󰂀;    ;-;
-battery.discharging.7.medium; ;󰂁;    ;󰂁;    ;-;
-battery.discharging.8.medium; ;󰂂;    ;󰂂;    ;-;
-battery.discharging.9.medium; ;󰁹;    ;󰁹;    ;-;
 headphone;                    ;󱡏 ;   ;󰎇;    ;H;
 headphone.medium;             ;󰎇;    ;󰎇;    ;H;
 mouse;                        ;󰍽 ;   ;󰍽;    ;M;
-mouse.medium;                 ;󰍽;    ;󰍽;    ;M;
 keyboard;                     ; ;   ;;    ;K;
-keyboard.medium;              ;;    ;;    ;K;
 # shared: connection quality
 signal.1;                     ;󰣾;    ;󰣾;    ;poor;
 signal.2;                     ;󰣴;    ;󰣴;    ;weak;
@@ -90,7 +77,7 @@ speech.record;                ;󰔊 ;   ;󰍬;    ;R;
 speech.transcribe;            ;󰑕 ;   ;󱇧;    ;T;
 # tmux: pill separators
 separator.head;               ;▏;    ;▏;    ;▏;
-separator.tail;               ; ▐;   ;▕;    ;▕;
+separator.tail;               ;▐;   ;▕;    ;▕;
 # starship: identity
 user;                         ; ;   ;;    ;;
 host;                         ;󰢹 ;   ;󰢹;    ;;

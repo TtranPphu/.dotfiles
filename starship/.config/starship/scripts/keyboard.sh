@@ -27,9 +27,10 @@ render() {
   [[ -z "$left" ]] && exit 1
 
   if [[ "$size" != wide ]]; then
+    icon="$(nerd_font_icon keyboard)"; icon="${icon% }"
     printf '%s%s\033[0m%s %s\033[0m' \
-      "$(level_color "$left")" "$(nerd_font_icon keyboard.medium)" \
-      "$(level_color "$right")" "$(nerd_font_icon keyboard.medium)"
+      "$(level_color "$left")" "$icon" \
+      "$(level_color "$right")" "$icon"
   else
     printf '%s%s%s\033[0m %s%s%s\033[0m' \
       "$(level_color "$left")" "$(nerd_font_icon keyboard)" "$left$(nerd_font_icon percent)" \

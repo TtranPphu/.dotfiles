@@ -31,7 +31,7 @@ if level=$("$QUALITY" level "$socket_path" "$current_session" 2>/dev/null); then
   if [[ $size == wide ]]; then
     printf '#[fg=brightblack,bg=%s]▏%s %s▕#[default]' "$(level_hex "$ramp")" "$icon" "$display_host"
   elif [[ "$(nerd_font_type)" == nerd ]]; then
-    printf '#[fg=brightblack,bg=%s]%s%s%s#[default]' "$(level_hex "$ramp")" "$(nerd_font_icon separator.head)" "$icon" "$(nerd_font_icon separator.tail)"
+    printf '#[fg=brightblack,bg=%s]%s%s %s#[default]' "$(level_hex "$ramp")" "$(nerd_font_icon separator.head)" "$icon" "$(nerd_font_icon separator.tail)"
   else
     printf '#[fg=brightblack,bg=%s]%s%s%s#[default]' "$(level_hex "$ramp")" "$(nerd_font_icon separator.head)" "$icon" "$(nerd_font_icon separator.tail)"
   fi
