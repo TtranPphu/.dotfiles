@@ -1,8 +1,13 @@
 #!/usr/bin/env bash
+# Language versions segment, rendered through the two-pass cache (cache.sh):
+# the prompt only reads the cache; the version probes (java, rustc, ...) run in
+# a detached refresher when the entry is stale. The cache is keyed by $PWD,
+# since detection depends on the files in the current directory.
 set -euo pipefail
 
-SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
-source "$SCRIPT_DIR/nerd-font.sh"
+script_dir="${BASH_SOURCE[0]%/*}"
+[ "$script_dir" = "${BASH_SOURCE[0]}" ] && script_dir="."
+source "$script_dir/cache.sh"
 
 # First version-like token in the tool's output (stdout + stderr).
 version_of() {
@@ -68,27 +73,46 @@ version_of_lang() {
   esac
 }
 
-case "${1:-}" in
-  --guard)
-    for lang in c java kotlin lua python rust; do
-      detect "$lang" && exit 0
-    done
-    exit 1
-    ;;
-esac
+render() {
+  source "$script_dir/nerd-font.sh"
+  local lang icon version
+  local segments=()
 
-segments=()
-for lang in c java kotlin lua python rust; do
-  detect "$lang" || continue
-  icon="$(nerd_font_icon "lang.$lang")"
-  version="$(version_of_lang "$lang")"
-  if [ -n "$version" ]; then
-    segments+=("${icon}v${version}")
-  else
-    segments+=("${icon% }")
+  for lang in c java kotlin lua python rust; do
+    detect "$lang" || continue
+    icon="$(nerd_font_icon "lang.$lang")"
+    version="$(version_of_lang "$lang")"
+    if [ -n "$version" ]; then
+      segments+=("${icon}v${version}")
+    else
+      segments+=("${icon% }")
+    fi
+  done
+
+  if [ ${#segments[@]} -gt 0 ]; then
+    printf '%s\n' "${segments[*]}"
   fi
-done
+}
 
-if [ ${#segments[@]} -gt 0 ]; then
-  printf '%s\n' "${segments[*]}"
-fi
+case "${1:-}" in
+  --display | "")
+    cache_file=$(starship_cache_path lang "$(starship_cache_client).$(starship_cache_cwd)")
+    cache_display "$cache_file" 60 "$0" --refresh "$cache_file"
+    ;;
+  --refresh)
+    cache_refresh "${2:?}" render
+    ;;
+  --guard)
+    detected=
+    for lang in c java kotlin lua python rust; do
+      if detect "$lang"; then
+        detected=1
+        break
+      fi
+    done
+    [ -n "$detected" ] || exit 1
+    cache_file=$(starship_cache_path lang "$(starship_cache_client).$(starship_cache_cwd)")
+    cache_gate "$cache_file" 60 "$0" --refresh "$cache_file"
+    ;;
+  *) exit 2 ;;
+esac

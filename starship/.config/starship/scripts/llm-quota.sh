@@ -1,19 +1,36 @@
 #!/bin/bash
-
-# Starship custom module: combined LLM account balance (medium terminals)
+# Starship custom module: combined LLM account balance (medium terminals),
+# rendered through the two-pass cache (cache.sh): the prompt only reads the
+# cache; the util's cache/network reads run in a detached refresher when the
+# entry is stale.
 set -euo pipefail
 
-SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
-source "$SCRIPT_DIR/nerd-font.sh"
+script_dir="${BASH_SOURCE[0]%/*}"
+[ "$script_dir" = "${BASH_SOURCE[0]}" ] && script_dir="."
+source "$script_dir/cache.sh"
 
-if [ "${1:-}" = "--guard" ]; then
-  [ -n "${TMUX:-}${ZELLIJ:-}" ] && exit 1
-  "$SCRIPT_DIR/layout.sh" is medium || exit 1
-  TOTAL=$("$SCRIPT_DIR/llm-quota-util.sh" --total) || exit 1
-  awk -v v="${TOTAL:-0}" 'BEGIN { exit !(v > 0) }' || exit 1
-  exit 0
-fi
+render() {
+  source "$script_dir/nerd-font.sh"
+  local total
 
-TOTAL=$("$SCRIPT_DIR/llm-quota-util.sh" --total) || exit 1
-awk -v v="${TOTAL:-0}" 'BEGIN { exit !(v > 0) }' || exit 1
-printf "%s%s" "$(nerd_font_icon usd)" "$TOTAL"
+  total=$("$script_dir/llm-quota-util.sh" --total) || exit 1
+  awk -v v="${total:-0}" 'BEGIN { exit !(v > 0) }' || exit 1
+  printf "%s%s" "$(nerd_font_icon usd)" "$total"
+}
+
+case "${1:-}" in
+  --display | "")
+    cache_file=$(starship_cache_path llm-quota "$(starship_cache_client)")
+    cache_display "$cache_file" 60 "$0" --refresh "$cache_file"
+    ;;
+  --refresh)
+    cache_refresh "${2:?}" render
+    ;;
+  --guard)
+    [ -n "${TMUX:-}${ZELLIJ:-}" ] && exit 1
+    "$script_dir/layout.sh" is medium || exit 1
+    cache_file=$(starship_cache_path llm-quota "$(starship_cache_client)")
+    cache_gate "$cache_file" 60 "$0" --refresh "$cache_file"
+    ;;
+  *) exit 2 ;;
+esac

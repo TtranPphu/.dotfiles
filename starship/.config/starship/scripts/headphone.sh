@@ -1,10 +1,12 @@
 #!/usr/bin/env bash
+# Bluetooth headphone battery segment, rendered through the two-pass cache
+# (cache.sh): the prompt only reads the cache; the util's DBus/SSH reads run
+# in a detached refresher when the entry is stale.
 set -euo pipefail
 
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-UTIL="$SCRIPT_DIR/headphone-util.sh"
-source "$SCRIPT_DIR/level-color.sh"
-source "$SCRIPT_DIR/nerd-font.sh"
+script_dir="${BASH_SOURCE[0]%/*}"
+[ "$script_dir" = "${BASH_SOURCE[0]}" ] && script_dir="."
+source "$script_dir/cache.sh"
 
 usage() {
   echo "Usage: $(basename "$0") --display | --guard"
@@ -13,26 +15,45 @@ usage() {
 
 [[ $# -lt 1 ]] && usage
 
-data=$("$UTIL") || exit 1
-[[ -z "$data" || "$data" -eq 0 ]] && exit 1
-val="$data"
+render() {
+  source "$script_dir/level-color.sh"
+  source "$script_dir/nerd-font.sh"
+  local size=${1:-$("$script_dir/layout.sh" size)}
+  local data val text
 
-WIDE_ICON="$(nerd_font_icon headphone)"
-MEDIUM_ICON="$(nerd_font_icon headphone.medium)"
+  data=$("$script_dir/headphone-util.sh") || exit 1
+  [[ -z "$data" || "$data" -eq 0 ]] && exit 1
+  val="$data"
+
+  local wide_icon medium_icon
+  wide_icon="$(nerd_font_icon headphone)"
+  medium_icon="$(nerd_font_icon headphone.medium)"
+
+  if [[ "$size" != wide ]]; then
+    text="$medium_icon"
+  else
+    text="$wide_icon$val$(nerd_font_icon percent)"
+  fi
+  printf '%s%s\033[0m' "$(level_color "$val")" "$text"
+}
 
 case "${1:-}" in
   --display)
-    if [[ "$("$SCRIPT_DIR/layout.sh" size)" != wide ]]; then
-      text="$MEDIUM_ICON"
-    else
-      text="$WIDE_ICON$val$(nerd_font_icon percent)"
-    fi
-    printf '%s%s\033[0m' "$(level_color "$val")" "$text"
+    # The refresher is setsid-detached and loses the tty, so it cannot resolve
+    # the layout itself — the display pass resolves it and passes it along.
+    size=$("$script_dir/layout.sh" size 2>/dev/null) || size=medium
+    cache_file=$(starship_cache_path headphone "$(starship_cache_client).$size")
+    cache_display "$cache_file" 60 "$0" --refresh "$cache_file" "$size"
+    ;;
+  --refresh)
+    cache_refresh "${2:?}" render "${3:-}"
     ;;
   --guard)
     [ -n "${TMUX:-}${ZELLIJ:-}" ] && exit 1
-    "$SCRIPT_DIR/layout.sh" is narrow && exit 1
-    exit 0
+    size=$("$script_dir/layout.sh" size 2>/dev/null) || size=medium
+    [ "$size" = narrow ] && exit 1
+    cache_file=$(starship_cache_path headphone "$(starship_cache_client).$size")
+    cache_gate "$cache_file" 15 "$0" --refresh "$cache_file" "$size"
     ;;
   *) usage ;;
 esac

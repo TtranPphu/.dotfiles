@@ -39,7 +39,7 @@ format = "[$output]($style) "
 
 [custom.shell]
 command = '${STARSHIP_CONFIG%/*}/scripts/shell.sh'
-when = 'true'
+when = '${STARSHIP_CONFIG%/*}/scripts/shell.sh --guard'
 shell = ["bash"]
 style = "bold bright-black"
 format = "[$output]($style) "
@@ -53,7 +53,7 @@ format = "[$output]($style) "
 
 [custom.git]
 command = '${STARSHIP_CONFIG%/*}/scripts/git.sh'
-when = "git rev-parse --is-inside-work-tree 2>/dev/null"
+when = '${STARSHIP_CONFIG%/*}/scripts/git.sh --guard'
 shell = ["bash"]
 format = "$output "
 
@@ -87,7 +87,7 @@ format = " [$output]($style)"
 
 [custom.clock]
 command = '${STARSHIP_CONFIG%/*}/scripts/clock.sh'
-when = '! ${STARSHIP_CONFIG%/*}/scripts/layout.sh is narrow'
+when = '${STARSHIP_CONFIG%/*}/scripts/clock.sh --guard'
 shell = ["bash"]
 style = "dimmed bright-cyan"
 format = " [$output]($style)"
