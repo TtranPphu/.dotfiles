@@ -25,9 +25,9 @@ render() {
     ramp=$((level * 10))
     icon=$("$script_dir/ssh-quality-util.sh" signal 2>/dev/null)
     if [[ "$size" == wide ]]; then
-      printf '%s%s %s%s\033[0m' "$(level_color "$ramp")" "$icon" "$(nerd_font_icon host)" "$data"
+      printf '%s%s%s%s\033[0m' "$(level_color "$ramp")" "$icon" "$(nerd_font_icon host)" "$data"
     else
-      printf '%s%s\033[0m' "$(level_color "$ramp")" "$icon"
+      printf '%s%s\033[0m' "$(level_color "$ramp")" "${icon% }"
     fi
   else
     [[ "$size" == wide ]] || exit 1

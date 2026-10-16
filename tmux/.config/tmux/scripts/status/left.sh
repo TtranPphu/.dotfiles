@@ -51,7 +51,7 @@ render() {
       ;;
   esac
 
-  printf '#[fg=#000000,bg=blue,bold]▏%s%s▕#[bg=default]' "$(nerd_font_icon session)" "$current_session"
+  printf '#[fg=#000000,bg=blue,bold]▏%s%s▕#[bg=default]' "$(nerd_font_icon session.active)" "$current_session"
   printf '#[fg=brightblack,bold]┋'
 }
 
