@@ -40,7 +40,9 @@
       "right": [
         {
           "id": "omarchy.tray",
-          "pinned": [],
+          "pinned": [
+            "TelegramDesktop"
+          ],
           "hidden": []
         },
         {
