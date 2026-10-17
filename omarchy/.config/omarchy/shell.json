@@ -43,7 +43,9 @@
           "pinned": [
             "TelegramDesktop"
           ],
-          "hidden": []
+          "hidden": [
+            "steam"
+          ]
         },
         {
           "id": "ttranpphu.tailscale"
