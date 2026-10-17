@@ -71,10 +71,10 @@ o.bind("SUPER + L", "Workspace next", hl.dsp.focus({ workspace = "+1" }))
 -- o.bind("SUPER + S", "Workspace previous", hl.dsp.focus({ workspace = "-1" }))
 
 -- Swap windows
-o.bind("SUPER + SHIFT + J", "Swap window left", hl.dsp.window.swap({ direction = "l" }))
-o.bind("SUPER + SHIFT + K", "Swap window right", hl.dsp.window.swap({ direction = "r" }))
--- o.bind("SUPER + SHIFT + A", "Swap window left", hl.dsp.window.swap({ direction = "l" }))
--- o.bind("SUPER + SHIFT + D", "Swap window right", hl.dsp.window.swap({ direction = "r" }))
+o.bind("SUPER + SHIFT + J", "Swap window left", hl.dsp.layout("swapcol l"))
+o.bind("SUPER + SHIFT + K", "Swap window right", hl.dsp.layout("swapcol r"))
+-- o.bind("SUPER + SHIFT + A", "Swap window left", hl.dsp.layout("swapcol l"))
+-- o.bind("SUPER + SHIFT + D", "Swap window right", hl.dsp.layout("swapcol r"))
 
 -- Move window to workspace
 o.bind("SUPER + SHIFT + H", "Move window to previous workspace", hl.dsp.window.move({ workspace = "-1" }))

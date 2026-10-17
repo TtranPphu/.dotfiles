@@ -46,6 +46,10 @@ hl.config({
     -- Center the focused column instead of only fitting it into view.
     -- 0 = center, 1 = fit.
     focus_fit_method = 0,
+
+    -- Don't wrap column swaps around the tape ends; swapcol wraps by default,
+    -- the old window.swap no-oped at the edges.
+    wrap_swapcol = false,
   },
 })
 
