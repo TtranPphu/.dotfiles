@@ -5,7 +5,7 @@ _nerd_font_sh() { "$HOME/.config/zsh/nerd-font.sh" "$@"; }
 
 _nerd_font_apply() {
   if [[ -n "${TMUX:-}" ]]; then
-    "$HOME/.config/tmux/scripts/support/nerd-font-tmux.sh" "${TMUX%%,*}" >/dev/null 2>&1
+    "$HOME/.config/tmux/scripts/support/nerd-font-tmux.sh" "${TMUX%%,*}"
   fi
 }
 
