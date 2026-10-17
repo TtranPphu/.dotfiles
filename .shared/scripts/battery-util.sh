@@ -1,9 +1,20 @@
 #!/usr/bin/env bash
+# Battery probe + fetch cache (TTL 30s).
+#
+#   battery-util.sh             -> cached "percent status"; exits 1 when unknown
+#   battery-util.sh --refresh F -> run the probe and store it (detached refresher)
+#
+# The read path is a cache read; the upower/PowerShell probe runs in the
+# detached refresher when the entry is missing or stale.
 set -euo pipefail
 
-CACHE="/tmp/starship-battery-cache"
-LOCK="/tmp/starship-battery.flock"
-TTL=60
+# Resolve this script through symlinks (stow links it into consumers) so the
+# shared fetch-cache engine next to the real file is found.
+script_dir="${BASH_SOURCE[0]:-}"
+script_dir="$(readlink -f -- "$script_dir" 2>/dev/null || true)"
+script_dir="${script_dir%/*}"
+[ -n "$script_dir" ] || script_dir=.
+[ -f "$script_dir/fetch-cache.sh" ] && source "$script_dir/fetch-cache.sh"
 
 read_battery_local() {
   local bat raw_status bat_path
@@ -38,45 +49,7 @@ read_battery_local() {
   printf '%s %s' "$bat" "${raw_status:-}"
 }
 
-fetch_async() {
-  (
-    flock -xn 200 2>/dev/null || exit 0
-
-    local bat raw_status result
-
-    result=$(read_battery_local 2>/dev/null) || result=""
-    if [[ -n "$result" ]]; then
-      bat="${result%% *}"
-      raw_status="${result##* }"
-      printf 'bat=%s\nraw_status=%s\nts=%s\n' "$bat" "$raw_status" "$(date +%s)" > "$CACHE"
-    else
-      rm -f "$CACHE"
-    fi
-  ) 200>"$LOCK" >/dev/null 2>&1 & disown
-}
-
-main() {
-  mkdir -p /tmp
-
-  local now ts bat raw_status
-  now=$(date +%s)
-
-  if [[ -f "$CACHE" ]]; then
-    . "$CACHE"
-    bat="${bat:-}"
-    if [[ -n "$bat" ]]; then
-      if [[ $(( now - ${ts:-0} )) -lt "$TTL" ]]; then
-        printf '%s %s' "$bat" "${raw_status:-}"
-        return 0
-      fi
-      fetch_async
-      printf '%s %s' "$bat" "${raw_status:-}"
-      return 0
-    fi
-  fi
-
-  fetch_async
-  return 1
-}
-
-main "$@"
+case "${1:-}" in
+  --refresh) fetch_refresh "${2:?}" read_battery_local ;;
+  *) fetch_display battery 30 ;;
+esac

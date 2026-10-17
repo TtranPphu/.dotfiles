@@ -4,6 +4,7 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 UTIL="$SCRIPT_DIR/headphone-util.sh"
 source "$SCRIPT_DIR/nerd-font.sh"
+source "$SCRIPT_DIR/layout.sh"
 
 data=$("$UTIL") || exit 1
 [[ -z "$data" || "$data" -eq 0 ]] && exit 1
@@ -20,7 +21,7 @@ idx=$(( (val - 1) / 10 ))
 WIDE_ICON="$(nerd_font_icon headphone)"
 MEDIUM_ICON="$(nerd_font_icon headphone.medium)"
 
-if "$SCRIPT_DIR/layout.sh" is wide; then
+if [[ "$(layout_size_fast)" == wide ]]; then
   printf '#[fg=brightblack,bold,bg=%s]▏%s%s%s▕#[default]' "${colors[$idx]}" "$WIDE_ICON" "$val" "$(nerd_font_icon percent)"
 else
   printf '#[fg=brightblack,bold,bg=%s]▏%s▕#[default]' "${colors[$idx]}" "$MEDIUM_ICON"

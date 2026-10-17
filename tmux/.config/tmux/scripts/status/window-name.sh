@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 # Window name for the status bar.
 #
-# Plain invocation renders synchronously (control scripts and session presets
-# want the real name). `--cached` is the tmux status path: it only reads the
-# cache (cache.sh) and refreshes in the background — window-status runs for
-# every window on every redraw, so it must not wait on the ps scan.
+# Rendered live: the process scan costs ~15 ms, and window-status runs for
+# every window on every redraw, so the name is always current — no cache lag
+# when a pane's command changes. `--cached` is kept as a live alias for a
+# running tmux server that still passes it (the previous status format did).
 
 script_dir="${BASH_SOURCE[0]%/*}"
 if [ "$script_dir" = "${BASH_SOURCE[0]}" ]; then
@@ -56,27 +56,6 @@ render() {
 }
 
 case "${1:-}" in
-  --refresh)
-    source "$script_dir/cache.sh"
-    cache_refresh "${2:?}" render "${3:-}" "${4:-}"
-    ;;
-  --cached)
-    source "$script_dir/cache.sh"
-    key="window-name.${2:-}.${3:-}"
-    key="${key//[^a-zA-Z0-9]/_}"
-    if ! cache_display "$CACHE_DIR/$key.out" 30 "$0" --refresh "$CACHE_DIR/$key.out" "${2:-}" "${3:-}"; then
-      # Nothing cached yet (first pass after a pane's command changed): show
-      # the mapped command name until the refresher's process scan lands.
-      for rule in "${app_name_rules[@]}"; do
-        pattern="${rule%%:*}"
-        name="${rule#*:}"
-        if [[ "${3:-}" == "$pattern" ]]; then
-          printf '%s' "$name"
-          exit 0
-        fi
-      done
-      printf '%s' "${3:-}"
-    fi
-    ;;
+  --cached) shift; render "${1:-}" "${2:-}" ;;
   *) render "${1:-}" "${2:-}" ;;
 esac

@@ -4,6 +4,12 @@
 # palette = "tokio-night"
 add_newline = true
 
+# Directory-scan budget (ms). The default 30 warns in large directories
+# (the biggest realistic one here, the Chromium cache at ~20k entries,
+# scans in ~45-55 ms), so give realistic scans ~2x headroom while still
+# capping a pathological directory's wait at 100 ms.
+scan_timeout = 100
+
 format = """
 ${custom.os}\
 ${custom.shell}\
@@ -24,6 +30,9 @@ $character\
 
 right_format = """
 ${custom.opencode-quota}\
+${custom.deepseek-quota}\
+${custom.kimi-quota}\
+${custom.llm-quota}\
 ${custom.user}\
 ${custom.hostname}\
 ${custom.docker_host}\
@@ -97,25 +106,25 @@ disabled = true
 
 [custom.battery]
 command = '${STARSHIP_CONFIG%/*}/scripts/battery.sh --display'
-when = '${STARSHIP_CONFIG%/*}/scripts/battery.sh --guard'
+when = '${STARSHIP_CONFIG%/*}/scripts/battery.sh --guard && ${STARSHIP_CONFIG%/*}/scripts/battery-util.sh >/dev/null 2>&1'
 shell = ["bash"]
 format = " $output"
 
 [custom.headphone]
 command = '${STARSHIP_CONFIG%/*}/scripts/headphone.sh --display'
-when = '${STARSHIP_CONFIG%/*}/scripts/headphone.sh --guard'
+when = '${STARSHIP_CONFIG%/*}/scripts/headphone.sh --guard && ${STARSHIP_CONFIG%/*}/scripts/headphone-util.sh >/dev/null 2>&1'
 shell = ["bash"]
 format = " $output"
 
 [custom.mouse]
 command = '${STARSHIP_CONFIG%/*}/scripts/mouse.sh --display'
-when = '${STARSHIP_CONFIG%/*}/scripts/mouse.sh --guard'
+when = '${STARSHIP_CONFIG%/*}/scripts/mouse.sh --guard && ${STARSHIP_CONFIG%/*}/scripts/mouse-util.sh >/dev/null 2>&1'
 shell = ["bash"]
 format = " $output"
 
 [custom.keyboard]
 command = '${STARSHIP_CONFIG%/*}/scripts/keyboard.sh --display'
-when = '${STARSHIP_CONFIG%/*}/scripts/keyboard.sh --guard'
+when = '${STARSHIP_CONFIG%/*}/scripts/keyboard.sh --guard && ${STARSHIP_CONFIG%/*}/scripts/keyboard-util.sh >/dev/null 2>&1'
 shell = ["bash"]
 format = " $output"
 

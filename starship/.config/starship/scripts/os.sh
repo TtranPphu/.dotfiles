@@ -1,11 +1,10 @@
 #!/usr/bin/env bash
-# OS segment, rendered through the two-pass cache (cache.sh): the prompt only
-# reads the cache; a detached refresher renders into it when stale.
+# OS segment: gate + live render. os-util is a single /etc/os-release read.
 set -euo pipefail
 
 script_dir="${BASH_SOURCE[0]%/*}"
 [ "$script_dir" = "${BASH_SOURCE[0]}" ] && script_dir="."
-source "$script_dir/cache.sh"
+source "$script_dir/layout.sh"
 
 render() {
   source "$script_dir/nerd-font.sh"
@@ -36,23 +35,19 @@ render() {
     *)            key=os.linux ;;
   esac
   icon=$(nerd_font_icon "$key")
-  printf '%s┊' "${icon% }"
+  # One space between the icon and the separator, regardless of whether the
+  # catalog value carries its own trailing space.
+  printf '%s ┊' "${icon% }"
 }
 
 case "${1:-}" in
   --display | "")
-    cache_file=$(starship_cache_path os)
-    cache_display "$cache_file" 600 "$0" --refresh "$cache_file"
-    ;;
-  --refresh)
-    cache_refresh "${2:?}" render
+    render
     ;;
   --guard)
     [ -n "${TMUX:-}${ZELLIJ:-}" ] && exit 1
-    size=$("$script_dir/layout.sh" size 2>/dev/null) || size=medium
-    [ "$size" = narrow ] && exit 1
-    cache_file=$(starship_cache_path os "$(starship_cache_client)")
-    cache_gate "$cache_file" 600 "$0" --refresh "$cache_file"
+    [ "$(layout_size_fast)" = narrow ] && exit 1
+    exit 0
     ;;
   *) exit 2 ;;
 esac

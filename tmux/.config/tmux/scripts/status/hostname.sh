@@ -6,10 +6,11 @@ UTIL="$SCRIPT_DIR/hostname-util.sh"
 QUALITY="$SCRIPT_DIR/ssh-quality-util.sh"
 source "$SCRIPT_DIR/level-color.sh"
 source "$SCRIPT_DIR/nerd-font.sh"
+source "$SCRIPT_DIR/layout.sh"
 
 socket_path="${1:-}"
 current_session="${2:-}"
-size=$("$SCRIPT_DIR/layout.sh" size)
+size=$(layout_size_fast)
 [[ $size == narrow ]] && exit 1
 
 host_name=$("$UTIL") || exit 1

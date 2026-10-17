@@ -1,20 +1,22 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Exit 0 only when medium or wide enough for the quota pill
+# Exit 0 only when wide enough for the standalone quota pill
 if [[ "${1:-}" == --guard ]]; then
   script_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
-  "$script_dir/layout.sh" is narrow && exit 1
+  source "$script_dir/layout.sh"
+  [[ "$(layout_size_fast)" == wide ]] || exit 1
   "$script_dir/opencode-quota-util.sh" --values >/dev/null || exit 1
   exit 0
 fi
 
 script_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 source "$script_dir/nerd-font.sh"
+source "$script_dir/layout.sh"
 values=$("$script_dir/opencode-quota-util.sh" --values) || exit 1
 read -r rolling _ monthly <<<"$values"
 
-size=$("$script_dir/layout.sh" size)
+size=$(layout_size_fast)
 [[ "$size" == narrow ]] && exit 1
 
 # Rolling quota drives the pill color: low usage green, near limit red. The

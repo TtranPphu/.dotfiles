@@ -1,10 +1,22 @@
 #!/usr/bin/env bash
+# Bluetooth keyboard battery probe + fetch cache (TTL 60s).
+#
+#   keyboard-util.sh             -> cached "left right"; exits 1 when unknown
+#   keyboard-util.sh --refresh F -> run the probe and store it (detached refresher)
+#   keyboard-util.sh --print     -> live local BlueZ read (used over SSH)
+#
+# The read path is a cache read; the DBus/SSH probe runs in the detached
+# refresher when the entry is missing or stale.
 set -euo pipefail
 
-LOCKFILE="/tmp/keyboard-battery.lock"
-CACHEFILE="/tmp/keyboard-battery.json"
-CACHE_TTL=5
-REMOTE_CACHE_TTL=60
+# Resolve this script through symlinks (stow links it into consumers) so the
+# shared fetch-cache engine next to the real file is found.
+script_dir="${BASH_SOURCE[0]:-}"
+script_dir="$(readlink -f -- "$script_dir" 2>/dev/null || true)"
+script_dir="${script_dir%/*}"
+[ -n "$script_dir" ] || script_dir=.
+[ -f "$script_dir/fetch-cache.sh" ] && source "$script_dir/fetch-cache.sh"
+
 DBUS_TIMEOUT=2
 
 DBUS_CONN="org.bluez"
@@ -61,17 +73,6 @@ remote_known_hosts() {
   printf '%s' "$file"
 }
 
-cache_ttl() {
-  if ssh_client_ip &>/dev/null; then
-    printf '%s' "$REMOTE_CACHE_TTL"
-  else
-    printf '%s' "$CACHE_TTL"
-  fi
-}
-
-usage() { exit 1; }
-err_exit() { exit 1; }
-
 gdbus_prop() {
   local path="$1" iface="$2" prop="$3"
   local out
@@ -107,33 +108,6 @@ gdbus_desc_value() {
   for hex in $(printf '%s' "$out" | grep -o '0x[0-9a-f][0-9a-f]'); do
     printf "\\x$hex"
   done
-}
-
-read_batteries_wsl() {
-  [[ -f "$WSL_PS1" ]] || return 1
-  command -v powershell.exe &>/dev/null || return 1
-  grep -qi microsoft /proc/version 2>/dev/null || return 1
-
-  if ! mkdir "/tmp/keyboard-battery-wsl.lock" 2>/dev/null; then
-    return 1
-  fi
-
-  (
-    tmp=$(mktemp "$CACHEFILE.XXXXXX")
-    result=$(timeout 10 powershell.exe -NoProfile -ExecutionPolicy Bypass -File "$WSL_PS1" 2>/dev/null | tr -d '\r')
-    if [[ -n "$result" ]]; then
-      left="${result%% *}"
-      right="${result##* }"
-      if [[ -n "$left" ]]; then
-        printf '%s %s %s\n' "$left" "${right:-0}" "$(date +%s)" > "$tmp"
-        mv "$tmp" "$CACHEFILE"
-      fi
-    fi
-    rm -f "$tmp"
-    rmdir "/tmp/keyboard-battery-wsl.lock" 2>/dev/null
-  ) & disown
-
-  return 1
 }
 
 read_batteries_gdbus() {
@@ -262,11 +236,7 @@ read_batteries_remote() {
 read_batteries() {
   read_batteries_remote && return 0
   if grep -qi microsoft /proc/version 2>/dev/null; then
-    if [[ -z "${TMUX-}" ]]; then
-      read_batteries_wsl && return 0
-    else
-      read_batteries_wsl_sync && return 0
-    fi
+    read_batteries_wsl_sync && return 0
     return 1
   fi
   if command -v gdbus &>/dev/null; then
@@ -275,52 +245,8 @@ read_batteries() {
   return 1
 }
 
-fetch_async() {
-  (
-    flock -xn 200 2>/dev/null || exit 1
-
-    local now ts left right
-    now=$(date +%s)
-
-    if [[ -f "$CACHEFILE" ]]; then
-      read -r left right ts < "$CACHEFILE" 2>/dev/null || true
-      if [[ -n "$left" ]] && [[ $(( now - ts )) -lt "$(cache_ttl)" ]]; then
-        exit 0
-      fi
-    fi
-
-    local result
-    result=$(read_batteries 2>/dev/null) || { rm -f "$CACHEFILE"; exit 1; }
-    left="${result%% *}"
-    right="${result##* }"
-    printf '%s %s %s\n' "$left" "${right:-0}" "$now" > "$CACHEFILE"
-  ) 200>"$LOCKFILE" >/dev/null 2>&1 & disown
-}
-
-main() {
-  mkdir -p /tmp
-
-  local now ts left right
-  now=$(date +%s)
-
-  if [[ -f "$CACHEFILE" ]]; then
-    read -r left right ts < "$CACHEFILE" 2>/dev/null || true
-    if [[ -n "$left" ]]; then
-      if [[ $(( now - ts )) -lt "$(cache_ttl)" ]]; then
-        printf '%s %s\n' "$left" "${right:-0}"
-        return 0
-      fi
-      fetch_async
-      printf '%s %s\n' "$left" "${right:-0}"
-      return 0
-    fi
-  fi
-
-  fetch_async
-  return 1
-}
-
 case "${1:-}" in
   --print) read_batteries_gdbus ;;
-  *) main "$@" ;;
+  --refresh) fetch_refresh "${2:?}" read_batteries ;;
+  *) fetch_display keyboard 60 ;;
 esac

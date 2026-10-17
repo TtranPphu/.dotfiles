@@ -4,6 +4,7 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 UTIL="$SCRIPT_DIR/battery-util.sh"
 source "$SCRIPT_DIR/nerd-font.sh"
+source "$SCRIPT_DIR/layout.sh"
 
 data=$("$UTIL") || exit 1
 cap="${data%% *}"
@@ -26,7 +27,7 @@ else
 fi
 color="${colors[$idx]}"
 
-if "$SCRIPT_DIR/layout.sh" is wide; then
+if [[ "$(layout_size_fast)" == wide ]]; then
   printf '#[fg=brightblack,bold,bg=%s]▏%s%s%s▕#[default]' "$color" "$icon" "$cap" "$(nerd_font_icon percent)"
 else
   case "$raw_status" in

@@ -1,11 +1,23 @@
 #!/usr/bin/env bash
+# Bluetooth headphone battery probe + fetch cache (TTL 60s).
+#
+#   headphone-util.sh             -> cached percent; exits 1 when unknown
+#   headphone-util.sh --refresh F -> run the probe and store it (detached refresher)
+#   headphone-util.sh --print     -> live local BlueZ read (used over SSH)
+#
+# The read path is a cache read; the DBus/SSH probe runs in the detached
+# refresher when the entry is missing or stale.
 set -euo pipefail
 
+# Resolve this script through symlinks (stow links it into consumers) so the
+# shared fetch-cache engine next to the real file is found.
+script_dir="${BASH_SOURCE[0]:-}"
+script_dir="$(readlink -f -- "$script_dir" 2>/dev/null || true)"
+script_dir="${script_dir%/*}"
+[ -n "$script_dir" ] || script_dir=.
+[ -f "$script_dir/fetch-cache.sh" ] && source "$script_dir/fetch-cache.sh"
+
 RUNTIME_DIR="${XDG_RUNTIME_DIR:-/run/user/$(id -u)}"
-LOCKFILE="$RUNTIME_DIR/headphone-battery.lock"
-CACHEFILE="$RUNTIME_DIR/headphone-battery.json"
-CACHE_TTL=5
-REMOTE_CACHE_TTL=60
 DBUS_TIMEOUT=2
 
 DBUS_CONN="org.bluez"
@@ -23,7 +35,9 @@ else
   DEVICE_PATTERNS=("*Nothing Ear*" "*OPPO Enco*")
 fi
 
-SCRIPT_DIR="$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")"
+# Reuse the already-resolved dir: BASH_SOURCE is unset under `bash -s`
+# (the remote --print path), where the readlink above must not run.
+SCRIPT_DIR="$script_dir"
 WSL_PS1="$SCRIPT_DIR/headphone-battery-wsl.ps1"
 
 # Remote battery reads: when this machine is reached over SSH from a tailnet
@@ -68,14 +82,6 @@ remote_known_hosts() {
       > "$file" 2>/dev/null || true
   [[ -s "$file" ]] || return 1
   printf '%s' "$file"
-}
-
-cache_ttl() {
-  if ssh_client_ip &>/dev/null; then
-    printf '%s' "$REMOTE_CACHE_TTL"
-  else
-    printf '%s' "$CACHE_TTL"
-  fi
 }
 
 gdbus_prop() {
@@ -245,50 +251,8 @@ read_batteries() {
   return 1
 }
 
-fetch_async() {
-  (
-    flock -xn 200 2>/dev/null || exit 1
-
-    local now ts val
-    now=$(date +%s)
-
-    if [[ -f "$CACHEFILE" ]]; then
-      read -r val ts < "$CACHEFILE" 2>/dev/null || true
-      if [[ -n "$val" ]] && [[ $(( now - ts )) -lt "$(cache_ttl)" ]]; then
-        exit 0
-      fi
-    fi
-
-    local result
-    result=$(read_batteries 2>/dev/null) || { rm -f "$CACHEFILE"; exit 1; }
-    printf '%s %s\n' "$result" "$now" > "$CACHEFILE"
-  ) 200>"$LOCKFILE" >/dev/null 2>&1 & disown
-}
-
-main() {
-  mkdir -p "$RUNTIME_DIR"
-
-  local now ts val
-  now=$(date +%s)
-
-  if [[ -f "$CACHEFILE" ]]; then
-    read -r val ts < "$CACHEFILE" 2>/dev/null || true
-    if [[ -n "$val" ]]; then
-      if [[ $(( now - ts )) -lt "$(cache_ttl)" ]]; then
-        printf '%s\n' "$val"
-        return 0
-      fi
-      fetch_async
-      printf '%s\n' "$val"
-      return 0
-    fi
-  fi
-
-  fetch_async
-  return 1
-}
-
 case "${1:-}" in
   --print) read_batteries_gdbus ;;
-  *) main "$@" ;;
+  --refresh) fetch_refresh "${2:?}" read_batteries ;;
+  *) fetch_display headphone 60 ;;
 esac

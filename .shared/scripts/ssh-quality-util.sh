@@ -17,7 +17,7 @@ set -euo pipefail
 # client type (nerd/mono/lame) resolves to its own glyph.
 source "$(dirname -- "$(readlink -f "${BASH_SOURCE[0]}")")/nerd-font.sh"
 
-CACHE_DIR="$HOME/.local/state/starship"
+CACHE_DIR="${XDG_STATE_HOME:-$HOME/.local/state}/starship"
 CACHE="$CACHE_DIR/ssh-quality"
 LOCK="$CACHE_DIR/ssh-quality.lock"
 TTL=15

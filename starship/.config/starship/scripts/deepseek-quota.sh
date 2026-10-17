@@ -1,13 +1,11 @@
 #!/bin/bash
-# Starship custom module: DeepSeek account balance (wide terminals), rendered
-# through the two-pass cache (cache.sh): the prompt only reads the cache; the
-# util's cache/network reads run in a detached refresher when the entry is
-# stale.
+# Starship custom module: DeepSeek account balance (wide terminals).
+# llm-quota-util.sh owns the fetch cache.
 set -euo pipefail
 
 script_dir="${BASH_SOURCE[0]%/*}"
 [ "$script_dir" = "${BASH_SOURCE[0]}" ] && script_dir="."
-source "$script_dir/cache.sh"
+source "$script_dir/layout.sh"
 
 render() {
   source "$script_dir/nerd-font.sh"
@@ -21,17 +19,18 @@ render() {
 
 case "${1:-}" in
   --display | "")
-    cache_file=$(starship_cache_path deepseek-quota "$(starship_cache_client)")
-    cache_display "$cache_file" 60 "$0" --refresh "$cache_file"
-    ;;
-  --refresh)
-    cache_refresh "${2:?}" render
+    render
     ;;
   --guard)
     [ -n "${TMUX:-}${ZELLIJ:-}" ] && exit 1
-    "$script_dir/layout.sh" is wide || exit 1
-    cache_file=$(starship_cache_path deepseek-quota "$(starship_cache_client)")
-    cache_gate "$cache_file" 60 "$0" --refresh "$cache_file"
+    [ "$(layout_size_fast)" = wide ] || exit 1
+    # Presence gate: a hidden module must contribute nothing, so the balance is
+    # checked here too — a command that fails would still render the format's
+    # literal space.
+    "$script_dir/llm-quota-util.sh" --configured deepseek || exit 1
+    balance=$("$script_dir/llm-quota-util.sh" --get deepseek) || exit 1
+    awk -v v="${balance:-0}" 'BEGIN { exit !(v > 0) }' || exit 1
+    exit 0
     ;;
   *) exit 2 ;;
 esac

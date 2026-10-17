@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-cache_dir="$HOME/.local/state/starship"
+cache_dir="${XDG_STATE_HOME:-$HOME/.local/state}/starship"
 cache="$cache_dir/llm-quota.json"
 lock="$cache_dir/llm-quota.lock"
-ttl=300
+ttl=60
 
 usage() {
   echo "usage: llm-quota-util.sh --get kimi|deepseek | --total | --configured kimi|deepseek" >&2

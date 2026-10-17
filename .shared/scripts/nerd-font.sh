@@ -28,6 +28,9 @@ _nerd_font_dir="$(dirname -- "$_nerd_font_self")"
 _nerd_font_catalog="${DOTFILES_NERD_FONT_CATALOG:-$_nerd_font_dir/nerd-font.csv}"
 _nerd_font_type_cache=""
 
+# The fetch-cache engine (next to this file) caches the resolved client type.
+[ -f "$_nerd_font_dir/fetch-cache.sh" ] && source "$_nerd_font_dir/fetch-cache.sh"
+
 nerd_font_state_file() {
   printf '%s' "${DOTFILES_NERD_FONT_STATE:-${XDG_STATE_HOME:-$HOME/.local/state}/dotfiles/nerd-font-clients}"
 }
@@ -96,13 +99,67 @@ nerd_font_type_to_mode() {
   esac
 }
 
-# Resolved type: override wins, else the client's stored type, else lame.
-nerd_font_type() {
-  local sock="${1:-${NERD_FONT_SOCKET:-}}" pid="${2:-}" type
+# Live client resolution (no cache): the override wins, else the per-client
+# type from the state file. Used by the `type` CLI (the setter path resolves
+# live) and by the cache's refresher.
+nerd_font_type_live() {
+  local sock="${1:-}" pid="${2:-}" type
   type=$(nerd_font_type_normalize "${DOTFILES_NERD_FONT:-}")
   [ -n "$type" ] && { printf '%s' "$type"; return 0; }
   type=$(nerd_font_type_normalize "$(nerd_font_lookup "$(nerd_font_client_id "$sock" "$pid")")")
   printf '%s' "${type:-lame}"
+}
+
+# _nerd_font_cache_key <sock> <pid> <var> — set <var> to the cache key for the
+# resolved type: the tmux status key shape plus the client identity (the SSH
+# client's address, else "local"). The identity comes from the environment
+# only — the tmux-client scan the live resolution falls back to is the ~9 ms
+# cost this cache exists to avoid, so it is not run for the key (a local
+# prompt sharing its tmux server with an attached SSH client can therefore
+# read that client's entry).
+_nerd_font_cache_key() {
+  local conn="${SSH_CONNECTION:-${SSH_CLIENT:-}}" id
+  id="${conn%% *}"
+  printf -v "$3" 'nerd-font-type.%s.%s.%s.%s' \
+    "${1//[^a-zA-Z0-9]/_}" "${2:-none}" "${DOTFILES_NERD_FONT:-auto}" "${id:-local}"
+}
+
+# Cached client resolution: the type only changes when the client's font
+# config does, so it is cached as fetched data (fetch-cache.sh, 600 s — the
+# same key shape and TTL as the tmux status cache) and refreshed in the
+# background; a stale entry is served as-is and a cold miss resolves live once
+# and stores. This keeps a module's icon lookup a file read instead of the
+# ~10 ms tmux-client scan.
+nerd_font_type_cached() {
+  local sock="${1:-}" pid="${2:-}" key file value
+  _nerd_font_cache_key "$sock" "$pid" key
+  file=$(fetch_cache_path "$key")
+  if fetch_read "$file" 600 "$_nerd_font_self" --cache-type "$sock" "$pid"; then
+    return 0
+  fi
+  value=$(nerd_font_type_live "$sock" "$pid")
+  fetch_cache_store "$file" "$value"
+  printf '%s' "$value"
+}
+
+# Store the live type for the cached key (the detached refresher's entry).
+nerd_font_type_cache_store() {
+  local sock="${1:-}" pid="${2:-}" key
+  _nerd_font_cache_key "$sock" "$pid" key
+  fetch_refresh "$(fetch_cache_path "$key")" nerd_font_type_live "$sock" "$pid"
+}
+
+# Resolved type: the override wins (the setter path resolves live and exports
+# it), else the cached client type.
+nerd_font_type() {
+  local sock="${1:-${NERD_FONT_SOCKET:-}}" pid="${2:-}" type
+  type=$(nerd_font_type_normalize "${DOTFILES_NERD_FONT:-}")
+  [ -n "$type" ] && { printf '%s' "$type"; return 0; }
+  if [ -n "${_nerd_font_self:-}" ] && command -v fetch_cache_path >/dev/null 2>&1; then
+    nerd_font_type_cached "$sock" "$pid"
+  else
+    nerd_font_type_live "$sock" "$pid"
+  fi
 }
 
 nerd_font_mode() {
@@ -123,7 +180,8 @@ nerd_font_icon() {
 if [ "${BASH_SOURCE[0]}" = "$0" ]; then
   case "${1:-}" in
     mode) shift; nerd_font_mode "$@" ;;
-    type) shift; nerd_font_type "$@" ;;
+    type) shift; nerd_font_type_live "${1:-}" "${2:-}" ;;
+    --cache-type) shift; nerd_font_type_cache_store "${1:-}" "${2:-}" ;;
     client-id) shift; nerd_font_client_id "${1:-}" "${2:-}" ;;
     state-file) nerd_font_state_file ;;
     lookup) nerd_font_lookup "${2:?usage: nerd-font lookup ID}" ;;

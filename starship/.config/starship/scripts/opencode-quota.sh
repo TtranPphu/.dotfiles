@@ -1,17 +1,16 @@
 #!/bin/bash
-# Starship custom module: OpenCode Go quota usage, rendered through the
-# two-pass cache (cache.sh): the prompt only reads the cache; the util's
-# cache/network reads run in a detached refresher when the entry is stale.
+# Starship custom module: OpenCode Go quota usage.
+# opencode-quota-util.sh owns the fetch cache.
 set -euo pipefail
 
 script_dir="${BASH_SOURCE[0]%/*}"
 [ "$script_dir" = "${BASH_SOURCE[0]}" ] && script_dir="."
-source "$script_dir/cache.sh"
+source "$script_dir/layout.sh"
 
 render() {
   source "$script_dir/level-color.sh"
   source "$script_dir/nerd-font.sh"
-  local size=${1:-$("$script_dir/layout.sh" size)}
+  local size=${1:-$(layout_size_fast)}
   local values rolling monthly pct icon
 
   [ "$size" = narrow ] && exit 1
@@ -28,21 +27,16 @@ render() {
 
 case "${1:-}" in
   --display | "")
-    # The refresher is setsid-detached and loses the tty, so it cannot resolve
-    # the layout itself — the display pass resolves it and passes it along.
-    size=$("$script_dir/layout.sh" size 2>/dev/null) || size=medium
-    cache_file=$(starship_cache_path opencode-quota "$(starship_cache_client).$size")
-    cache_display "$cache_file" 60 "$0" --refresh "$cache_file" "$size"
-    ;;
-  --refresh)
-    cache_refresh "${2:?}" render "${3:-}"
+    render "$(layout_size_fast)"
     ;;
   --guard)
     [ -n "${TMUX:-}${ZELLIJ:-}" ] && exit 1
-    size=$("$script_dir/layout.sh" size 2>/dev/null) || size=medium
-    [ "$size" = narrow ] && exit 1
-    cache_file=$(starship_cache_path opencode-quota "$(starship_cache_client).$size")
-    cache_gate "$cache_file" 60 "$0" --refresh "$cache_file" "$size"
+    [ "$(layout_size_fast)" = wide ] || exit 1
+    # Presence gate: a hidden module must contribute nothing, so the values are
+    # checked here too — a command that fails would still render the format's
+    # literal space.
+    "$script_dir/opencode-quota-util.sh" --values >/dev/null || exit 1
+    exit 0
     ;;
   *) exit 2 ;;
 esac

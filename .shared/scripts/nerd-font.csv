@@ -61,6 +61,8 @@ deepseek;                     ;󰫣 ;   ;󰫣;    ;DS ;
 opencode;                     ;󱇘 ;   ;󱇘;    ;OC ;
 usd;                          ;;    ;;    ;$;
 percent;                      ;;    ;;    ;%;
+# shared: stale marker
+stale;                        ;󰇘;    ;;     ;;
 # tmux: windows, sessions, panes
 win;                          ; ;   ;;    ;;
 win.active;                   ; ;   ;;    ;;

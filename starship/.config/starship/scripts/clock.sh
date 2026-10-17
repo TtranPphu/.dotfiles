@@ -1,11 +1,10 @@
 #!/usr/bin/env bash
-# Clock segment, rendered through the two-pass cache (cache.sh): the prompt
-# only reads the cache; a detached refresher renders into it when stale.
+# Clock segment: gate + live render. A date call is cheap, so nothing is cached.
 set -euo pipefail
 
 script_dir="${BASH_SOURCE[0]%/*}"
 [ "$script_dir" = "${BASH_SOURCE[0]}" ] && script_dir="."
-source "$script_dir/cache.sh"
+source "$script_dir/layout.sh"
 
 render() {
   source "$script_dir/nerd-font.sh"
@@ -15,24 +14,19 @@ render() {
   time="$(date +'%I:%M %p')"
   icon="$(nerd_font_icon "clock.$hour")"
   if [[ -n "$icon" ]]; then
-    printf '%s%s\n' "$icon" "$time"
+    printf '%s%s' "$icon" "$time"
   else
-    printf '%s\n' "$time"
+    printf '%s' "$time"
   fi
 }
 
 case "${1:-}" in
   --display | "")
-    cache_file=$(starship_cache_path clock "$(starship_cache_client)")
-    cache_display "$cache_file" 15 "$0" --refresh "$cache_file"
-    ;;
-  --refresh)
-    cache_refresh "${2:?}" render
+    render
     ;;
   --guard)
-    "$script_dir/layout.sh" is narrow && exit 1
-    cache_file=$(starship_cache_path clock "$(starship_cache_client)")
-    cache_gate "$cache_file" 15 "$0" --refresh "$cache_file"
+    [ "$(layout_size_fast)" = narrow ] && exit 1
+    exit 0
     ;;
   *) exit 2 ;;
 esac

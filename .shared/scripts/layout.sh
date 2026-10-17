@@ -46,6 +46,17 @@ layout_size() {
   fi
 }
 
+# Fork-free layout size for prompt gates: reads the width with a single stty
+# fork instead of layout_width's stty+awk+tput chain, then maps it through
+# layout_size without further forks. Same thresholds as layout_size.
+layout_size_fast() {
+  local w="${STATUS_WIDTH:-${COLUMNS:-}}"
+  if [ -z "$w" ]; then
+    read -r _ w < <(stty size < /dev/tty 2>/dev/null) || w=
+  fi
+  layout_size "$w"
+}
+
 if [ "${BASH_SOURCE[0]}" = "$0" ]; then
   case "${1:-}" in
     width) shift; layout_width "${1:-}" ;;

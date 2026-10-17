@@ -1,26 +1,28 @@
 #!/usr/bin/env bash
-# Status-right (two parts: adjacent sessions, then the pills). The sessions
-# part is action-driven and renders live on every redraw; the pills part is
-# cached (cache.sh) and its modules run in a detached refresher, so a tmux
-# redraw never waits on them.
+# Status-right (two parts: adjacent sessions, then the pills). Both parts
+# render live on every redraw from the fetch caches; the only prerequisite
+# cached here is the per-client font type (a ~10 ms client scan), so the
+# modules below inherit DOTFILES_NERD_FONT and their icons stay cheap.
 
 script_dir="${BASH_SOURCE[0]%/*}"
 if [ "$script_dir" = "${BASH_SOURCE[0]}" ]; then
   script_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 fi
 source "$script_dir/cache.sh"
+# layout.sh provides layout_size_fast; sessions_display and render both use it.
+source "$script_dir/layout.sh"
 
 # sessions_display <socket> <current-session> <width> <client-pid>
 #
 # Renders the adjacent-session list live: a killed, created or renamed session
 # must show on the very next redraw, so this part is never cached — only the
-# slow prerequisites (font type, layout size) come from their loose caches.
+# slow prerequisites (font type) come from their loose caches.
 # One list-windows -a call replaces list-sessions plus a per-session
 # list-windows: sessions come back in the same order (alphabetical) and a
 # session counts as bell when any of its windows is, so the output matches the
 # uncached implementation.
 sessions_display() {
-  local socket_path="$1" current_session="$2" width="${3:-}" client_pid="${4:-}"
+  local socket_path="${1:-}" current_session="${2:-}" width="${3:-}" client_pid="${4:-}"
   local s flag line size reversed="" first
   local -A has_bell=()
   local -A seen=()
@@ -30,8 +32,8 @@ sessions_display() {
     width=$(tmux -S "$socket_path" list-clients -t "$current_session" -F '#{client_width}' 2>/dev/null | sort -n | head -1)
   fi
 
-  status_layout_size "$script_dir" "$width"
-  size="$STATUS_LAYOUT_SIZE"
+  export STATUS_WIDTH="$width"
+  size=$(layout_size_fast)
 
   if [[ "$size" != narrow ]]; then
     while IFS= read -r line; do
@@ -82,7 +84,7 @@ sessions_display() {
 }
 
 render() {
-  local socket_path="$1" current_session="$2" pane_id="$3" width="${4:-}" part="${5:-}" client_pid="${6:-}"
+  local socket_path="${1:-}" current_session="${2:-}" pane_id="${3:-}" width="${4:-}" part="${5:-}" client_pid="${6:-}"
   source "$script_dir/nerd-font.sh"
 
   if [[ -z "$width" ]]; then
@@ -97,8 +99,8 @@ render() {
   if [ -n "$client_pid" ]; then
     export DOTFILES_CLIENT_SSH="$(tr '\0' '\n' < "/proc/$client_pid/environ" 2>/dev/null | sed -n 's/^SSH_CONNECTION=//p')"
   fi
-  status_layout_size "$script_dir" "$width"
-  local size="$STATUS_LAYOUT_SIZE"
+  local size
+  size=$(layout_size_fast)
 
   # Build reversed list of sessions before current (newest first on status right)
   local reversed=""
@@ -166,17 +168,11 @@ render() {
   fi
 }
 
-case "${1:-}" in
-  --refresh) cache_refresh "${2:?}" render "${@:3}" ;;
-  *)
-    if [[ "${5:-}" == sessions ]]; then
-      sessions_display "${1:-}" "${2:-}" "${4:-}" "${6:-}"
-    else
-      # The key covers everything that changes the output: part, session, pane,
-      # client width and pid. TTL is loose — quota/battery/BT move slowly.
-      key="right.${2:-}.${3:-}.${4:-}.${5:-}.${6:-}.${DOTFILES_NERD_FONT:-auto}"
-      key="${key//[^a-zA-Z0-9]/_}"
-      cache_display "$CACHE_DIR/$key.out" 60 "$0" --refresh "$CACHE_DIR/$key.out" "$@"
-    fi
-    ;;
-esac
+# The sessions part and the pills part are two separate status entries; both
+# render live (the sessions part is action-driven, the pills come from the
+# fetch caches).
+if [[ "${5:-}" == sessions ]]; then
+  sessions_display "${1:-}" "${2:-}" "${4:-}" "${6:-}"
+else
+  render "${1:-}" "${2:-}" "${3:-}" "${4:-}" "${5:-}" "${6:-}"
+fi

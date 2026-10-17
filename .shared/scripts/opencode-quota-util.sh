@@ -5,10 +5,10 @@
 # valid. --values prints the remaining percent (100 - used) for each window.
 set -euo pipefail
 
-cache_dir="$HOME/.local/state/starship"
+cache_dir="${XDG_STATE_HOME:-$HOME/.local/state}/starship"
 cache="$cache_dir/opencode-quota.json"
 lock="$cache_dir/opencode-quota.lock"
-ttl=300
+ttl=60
 
 usage() {
   echo "usage: opencode-quota-util.sh --values" >&2
