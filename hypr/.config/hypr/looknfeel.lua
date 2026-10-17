@@ -30,7 +30,7 @@ local function remembered_column_width()
 
   local value = tonumber(file:read("*a"))
   file:close()
-  if value == nil or value < 0.3 or value > 1 then return nil end
+  if value == nil or value < 0.25 or value > 1 then return nil end
   return value
 end
 

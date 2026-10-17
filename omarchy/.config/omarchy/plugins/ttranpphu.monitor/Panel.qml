@@ -51,8 +51,7 @@ Panel {
     return scalePresets
   }
   // Column-width presets (fraction of screen width) for the scrolling layout.
-  // 0.6/0.8 match the widths the retired focus-following listener used.
-  readonly property var widthPresets: ["0.3", "0.5", "0.6", "0.8"]
+  readonly property var widthPresets: ["0.25", "0.5", "0.75", "1.0"]
   property real columnWidth: 0
   property string focusSection: "scale"
   property int selectedIndex: 0
