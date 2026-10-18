@@ -22,6 +22,8 @@ require("hypr.bindings")
 require("hypr.looknfeel")
 require("hypr.autostart")
 require("hypr.apps.telegram")
+require("hypr.apps.eden")
+require("hypr.apps.no-rest-for-the-wicked")
 
 -- Toggle config flags dynamically.
 require("default.hypr.toggles")
