@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Application
+Name=The Legend of Zelda: Tears of the Kingdom
+Exec=/home/ttranpphu/.local/bin/eden-nightly "/home/ttranpphu/Eden/NSPs/The Legend of Zelda - Tears of the Kingdom.nsp"
+Icon=totk
+Terminal=false
+Categories=Game;
