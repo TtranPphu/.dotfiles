@@ -5,7 +5,7 @@ set -uo pipefail
 log_file="${XDG_STATE_HOME:-$HOME/.local/state}/tmux/move-to-session.log"
 wm_status="$HOME/.config/tmux/scripts/status"
 script_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
-source "$script_dir/nerd-font.sh"
+source "$script_dir/icon.sh"
 
 debug_log() {
     [[ "$DEBUG" -ne 1 ]] && return 0

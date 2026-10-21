@@ -5,7 +5,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 UTIL="$SCRIPT_DIR/hostname-util.sh"
 QUALITY="$SCRIPT_DIR/ssh-quality-util.sh"
 source "$SCRIPT_DIR/level-color.sh"
-source "$SCRIPT_DIR/nerd-font.sh"
+source "$SCRIPT_DIR/icon.sh"
 source "$SCRIPT_DIR/layout.sh"
 
 socket_path="${1:-}"

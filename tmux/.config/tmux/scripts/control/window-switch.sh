@@ -7,7 +7,7 @@ preview_cmd='key=$(echo {} | cut -d" " -f1); '\
 
 wm_status="$HOME/.config/tmux/scripts/status"
 script_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
-source "$script_dir/nerd-font.sh"
+source "$script_dir/icon.sh"
 
 result=$(
   while read -r s; do

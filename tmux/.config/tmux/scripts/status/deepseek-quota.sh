@@ -9,7 +9,7 @@ fi
 
 # Only show when deepseek is configured in opencode
 script_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
-source "$script_dir/nerd-font.sh"
+source "$script_dir/icon.sh"
 source "$script_dir/color.sh"
 "$script_dir/llm-quota-util.sh" --configured deepseek || exit 1
 

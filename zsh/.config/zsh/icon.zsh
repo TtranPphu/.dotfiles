@@ -1,11 +1,11 @@
 # Icons mode: resolved per terminal client from the state file
 # (~/.local/state/dotfiles/nerd-font-clients) with a first-run font check.
 
-_nerd_font_sh() { "$HOME/.config/zsh/nerd-font.sh" "$@"; }
+_nerd_font_sh() { "$HOME/.config/zsh/icon.sh" "$@"; }
 
 _nerd_font_apply() {
   if [[ -n "${TMUX:-}" ]]; then
-    "$HOME/.config/tmux/scripts/support/nerd-font-tmux.sh" "${TMUX%%,*}"
+    "$HOME/.config/tmux/scripts/support/icon-tmux.sh" "${TMUX%%,*}"
   fi
 }
 

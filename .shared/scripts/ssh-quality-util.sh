@@ -15,7 +15,7 @@ set -euo pipefail
 
 # The signal glyph comes from the shared icon catalog, so each
 # client type (nerd/mono/lame) resolves to its own glyph.
-source "$(dirname -- "$(readlink -f "${BASH_SOURCE[0]}")")/nerd-font.sh"
+source "$(dirname -- "$(readlink -f "${BASH_SOURCE[0]}")")/icon.sh"
 
 CACHE_DIR="${XDG_STATE_HOME:-$HOME/.local/state}/starship"
 CACHE="$CACHE_DIR/ssh-quality"

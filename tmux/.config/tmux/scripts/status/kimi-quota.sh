@@ -8,7 +8,7 @@ if [[ "${1:-}" == --guard ]]; then
 fi
 
 script_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
-source "$script_dir/nerd-font.sh"
+source "$script_dir/icon.sh"
 source "$script_dir/color.sh"
 balance=$("$script_dir/llm-quota-util.sh" --get kimi) || exit 1
 awk -v v="${balance:-0}" 'BEGIN { exit !(v > 0) }' || exit 1

@@ -8,7 +8,7 @@ script_dir="${BASH_SOURCE[0]%/*}"
 source "$script_dir/layout.sh"
 
 render() {
-  source "$script_dir/nerd-font.sh"
+  source "$script_dir/icon.sh"
   local balance icon_deepseek icon_usd text
 
   "$script_dir/llm-quota-util.sh" --configured deepseek || exit 1

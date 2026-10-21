@@ -7,7 +7,7 @@ script_dir="${BASH_SOURCE[0]%/*}"
 source "$script_dir/layout.sh"
 
 render() {
-  source "$script_dir/nerd-font.sh"
+  source "$script_dir/icon.sh"
 
   local key icon
   case "$("$script_dir/os-util.sh")" in

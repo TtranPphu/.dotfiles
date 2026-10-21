@@ -52,7 +52,7 @@ sessions_display() {
 
     # Icons are only needed when a session actually shows (the common
     # single-session case prints just the separator). They come from their own
-    # loose caches, so the live path never sources nerd-font.sh or forks awk.
+    # loose caches, so the live path never sources icon.sh or forks awk.
     local glyph_bell="" glyph_session=""
     first="${order[0]:-}"
     if [[ -n "$first" && "$first" != "$current_session" ]]; then
@@ -66,7 +66,7 @@ sessions_display() {
         glyph_session="$STATUS_NERD_FONT_GLYPH"
       else
         # No type resolved: fall back to the in-process resolver.
-        source "$script_dir/nerd-font.sh"
+        source "$script_dir/icon.sh"
       fi
       icon_bell="${glyph_bell:-$(nerd_font_icon bell)}"
       icon_session="${glyph_session:-$(nerd_font_icon session)}"
@@ -91,7 +91,7 @@ sessions_display() {
 
 render() {
   local socket_path="${1:-}" current_session="${2:-}" pane_id="${3:-}" width="${4:-}" part="${5:-}" client_pid="${6:-}"
-  source "$script_dir/nerd-font.sh"
+  source "$script_dir/icon.sh"
 
   if [[ -z "$width" ]]; then
     width=$(tmux -S "$socket_path" list-clients -t "$current_session" -F '#{client_width}' 2>/dev/null | sort -n | head -1)

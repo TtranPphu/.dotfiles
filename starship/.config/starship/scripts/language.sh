@@ -25,7 +25,7 @@ lang_color() {
 }
 
 render() {
-  source "$script_dir/nerd-font.sh"
+  source "$script_dir/icon.sh"
   source "$script_dir/color.sh"
   local data rc=0
   local lang version icon_lang fg_lang icon_stale seg text

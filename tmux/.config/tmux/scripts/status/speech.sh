@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 script_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
-source "$script_dir/nerd-font.sh"
+source "$script_dir/icon.sh"
 source "$script_dir/color.sh"
 
 RUNTIME_DIR="${XDG_RUNTIME_DIR:-/run/user/$(id -u)}"

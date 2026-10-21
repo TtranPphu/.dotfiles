@@ -74,19 +74,19 @@ cache_refresh_cmd() {
 status_nerd_font_type() {
   local dir=$1 socket=$2 pid=$3 key
   key="nerd-font-type.${socket//[^a-zA-Z0-9]/_}.${pid:-none}.${DOTFILES_NERD_FONT:-auto}"
-  cache_cmd "$CACHE_DIR/$key.out" 600 "$dir/nerd-font.sh" type "$socket" "$pid"
+  cache_cmd "$CACHE_DIR/$key.out" 600 "$dir/icon.sh" type "$socket" "$pid"
   STATUS_NERD_FONT_TYPE=$CACHED_VALUE
 }
 
 # status_nerd_font_glyph <dir> <key> — set STATUS_NERD_FONT_GLYPH to the icon
 # for <key> in the already-resolved type, from a loose cache. Needs
 # STATUS_NERD_FONT_TYPE and DOTFILES_NERD_FONT exported so the refresher
-# resolves the same type; saves sourcing nerd-font.sh and its per-icon awk on
+# resolves the same type; saves sourcing icon.sh and its per-icon awk on
 # the live display path.
 status_nerd_font_glyph() {
   local dir=$1 key=$2
   cache_cmd "$CACHE_DIR/nerd-font-glyph.${STATUS_NERD_FONT_TYPE:-none}.${key//[^a-zA-Z0-9]/_}.out" 600 \
-    "$dir/nerd-font.sh" get "$key"
+    "$dir/icon.sh" get "$key"
   STATUS_NERD_FONT_GLYPH=$CACHED_VALUE
 }
 

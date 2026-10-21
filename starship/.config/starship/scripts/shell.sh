@@ -6,7 +6,7 @@ script_dir="${BASH_SOURCE[0]%/*}"
 [ "$script_dir" = "${BASH_SOURCE[0]}" ] && script_dir="."
 
 render() {
-  source "$script_dir/nerd-font.sh"
+  source "$script_dir/icon.sh"
   local shell icon_shell text
 
   shell="${STARSHIP_SHELL:-unknown-shell}"

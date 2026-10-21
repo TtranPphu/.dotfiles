@@ -9,7 +9,7 @@ source "$script_dir/layout.sh"
 
 render() {
   source "$script_dir/level-color.sh"
-  source "$script_dir/nerd-font.sh"
+  source "$script_dir/icon.sh"
   local size=${1:-$(layout_size_fast)}
   local values rolling monthly icon_percent icon_opencode text fg_rolling
 

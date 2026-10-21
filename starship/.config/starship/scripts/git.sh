@@ -13,7 +13,7 @@ script_dir="${BASH_SOURCE[0]%/*}"
 [ "$script_dir" = "${BASH_SOURCE[0]}" ] && script_dir="."
 
 render() {
-  source "$script_dir/nerd-font.sh"
+  source "$script_dir/icon.sh"
   source "$script_dir/color.sh"
   local data rc=0
   local line remote branch

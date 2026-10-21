@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
 # Terminal font capability + icon catalog.
 #
-#   nerd-font mode [socket] [pid]      -> "nerd" | "lame"
-#   nerd-font type [socket] [pid]      -> resolved type (lame|nerd|mono)
-#   nerd-font client-id [socket] [pid] -> client identifier (SSH client IP, else "local")
-#   nerd-font state-file        -> path to the client state file
-#   nerd-font lookup <id>       -> stored type (lame|nerd|mono) or empty
-#   nerd-font store <id> <type> -> record a type for a client id
-#   nerd-font get KEY           -> glyph for KEY in the resolved type
+#   icon.sh mode [socket] [pid]      -> "nerd" | "lame"
+#   icon.sh type [socket] [pid]      -> resolved type (lame|nerd|mono)
+#   icon.sh client-id [socket] [pid] -> client identifier (SSH client IP, else "local")
+#   icon.sh state-file        -> path to the client state file
+#   icon.sh lookup <id>       -> stored type (lame|nerd|mono) or empty
+#   icon.sh store <id> <type> -> record a type for a client id
+#   icon.sh get KEY           -> glyph for KEY in the resolved type
 #
 # Sourced from bash it also defines nerd_font_mode / nerd_font_type /
 # nerd_font_client_id / nerd_font_lookup / nerd_font_store / icon KEY.
@@ -16,7 +16,7 @@
 # otherwise the client's stored type in the state file; unknown clients resolve
 # to "lame" until the shell setup prompt records a choice. A pid pins the
 # lookup to that tmux client's environment, so each rendering client
-# resolves its own type. State lines are id<TAB>type. The catalog is next to this file (nerd-font.csv) with a matching
+# resolves its own type. State lines are id<TAB>type. The catalog is next to this file (icon.csv) with a matching
 # header line and a dummy column after every value column: space-filled after
 # the icon columns, empty after lame (the parser reads the odd columns):
 # key;nerd;mono;lame. Empty mono cells fall back to the nerd column
@@ -25,7 +25,7 @@ set -u
 
 _nerd_font_self="$(readlink -f "${BASH_SOURCE[0]}")"
 _nerd_font_dir="$(dirname -- "$_nerd_font_self")"
-_nerd_font_catalog="${DOTFILES_NERD_FONT_CATALOG:-$_nerd_font_dir/nerd-font.csv}"
+_nerd_font_catalog="${DOTFILES_NERD_FONT_CATALOG:-$_nerd_font_dir/icon.csv}"
 _nerd_font_type_cache=""
 
 # The fetch-cache engine (next to this file) caches the resolved client type.
@@ -184,11 +184,11 @@ if [ "${BASH_SOURCE[0]}" = "$0" ]; then
     --cache-type) shift; nerd_font_type_cache_store "${1:-}" "${2:-}" ;;
     client-id) shift; nerd_font_client_id "${1:-}" "${2:-}" ;;
     state-file) nerd_font_state_file ;;
-    lookup) nerd_font_lookup "${2:?usage: nerd-font lookup ID}" ;;
-    store) nerd_font_store "${2:?usage: nerd-font store ID TYPE}" "${3:?usage: nerd-font store ID TYPE}" ;;
-    get) nerd_font_icon "${2:?usage: nerd-font get KEY}" ;;
+    lookup) nerd_font_lookup "${2:?usage: icon.sh lookup ID}" ;;
+    store) nerd_font_store "${2:?usage: icon.sh store ID TYPE}" "${3:?usage: icon.sh store ID TYPE}" ;;
+    get) nerd_font_icon "${2:?usage: icon.sh get KEY}" ;;
     *)
-      echo "usage: nerd-font mode|type|client-id|state-file|lookup|store|get ..." >&2
+      echo "usage: icon.sh mode|type|client-id|state-file|lookup|store|get ..." >&2
       exit 2
       ;;
   esac

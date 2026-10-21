@@ -12,7 +12,7 @@ usage() { exit 1; }
 
 render() {
   source "$script_dir/level-color.sh"
-  source "$script_dir/nerd-font.sh"
+  source "$script_dir/icon.sh"
   local size=${1:-$(layout_size_fast)}
   local data bat raw_status idx icon_battery icon_percent text fg_level
 

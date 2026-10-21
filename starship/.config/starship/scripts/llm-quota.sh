@@ -11,7 +11,7 @@ source "$script_dir/layout.sh"
 
 render() {
   source "$script_dir/level-color.sh"
-  source "$script_dir/nerd-font.sh"
+  source "$script_dir/icon.sh"
   local values rolling monthly total icon_opencode icon_percent icon_usd text fg_rolling
 
   values=$("$script_dir/opencode-quota-util.sh" --values) || exit 1

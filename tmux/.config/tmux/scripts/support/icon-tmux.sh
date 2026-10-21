@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Apply the current nerd-font type to tmux @nerd_font_* options.
-# Usage: nerd-font-tmux.sh [socket-path]
+# Usage: icon-tmux.sh [socket-path]
 #
 # A tmux server that is gone (restart/detach race) is a known condition: it is
 # reported to the log and exits 0, since the next attach or config load applies
@@ -10,7 +10,7 @@ set -u
 
 dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 sock="${1:-}"
-log="${XDG_STATE_HOME:-$HOME/.local/state}/tmux/nerd-font-tmux.log"
+log="${XDG_STATE_HOME:-$HOME/.local/state}/tmux/icon-tmux.log"
 glyph_value=""
 
 tmux_cmd=(tmux)
@@ -21,13 +21,13 @@ tmux_cmd=(tmux)
 report() {
   mkdir -p -- "$(dirname -- "$log")" &&
     printf '%s %s\n' "$(date -Is)" "$*" >>"$log" && return 0
-  printf 'nerd-font-tmux: cannot write %s: %s\n' "$log" "$*" >&2
+  printf 'icon-tmux: cannot write %s: %s\n' "$log" "$*" >&2
 }
 
 # Real error: durable log + stdout (tmux shows the stdout of -b jobs, not stderr).
 fail() {
   report "ERROR $*"
-  printf 'nerd-font-tmux: %s\n' "$*"
+  printf 'icon-tmux: %s\n' "$*"
   exit 1
 }
 
@@ -39,12 +39,12 @@ if [ "$probe_rc" -ne 0 ]; then
 fi
 
 # Resolve the type: non-zero status, empty or unexpected output is a real error.
-type="$("$dir/nerd-font.sh" type "$sock" 2>&1)"; type_rc=$?
-[ "$type_rc" -eq 0 ] || fail "nerd-font.sh type failed (exit $type_rc): ${type:-no output}"
+type="$("$dir/icon.sh" type "$sock" 2>&1)"; type_rc=$?
+[ "$type_rc" -eq 0 ] || fail "icon.sh type failed (exit $type_rc): ${type:-no output}"
 case "$type" in
   nerd | mono | lame) ;;
-  "") fail "nerd-font.sh type returned empty output" ;;
-  *) fail "nerd-font.sh type returned unexpected value [$type]" ;;
+  "") fail "icon.sh type returned empty output" ;;
+  *) fail "icon.sh type returned unexpected value [$type]" ;;
 esac
 export DOTFILES_NERD_FONT="$type"
 
@@ -52,8 +52,8 @@ export DOTFILES_NERD_FONT="$type"
 # column is empty for some keys); only a non-zero status is an error.
 glyph() {
   local rc
-  glyph_value="$("$dir/nerd-font.sh" get "$1" 2>&1)"; rc=$?
-  [ "$rc" -eq 0 ] || fail "nerd-font.sh get $1 failed (exit $rc): ${glyph_value:-no output}"
+  glyph_value="$("$dir/icon.sh" get "$1" 2>&1)"; rc=$?
+  [ "$rc" -eq 0 ] || fail "icon.sh get $1 failed (exit $rc): ${glyph_value:-no output}"
 }
 
 # Set one tmux option, reporting the option name and the captured stderr.

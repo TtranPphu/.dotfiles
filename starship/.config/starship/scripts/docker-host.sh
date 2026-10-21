@@ -2,7 +2,7 @@
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-source "$SCRIPT_DIR/nerd-font.sh"
+source "$SCRIPT_DIR/icon.sh"
 
 name="${CONTAINER_NAME:-${COMPOSE_SERVICE:-}}"
 icon_docker="$(nerd_font_icon docker)"

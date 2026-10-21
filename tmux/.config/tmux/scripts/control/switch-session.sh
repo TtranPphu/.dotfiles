@@ -2,7 +2,7 @@
 
 wm_status="$HOME/.config/tmux/scripts/status"
 script_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
-source "$script_dir/nerd-font.sh"
+source "$script_dir/icon.sh"
 
 preview_cmd='s=$(echo {} | sed "s/:.*//" | awk "{print \$NF}"); '\
 'i=$(tmux list-windows -t "$s" -F "#{window_active} #{window_index}" '\

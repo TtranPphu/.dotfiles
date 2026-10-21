@@ -11,7 +11,7 @@ usage() { exit 1; }
 [[ $# -lt 1 ]] && usage
 
 render() {
-  source "$script_dir/nerd-font.sh"
+  source "$script_dir/icon.sh"
   local size=${1:-$(layout_size_fast)}
   local text day suffix icon
 

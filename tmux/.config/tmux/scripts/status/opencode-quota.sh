@@ -11,7 +11,7 @@ if [[ "${1:-}" == --guard ]]; then
 fi
 
 script_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
-source "$script_dir/nerd-font.sh"
+source "$script_dir/icon.sh"
 source "$script_dir/layout.sh"
 source "$script_dir/level-color.sh"
 values=$("$script_dir/opencode-quota-util.sh" --values) || exit 1

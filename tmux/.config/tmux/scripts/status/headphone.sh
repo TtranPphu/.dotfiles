@@ -3,7 +3,7 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 UTIL="$SCRIPT_DIR/headphone-util.sh"
-source "$SCRIPT_DIR/nerd-font.sh"
+source "$SCRIPT_DIR/icon.sh"
 source "$SCRIPT_DIR/layout.sh"
 source "$SCRIPT_DIR/level-color.sh"
 

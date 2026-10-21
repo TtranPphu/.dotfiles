@@ -14,7 +14,7 @@ render() {
   local socket_path="${1:-}" current_session="${2:-}" width="${3:-}" client_pid="${4:-}"
   local fg_muted fg_ink fg_blue
   local icon_head icon_session icon_flat out style reset
-  source "$script_dir/nerd-font.sh"
+  source "$script_dir/icon.sh"
   source "$script_dir/layout.sh"
 
   if [[ -z "$width" ]]; then

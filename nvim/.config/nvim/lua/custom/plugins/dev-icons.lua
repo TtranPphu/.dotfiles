@@ -5,7 +5,7 @@
 -- tmux/starship renderers use. Clients without a Nerd Font (lame) get
 -- mini.icons' ASCII fallback so plugins show text icons instead of tofu.
 -- A failing resolver (e.g. missing script) falls back to the Nerd Font path.
-local ok, out = pcall(vim.fn.system, { vim.fn.expand '~/.config/zsh/nerd-font.sh', 'type' })
+local ok, out = pcall(vim.fn.system, { vim.fn.expand '~/.config/zsh/icon.sh', 'type' })
 local font_type = ok and vim.v.shell_error == 0 and vim.trim(out) or 'nerd'
 
 if font_type == 'lame' then

@@ -5,7 +5,7 @@
 set -euo pipefail
 
 script_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
-source "$script_dir/nerd-font.sh"
+source "$script_dir/icon.sh"
 source "$script_dir/level-color.sh"
 
 # Exit 0 only when medium or wide enough for the combined pill
