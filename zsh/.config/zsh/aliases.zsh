@@ -45,10 +45,10 @@ fi
 
 # Alias cat -> batcat/bat if available
 if command -v batcat &>/dev/null; then
-  alias cat='batcat --style=plain'
+  alias cat='batcat --style=grid,snip'
   alias bat=batcat
 elif command -v bat &>/dev/null; then
-  alias cat='bat --style=plain'
+  alias cat='bat --style=grid,snip'
 fi
 
 # Alias grep -> ripgrep if available
