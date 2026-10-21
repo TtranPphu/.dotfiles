@@ -14,7 +14,7 @@ render() {
   source "$script_dir/level-color.sh"
   source "$script_dir/nerd-font.sh"
   local size=${1:-$(layout_size_fast)}
-  local data bat raw_status idx icon text
+  local data bat raw_status idx icon_battery icon_percent text fg_level
 
   data=$("$script_dir/battery-util.sh") || exit 1
   bat="${data%% *}"
@@ -24,25 +24,28 @@ render() {
   idx=$(( (bat - 1) / 10 ))
 
   if [ "$raw_status" = "fully-charged" ]; then
-    icon="$(nerd_font_icon battery.full)"
+    icon_battery="$(nerd_font_icon battery.full)"
   elif [ "$raw_status" = "charging" ] || [ "$raw_status" = "pending-charge" ]; then
-    icon="$(nerd_font_icon "battery.charging.$idx")"
+    icon_battery="$(nerd_font_icon "battery.charging.$idx")"
   else
-    icon="$(nerd_font_icon "battery.discharging.$idx")"
+    icon_battery="$(nerd_font_icon "battery.discharging.$idx")"
   fi
 
   if [[ "$size" != wide ]]; then
     case "$raw_status" in
-      fully-charged)             icon="$(nerd_font_icon battery.full)"; icon="${icon% }" ;;
-      charging | pending-charge) icon="$(nerd_font_icon battery.charging.medium)" ;;
-      *)                         icon="$(nerd_font_icon "battery.discharging.$idx")"; icon="${icon% }" ;;
+      fully-charged)             icon_battery="$(nerd_font_icon battery.full)"; icon_battery="${icon_battery% }" ;;
+      charging | pending-charge) icon_battery="$(nerd_font_icon battery.charging.medium)" ;;
+      *)                         icon_battery="$(nerd_font_icon "battery.discharging.$idx")"; icon_battery="${icon_battery% }" ;;
     esac
-    text="$icon"
+    text="$icon_battery"
   else
-    text="$icon$bat$(nerd_font_icon percent)"
+    icon_percent="$(nerd_font_icon percent)"
+    text="$icon_battery$bat$icon_percent"
   fi
 
-  printf '%s%s\033[0m' "$(level_color "$bat")" "$text"
+  fg_level=$(level_color "$bat")
+  reset=$'\033[0m'
+  printf '%s%s%s' "$fg_level" "$text" "$reset"
 }
 
 case "${1:-}" in

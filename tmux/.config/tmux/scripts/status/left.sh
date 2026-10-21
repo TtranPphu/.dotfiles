@@ -8,9 +8,12 @@ if [ "$script_dir" = "${BASH_SOURCE[0]}" ]; then
   script_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 fi
 source "$script_dir/cache.sh"
+source "$script_dir/color.sh"
 
 render() {
   local socket_path="${1:-}" current_session="${2:-}" width="${3:-}" client_pid="${4:-}"
+  local fg_muted fg_ink fg_blue
+  local icon_head icon_session icon_flat out style reset
   source "$script_dir/nerd-font.sh"
   source "$script_dir/layout.sh"
 
@@ -24,13 +27,20 @@ render() {
   local size
   size=$(layout_size_fast)
 
+  fg_muted=$(color_get muted)
+  fg_ink=$(color_get ink)
+  fg_blue=$(color_get blue)
+
   # Sessions next to this one in the switcher, shown when there is room.
   print_adjacent_sessions() {
-    local adjacent_sessions
+    local adjacent_sessions style style_divider adjacent_out
     adjacent_sessions="$("$script_dir/session-list.sh" "$socket_path" "$current_session" next)"
 
     if [[ -n "$adjacent_sessions" ]]; then
-      printf '#[fg=brightblack]%s#[fg=brightblack,bold]┋' "$adjacent_sessions"
+      style=$(printf '#[fg=%s]' "$fg_muted")
+      style_divider=$(printf '#[fg=%s,bold]' "$fg_muted")
+      adjacent_out="$adjacent_sessions$style_divider┋"
+      printf '%s%s' "$style" "$adjacent_out"
     fi
   }
 
@@ -52,8 +62,15 @@ render() {
       ;;
   esac
 
-  printf '#[fg=#000000,bg=blue,bold]▏%s%s▕#[bg=default]' "$(nerd_font_icon session.active)" "$current_session"
-  printf '#[fg=brightblack,bold]┋'
+  icon_head=$(nerd_font_icon separator.head)
+  icon_session=$(nerd_font_icon session.active)
+  icon_flat=$(nerd_font_icon separator.flat)
+  style=$(printf '#[fg=%s,bg=%s,bold]' "$fg_ink" "$fg_blue")
+  reset='#[bg=default]'
+  out="$icon_head$icon_session$current_session$icon_flat"
+  printf '%s%s%s' "$style" "$out" "$reset"
+  style=$(printf '#[fg=%s,bold]' "$fg_muted")
+  printf '%s┋' "$style"
 }
 
 render "$@"

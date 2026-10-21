@@ -1,9 +1,10 @@
 #!/usr/bin/env bash
+# Level ramp: ten catalog colors, red (0) at the low end, green (9) at the top.
+# Sourced by the status and prompt scripts; the colors live in color.csv.
 
-LEVEL_COLORS=(
-  "247;118;142" "242;129;134" "238;141;127" "233;152;119" "229;163;112"
-  "224;175;104" "208;183;105" "191;191;105" "175;198;106" "158;206;106"
-)
+_level_color_dir="$(dirname -- "$(readlink -f "${BASH_SOURCE[0]}")")"
+# shellcheck source=/dev/null
+source "$_level_color_dir/color.sh"
 
 _level_index() {
   local idx=$(( (${1:-0} - 1) / 10 ))
@@ -13,16 +14,16 @@ _level_index() {
 }
 
 # Takes a 0-100 value (battery percent, or an RTT level x10): 100 is green, 1 is red.
-level_color() {
-  printf '\033[38;2;%sm' "${LEVEL_COLORS[$(_level_index "${1:-0}")]}"
+level_hex() {
+  color_get "level.$(_level_index "${1:-0}")"
 }
 
 level_rgb() {
-  printf '%s' "${LEVEL_COLORS[$(_level_index "${1:-0}")]}"
+  local hex
+  hex=$(level_hex "$@")
+  printf '%d;%d;%d' "0x${hex:1:2}" "0x${hex:3:2}" "0x${hex:5:2}"
 }
 
-level_hex() {
-  local r g b
-  IFS=';' read -r r g b <<< "$(level_rgb "${1:-0}")"
-  printf '#%02x%02x%02x' "$r" "$g" "$b"
+level_color() {
+  printf '\033[38;2;%sm' "$(level_rgb "$@")"
 }

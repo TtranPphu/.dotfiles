@@ -8,16 +8,19 @@ source "$script_dir/layout.sh"
 
 render() {
   source "$script_dir/nerd-font.sh"
-  local user color icon
+  source "$script_dir/color.sh"
+  local user fg_user icon_user text
 
   user=$(id -un)
   if [ "$(id -u)" -eq 0 ]; then
-    color=$'\033[35m' # root
+    fg_user=$(color_ansi magenta) # root
   else
-    color=$'\033[36m'
+    fg_user=$(color_ansi cyan)
   fi
-  icon="$(nerd_font_icon user)"
-  printf '%s%s%s\033[0m' "$color" "$icon" "$user"
+  icon_user="$(nerd_font_icon user)"
+  text="$icon_user$user"
+  reset=$'\033[0m'
+  printf '%s%s%s' "$fg_user" "$text" "$reset"
 }
 
 case "${1:-}" in

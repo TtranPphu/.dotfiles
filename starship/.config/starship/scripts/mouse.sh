@@ -18,18 +18,23 @@ render() {
   source "$script_dir/level-color.sh"
   source "$script_dir/nerd-font.sh"
   local size=${1:-$(layout_size_fast)}
-  local data cap text
+  local data cap icon_mouse icon_percent text fg_level
 
   data=$("$script_dir/mouse-util.sh") || exit 1
   cap="${data%% *}"
   [[ -z "$cap" || ! "$cap" =~ ^[0-9]+$ ]] && exit 1
 
+  icon_mouse="$(nerd_font_icon mouse)"
   if [[ "$size" != wide ]]; then
-    text="$(nerd_font_icon mouse)"; text="${text% }"
+    icon_mouse="${icon_mouse% }"
+    text="$icon_mouse"
   else
-    text="$(nerd_font_icon mouse)$cap$(nerd_font_icon percent)"
+    icon_percent="$(nerd_font_icon percent)"
+    text="$icon_mouse$cap$icon_percent"
   fi
-  printf '%s%s\033[0m' "$(level_color "$cap")" "$text"
+  fg_level=$(level_color "$cap")
+  reset=$'\033[0m'
+  printf '%s%s%s' "$fg_level" "$text" "$reset"
 }
 
 case "${1:-}" in

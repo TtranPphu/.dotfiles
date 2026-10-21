@@ -5,6 +5,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 UTIL="$SCRIPT_DIR/battery-util.sh"
 source "$SCRIPT_DIR/nerd-font.sh"
 source "$SCRIPT_DIR/layout.sh"
+source "$SCRIPT_DIR/level-color.sh"
 
 data=$("$UTIL") || exit 1
 cap="${data%% *}"
@@ -13,27 +14,30 @@ raw_status="${data##* }"
 
 idx=$(( (cap - 1) / 10 ))
 
-colors=(
-  "#f7768e" "#f28186" "#ee8d7f" "#e99877" "#e5a370"
-  "#e0af68" "#d0b769" "#bfbf69" "#afc66a" "#9ece6a"
-)
-
 if [[ "${raw_status:-}" == "fully-charged" ]]; then
-  icon="$(nerd_font_icon battery.full)"
+  icon_battery="$(nerd_font_icon battery.full)"
 elif [[ "${raw_status:-}" == "charging" || "${raw_status:-}" == "pending-charge" ]]; then
-  icon="$(nerd_font_icon "battery.charging.$idx")"
+  icon_battery="$(nerd_font_icon "battery.charging.$idx")"
 else
-  icon="$(nerd_font_icon "battery.discharging.$idx")"
+  icon_battery="$(nerd_font_icon "battery.discharging.$idx")"
 fi
-color="${colors[$idx]}"
+icon_head="$(nerd_font_icon separator.head)"
+icon_flat="$(nerd_font_icon separator.flat)"
+fg_muted="$(color_get muted)"
+bg_level="$(level_hex "$cap")"
+
+style=$(printf '#[fg=%s,bold,bg=%s]' "$fg_muted" "$bg_level")
+reset='#[default]'
 
 if [[ "$(layout_size_fast)" == wide ]]; then
-  printf '#[fg=brightblack,bold,bg=%s]▏%s%s%s▕#[default]' "$color" "$icon" "$cap" "$(nerd_font_icon percent)"
+  icon_percent="$(nerd_font_icon percent)"
+  out="$icon_head$icon_battery$cap$icon_percent$icon_flat"
 else
   case "$raw_status" in
-    fully-charged)             icon="$(nerd_font_icon battery.full)"; icon="${icon% }" ;;
-    charging | pending-charge) icon="$(nerd_font_icon battery.charging.medium)" ;;
-    *)                         icon="$(nerd_font_icon "battery.discharging.$idx")"; icon="${icon% }" ;;
+    fully-charged)             icon_battery="$(nerd_font_icon battery.full)"; icon_battery="${icon_battery% }" ;;
+    charging | pending-charge) icon_battery="$(nerd_font_icon battery.charging.medium)" ;;
+    *)                         icon_battery="$(nerd_font_icon "battery.discharging.$idx")"; icon_battery="${icon_battery% }" ;;
   esac
-  printf '#[fg=brightblack,bold,bg=%s]▏%s▕#[default]' "$color" "$icon"
+  out="$icon_head$icon_battery$icon_flat"
 fi
+printf '%s%s%s' "$style" "$out" "$reset"

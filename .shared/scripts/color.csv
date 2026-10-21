@@ -1,0 +1,33 @@
+key;                          ;value;
+# shared: foregrounds
+muted;                        ;brightblack;
+ink;                          ;#000000;
+ink.soft;                     ;colour233;
+black;                        ;black;
+# shared: accents and backgrounds
+blue;                         ;blue;
+cyan;                         ;cyan;
+green;                        ;green;
+magenta;                      ;magenta;
+red;                          ;red;
+white;                        ;white;
+yellow;                       ;yellow;
+brightyellow;                 ;brightyellow;
+# shared: level ramp (0 = red, 9 = green)
+level.0;                      ;#f7768e;
+level.1;                      ;#f28186;
+level.2;                      ;#ee8d7f;
+level.3;                      ;#e99877;
+level.4;                      ;#e5a370;
+level.5;                      ;#e0af68;
+level.6;                      ;#d0b769;
+level.7;                      ;#bfbf69;
+level.8;                      ;#afc66a;
+level.9;                      ;#9ece6a;
+# starship: language colors
+lang.c;                       ;colour149;
+lang.java;                    ;red;
+lang.kotlin;                  ;blue;
+lang.lua;                     ;blue;
+lang.python;                  ;yellow;
+lang.rust;                    ;red;

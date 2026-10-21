@@ -13,14 +13,19 @@
 # form is in place a re-run is a no-op.
 set -euo pipefail
 
+script_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+# shellcheck source=/dev/null
+source "$script_dir/../support/color.sh"
+
 socket_path="$1"
+fg_muted="$(color_get muted)"
 
 fmt="$(tmux -S "$socket_path" show -gv 'status-format[0]')"
 
 old_default='#[list=left-marker]<#[list=right-marker]>'
-old_unspaced='#[list=left-marker]#[fg=brightblack,bold]❮#[list=right-marker]#[fg=brightblack,bold]❯'
-old_right_unpadded='#[list=left-marker]#[fg=brightblack,bold] ❮ #[list=right-marker]#[fg=brightblack,bold]❯ '
-new_pair='#[list=left-marker]#[fg=brightblack,bold] ❮ #[list=right-marker]#[fg=brightblack,bold] ❯ '
+old_unspaced="#[list=left-marker]#[fg=$fg_muted,bold]❮#[list=right-marker]#[fg=$fg_muted,bold]❯"
+old_right_unpadded="#[list=left-marker]#[fg=$fg_muted,bold] ❮ #[list=right-marker]#[fg=$fg_muted,bold]❯ "
+new_pair="#[list=left-marker]#[fg=$fg_muted,bold] ❮ #[list=right-marker]#[fg=$fg_muted,bold] ❯ "
 
 changed=0
 for old in "$old_default" "$old_unspaced" "$old_right_unpadded"; do

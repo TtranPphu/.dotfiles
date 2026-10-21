@@ -11,26 +11,33 @@ render() {
   source "$script_dir/level-color.sh"
   source "$script_dir/nerd-font.sh"
   local size=${1:-$(layout_size_fast)}
-  local data level ramp icon
+  local data level ramp icon_signal icon_host text fg_quality
 
   [[ "$size" == narrow ]] && exit 1
 
   data=$("$script_dir/hostname-util.sh") || exit 1
   [[ -z "$data" ]] && exit 1
 
+  icon_host="$(nerd_font_icon host)"
+
   # Over SSH color the host with the connection quality ramp (10 = green, 1 = red);
   # medium drops the name. Without SSH the module only shows in wide.
   if level=$("$script_dir/ssh-quality-util.sh" level 2>/dev/null); then
     ramp=$((level * 10))
-    icon=$("$script_dir/ssh-quality-util.sh" signal 2>/dev/null)
+    icon_signal=$("$script_dir/ssh-quality-util.sh" signal 2>/dev/null)
+    fg_quality=$(level_color "$ramp")
+    reset=$'\033[0m'
     if [[ "$size" == wide ]]; then
-      printf '%s%s%s%s\033[0m' "$(level_color "$ramp")" "$icon" "$(nerd_font_icon host)" "$data"
+      text="$icon_signal$icon_host$data"
+      printf '%s%s%s' "$fg_quality" "$text" "$reset"
     else
-      printf '%s%s\033[0m' "$(level_color "$ramp")" "${icon% }"
+      text="${icon_signal% }"
+      printf '%s%s%s' "$fg_quality" "$text" "$reset"
     fi
   else
     [[ "$size" == wide ]] || exit 1
-    printf '%s%s' "$(nerd_font_icon host)" "$data"
+    text="$icon_host$data"
+    printf '%s%s' "$text"
   fi
 }
 

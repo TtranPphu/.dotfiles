@@ -5,24 +5,26 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 UTIL="$SCRIPT_DIR/headphone-util.sh"
 source "$SCRIPT_DIR/nerd-font.sh"
 source "$SCRIPT_DIR/layout.sh"
+source "$SCRIPT_DIR/level-color.sh"
 
 data=$("$UTIL") || exit 1
 [[ -z "$data" || "$data" -eq 0 ]] && exit 1
 val="$data"
 
-colors=(
-  "#f7768e" "#f28186" "#ee8d7f" "#e99877" "#e5a370"
-  "#e0af68" "#d0b769" "#bfbf69" "#afc66a" "#9ece6a"
-)
+icon_wide="$(nerd_font_icon headphone)"
+icon_medium="$(nerd_font_icon headphone.medium)"
+icon_head="$(nerd_font_icon separator.head)"
+icon_flat="$(nerd_font_icon separator.flat)"
+fg_muted="$(color_get muted)"
+bg_level="$(level_hex "$val")"
 
-idx=$(( (val - 1) / 10 ))
-[[ idx -ge 0 ]] && [[ idx -lt 10 ]] || idx=0
-
-WIDE_ICON="$(nerd_font_icon headphone)"
-MEDIUM_ICON="$(nerd_font_icon headphone.medium)"
+style=$(printf '#[fg=%s,bold,bg=%s]' "$fg_muted" "$bg_level")
+reset='#[default]'
 
 if [[ "$(layout_size_fast)" == wide ]]; then
-  printf '#[fg=brightblack,bold,bg=%s]▏%s%s%s▕#[default]' "${colors[$idx]}" "$WIDE_ICON" "$val" "$(nerd_font_icon percent)"
+  icon_percent="$(nerd_font_icon percent)"
+  out="$icon_head$icon_wide$val$icon_percent$icon_flat"
 else
-  printf '#[fg=brightblack,bold,bg=%s]▏%s▕#[default]' "${colors[$idx]}" "$MEDIUM_ICON"
+  out="$icon_head$icon_medium$icon_flat"
 fi
+printf '%s%s%s' "$style" "$out" "$reset"

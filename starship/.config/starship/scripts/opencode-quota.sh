@@ -11,18 +11,21 @@ render() {
   source "$script_dir/level-color.sh"
   source "$script_dir/nerd-font.sh"
   local size=${1:-$(layout_size_fast)}
-  local values rolling monthly pct icon
+  local values rolling monthly icon_percent icon_opencode text fg_rolling
 
   [ "$size" = narrow ] && exit 1
 
   values=$("$script_dir/opencode-quota-util.sh" --values) || exit 1
   read -r rolling _ monthly <<<"$values"
 
-  pct="$(nerd_font_icon percent)"
-  icon="$(nerd_font_icon opencode)"
+  icon_percent="$(nerd_font_icon percent)"
+  icon_opencode="$(nerd_font_icon opencode)"
+  fg_rolling=$(level_color "$rolling")
 
   # Rolling quota drives the foreground: low usage green, near limit red.
-  printf '%s%s%s%s\033[0m' "$(level_color "$rolling")" "$icon" "$monthly" "$pct"
+  text="$icon_opencode$monthly$icon_percent"
+  reset=$'\033[0m'
+  printf '%s%s%s' "$fg_rolling" "$text" "$reset"
 }
 
 case "${1:-}" in

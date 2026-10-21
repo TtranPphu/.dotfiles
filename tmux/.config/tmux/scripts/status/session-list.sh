@@ -2,6 +2,7 @@
 
 script_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 source "$script_dir/nerd-font.sh"
+source "$script_dir/color.sh"
 
 socket_path="$1"
 current_session="$2"
@@ -37,6 +38,12 @@ case "$direction" in
 esac
 
 if (( ${#selected[@]} > 0 )); then
+  fg_green="$(color_get green)"
+  icon_bell="$(nerd_font_icon bell)"
+  icon_session="$(nerd_font_icon session)"
+  style_bell=$(printf '#[fg=%s,bold]' "$fg_green")
+  style_plain='#[bold]'
+
   first=1
   for session in "${selected[@]}"; do
     if (( first )); then
@@ -46,9 +53,11 @@ if (( ${#selected[@]} > 0 )); then
     fi
     if tmux -S "$socket_path" list-windows -t "$session" \
       -F '#{window_bell_flag}' 2>/dev/null | grep -q 1; then
-      printf ' #[fg=green,bold]%s%s ' "$(nerd_font_icon bell)" "$session"
+      text="$icon_bell$session"
+      printf ' %s%s ' "$style_bell" "$text"
     else
-      printf ' #[bold]%s%s ' "$(nerd_font_icon session)" "$session"
+      text="$icon_session$session"
+      printf ' %s%s ' "$style_plain" "$text"
     fi
   done
 fi

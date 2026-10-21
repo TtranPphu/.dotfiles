@@ -13,6 +13,7 @@ fi
 script_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 source "$script_dir/nerd-font.sh"
 source "$script_dir/layout.sh"
+source "$script_dir/level-color.sh"
 values=$("$script_dir/opencode-quota-util.sh" --values) || exit 1
 read -r rolling _ monthly <<<"$values"
 
@@ -21,17 +22,16 @@ size=$(layout_size_fast)
 
 # Rolling quota drives the pill color: low usage green, near limit red. The
 # colors and 10% buckets mirror battery.sh so the gradients line up.
-colors=(
-  "#f7768e" "#f28186" "#ee8d7f" "#e99877" "#e5a370"
-  "#e0af68" "#d0b769" "#bfbf69" "#afc66a" "#9ece6a"
-)
 [[ "${rolling:-}" =~ ^-?[0-9]+$ ]] || rolling=0
-idx=$(( (rolling - 1) / 10 ))
-(( idx < 0 )) && idx=0
-(( idx > 9 )) && idx=9
 
-pct="$(nerd_font_icon percent)"
-icon="$(nerd_font_icon opencode)"
+icon_percent="$(nerd_font_icon percent)"
+icon_opencode="$(nerd_font_icon opencode)"
+icon_head="$(nerd_font_icon separator.head)"
+icon_flat="$(nerd_font_icon separator.flat)"
+fg_ink="$(color_get ink)"
+bg_rolling="$(level_hex "$rolling")"
+style=$(printf '#[fg=%s,bold,bg=%s]' "$fg_ink" "$bg_rolling")
+reset='#[default]'
 
-out="$icon$monthly$pct"
-printf '#[fg=#000000,bold,bg=%s]▏%s▕#[default]' "${colors[$idx]}" "$out"
+out="$icon_head$icon_opencode$monthly$icon_percent$icon_flat"
+printf '%s%s%s' "$style" "$out" "$reset"

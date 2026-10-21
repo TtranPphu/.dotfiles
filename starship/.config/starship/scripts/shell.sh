@@ -7,15 +7,16 @@ script_dir="${BASH_SOURCE[0]%/*}"
 
 render() {
   source "$script_dir/nerd-font.sh"
-  local shell icon
+  local shell icon_shell text
 
   shell="${STARSHIP_SHELL:-unknown-shell}"
-  icon="$(nerd_font_icon "shell.$shell")"
-  if [[ -n "$icon" ]]; then
-    printf '%s%s' "$icon" "$shell"
+  icon_shell="$(nerd_font_icon "shell.$shell")"
+  if [[ -n "$icon_shell" ]]; then
+    text="$icon_shell$shell"
   else
-    printf '%s' "$shell"
+    text="$shell"
   fi
+  printf '%s' "$text"
 }
 
 case "${1:-}" in

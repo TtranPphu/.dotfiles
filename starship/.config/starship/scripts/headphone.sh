@@ -18,22 +18,24 @@ render() {
   source "$script_dir/level-color.sh"
   source "$script_dir/nerd-font.sh"
   local size=${1:-$(layout_size_fast)}
-  local data val text
+  local data val icon_wide icon_medium icon_percent text fg_level
 
   data=$("$script_dir/headphone-util.sh") || exit 1
   [[ -z "$data" || "$data" -eq 0 ]] && exit 1
   val="$data"
 
-  local wide_icon medium_icon
-  wide_icon="$(nerd_font_icon headphone)"
-  medium_icon="$(nerd_font_icon headphone.medium)"
+  icon_wide="$(nerd_font_icon headphone)"
+  icon_medium="$(nerd_font_icon headphone.medium)"
 
   if [[ "$size" != wide ]]; then
-    text="$medium_icon"
+    text="$icon_medium"
   else
-    text="$wide_icon$val$(nerd_font_icon percent)"
+    icon_percent="$(nerd_font_icon percent)"
+    text="$icon_wide$val$icon_percent"
   fi
-  printf '%s%s\033[0m' "$(level_color "$val")" "$text"
+  fg_level=$(level_color "$val")
+  reset=$'\033[0m'
+  printf '%s%s%s' "$fg_level" "$text" "$reset"
 }
 
 case "${1:-}" in

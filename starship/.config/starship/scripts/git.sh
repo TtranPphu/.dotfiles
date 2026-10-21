@@ -14,10 +14,13 @@ script_dir="${BASH_SOURCE[0]%/*}"
 
 render() {
   source "$script_dir/nerd-font.sh"
+  source "$script_dir/color.sh"
   local data rc=0
   local line remote branch
   local conflicted stashed deleted renamed modified staged untracked ahead behind
-  local icon out status marker stale_text
+  local icon_remote out status icon_stale stale_text
+  local fg_muted fg_white fg_green fg_yellow
+  local style reset
 
   data=$("$script_dir/git-util.sh") || rc=$?
   if [ "$rc" -ne 0 ] && [ "$rc" -ne 3 ]; then
@@ -33,21 +36,27 @@ render() {
     esac
   done <<<"$data"
 
+  fg_muted=$(color_ansi muted)
+  fg_white=$(color_ansi white)
+  fg_green=$(color_ansi green)
+  fg_yellow=$(color_ansi brightyellow)
+  reset=$'\033[0m'
+
   # Remote host icon, bold white (was custom.git_remote). The icon catalog pads
   # some cells with trailing spaces, which starship's output trim used to drop.
   # With an icon it is followed by the separator space; with no remote (or no
   # glyph) nothing is emitted before the branch, so the path module's trailing
   # format space stays the only separator and the two cannot double up.
-  icon=
+  icon_remote=
   case "$remote" in
     '') ;;
-    *github*)    icon=$(nerd_font_icon remote.github) ;;
-    *gitlab*)    icon=$(nerd_font_icon remote.gitlab) ;;
-    *bitbucket*) icon=$(nerd_font_icon remote.bitbucket) ;;
-    *)           icon=$(nerd_font_icon remote.git) ;;
+    *github*)    icon_remote=$(nerd_font_icon remote.github) ;;
+    *gitlab*)    icon_remote=$(nerd_font_icon remote.gitlab) ;;
+    *bitbucket*) icon_remote=$(nerd_font_icon remote.bitbucket) ;;
+    *)           icon_remote=$(nerd_font_icon remote.git) ;;
   esac
-  icon=${icon#"${icon%%[![:space:]]*}"}
-  icon=${icon%"${icon##*[![:space:]]}"}
+  icon_remote=${icon_remote#"${icon_remote%%[![:space:]]*}"}
+  icon_remote=${icon_remote%"${icon_remote##*[![:space:]]}"}
 
   # Status counts, bright yellow (was git_status), in the old $all_status order:
   # conflicted, stashed, deleted, renamed, modified, staged, untracked.
@@ -76,35 +85,36 @@ render() {
 
   # Stale: the last known good value, dimmed (bright black), stale marker last.
   if [ "$rc" -eq 3 ]; then
-    if [ -n "$icon" ]; then
-      stale_text="$icon $branch"
+    if [ -n "$icon_remote" ]; then
+      stale_text="$icon_remote $branch"
     else
       stale_text="$branch"
     fi
     [ -n "$status" ] && stale_text+=" ${status% }"
-    marker=$(nerd_font_icon stale)
-    marker=${marker% }
-    [ -n "$marker" ] && stale_text+=" $marker"
-    printf '\033[90m%s\033[0m' "$stale_text"
+    icon_stale=$(nerd_font_icon stale)
+    icon_stale=${icon_stale% }
+    [ -n "$icon_stale" ] && stale_text+=" $icon_stale"
+    printf '%s%s%s' "$fg_muted" "$stale_text" "$reset"
     return 0
   fi
 
-  if [ -n "$icon" ]; then
-    out=$(printf '\033[1;37m%s\033[0m ' "$icon")
+  if [ -n "$icon_remote" ]; then
+    style=$'\033[1m'"$fg_white"
+    out=$(printf '%s%s%s ' "$style" "$icon_remote" "$reset")
   else
     # No icon: no leading space either — the path module's format already ends
     # with one, and starship trims a leading space in the output anyway. The
     # zero-width reset keeps the segment starting on a clean SGR state.
-    out=$(printf '\033[0m')
+    out="$reset"
   fi
 
   # Branch, green (was git_branch); detached HEAD falls back to "HEAD".
-  out+=$(printf '\033[32m%s\033[0m' "$branch")
+  out+=$(printf '%s%s%s' "$fg_green" "$branch" "$reset")
 
   if [ -n "$status" ]; then
     # The old symbol formats each end with a space; the segment's final space
     # comes from the module format instead.
-    out+=$(printf ' \033[93m%s' "${status% }")
+    out+=$(printf ' %s%s' "$fg_yellow" "${status% }")
   fi
 
   printf '%s' "$out"

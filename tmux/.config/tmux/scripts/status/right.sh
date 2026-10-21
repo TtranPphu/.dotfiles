@@ -9,6 +9,7 @@ if [ "$script_dir" = "${BASH_SOURCE[0]}" ]; then
   script_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 fi
 source "$script_dir/cache.sh"
+source "$script_dir/color.sh"
 # layout.sh provides layout_size_fast; sessions_display and render both use it.
 source "$script_dir/layout.sh"
 
@@ -27,6 +28,7 @@ sessions_display() {
   local -A has_bell=()
   local -A seen=()
   local -a order=()
+  local fg_green fg_muted icon_bell icon_session style out
 
   if [[ -z "$width" ]]; then
     width=$(tmux -S "$socket_path" list-clients -t "$current_session" -F '#{client_width}' 2>/dev/null | sort -n | head -1)
@@ -34,6 +36,7 @@ sessions_display() {
 
   export STATUS_WIDTH="$width"
   size=$(layout_size_fast)
+  fg_muted=$(color_get muted)
 
   if [[ "$size" != narrow ]]; then
     while IFS= read -r line; do
@@ -50,7 +53,7 @@ sessions_display() {
     # Icons are only needed when a session actually shows (the common
     # single-session case prints just the separator). They come from their own
     # loose caches, so the live path never sources nerd-font.sh or forks awk.
-    local glyph_bell="" glyph_session="" icon
+    local glyph_bell="" glyph_session=""
     first="${order[0]:-}"
     if [[ -n "$first" && "$first" != "$current_session" ]]; then
       status_nerd_font_type "$script_dir" "$socket_path" "$client_pid"
@@ -65,22 +68,25 @@ sessions_display() {
         # No type resolved: fall back to the in-process resolver.
         source "$script_dir/nerd-font.sh"
       fi
+      icon_bell="${glyph_bell:-$(nerd_font_icon bell)}"
+      icon_session="${glyph_session:-$(nerd_font_icon session)}"
     fi
 
+    fg_green=$(color_get green)
     for s in "${order[@]}"; do
       [[ "$s" == "$current_session" ]] && break
       if [[ -n "${has_bell[$s]:-}" ]]; then
-        icon="${glyph_bell:-$(nerd_font_icon bell)}"
-        reversed="#[fg=green] $icon$s #[default]${reversed:+#[fg=brightblack,bold]┋$reversed}"
+        reversed="#[fg=$fg_green] $icon_bell$s #[default]${reversed:+#[fg=$fg_muted,bold]┋$reversed}"
       else
-        icon="${glyph_session:-$(nerd_font_icon session)}"
-        reversed="#[fg=brightblack] $icon$s #[default]${reversed:+#[fg=brightblack,bold]┋$reversed}"
+        reversed="#[fg=$fg_muted] $icon_session$s #[default]${reversed:+#[fg=$fg_muted,bold]┋$reversed}"
       fi
     done
   fi
 
   # Always emit the separator, even when narrow (the list itself is empty then).
-  printf '#[fg=brightblack,bold]┋%s' "$reversed"
+  style=$(printf '#[fg=%s,bold]' "$fg_muted")
+  out="┋$reversed"
+  printf '%s%s' "$style" "$out"
 }
 
 render() {
@@ -102,36 +108,57 @@ render() {
   local size
   size=$(layout_size_fast)
 
+  local fg_muted fg_green fg_blue icon_bell icon_session
+  local style reset out
+  fg_muted=$(color_get muted)
+
   # Build reversed list of sessions before current (newest first on status right)
   local reversed=""
   if [[ "$size" != narrow ]]; then
-    while read -r s; do
+    local sessions=() s
+    mapfile -t sessions < <(tmux -S "$socket_path" list-sessions -F '#{session_name}')
+    if [[ "${sessions[0]:-}" != "$current_session" ]]; then
+      fg_green=$(color_get green)
+      icon_bell=$(nerd_font_icon bell)
+      icon_session=$(nerd_font_icon session)
+    fi
+    for s in "${sessions[@]}"; do
       [[ "$s" == "$current_session" ]] && break
       if tmux -S "$socket_path" list-windows -t "$s" -F '#{window_bell_flag}' 2>/dev/null | grep -q 1; then
-        reversed="#[fg=green] $(nerd_font_icon bell)$s #[default]${reversed:+#[fg=brightblack,bold]┋$reversed}"
+        reversed="#[fg=$fg_green] $icon_bell$s #[default]${reversed:+#[fg=$fg_muted,bold]┋$reversed}"
       else
-        reversed="#[fg=brightblack] $(nerd_font_icon session)$s #[default]${reversed:+#[fg=brightblack,bold]┋$reversed}"
+        reversed="#[fg=$fg_muted] $icon_session$s #[default]${reversed:+#[fg=$fg_muted,bold]┋$reversed}"
       fi
-    done < <(tmux -S "$socket_path" list-sessions -F '#{session_name}')
+    done
   fi
 
   if [[ -z $part || $part == sessions ]]; then
     # Always emit the separator, even when narrow (the list itself is empty then).
-    printf '#[fg=brightblack,bold]┋%s' "$reversed"
+    style=$(printf '#[fg=%s,bold]' "$fg_muted")
+    out="┋$reversed"
+    printf '%s%s' "$style" "$out"
   fi
 
   [[ $part == sessions ]] && exit 0
 
-  printf '#[fg=blue]'
+  fg_blue=$(color_get blue)
+  style=$(printf '#[fg=%s]' "$fg_blue")
+  printf '%s' "$style"
 
   # Speech recording indicator
   "$script_dir/speech.sh"
 
-  local pane_num pane_icon pane_label
+  local pane_num pane_label icon_pane
   pane_num="$(printf '%02d' "${pane_id#%}")"
-  pane_icon="$(nerd_font_icon pane)"
-  pane_label="$pane_icon$pane_num"
-  printf '#[fg=brightblack,bg=blue,bold]▏%s▕#[default]' "$pane_label"
+  icon_pane=$(nerd_font_icon pane)
+  pane_label="$icon_pane$pane_num"
+  local icon_head icon_flat
+  icon_head=$(nerd_font_icon separator.head)
+  icon_flat=$(nerd_font_icon separator.flat)
+  style=$(printf '#[fg=%s,bg=%s,bold]' "$fg_muted" "$fg_blue")
+  reset='#[default]'
+  out="$icon_head$pane_label$icon_flat"
+  printf '%s%s%s' "$style" "$out" "$reset"
 
   if [[ "$size" != narrow ]]; then
     # Battery indicator

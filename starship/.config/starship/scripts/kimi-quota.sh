@@ -9,11 +9,14 @@ source "$script_dir/layout.sh"
 
 render() {
   source "$script_dir/nerd-font.sh"
-  local balance
+  local balance icon_kimi icon_usd text
 
   balance=$("$script_dir/llm-quota-util.sh" --get kimi) || exit 1
   awk -v v="${balance:-0}" 'BEGIN { exit !(v > 0) }' || exit 1
-  printf "%s%s%.2f" "$(nerd_font_icon kimi)" "$(nerd_font_icon usd)" "$balance"
+  icon_kimi="$(nerd_font_icon kimi)"
+  icon_usd="$(nerd_font_icon usd)"
+  text="$icon_kimi$icon_usd"
+  printf "%s%.2f" "$text" "$balance"
 }
 
 case "${1:-}" in

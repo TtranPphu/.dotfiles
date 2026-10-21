@@ -9,12 +9,15 @@ source "$script_dir/layout.sh"
 
 render() {
   source "$script_dir/nerd-font.sh"
-  local balance
+  local balance icon_deepseek icon_usd text
 
   "$script_dir/llm-quota-util.sh" --configured deepseek || exit 1
   balance=$("$script_dir/llm-quota-util.sh" --get deepseek) || exit 1
   awk -v v="${balance:-0}" 'BEGIN { exit !(v > 0) }' || exit 1
-  printf "%s%s%.2f" "$(nerd_font_icon deepseek)" "$(nerd_font_icon usd)" "$balance"
+  icon_deepseek="$(nerd_font_icon deepseek)"
+  icon_usd="$(nerd_font_icon usd)"
+  text="$icon_deepseek$icon_usd"
+  printf "%s%.2f" "$text" "$balance"
 }
 
 case "${1:-}" in

@@ -8,16 +8,17 @@ source "$script_dir/layout.sh"
 
 render() {
   source "$script_dir/nerd-font.sh"
-  local hour time icon
+  local hour time icon_clock text
 
   hour=$((10#$(date +%-I)))
   time="$(date +'%I:%M %p')"
-  icon="$(nerd_font_icon "clock.$hour")"
-  if [[ -n "$icon" ]]; then
-    printf '%s%s' "$icon" "$time"
+  icon_clock="$(nerd_font_icon "clock.$hour")"
+  if [[ -n "$icon_clock" ]]; then
+    text="$icon_clock$time"
   else
-    printf '%s' "$time"
+    text="$time"
   fi
+  printf '%s' "$text"
 }
 
 case "${1:-}" in

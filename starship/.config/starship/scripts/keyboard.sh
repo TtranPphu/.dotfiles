@@ -18,22 +18,29 @@ render() {
   source "$script_dir/level-color.sh"
   source "$script_dir/nerd-font.sh"
   local size=${1:-$(layout_size_fast)}
-  local data left right
+  local data left right icon_keyboard icon_percent text_left text_right fg_left fg_right
 
   data=$("$script_dir/keyboard-util.sh") || exit 1
   left="${data%% *}"
   right="${data##* }"
   [[ -z "$left" ]] && exit 1
 
+  icon_keyboard="$(nerd_font_icon keyboard)"
+  fg_left=$(level_color "$left")
+  fg_right=$(level_color "$right")
+
   if [[ "$size" != wide ]]; then
-    icon="$(nerd_font_icon keyboard)"; icon="${icon% }"
-    printf '%s%s\033[0m%s %s\033[0m' \
-      "$(level_color "$left")" "$icon" \
-      "$(level_color "$right")" "$icon"
+    icon_keyboard="${icon_keyboard% }"
+    text_left="$icon_keyboard"
+    text_right="$icon_keyboard"
+    reset=$'\033[0m'
+    printf '%s%s%s%s %s%s' "$fg_left" "$text_left" "$reset" "$fg_right" "$text_right" "$reset"
   else
-    printf '%s%s%s\033[0m %s%s%s\033[0m' \
-      "$(level_color "$left")" "$(nerd_font_icon keyboard)" "$left$(nerd_font_icon percent)" \
-      "$(level_color "$right")" "$(nerd_font_icon keyboard)" "$right$(nerd_font_icon percent)"
+    icon_percent="$(nerd_font_icon percent)"
+    text_left="$icon_keyboard$left$icon_percent"
+    text_right="$icon_keyboard$right$icon_percent"
+    reset=$'\033[0m'
+    printf '%s%s%s %s%s%s' "$fg_left" "$text_left" "$reset" "$fg_right" "$text_right" "$reset"
   fi
 }
 

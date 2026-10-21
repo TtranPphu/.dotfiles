@@ -5,28 +5,32 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 UTIL="$SCRIPT_DIR/keyboard-util.sh"
 source "$SCRIPT_DIR/nerd-font.sh"
 source "$SCRIPT_DIR/layout.sh"
+source "$SCRIPT_DIR/level-color.sh"
 
 data=$("$UTIL") || exit 1
 left="${data%% *}"
 right="${data##* }"
 [[ -z "$left" ]] && exit 1
 
-colors=(
-  "#f7768e" "#f28186" "#ee8d7f" "#e99877" "#e5a370"
-  "#e0af68" "#d0b769" "#bfbf69" "#afc66a" "#9ece6a"
-)
+icon_keyboard="$(nerd_font_icon keyboard)"
+icon_head="$(nerd_font_icon separator.head)"
+icon_flat="$(nerd_font_icon separator.flat)"
+fg_muted="$(color_get muted)"
+bg_left="$(level_hex "$left")"
+bg_right="$(level_hex "$right")"
 
-idx_left=$(( (left - 1) / 10 ))
-idx_right=$(( (right - 1) / 10 ))
-
-[[ idx_left  -ge 0 ]] && [[ idx_left  -lt 10 ]] || idx_left=0
-[[ idx_right -ge 0 ]] && [[ idx_right -lt 10 ]] || idx_right=0
+style_left=$(printf '#[fg=%s,bold,bg=%s]' "$fg_muted" "$bg_left")
+style_right=$(printf '#[fg=%s,bold,bg=%s]' "$fg_muted" "$bg_right")
+reset='#[default]'
 
 if [[ "$(layout_size_fast)" == wide ]]; then
-  printf '#[fg=brightblack,bold,bg=%s]▏%s%s%s▕#[default]' "${colors[$idx_left]}" "$(nerd_font_icon keyboard)" "$left" "$(nerd_font_icon percent)"
-  printf '#[fg=brightblack,bold,bg=%s]▏%s%s%s▕#[default]' "${colors[$idx_right]}" "$(nerd_font_icon keyboard)" "$right" "$(nerd_font_icon percent)"
+  icon_percent="$(nerd_font_icon percent)"
+  out_left="$icon_head$icon_keyboard$left$icon_percent$icon_flat"
+  out_right="$icon_head$icon_keyboard$right$icon_percent$icon_flat"
 else
-  icon="$(nerd_font_icon keyboard)"; icon="${icon% }"
-  printf '#[fg=brightblack,bold,bg=%s]▏%s▕#[default]' "${colors[$idx_left]}" "$icon"
-  printf '#[fg=brightblack,bold,bg=%s]▏%s▕#[default]' "${colors[$idx_right]}" "$icon"
+  icon_keyboard="${icon_keyboard% }"
+  out_left="$icon_head$icon_keyboard$icon_flat"
+  out_right="$icon_head$icon_keyboard$icon_flat"
 fi
+printf '%s%s%s' "$style_left" "$out_left" "$reset"
+printf '%s%s%s' "$style_right" "$out_right" "$reset"
