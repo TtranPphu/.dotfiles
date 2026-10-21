@@ -39,7 +39,12 @@ the stow tree.
 
 ### Communication Style
 
-See [communication style guide](.opencode/docs/communication-style.md).
+- Response prose is plain ASCII: no em dashes, en dashes, arrows, typographic
+  quotes, ellipses, or bullet dots. Use `-` or `--`, `->` or `<-`, `"` or `'`,
+  `...`, `*` instead. Unicode only where it is the subject (icon glyphs, tmux
+  or catalog output, code, quoted user text).
+- The full rules are in the
+  [communication style guide](.opencode/docs/communication-style.md).
 
 ### Speech Input
 
