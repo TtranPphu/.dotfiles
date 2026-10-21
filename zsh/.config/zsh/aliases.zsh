@@ -45,9 +45,10 @@ fi
 
 # Alias cat -> batcat/bat if available
 if command -v batcat &>/dev/null; then
-  alias cat=batcat
+  alias cat='batcat --style=plain'
+  alias bat=batcat
 elif command -v bat &>/dev/null; then
-  alias cat=bat
+  alias cat='bat --style=plain'
 fi
 
 # Alias grep -> ripgrep if available
