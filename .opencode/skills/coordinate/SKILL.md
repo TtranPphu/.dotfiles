@@ -5,7 +5,7 @@ description: Coordinate AI agents across tmux panes via natural language. Agents
 
 ## Overview
 
-AI agents (opencode, claude, etc.) communicate with each other by
+opencode agents communicate with each other by
 sending natural language messages across tmux panes. Each agent runs in its own
 pane and delivers message text through a tmux paste buffer, reserving
 `send-keys` for the submit key.
@@ -56,7 +56,7 @@ tmux send-keys -t <target-pane-id> Enter
 - Every message starts with `This is <name> agent from pane <id>:` prefix.
 - `<target-pane-id>` is the tmux pane id (`%0`, `%1`, etc.).
 - `<source-pane-id>` is the sender's own pane id.
-- `<name>` is the agent's name (opencode, claude, etc.).
+- `<name>` is the agent's name (`opencode`).
 - Target pane ids are discovered via `tmux list-panes -a -F '#{pane_id} #{pane_current_command}'`.
 
 Why a paste buffer:
@@ -77,14 +77,12 @@ Why a paste buffer:
 
 ### TUI-specific behavior
 
-Different agents handle input differently. Send sequence: `C-u` to clear residual text, then deliver the message (paste buffer or `send-keys`), then the submit key.
+Send sequence: `C-u` to clear residual text, then deliver the message (paste
+buffer or `send-keys`), then the submit key.
 
 **opencode TUI** — `Enter` submits directly.
 
-**claude TUI** — `Enter` submits directly. For longer content, write a
-shared file instead of inline.
-
-Example — opencode in pane `%3` sends to claude in pane `%2`:
+Example — opencode in pane `%3` sends to opencode in pane `%2`:
 ```
 tmux set-buffer -b msg-%3 "This is opencode agent from pane %3: I've updated the API types in types.ts. Can you regenerate the mock data?"
 tmux paste-buffer -p -b msg-%3 -d -t %2
@@ -143,3 +141,89 @@ When text appears in an agent's pane (delivered via `paste-buffer` or
 2. If the message references a file in `.opencode/messages/`, read that
    file for the full content.
 3. Respond or act on the message as appropriate.
+
+## Cross-machine coordination (Tailscale + SSH)
+
+Agents on different machines coordinate the same way, with the tmux commands
+wrapped in `ssh`. Peers are usually reachable over Tailscale.
+
+### Find and reach the peer
+
+```
+tailscale status
+ssh -o BatchMode=yes <host-alias> 'hostname; whoami'
+```
+
+- Prefer the `~/.ssh/config` alias; it supplies the remote username. Tailscale
+  SSH rejects a guessed user with
+  `tailnet policy does not permit you to SSH as user "<user>"`.
+- Keep `BatchMode=yes` so a missing key fails fast instead of prompting.
+
+### Discover remote panes
+
+```
+ssh <host> 'tmux list-panes -a -F "#{pane_id} #{session_name}:#{window_index}.#{pane_index} #{pane_current_command}"'
+```
+
+### Deliver a message
+
+```
+printf '%s' "This is opencode agent from pane %0 on omarchy-iv: ..." |
+  ssh <host> 'tmux send-keys -t %0 C-u;
+              tmux load-buffer -b msg-omarchy-iv-%0 -;
+              tmux paste-buffer -p -b msg-omarchy-iv-%0 -d -t %0;
+              tmux send-keys -t %0 Enter'
+```
+
+- Always name the host in the `This is ... from pane ...` prefix: pane ids are
+  per machine, so both ends are frequently `%0`.
+- Name the buffer `msg-<host>-<pane>` so concurrent senders cannot collide.
+- `C-u` clears partial input, the paste inserts text as data, and the separate
+  `Enter` submits. opencode queues the message while it is mid-run.
+- Piping the text into `tmux load-buffer -` avoids quoting problems through
+  `ssh`.
+
+### Replies
+
+Never poll or scrape the peer's pane for answers. The responding agent MUST
+push a notification into the requesting agent's pane when it replies:
+
+```
+printf '%s' "This is opencode agent from pane %0 on lar-22-403-0107: ..." |
+  ssh <peer> 'tmux send-keys -t %0 C-u;
+              tmux load-buffer -b msg-lar-%0 -;
+              tmux paste-buffer -p -b msg-lar-%0 -d -t %0;
+              tmux send-keys -t %0 Enter'
+```
+
+For long content, write the file first and notify with its path. `capture-pane`
+is only for verifying that a message landed, never for discovering answers.
+
+### Shared files across machines
+
+When SSH works in both directions, write the file directly into the peer's
+checkout and send a short inline notice:
+
+```
+ssh <peer> 'cat > ~/.dotfiles/.opencode/messages/2026-10-22-150000-topic.md' < local.md
+printf '%s' "This is opencode agent from pane %0 on omarchy-iv: I wrote .opencode/messages/2026-10-22-150000-topic.md on your machine; read it." |
+  ssh <peer> 'tmux send-keys -t %0 C-u;
+              tmux load-buffer -b msg-omarchy-iv-%0 -;
+              tmux paste-buffer -p -b msg-omarchy-iv-%0 -d -t %0;
+              tmux send-keys -t %0 Enter'
+```
+
+- Writing through SSH needs no git sync or branch; the file stays untracked
+  in the peer's checkout.
+- If files must travel through git instead, use a dedicated branch such as
+  `opencode-messages`, never `master` or a feature branch, and commit only
+  `.opencode/messages/` there.
+
+### Worked example: remote desktop setup
+
+This channel was first used to set up wayvnc over Tailscale with a WSLg
+viewer: one agent created the wayvnc TLS cert, config, and user service on
+the desktop, and the other installed `tigervnc-viewer` in WSL and tested the
+connection. Split work by machine, let each side own the commands that need
+its own sudo, and send credentials over the channel only after the server
+validates locally.
