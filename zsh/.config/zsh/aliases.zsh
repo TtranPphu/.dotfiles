@@ -30,7 +30,7 @@ if command -v eza &>/dev/null; then
   if [[ "${DOTFILES_NERD_FONT:-nerd}" == lame ]]; then
     _eza_icons=""
   else
-    _eza_icons="--icons"
+    _eza_icons="--icons=auto"
   fi
 
   alias ls="eza -ah ${_eza_icons}"

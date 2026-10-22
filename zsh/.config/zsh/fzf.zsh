@@ -23,7 +23,7 @@ if command -v fzf &> /dev/null; then
 
   local fzf_file_preview
   fzf_file_preview="if [ -d {} ]; then"
-  fzf_file_preview+="  eza -lah --icons --group --color=always {} 2>/dev/null || ls -lah {};"
+  fzf_file_preview+="  eza -lah --icons=auto --group --color=always {} 2>/dev/null || ls -lah {};"
   fzf_file_preview+=" else"
   fzf_file_preview+="  $bat_cmd {} 2>/dev/null || cat {};"
   fzf_file_preview+=" fi"
