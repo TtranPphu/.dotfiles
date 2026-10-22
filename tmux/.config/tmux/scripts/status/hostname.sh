@@ -38,7 +38,9 @@ if level=$("$QUALITY" level "$socket_path" "$current_session" 2>/dev/null); then
   style=$(printf '#[fg=%s,bg=%s]' "$fg_muted" "$bg_quality")
   reset='#[default]'
   if [[ $size == wide ]]; then
-    out="$icon_head$icon_signal $display_host$icon_flat"
+    # The catalog's nerd signal glyph carries a trailing space; strip it so the
+    # one space below is the only gap (mono/lame values have no trailing space).
+    out="$icon_head${icon_signal% } $display_host$icon_flat"
   elif [[ "$(nerd_font_type)" == nerd ]]; then
     out="$icon_head$icon_signal$icon_tail"
   else
