@@ -60,9 +60,10 @@ nerd_font_client_id() {
     # Called for a specific tmux server (status scripts): trust its clients.
     conn=$(clients_conn) || conn=""
   else
-    # Interactive shell / prompt: our own connection wins, else this tmux's clients.
+    # Interactive shell / prompt: our own connection only. The cache key
+    # (_nerd_font_cache_key) uses this identical identity, so a cached value
+    # can never belong to a different attached client.
     conn="${SSH_CONNECTION:-${SSH_CLIENT:-}}"
-    [ -z "$conn" ] && { conn=$(clients_conn) || conn=""; }
   fi
 
   if [ -n "$conn" ]; then printf '%s' "${conn%% *}"; else printf local; fi
@@ -82,6 +83,8 @@ nerd_font_store() {
   if [ -f "$f" ]; then awk -v id="$id" '$1 != id' "$f" >"$tmp"; else : >"$tmp"; fi
   printf '%s\t%s\n' "$id" "$type" >>"$tmp"
   mv "$tmp" "$f"
+  # A new choice must not be shadowed by a prompt cache entry for up to 600 s.
+  [ -n "${FETCH_CACHE_DIR:-}" ] && rm -f "$FETCH_CACHE_DIR"/nerd-font-type.*.cache
 }
 
 # Normalize a stored/override value to the current type vocabulary.
