@@ -82,3 +82,5 @@ Skills live under `.opencode/`:
   [desktop.md](.opencode/docs/desktop.md)
 - **Terminal** (shell, editor, tmux, tools) — See
   [terminal.md](.opencode/docs/terminal.md)
+- **Remote desktop** (wayvnc, Remmina, Tailscale direct path) — See
+  [remote-desktop.md](.opencode/docs/remote-desktop.md)
