@@ -9,6 +9,8 @@
 set -u
 
 dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+# shellcheck source=/dev/null
+source "$dir/color.sh"
 sock="${1:-}"
 log="${XDG_STATE_HOME:-$HOME/.local/state}/tmux/icon-tmux.log"
 glyph_value=""
@@ -74,6 +76,11 @@ glyph separator.head
 set_opt @nerd_font_separator_head "$glyph_value"
 glyph separator.tail
 set_opt @nerd_font_separator_tail "$glyph_value"
+
+# window-status-separator is literal text: format variables are not expanded
+# there, so set the glyph and muted colour from the catalogs directly.
+glyph separator.light
+set_opt window-status-separator "#[fg=$(color_get muted)]${glyph_value}"
 glyph separator.light
 set_opt @nerd_font_separator_light "$glyph_value"
 glyph separator.heavy
