@@ -1,20 +1,16 @@
 {
   "$schema": "https://opencode.ai/config.json",
-  "permission": {
-    "bash": {
-      "*/tmp*": "deny",
-      "/tmp*": "deny"
-    },
-    "read": { "/tmp*": "deny" },
-    "edit": { "/tmp*": "deny" },
-    "list": { "/tmp*": "deny" },
-    "glob": { "/tmp*": "deny" },
-    "grep": { "/tmp*": "deny" },
-    "external_directory": { "/tmp*": "deny" }
-  },
   "permissions": [
     { "action": "websearch", "resource": "*", "effect": "allow" },
-    { "action": "webfetch", "resource": "*", "effect": "allow" }
+    { "action": "webfetch", "resource": "*", "effect": "allow" },
+    { "action": "external_directory", "resource": "/tmp*", "effect": "deny" },
+    { "action": "read", "resource": "/tmp*", "effect": "deny" },
+    { "action": "edit", "resource": "/tmp*", "effect": "deny" },
+    { "action": "glob", "resource": "/tmp*", "effect": "deny" },
+    { "action": "shell", "resource": "*/tmp*", "effect": "deny" },
+    { "action": "shell", "resource": "/tmp*", "effect": "deny" },
+    { "action": "shell", "resource": "git commit *", "effect": "deny" },
+    { "action": "shell", "resource": "git push *", "effect": "deny" }
   ],
   "lsp": {
     "jsonls": {
@@ -26,40 +22,50 @@
       "extensions": [".toml"]
     }
   },
-  "command": {
+  "commands": {
     "commit": {
       "description": "Create a git commit following project conventions",
       "template": "Load the commit skill and follow its instructions. Group changes by top-level component. Create one commit per component unless tightly coupled.",
-      "subtask": true
+      "agent": "committer",
+      "subagent": true
     },
     "stow-deploy": {
       "description": "Deploy, list, or preview stow packages",
       "template": "Load the stow-deploy skill and follow its instructions. If an argument is given, use it as the package name or action (list/preview).",
-      "subtask": true
+      "subagent": true
     },
     "tmux-troubleshoot": {
       "description": "Investigate tmux panes: capture output, check logs, inspect status lines",
       "template": "Load the tmux-troubleshoot skill and follow its instructions to diagnose the tmux issue.",
-      "subtask": true
+      "subagent": true
     },
     "merge": {
       "description": "Merge a feature branch into master with a conventional commit message",
       "template": "Load the merge skill and follow its instructions. If a branch name is given, use it; otherwise ask which branch to merge.",
-      "subtask": true
+      "agent": "committer",
+      "subagent": true
     },
     "coordinate": {
       "description": "Coordinate AI agents across tmux panes via natural language",
       "template": "Load the coordinate skill and follow its instructions. If a message or receiving agent is specified, craft an inline message or shared file accordingly.",
-      "subtask": true
+      "subagent": true
     },
     "fire": {
       "description": "Run a long-running command in another pane with background watchdog",
       "template": "Load the fire skill and follow its instructions to dispatch the command, launch the watchdog, and handle the completion notification.",
-      "subtask": true
+      "subagent": true
     }
   },
   "agents": {
     "general": { "disabled": true },
-    "explore": { "disabled": true }
+    "explore": { "disabled": true },
+    "committer": {
+      "description": "Commits and pushes only when spawned by /commit or /merge",
+      "mode": "subagent",
+      "permissions": [
+        { "action": "shell", "resource": "git commit *", "effect": "allow" },
+        { "action": "shell", "resource": "git push *", "effect": "allow" }
+      ]
+    }
   }
 }
