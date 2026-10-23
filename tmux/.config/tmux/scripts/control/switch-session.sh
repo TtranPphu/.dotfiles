@@ -3,6 +3,7 @@
 wm_status="$HOME/.config/tmux/scripts/status"
 script_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 source "$script_dir/icon.sh"
+sep_light=$(nerd_font_icon separator.light)
 
 preview_cmd='s=$(echo {} | sed "s/:.*//" | awk "{print \$NF}"); '\
 'i=$(tmux list-windows -t "$s" -F "#{window_active} #{window_index}" '\
@@ -27,7 +28,7 @@ result=$(
             fi
             echo "$bell_icon$name$panes_suffix"
           done \
-        | paste -sd '|' | sed 's/|/ ┊ /g')
+        | paste -sd '|' | sed "s/|/ $sep_light /g")
       session_icon=$(tmux list-windows -t "$s" -F '#{window_bell_flag}' 2>/dev/null | grep -q 1 && nerd_font_icon bell || nerd_font_icon session)
       echo "$session_icon$s: $windows"
     done \

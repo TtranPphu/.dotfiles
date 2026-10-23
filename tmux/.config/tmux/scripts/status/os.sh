@@ -6,42 +6,44 @@ UTIL="$SCRIPT_DIR/os-util.sh"
 source "$SCRIPT_DIR/icon.sh"
 source "$SCRIPT_DIR/color.sh"
 
-icon_os=""
+key_os=""
 case "$("$UTIL")" in
-  alpine)       icon_os="$(nerd_font_icon os.alpine)" ;;
-  amzn)         icon_os="$(nerd_font_icon os.amzn)" ;;
-  android)      icon_os="$(nerd_font_icon os.android)" ;;
-  arch)         icon_os="$(nerd_font_icon os.arch)" ;;
-  artix)        icon_os="$(nerd_font_icon os.artix)" ;;
-  omarchy)      icon_os="$(nerd_font_icon os.omarchy)" ;;
-  centos)       icon_os="$(nerd_font_icon os.centos)" ;;
-  darwin)       icon_os="$(nerd_font_icon os.darwin)" ;;
-  debian)       icon_os="$(nerd_font_icon os.debian)" ;;
-  fedora)       icon_os="$(nerd_font_icon os.fedora)" ;;
-  gentoo)       icon_os="$(nerd_font_icon os.gentoo)" ;;
-  manjaro)      icon_os="$(nerd_font_icon os.manjaro)" ;;
-  mint)         icon_os="$(nerd_font_icon os.mint)" ;;
-  nixos)        icon_os="$(nerd_font_icon os.nixos)" ;;
-  opensuse*)    icon_os="$(nerd_font_icon os.opensuse)" ;;
-  raspbian)     icon_os="$(nerd_font_icon os.raspbian)" ;;
-  rhel)    icon_os="$(nerd_font_icon os.rhel)" ;;
-  redhat)  icon_os="$(nerd_font_icon os.redhat)" ;;
-  rocky)        icon_os="$(nerd_font_icon os.rocky)" ;;
-  sles)         icon_os="$(nerd_font_icon os.opensuse)" ;;
-  ubuntu)       icon_os="$(nerd_font_icon os.ubuntu)" ;;
-  *)            icon_os="$(nerd_font_icon os.linux)" ;;
+  alpine)    key_os=os.alpine ;;
+  amzn)      key_os=os.amzn ;;
+  android)   key_os=os.android ;;
+  arch)      key_os=os.arch ;;
+  artix)     key_os=os.artix ;;
+  omarchy)   key_os=os.omarchy ;;
+  centos)    key_os=os.centos ;;
+  darwin)    key_os=os.darwin ;;
+  debian)    key_os=os.debian ;;
+  fedora)    key_os=os.fedora ;;
+  gentoo)    key_os=os.gentoo ;;
+  manjaro)   key_os=os.manjaro ;;
+  mint)      key_os=os.mint ;;
+  nixos)     key_os=os.nixos ;;
+  opensuse*) key_os=os.opensuse ;;
+  raspbian)  key_os=os.raspbian ;;
+  rhel)      key_os=os.rhel ;;
+  redhat)    key_os=os.redhat ;;
+  rocky)     key_os=os.rocky ;;
+  sles)      key_os=os.opensuse ;;
+  ubuntu)    key_os=os.ubuntu ;;
+  *)         key_os=os.linux ;;
 esac
 
+icon_os="$(nerd_font_icon "$key_os")"
 icon_head="$(nerd_font_icon separator.head)"
 icon_tail="$(nerd_font_icon separator.tail)"
-fg_soft="$(color_get ink.soft)"
-bg_white="$(color_get white)"
+# Brand color for the pill; an unknown OS key falls back to the neutral look.
+bg_os="$(color_get "$key_os")"
+[[ -n $bg_os ]] || bg_os="$(color_get white)"
+# Icon foreground per OS; the pill edges keep the neutral ink foreground.
+fg_icon="$(color_get "$key_os.fg")"
+[[ -n $fg_icon ]] || fg_icon="$(color_get ink)"
+fg_edge="$(color_get ink)"
 
-style=$(printf '#[fg=%s,bold,bg=%s]' "$fg_soft" "$bg_white")
+style_edge=$(printf '#[fg=%s,bold,bg=%s]' "$fg_edge" "$bg_os")
+style_icon=$(printf '#[fg=%s,bold,bg=%s]' "$fg_icon" "$bg_os")
 reset='#[default]'
-if [[ "$(nerd_font_type)" == nerd ]]; then
-  out=" $icon_os$icon_tail"
-else
-  out="$icon_head$icon_os$icon_tail"
-fi
-printf '%s%s%s' "$style" "$out" "$reset"
+printf '%s%s%s%s%s%s%s' "$style_edge" "$icon_head" "$style_icon" "$icon_os" "$style_edge" "$icon_tail" "$reset"

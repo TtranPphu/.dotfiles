@@ -8,8 +8,9 @@ source "$script_dir/layout.sh"
 
 render() {
   source "$script_dir/icon.sh"
+  source "$script_dir/color.sh"
 
-  local key icon
+  local key icon sep fg_os text style reset
   case "$("$script_dir/os-util.sh")" in
     alpine)       key=os.alpine ;;
     amzn)         key=os.amzn ;;
@@ -35,9 +36,16 @@ render() {
     *)            key=os.linux ;;
   esac
   icon=$(nerd_font_icon "$key")
-  # One space between the icon and the separator, regardless of whether the
-  # catalog value carries its own trailing space.
-  printf '%s ┊' "${icon% }"
+  sep=$(nerd_font_icon separator.light)
+  # Brand foreground (no background); an unknown OS key renders bold only.
+  fg_os=$(color_ansi "$key") || fg_os=""
+  # The brand foreground wraps the icon only: reset it before the separator,
+  # which keeps the bold style. One space between them, regardless of whether
+  # the catalog value carries its own trailing space.
+  text="${icon% }"$'\033[39m'" $sep"
+  style=$'\033[1m'"$fg_os"
+  reset=$'\033[0m'
+  printf '%s%s%s' "$style" "$text" "$reset"
 }
 
 case "${1:-}" in

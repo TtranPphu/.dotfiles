@@ -13,7 +13,7 @@ source "$script_dir/color.sh"
 render() {
   local socket_path="${1:-}" current_session="${2:-}" width="${3:-}" client_pid="${4:-}"
   local fg_muted fg_ink fg_blue
-  local icon_head icon_session icon_flat out style reset
+  local icon_head icon_session icon_flat icon_sep out style reset
   source "$script_dir/icon.sh"
   source "$script_dir/layout.sh"
 
@@ -30,6 +30,7 @@ render() {
   fg_muted=$(color_get muted)
   fg_ink=$(color_get ink)
   fg_blue=$(color_get blue)
+  icon_sep=$(nerd_font_icon separator.heavy)
 
   # Sessions next to this one in the switcher, shown when there is room.
   print_adjacent_sessions() {
@@ -39,7 +40,7 @@ render() {
     if [[ -n "$adjacent_sessions" ]]; then
       style=$(printf '#[fg=%s]' "$fg_muted")
       style_divider=$(printf '#[fg=%s,bold]' "$fg_muted")
-      adjacent_out="$adjacent_sessions$style_divider┋"
+      adjacent_out="$adjacent_sessions$style_divider$icon_sep"
       printf '%s%s' "$style" "$adjacent_out"
     fi
   }
@@ -70,7 +71,7 @@ render() {
   out="$icon_head$icon_session$current_session$icon_flat"
   printf '%s%s%s' "$style" "$out" "$reset"
   style=$(printf '#[fg=%s,bold]' "$fg_muted")
-  printf '%s┋' "$style"
+  printf '%s%s' "$style" "$icon_sep"
 }
 
 render "$@"

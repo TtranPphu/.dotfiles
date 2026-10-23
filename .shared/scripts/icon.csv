@@ -116,3 +116,6 @@ clock.10;                     ; ;   ;󰖉;    ;;
 clock.11;                     ; ;   ;󰖉;    ;;
 clock.12;                     ; ;   ;󰖉;    ;;
 date;                         ;󰃭 ;   ;󰭤;    ;;
+# shared: separators
+separator.light;              ;┊;    ;┊;    ;┊;
+separator.heavy;              ;┋;    ;┋;    ;┋;

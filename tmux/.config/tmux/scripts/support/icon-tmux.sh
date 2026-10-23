@@ -74,6 +74,10 @@ glyph separator.head
 set_opt @nerd_font_separator_head "$glyph_value"
 glyph separator.tail
 set_opt @nerd_font_separator_tail "$glyph_value"
+glyph separator.light
+set_opt @nerd_font_separator_light "$glyph_value"
+glyph separator.heavy
+set_opt @nerd_font_separator_heavy "$glyph_value"
 
 # The probe proved the server is alive, so a failure here is a real error.
 err="$("${tmux_cmd[@]}" refresh-client 2>&1 >/dev/null)"; rc=$?

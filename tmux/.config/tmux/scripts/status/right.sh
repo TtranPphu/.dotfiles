@@ -28,7 +28,8 @@ sessions_display() {
   local -A has_bell=()
   local -A seen=()
   local -a order=()
-  local fg_green fg_muted icon_bell icon_session style out
+  local fg_green fg_muted icon_bell icon_session icon_sep style out
+  source "$script_dir/icon.sh"
 
   if [[ -z "$width" ]]; then
     width=$(tmux -S "$socket_path" list-clients -t "$current_session" -F '#{client_width}' 2>/dev/null | sort -n | head -1)
@@ -37,6 +38,7 @@ sessions_display() {
   export STATUS_WIDTH="$width"
   size=$(layout_size_fast)
   fg_muted=$(color_get muted)
+  icon_sep=$(nerd_font_icon separator.heavy)
 
   if [[ "$size" != narrow ]]; then
     while IFS= read -r line; do
@@ -50,9 +52,9 @@ sessions_display() {
       [[ "$flag" == 1 ]] && has_bell[$s]=1
     done < <(tmux -S "$socket_path" list-windows -a -F '#{session_name} #{window_bell_flag}' 2>/dev/null)
 
-    # Icons are only needed when a session actually shows (the common
-    # single-session case prints just the separator). They come from their own
-    # loose caches, so the live path never sources icon.sh or forks awk.
+    # Session icons are only needed when a session actually shows (the common
+    # single-session case prints just the separator); they come from their own
+    # loose caches. The separator is resolved in-process above.
     local glyph_bell="" glyph_session=""
     first="${order[0]:-}"
     if [[ -n "$first" && "$first" != "$current_session" ]]; then
@@ -64,9 +66,6 @@ sessions_display() {
         glyph_bell="$STATUS_NERD_FONT_GLYPH"
         status_nerd_font_glyph "$script_dir" session
         glyph_session="$STATUS_NERD_FONT_GLYPH"
-      else
-        # No type resolved: fall back to the in-process resolver.
-        source "$script_dir/icon.sh"
       fi
       icon_bell="${glyph_bell:-$(nerd_font_icon bell)}"
       icon_session="${glyph_session:-$(nerd_font_icon session)}"
@@ -76,16 +75,16 @@ sessions_display() {
     for s in "${order[@]}"; do
       [[ "$s" == "$current_session" ]] && break
       if [[ -n "${has_bell[$s]:-}" ]]; then
-        reversed="#[fg=$fg_green] $icon_bell$s #[default]${reversed:+#[fg=$fg_muted,bold]┋$reversed}"
+        reversed="#[fg=$fg_green] $icon_bell$s #[default]${reversed:+#[fg=$fg_muted,bold]$icon_sep$reversed}"
       else
-        reversed="#[fg=$fg_muted] $icon_session$s #[default]${reversed:+#[fg=$fg_muted,bold]┋$reversed}"
+        reversed="#[fg=$fg_muted] $icon_session$s #[default]${reversed:+#[fg=$fg_muted,bold]$icon_sep$reversed}"
       fi
     done
   fi
 
   # Always emit the separator, even when narrow (the list itself is empty then).
   style=$(printf '#[fg=%s,bold]' "$fg_muted")
-  out="┋$reversed"
+  out="$icon_sep$reversed"
   printf '%s%s' "$style" "$out"
 }
 
@@ -108,9 +107,10 @@ render() {
   local size
   size=$(layout_size_fast)
 
-  local fg_muted fg_green fg_blue icon_bell icon_session
+  local fg_muted fg_green fg_blue icon_bell icon_session icon_sep
   local style reset out
   fg_muted=$(color_get muted)
+  icon_sep=$(nerd_font_icon separator.heavy)
 
   # Build reversed list of sessions before current (newest first on status right)
   local reversed=""
@@ -125,9 +125,9 @@ render() {
     for s in "${sessions[@]}"; do
       [[ "$s" == "$current_session" ]] && break
       if tmux -S "$socket_path" list-windows -t "$s" -F '#{window_bell_flag}' 2>/dev/null | grep -q 1; then
-        reversed="#[fg=$fg_green] $icon_bell$s #[default]${reversed:+#[fg=$fg_muted,bold]┋$reversed}"
+        reversed="#[fg=$fg_green] $icon_bell$s #[default]${reversed:+#[fg=$fg_muted,bold]$icon_sep$reversed}"
       else
-        reversed="#[fg=$fg_muted] $icon_session$s #[default]${reversed:+#[fg=$fg_muted,bold]┋$reversed}"
+        reversed="#[fg=$fg_muted] $icon_session$s #[default]${reversed:+#[fg=$fg_muted,bold]$icon_sep$reversed}"
       fi
     done
   fi
@@ -135,7 +135,7 @@ render() {
   if [[ -z $part || $part == sessions ]]; then
     # Always emit the separator, even when narrow (the list itself is empty then).
     style=$(printf '#[fg=%s,bold]' "$fg_muted")
-    out="┋$reversed"
+    out="$icon_sep$reversed"
     printf '%s%s' "$style" "$out"
   fi
 
