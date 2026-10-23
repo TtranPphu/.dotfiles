@@ -37,8 +37,8 @@ render() {
   esac
   icon=$(nerd_font_icon "$key")
   sep=$(nerd_font_icon separator.light)
-  # Brand foreground (no background); an unknown OS key renders bold only.
-  fg_os=$(color_ansi "$key") || fg_os=""
+  # Starship foreground (no background); an unknown OS key renders bold only.
+  fg_os=$(color_ansi "$key.starship") || fg_os=""
   # The brand foreground wraps the icon only: reset it before the separator,
   # which keeps the bold style. One space between them, regardless of whether
   # the catalog value carries its own trailing space.

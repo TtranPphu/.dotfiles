@@ -35,11 +35,11 @@ esac
 icon_os="$(nerd_font_icon "$key_os")"
 icon_head="$(nerd_font_icon separator.head)"
 icon_tail="$(nerd_font_icon separator.tail)"
-# Brand color for the pill; an unknown OS key falls back to the neutral look.
-bg_os="$(color_get "$key_os")"
+# Pill background and icon foreground come from their own tmux keys;
+# unknown OS keys fall back to the neutral look.
+bg_os="$(color_get "$key_os.tmux.bg")"
 [[ -n $bg_os ]] || bg_os="$(color_get white)"
-# Icon foreground per OS; the pill edges keep the neutral ink foreground.
-fg_icon="$(color_get "$key_os.fg")"
+fg_icon="$(color_get "$key_os.tmux.fg")"
 [[ -n $fg_icon ]] || fg_icon="$(color_get ink)"
 fg_edge="$(color_get ink)"
 
