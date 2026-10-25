@@ -1717,17 +1717,6 @@ Item {
         mouse.accepted = true
       }
     }
-
-    onDoubleClicked: function(mouse) {
-      if (suppressClick) {
-        suppressClick = false
-        return
-      }
-      if (mouse.button === Qt.LeftButton) {
-        root.toggleTransparency()
-        mouse.accepted = true
-      }
-    }
   }
 
   component ModuleList: Loader {

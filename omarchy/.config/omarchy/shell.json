@@ -41,11 +41,11 @@
         {
           "id": "omarchy.tray",
           "pinned": [
-            "TelegramDesktop"
+            "TelegramDesktop",
+            "steam",
+            "proton.vpn.app.gtk"
           ],
-          "hidden": [
-            "steam"
-          ]
+          "hidden": []
         },
         {
           "id": "ttranpphu.tailscale"
