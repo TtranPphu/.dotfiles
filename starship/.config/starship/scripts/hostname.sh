@@ -11,14 +11,12 @@ render() {
   source "$script_dir/level-color.sh"
   source "$script_dir/icon.sh"
   local size=${1:-$(layout_size_fast)}
-  local data level ramp icon_signal icon_host text fg_quality
+  local data level ramp icon_signal text fg_quality
 
   [[ "$size" == narrow ]] && exit 1
 
   data=$("$script_dir/hostname-util.sh") || exit 1
   [[ -z "$data" ]] && exit 1
-
-  icon_host="$(nerd_font_icon host)"
 
   # Over SSH color the host with the connection quality ramp (10 = green, 1 = red);
   # medium drops the name. Without SSH the module only shows in wide.
@@ -28,7 +26,9 @@ render() {
     fg_quality=$(level_color "$ramp")
     reset=$'\033[0m'
     if [[ "$size" == wide ]]; then
-      text="$icon_signal$icon_host$data"
+      # The catalog's nerd signal glyph carries a trailing space; strip it so the
+      # one space below is the only gap (mono/lame values have no trailing space).
+      text="${icon_signal% } $data"
       printf '%s%s%s' "$fg_quality" "$text" "$reset"
     else
       text="${icon_signal% }"
@@ -36,7 +36,7 @@ render() {
     fi
   else
     [[ "$size" == wide ]] || exit 1
-    text="$icon_host$data"
+    text="$data"
     printf '%s%s' "$text"
   fi
 }

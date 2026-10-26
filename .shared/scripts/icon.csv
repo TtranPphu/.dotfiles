@@ -111,7 +111,6 @@ usd;                          ;;    ;;    ;$;
 percent;                      ;;    ;;    ;%;
 
 user;                         ; ;   ;;    ;;
-host;                         ;󰢹 ;   ;󰢹;    ;;
 docker;                       ;󰡨 ;   ;󰡨;    ;;
 
 signal.1;                     ;󰣾 ;   ;󰣾;    ;poor;
