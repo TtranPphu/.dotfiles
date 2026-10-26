@@ -10,7 +10,9 @@
     { "action": "shell", "resource": "*/tmp*", "effect": "deny" },
     { "action": "shell", "resource": "/tmp*", "effect": "deny" },
     { "action": "shell", "resource": "git commit *", "effect": "deny" },
-    { "action": "shell", "resource": "git push *", "effect": "deny" }
+    { "action": "shell", "resource": "git push *", "effect": "deny" },
+    { "action": "shell", "resource": "git merge *", "effect": "deny" },
+    { "action": "shell", "resource": "git rebase *", "effect": "deny" }
   ],
   "lsp": {
     "jsonls": {
@@ -41,7 +43,7 @@
     },
     "merge": {
       "description": "Merge a feature branch into master with a conventional commit message",
-      "template": "Load the merge skill and follow its instructions. If a branch name is given, use it; otherwise ask which branch to merge.",
+      "template": "Load the merge skill and follow its instructions. If a branch name is given, use it; otherwise ask which branch to merge. Resolve any merge or rebase conflicts as part of the merge.",
       "agent": "committer",
       "subagent": true
     },
@@ -60,11 +62,13 @@
     "general": { "disabled": true },
     "explore": { "disabled": true },
     "committer": {
-      "description": "Commits and pushes only when spawned by /commit or /merge",
+      "description": "Commits, merges, rebases, and pushes only when spawned by /commit or /merge",
       "mode": "subagent",
       "permissions": [
         { "action": "shell", "resource": "git commit *", "effect": "allow" },
-        { "action": "shell", "resource": "git push *", "effect": "allow" }
+        { "action": "shell", "resource": "git push *", "effect": "allow" },
+        { "action": "shell", "resource": "git merge *", "effect": "allow" },
+        { "action": "shell", "resource": "git rebase *", "effect": "allow" }
       ]
     }
   }
