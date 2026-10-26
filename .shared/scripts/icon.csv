@@ -1,38 +1,25 @@
 key;                          ;nerd; ;mono; ;lame;
-# shared: device battery pills
-battery.full;                 ;󰂄 ;   ;󰂄;    ;=;
-battery.charging.0;           ;󰢜 ;   ;󱐋;    ;+;
-battery.charging.1;           ;󰂆 ;   ;󱐋;    ;+;
-battery.charging.2;           ;󰂇 ;   ;󱐋;    ;+;
-battery.charging.3;           ;󰂈 ;   ;󱐋;    ;+;
-battery.charging.4;           ;󰢝 ;   ;󱐋;    ;+;
-battery.charging.5;           ;󰂉 ;   ;󱐋;    ;+;
-battery.charging.6;           ;󰢞 ;   ;󱐋;    ;+;
-battery.charging.7;           ;󰂊 ;   ;󱐋;    ;+;
-battery.charging.8;           ;󰂋 ;   ;󱐋;    ;+;
-battery.charging.9;           ;󰂅 ;   ;󱐋;    ;+;
-battery.charging.medium;      ;󱐋;    ;󱐋;    ;=;
-battery.discharging.0;        ;󰂎 ;   ;󰂎;    ;!;
-battery.discharging.1;        ;󰁻 ;   ;󰁻;    ;-;
-battery.discharging.2;        ;󰁼 ;   ;󰁼;    ;-;
-battery.discharging.3;        ;󰁽 ;   ;󰁽;    ;-;
-battery.discharging.4;        ;󰁾 ;   ;󰁾;    ;-;
-battery.discharging.5;        ;󰁿 ;   ;󰁿;    ;-;
-battery.discharging.6;        ;󰂀 ;   ;󰂀;    ;-;
-battery.discharging.7;        ;󰂁 ;   ;󰂁;    ;-;
-battery.discharging.8;        ;󰂂 ;   ;󰂂;    ;-;
-battery.discharging.9;        ;󰁹 ;   ;󰁹;    ;-;
-headphone;                    ;󱡏 ;   ;󰎇;    ;H;
-headphone.medium;             ;󰎇;    ;󰎇;    ;H;
-mouse;                        ;󰍽 ;   ;󰍽;    ;M;
-keyboard;                     ; ;   ;;    ;K;
-# shared: connection quality
-signal.1;                     ;󰣾 ;   ;󰣾;    ;poor;
-signal.2;                     ;󰣴 ;   ;󰣴;    ;weak;
-signal.3;                     ;󰣶 ;   ;󰣶;    ;normal;
-signal.4;                     ;󰣸 ;   ;󰣸;    ;good;
-signal.5;                     ;󰣺 ;   ;󰣺;    ;great;
-# shared: os
+
+separator.light;              ;┊;    ;┊;    ;┊;
+separator.heavy;              ;┋;    ;┋;    ;┋;
+separator.head;               ;▏;    ;▏;    ;▏;
+separator.tail;               ;▐;    ;▕;    ;▕;
+separator.flat;               ;▕;    ;▕;    ;▕;
+
+win;                          ; ;   ;;    ;;
+win.active;                   ; ;   ;;    ;;
+session;                      ; ;   ;;    ;;
+session.active;               ; ;   ;;    ;;
+bell;                         ;󰅸 ;   ;󰅸;    ;!;
+pane;                         ; ;   ;;    ;%;
+prefix;                       ;󰨙 ;   ;󱨦;    ;P;
+copy;                         ; ;   ;;    ;C;
+tree;                         ;󰙅 ;   ;󰙅;    ;T;
+zoom;                         ;󱉶 ;   ;󱉶;    ;Z;
+speech.record;                ;󰔊 ;   ;󰍬;    ;R;
+speech.transcribe;            ;󰑕 ;   ;󱇧;    ;T;
+reload;                       ;󱑠 ;   ;󱑠;    ;;
+
 os.alpine;                    ; ;   ;;    ;Alpine;
 os.amzn;                      ; ;   ;;    ;Amazon;
 os.android;                   ; ;   ;;    ;Android;
@@ -56,54 +43,26 @@ os.redhat;                    ; ;   ;;    ;Red Hat;
 os.rocky;                     ; ;   ;;    ;Rocky;
 os.ubuntu;                    ; ;   ;;    ;Ubuntu;
 os.linux;                     ; ;   ;;    ;Linux;
-# shared: quotas
-kimi;                         ; ;   ;;    ;Km ;
-deepseek;                     ;󰫣 ;   ;󰫣;    ;DS ;
-opencode;                     ;󱇘 ;   ;󱇘;    ;OC ;
-usd;                          ;;    ;;    ;$;
-percent;                      ;;    ;;    ;%;
-# shared: stale marker
-stale;                        ;󰇘;    ;;     ;;
-# tmux: windows, sessions, panes
-win;                          ; ;   ;;    ;;
-win.active;                   ; ;   ;;    ;;
-session;                      ; ;   ;;    ;;
-session.active;               ; ;   ;;    ;;
-bell;                         ;󰅸 ;   ;󰅸;    ;!;
-pane;                         ; ;   ;;    ;%;
-prefix;                       ;󰨙 ;   ;󱨦;    ;P;
-copy;                         ; ;   ;;    ;C;
-tree;                         ;󰙅 ;   ;󰙅;    ;T;
-zoom;                         ;󱉶 ;   ;󱉶;    ;Z;
-reload;                       ;󱑠 ;   ;󱑠;    ;;
-# tmux: speech
-speech.record;                ;󰔊 ;   ;󰍬;    ;R;
-speech.transcribe;            ;󰑕 ;   ;󱇧;    ;T;
-# tmux: pill separators
-separator.head;               ;▏;    ;▏;    ;▏;
-separator.tail;               ;▐;    ;▕;    ;▕;
-separator.flat;               ;▕;    ;▕;    ;▕;
-# starship: identity
-user;                         ; ;   ;;    ;;
-host;                         ;󰢹 ;   ;󰢹;    ;;
-docker;                       ;󰡨 ;   ;󰡨;    ;;
-# starship: git
+
+shell.bash;                   ; ;   ;;    ;;
+shell.fish;                   ;󰈺 ;   ;󰈺;    ;;
+shell.nu;                     ; ;   ;;    ;;
+shell.zsh;                    ; ;   ;;    ;;
+
 remote.github;                ; ;   ;;    ;;
 remote.gitlab;                ; ;   ;;    ;;
 remote.bitbucket;             ; ;   ;;    ;;
 remote.git;                   ;󰊢 ;   ;󰊢;    ;;
-# starship: languages
+stale;                        ;󰇘;    ;󰇘;    ;;
+
 lang.c;                       ; ;   ;;    ;C ;
 lang.java;                    ;󰬷 ;   ;󰬷;    ;Java ;
 lang.kotlin;                  ;󱈙 ;   ;󱈙;    ;Kotlin ;
 lang.lua;                     ;󰢱 ;   ;󰢱;    ;Lua ;
 lang.python;                  ;󰌠 ;   ;󰌠;    ;Python ;
 lang.rust;                    ;󱘗 ;   ;󱘗;    ;Rust ;
-# starship: shell and time
-shell.bash;                   ; ;   ;;    ;;
-shell.fish;                   ;󰈺 ;   ;󰈺;    ;;
-shell.nu;                     ; ;   ;;    ;;
-shell.zsh;                    ; ;   ;;    ;;
+
+date;                         ;󰃭 ;   ;󰭤;    ;;
 clock.1;                      ; ;   ;󰖉;    ;;
 clock.2;                      ; ;   ;󰖉;    ;;
 clock.3;                      ; ;   ;󰖉;    ;;
@@ -116,7 +75,47 @@ clock.9;                      ; ;   ;󰖉;    ;;
 clock.10;                     ; ;   ;󰖉;    ;;
 clock.11;                     ; ;   ;󰖉;    ;;
 clock.12;                     ; ;   ;󰖉;    ;;
-date;                         ;󰃭 ;   ;󰭤;    ;;
-# shared: separators
-separator.light;              ;┊;    ;┊;    ;┊;
-separator.heavy;              ;┋;    ;┋;    ;┋;
+
+battery.full;                 ;󰂄 ;   ;󰂄;    ;=;
+battery.charging.medium;      ;󱐋;    ;󱐋;    ;+;
+battery.charging.0;           ;󰢜 ;   ;󱐋;    ;+;
+battery.charging.1;           ;󰂆 ;   ;󱐋;    ;+;
+battery.charging.2;           ;󰂇 ;   ;󱐋;    ;+;
+battery.charging.3;           ;󰂈 ;   ;󱐋;    ;+;
+battery.charging.4;           ;󰢝 ;   ;󱐋;    ;+;
+battery.charging.5;           ;󰂉 ;   ;󱐋;    ;+;
+battery.charging.6;           ;󰢞 ;   ;󱐋;    ;+;
+battery.charging.7;           ;󰂊 ;   ;󱐋;    ;+;
+battery.charging.8;           ;󰂋 ;   ;󱐋;    ;+;
+battery.charging.9;           ;󰂅 ;   ;󱐋;    ;+;
+battery.discharging.0;        ;󰂎 ;   ;󰂎;    ;!;
+battery.discharging.1;        ;󰁻 ;   ;󰁻;    ;-;
+battery.discharging.2;        ;󰁼 ;   ;󰁼;    ;-;
+battery.discharging.3;        ;󰁽 ;   ;󰁽;    ;-;
+battery.discharging.4;        ;󰁾 ;   ;󰁾;    ;-;
+battery.discharging.5;        ;󰁿 ;   ;󰁿;    ;-;
+battery.discharging.6;        ;󰂀 ;   ;󰂀;    ;-;
+battery.discharging.7;        ;󰂁 ;   ;󰂁;    ;-;
+battery.discharging.8;        ;󰂂 ;   ;󰂂;    ;-;
+battery.discharging.9;        ;󰁹 ;   ;󰁹;    ;-;
+
+headphone.medium;             ;󰎇;    ;󰎇;    ;H;
+headphone;                    ;󱡏 ;   ;󰎇;    ;H;
+mouse;                        ;󰍽 ;   ;󰍽;    ;M;
+keyboard;                     ; ;   ;;    ;K;
+
+kimi;                         ; ;   ;;    ;Km ;
+deepseek;                     ;󰫣 ;   ;󰫣;    ;DS ;
+opencode;                     ;󱇘 ;   ;󱇘;    ;OC ;
+usd;                          ;;    ;;    ;$;
+percent;                      ;;    ;;    ;%;
+
+user;                         ; ;   ;;    ;;
+host;                         ;󰢹 ;   ;󰢹;    ;;
+docker;                       ;󰡨 ;   ;󰡨;    ;;
+
+signal.1;                     ;󰣾 ;   ;󰣾;    ;poor;
+signal.2;                     ;󰣴 ;   ;󰣴;    ;weak;
+signal.3;                     ;󰣶 ;   ;󰣶;    ;fair;
+signal.4;                     ;󰣸 ;   ;󰣸;    ;fine;
+signal.5;                     ;󰣺 ;   ;󰣺;    ;good;
