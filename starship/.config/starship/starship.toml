@@ -17,7 +17,7 @@ ${custom.compress_path}\
 ${custom.git}\
 $fill\
 ${custom.lang}\
-$cmd_duration\
+${custom.duration}\
 ${custom.date}\
 ${custom.clock}\
 ${custom.battery}\
@@ -80,9 +80,16 @@ format = " $output"
 
 
 [cmd_duration]
-min_time = 1000
-format = " [$duration]($style)"
+disabled = true
+
+# Spaced units (1m 1s) from the zsh hook's DOTFILES_CMD_DURATION_MS; the
+# built-in above has no spacing option. No icon, matching the built-in.
+[custom.duration]
+command = '${STARSHIP_CONFIG%/*}/scripts/duration.sh --display'
+when = '${STARSHIP_CONFIG%/*}/scripts/duration.sh --guard'
+shell = ["bash"]
 style = "yellow"
+format = " [$output]($style)"
 
 [time]
 disabled = true
