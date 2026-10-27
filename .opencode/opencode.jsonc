@@ -62,8 +62,9 @@
     "general": { "disabled": true },
     "explore": { "disabled": true },
     "committer": {
-      "description": "Commits, merges, rebases, and pushes only when spawned by /commit or /merge",
-      "mode": "subagent",
+      "description": "Commit, merge, rebase, and push changes. Available only through /commit and /merge.",
+      "mode": "primary",
+      "hidden": true,
       "permissions": [
         { "action": "shell", "resource": "git commit *", "effect": "allow" },
         { "action": "shell", "resource": "git push *", "effect": "allow" },
