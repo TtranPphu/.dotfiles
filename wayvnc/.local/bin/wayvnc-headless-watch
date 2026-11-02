@@ -1,0 +1,95 @@
+#!/usr/bin/env bash
+# Keep the reused headless output enabled only while VNC clients are connected.
+# Polls wayvnc; never creates a second headless output and never touches eDP-2.
+# Does nothing to the outputs while wayvnc is not ready, so a missing bind
+# address cannot turn into an output-toggle (cursor-warping) loop.
+set -u
+
+config="${WAYVNC_CONFIG:-$HOME/.config/wayvnc/config}"
+
+log() { printf 'wayvnc-headless-watch: %s\n' "$*" >&2; }
+
+bind_address() {
+  local addr
+  addr=$(sed -n 's/^[[:space:]]*address[[:space:]]*=[[:space:]]*//p' "$config" | tail -1)
+  addr=${addr%%[[:space:]]*}
+  case "$addr" in
+    '' | 0.0.0.0 | :: | '[::]') return 0 ;;
+  esac
+  printf '%s\n' "$addr"
+}
+
+address_present() {
+  local addr=$1
+  [ -n "$addr" ] || return 0
+  ip -o addr show | awk '{ print $4 }' | grep -Fq "$addr/"
+}
+
+headless_enabled() {
+  hyprctl monitors all -j 2>/dev/null | jq -r '.[] | select(.name | startswith("HEADLESS-")) | select(.disabled == false) | .name'
+}
+
+headless_captured() {
+  wayvncctl -j output-list 2>/dev/null | jq -r '.[] | select(.captured) | .name' | grep -q '^HEADLESS-'
+}
+
+physical_output() {
+  hyprctl monitors -j 2>/dev/null | jq -r '[.[] | select(.name | startswith("HEADLESS-") | not)] | .[0].name // empty'
+}
+
+noted=
+note() {
+  [ "$noted" = "$1" ] && return 0
+  noted=$1
+  log "$1"
+}
+
+disable_headless() {
+  local name
+  for name in $(headless_enabled); do
+    log "disabling $name"
+    hyprctl eval "hl.monitor({ output = \"$name\", disabled = true })" >/dev/null 2>&1
+  done
+}
+
+while :; do
+  sig=$(ls "${XDG_RUNTIME_DIR:-/run/user/$(id -u)}/hypr" 2>/dev/null | head -1)
+  if [ -z "$sig" ]; then
+    sleep 2
+    continue
+  fi
+  export HYPRLAND_INSTANCE_SIGNATURE="$sig"
+
+  # Wait briefly for a usable wayvnc; without it there is nothing safe to switch.
+  clients=$(timeout 5 wayvncctl -w -j client-list 2>/dev/null | jq 'length' 2>/dev/null)
+  if [ -z "$clients" ]; then
+    address=$(bind_address)
+    # wayvnc cannot start until the bind address exists; keep the idle state
+    # clean. Only enabled outputs are listed, so this runs at most once.
+    if [ -n "$address" ] && ! address_present "$address"; then
+      disable_headless
+    fi
+    sleep 2
+    continue
+  fi
+
+  if [ "$clients" -gt 0 ]; then
+    if ! headless_captured; then
+      name=$("$HOME/.local/bin/hypr-headless-output")
+      if [ -n "$name" ] && wayvncctl output-set "$name" >/dev/null 2>&1; then
+        log "client connected, capturing $name"
+      fi
+    fi
+  elif headless_captured; then
+    name=$(physical_output)
+    if [ -z "$name" ]; then
+      note "idle, no physical output to fall back to; keeping headless"
+    elif wayvncctl output-set "$name" >/dev/null 2>&1; then
+      noted=
+      log "idle, switched wayvnc to $name"
+      disable_headless
+    fi
+  fi
+
+  sleep 2
+done

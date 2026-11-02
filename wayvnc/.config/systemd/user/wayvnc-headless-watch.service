@@ -1,0 +1,12 @@
+[Unit]
+Description=wayvnc headless output watcher
+After=wayvnc.service
+PartOf=wayvnc.service
+
+[Service]
+ExecStart=%h/.local/bin/wayvnc-headless-watch
+Restart=on-failure
+RestartSec=2
+
+[Install]
+WantedBy=wayvnc.service

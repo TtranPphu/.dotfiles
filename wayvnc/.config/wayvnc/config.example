@@ -1,0 +1,9 @@
+# Copy this to ~/.config/wayvnc/config and replace the placeholders.
+use_relative_paths=true
+address=100.x.y.z
+port=5900
+enable_auth=true
+username=your-user
+password=change-me
+private_key_file=tls_key.pem
+certificate_file=tls_cert.pem

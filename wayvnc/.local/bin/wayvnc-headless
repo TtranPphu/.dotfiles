@@ -1,0 +1,41 @@
+#!/usr/bin/env bash
+# wayvnc entry point: wait for the configured bind address, then make sure the
+# headless output exists and serve it. Creating the headless output is skipped
+# while the address is absent, so wayvnc does not restart-loop (and toggle the
+# monitor, warping the cursor) when e.g. Tailscale is down.
+set -u
+
+config="${WAYVNC_CONFIG:-$HOME/.config/wayvnc/config}"
+
+log() { printf 'wayvnc-headless: %s\n' "$*" >&2; }
+
+bind_address() {
+  local addr
+  addr=$(sed -n 's/^[[:space:]]*address[[:space:]]*=[[:space:]]*//p' "$config" | tail -1)
+  addr=${addr%%[[:space:]]*}
+  # A wildcard bind never depends on a specific address coming up.
+  case "$addr" in
+    '' | 0.0.0.0 | :: | '[::]') return 0 ;;
+  esac
+  printf '%s\n' "$addr"
+}
+
+address_present() {
+  local addr=$1
+  [ -n "$addr" ] || return 0
+  ip -o addr show | awk '{ print $4 }' | grep -Fq "$addr/"
+}
+
+address=$(bind_address)
+if [ -n "$address" ] && ! address_present "$address"; then
+  log "waiting for $address"
+  until address_present "$address"; do
+    sleep 5
+  done
+  log "$address is up, starting wayvnc"
+fi
+
+dir=$(cd -- "$(dirname -- "$(readlink -f "${BASH_SOURCE[0]}")")" && pwd)
+name=$("$dir/hypr-headless-output") || exit 1
+
+exec /usr/bin/wayvnc --config="$config" --output="$name" --max-fps=60 "$@"

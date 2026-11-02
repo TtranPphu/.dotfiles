@@ -19,5 +19,11 @@ The LAN and public addresses are DHCP values; re-check them with
 ## Current path
 
 - wayvnc on omarchy-iv serves a Hyprland headless output over Tailscale
-  (`HEADLESS-*`, 640x480, `--max-fps=60`).
+  (`HEADLESS-*`, 640x480, `--max-fps=60`). `hypr-headless-output` reuses the
+  existing output (currently HEADLESS-1), re-enabling a disabled one instead of
+  creating a new HEADLESS-N on each start.
+- `wayvnc-headless-watch` disables the headless output when no VNC clients are
+  connected and re-enables it (plus `wayvncctl output-set`) when a client
+  connects. wayvnc stays running and listening; while idle it falls back to
+  capturing the physical output (`eDP-2`).
 - Remmina in WSL connects to `omarchy-iv:5900` with `quality=0`, `colordepth=32`.
