@@ -1,0 +1,8 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=TKMM
+Exec="/mnt/shared/Eden/Softwares/Tkmm-linux-x64.AppImage" %u
+MimeType=x-scheme-handler/tkmm;
+NoDisplay=true
+Terminal=false

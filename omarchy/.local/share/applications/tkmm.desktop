@@ -1,0 +1,10 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=TKMM
+Exec=/home/ttranpphu/.local/bin/tkmm %u
+Icon=tkmm
+Categories=Game;
+MimeType=x-scheme-handler/tkmm;
+Terminal=false
+StartupNotify=true

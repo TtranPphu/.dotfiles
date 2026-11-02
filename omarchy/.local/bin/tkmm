@@ -1,0 +1,6 @@
+#!/bin/bash
+# Launch TKMM with Avalonia scaled to the focused Hyprland monitor.
+scale=$(hyprctl monitors -j 2>/dev/null |
+  jq -r '((map(select(.focused)) | .[0]) // .[0]) | .scale // 1' 2>/dev/null)
+exec env AVALONIA_GLOBAL_SCALE_FACTOR="${scale:-1}" \
+  /mnt/shared/Eden/Softwares/Tkmm-linux-x64.AppImage "$@"
