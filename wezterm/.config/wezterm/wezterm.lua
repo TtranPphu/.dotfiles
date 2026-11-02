@@ -36,7 +36,7 @@ config.enable_scroll_bar = false
 config.scrollback_lines = 0
 config.window_close_confirmation = 'NeverPrompt'
 config.hide_tab_bar_if_only_one_tab = true
-config.window_decorations = is_windows and 'TITLE | RESIZE' or 'RESIZE'
+config.window_decorations = is_windows and 'TITLE | RESIZE' or 'NONE'
 
 -- Cursor: block, no blink.
 config.default_cursor_style = 'SteadyBlock'
