@@ -1,3 +1,6 @@
 #!/bin/bash
 # Launch the Eden nightly build (FUSE-free extracted AppImage)
+# The AppImage hook forces X11 unless this is set; run native Wayland instead.
+export I_WANT_A_BROKEN_WAYLAND_UI=1
+export QT_QPA_PLATFORM=wayland
 exec "$HOME/.local/opt/eden-nightly/AppDir/AppRun" "$@"
