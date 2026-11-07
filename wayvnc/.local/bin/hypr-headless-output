@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
-# Ensure a Hyprland headless output exists, set its mode/scale, and print its
-# name. Used by wayvnc-headless so remote access does not depend on the
-# physical monitor staying connected.
+# Ensure an enabled Hyprland headless output exists, set its mode/scale, and
+# print its name. Used by wayvnc-headless so remote access does not depend on
+# the physical monitor staying connected.
 set -u
 
 runtime="${XDG_RUNTIME_DIR:-/run/user/$(id -u)}"
@@ -9,30 +9,24 @@ sig=$(ls "$runtime/hypr" 2>/dev/null | head -1)
 [ -n "$sig" ] || exit 1
 export HYPRLAND_INSTANCE_SIGNATURE="$sig"
 
-find_headless() {
-  # Prefer an already-enabled headless output, then fall back to a disabled one.
-  hyprctl monitors all -j 2>/dev/null | jq -r '[.[] | select(.name | startswith("HEADLESS-"))] | sort_by(.disabled) | .[0].name // empty'
-}
-
-# "monitors all" also lists disabled outputs, so an existing HEADLESS output is
-# reused instead of a new HEADLESS-N being created on every wayvnc start.
-name=$(find_headless)
+# Only reuse an enabled headless output. A disabled one cannot be re-enabled
+# reliably by hl.monitor on this Hyprland build, so create a fresh output
+# instead of serving a dead monitor.
+name=$(hyprctl monitors -j 2>/dev/null | jq -r '[.[] | select(.name | startswith("HEADLESS-"))][0].name // empty')
 
 if [ -z "$name" ]; then
   hyprctl output create headless >/dev/null 2>&1 || exit 1
   for _ in $(seq 1 20); do
-    name=$(find_headless)
+    name=$(hyprctl monitors -j 2>/dev/null | jq -r '[.[] | select(.name | startswith("HEADLESS-"))][0].name // empty')
     [ -n "$name" ] && break
     sleep 0.1
   done
 fi
 [ -n "$name" ] || exit 1
 
-# Hyprland 0.56 Lua config: "keyword monitor" is rejected and hl.monitor merges
-# into the output's existing rule, so disabled = false is what re-enables it.
 hyprctl eval "hl.monitor({ output = \"$name\", disabled = false, mode = \"640x480@60\", position = \"auto\", scale = 1 })" >/dev/null 2>&1
 
-# Wait for the output to come up enabled before handing its name to wayvnc.
+# Wait for the output to be enabled before handing its name to wayvnc.
 for _ in $(seq 1 20); do
   hyprctl monitors -j 2>/dev/null | jq -e --arg n "$name" 'any(.[]; .name == $n)' >/dev/null && break
   sleep 0.1

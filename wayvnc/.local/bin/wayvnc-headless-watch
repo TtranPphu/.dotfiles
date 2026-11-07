@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
-# Keep the reused headless output enabled only while VNC clients are connected.
-# Polls wayvnc; never creates a second headless output and never touches eDP-2.
+# Keep a headless output only while VNC clients are connected. After the last
+# client disconnects, switch wayvnc back to a physical output when possible and
+# remove every HEADLESS output. Polls wayvnc; never touches eDP-2.
 # Does nothing to the outputs while wayvnc is not ready, so a missing bind
 # address cannot turn into an output-toggle (cursor-warping) loop.
 set -u
@@ -25,8 +26,8 @@ address_present() {
   ip -o addr show | awk '{ print $4 }' | grep -Fq "$addr/"
 }
 
-headless_enabled() {
-  hyprctl monitors all -j 2>/dev/null | jq -r '.[] | select(.name | startswith("HEADLESS-")) | select(.disabled == false) | .name'
+all_headless() {
+  hyprctl monitors all -j 2>/dev/null | jq -r '.[] | select(.name | startswith("HEADLESS-")) | .name'
 }
 
 headless_captured() {
@@ -44,11 +45,14 @@ note() {
   log "$1"
 }
 
-disable_headless() {
+remove_headless() {
   local name
-  for name in $(headless_enabled); do
-    log "disabling $name"
-    hyprctl eval "hl.monitor({ output = \"$name\", disabled = true })" >/dev/null 2>&1
+  for name in $(all_headless); do
+    log "removing $name"
+    # A disabled output cannot be removed directly on this Hyprland build;
+    # enable it just long enough for output remove to find it.
+    hyprctl eval "hl.monitor({ output = \"$name\", disabled = false, mode = \"640x480@60\", position = \"auto\", scale = 1 })" >/dev/null 2>&1
+    hyprctl output remove "$name" >/dev/null 2>&1 || true
   done
 }
 
@@ -65,9 +69,9 @@ while :; do
   if [ -z "$clients" ]; then
     address=$(bind_address)
     # wayvnc cannot start until the bind address exists; keep the idle state
-    # clean. Only enabled outputs are listed, so this runs at most once.
+    # clean.
     if [ -n "$address" ] && ! address_present "$address"; then
-      disable_headless
+      remove_headless
     fi
     sleep 2
     continue
@@ -80,14 +84,22 @@ while :; do
         log "client connected, capturing $name"
       fi
     fi
-  elif headless_captured; then
-    name=$(physical_output)
-    if [ -z "$name" ]; then
-      note "idle, no physical output to fall back to; keeping headless"
-    elif wayvncctl output-set "$name" >/dev/null 2>&1; then
-      noted=
-      log "idle, switched wayvnc to $name"
-      disable_headless
+  elif [ "$clients" -eq 0 ]; then
+    if headless_captured; then
+      name=$(physical_output)
+      if [ -z "$name" ]; then
+        note "idle, no physical output to fall back to; removing headless"
+        remove_headless
+      elif wayvncctl output-set "$name" >/dev/null 2>&1; then
+        noted=
+        log "idle, switched wayvnc to $name"
+        remove_headless
+      else
+        note "idle, could not switch wayvnc to $name; removing headless anyway"
+        remove_headless
+      fi
+    else
+      remove_headless
     fi
   fi
 
