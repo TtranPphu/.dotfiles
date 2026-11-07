@@ -31,3 +31,5 @@ hl.monitor({ output = "HDMI-A-1", mode = "preferred", position = ultrawide_x .. 
 
 -- Portrait/rotated secondary monitor (transform: 1 = 90°, 3 = 270°).
 -- hl.monitor({ output = "DP-2", mode = "preferred", position = "auto", scale = 1, transform = 1 })
+
+
