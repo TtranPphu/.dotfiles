@@ -86,6 +86,11 @@ set_opt @nerd_font_separator_light "$glyph_value"
 glyph separator.heavy
 set_opt @nerd_font_separator_heavy "$glyph_value"
 
-# The probe proved the server is alive, so a failure here is a real error.
-err="$("${tmux_cmd[@]}" refresh-client 2>&1 >/dev/null)"; rc=$?
-[ "$rc" -eq 0 ] || fail "tmux refresh-client failed (exit $rc): ${err:-no stderr}"
+# Refresh every attached client. At server start and after the final detach
+# there is no client, so there is nothing to refresh. Do not treat that as an
+# error.
+while IFS= read -r client; do
+  [ -n "$client" ] || continue
+  err="$("${tmux_cmd[@]}" refresh-client -t "$client" 2>&1 >/dev/null)"; rc=$?
+  [ "$rc" -eq 0 ] || fail "tmux refresh-client -t $client failed (exit $rc): ${err:-no stderr}"
+done < <("${tmux_cmd[@]}" list-clients -F '#{client_name}' 2>/dev/null)
