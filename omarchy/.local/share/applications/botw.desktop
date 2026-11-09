@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=(Eden) The Legend of Zelda: Breath of the Wild
+Comment=Launch Breath of the Wild in Eden Nightly
+Exec=/home/ttranpphu/.local/bin/eden-nightly "/home/ttranpphu/Eden/NSPs/The Legend of Zelda: Breath of the Wild [01007EF00011E000].nsp"
+Icon=botw
+Terminal=false
+StartupNotify=true
