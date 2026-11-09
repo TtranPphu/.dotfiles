@@ -30,5 +30,8 @@
   "terminal": {
     "title": false,
     "copy": "manual"
+  },
+  "keybinds": {
+    "app.exit": ["ctrl+d", "<leader>q"]
   }
 }
