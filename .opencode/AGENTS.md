@@ -16,19 +16,28 @@
 ### Delegation
 
 - The main agent ALWAYS delegates task work to subagents — both investigation
-  and implementation/fixing. It plans, coordinates, and commits; the two
+  and implementation/fixing. It plans, coordinates, and hands off commits; the
   custom subagents do the exploring, editing, and fixing.
 - The subagents in use are the custom ones, routed by task:
   `.opencode/agents/shell.md` for terminal/shell packages,
   `.opencode/agents/system.md` for desktop/system packages, and
   `.opencode/agents/chat.md` for web research and general questions.
-- Subagents do not commit. After they return their changed-file report, the
-  main agent commits with the commit skill.
+- Subagents do not commit. After they return their changed-file report, hand
+  off to the commit workflow below.
 - Prefer spawning subagents in the background (`background: true`) so the main
   agent stays responsive while work runs. Use a foreground call only when the
   next step depends on the result, or for a quick confirm-and-return task.
 - The repo's agent machinery (`.opencode/`, `.shared/`, `.tests/`) is the one
   thing subagents hand back — the main agent handles it directly.
+
+### Commits
+
+- `.opencode/opencode.jsonc` hard-denies `git commit`, `git push`, `git merge`,
+  and `git rebase` for normal sessions. A direct attempt returns
+  `Permission denied: shell` by design; do not retry it or route around it.
+- Only the hidden `committer` agent can run those commands, and it is reachable
+  only through the user's `/commit` or `/merge` command. When changes are ready,
+  ask the user to run `/commit`.
 
 ### What This Repo Is
 

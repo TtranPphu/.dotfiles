@@ -5,6 +5,12 @@ user-invocable: true
 allowed-tools: [Bash, Read, Grep]
 ---
 
+> **Hard rule:** `git commit`, `git push`, `git merge`, and `git rebase` are
+> denied for normal sessions in `.opencode/opencode.jsonc`. A direct attempt
+> returns `Permission denied: shell`; do not retry it. Commits run in the hidden
+> `committer` agent through the user's `/commit` command. If you are a normal
+> session, ask the user to run `/commit`.
+
 Use this skill when the task is to create commits or draft commit messages.
 
 This repository is organized around top-level components. When making commits:

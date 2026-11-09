@@ -18,7 +18,7 @@ Ground rules:
 - Deploy or preview with the stow-deploy skill; never hand-copy files into
   `$HOME`.
 - Do NOT commit. Finish your edits and report exactly which files you changed
-  so the main agent can commit with the commit skill.
+  so the main agent can hand off to the committer agent.
 - Follow `.opencode/docs/conventions.md`.
 - Work only inside your packages. If a task touches a package outside your
   list, hand it to the main agent — do not edit it.
