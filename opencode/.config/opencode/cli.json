@@ -1,37 +1,49 @@
 {
   "$schema": "https://opencode.ai/v2/cli.json",
   "theme": {
-    "name": "everforest"
+    "name": "everforest",
+    "mode": "system"
   },
   "diffs": {
-    "wrap": "word"
+    "wrap": "none",
+    "view": "auto",
+    "single": false,
+    "tree": true
   },
   "session": {
     "sidebar": "hide",
     "scrollbar": false,
     "thinking": "hide",
-    "grouping": "auto"
+    "markdown": "rendered",
+    "grouping": "auto",
+    "verbosity": "medium",
+    "permissions": "prompt"
   },
   "animations": false,
   "mouse": false,
   "tabs": {
     "indicators": "numbers",
-    "layout": "horizontal",
+    "layout": "vertical",
     "scope": "cwd",
     "mode": "off"
   },
   "prompt": {
-    "paste": "full"
+    "paste": "compact",
+    "editor": true
   },
   "attention": {
     "notifications": true,
-    "sound": false
+    "sound": false,
+    "volume": 0.6
   },
   "terminal": {
     "title": false,
     "copy": "manual"
   },
   "keybinds": {
-    "app.exit": ["ctrl+d", "<leader>q"]
+    "app.exit": [
+      "ctrl+d",
+      "<leader>q"
+    ]
   }
 }
