@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 1,
+  "id": "ttranpphu.audio-input",
+  "name": "Audio Input",
+  "version": "1.0.0",
+  "author": "Omarchy",
+  "description": "Microphone volume slider and source picker",
+  "kinds": [
+    "bar-widget"
+  ],
+  "entryPoints": {
+    "barWidget": "Panel.qml"
+  },
+  "barWidget": {
+    "displayName": "Audio Input",
+    "description": "Microphone volume slider and source picker",
+    "category": "Audio",
+    "allowMultiple": false
+  },
+  "omarchy": {
+    "clonedFrom": "omarchy.audio"
+  }
+}

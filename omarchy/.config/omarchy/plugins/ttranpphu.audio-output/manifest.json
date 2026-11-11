@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 1,
+  "id": "ttranpphu.audio-output",
+  "name": "Audio Output",
+  "version": "1.0.0",
+  "author": "Omarchy",
+  "description": "Output volume slider, sink picker and per-app mixer",
+  "kinds": [
+    "bar-widget"
+  ],
+  "entryPoints": {
+    "barWidget": "Panel.qml"
+  },
+  "barWidget": {
+    "displayName": "Audio Output",
+    "description": "Output volume slider, sink picker and per-app mixer",
+    "category": "Audio",
+    "allowMultiple": false
+  },
+  "omarchy": {
+    "clonedFrom": "omarchy.audio"
+  }
+}

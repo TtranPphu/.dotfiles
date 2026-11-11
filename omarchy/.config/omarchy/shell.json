@@ -54,16 +54,16 @@
           "id": "ttranpphu.tailscale"
         },
         {
-          "id": "omarchy.agents"
-        },
-        {
           "id": "omarchy.bluetooth"
         },
         {
           "id": "omarchy.network"
         },
         {
-          "id": "omarchy.audio"
+          "id": "ttranpphu.audio-output"
+        },
+        {
+          "id": "ttranpphu.audio-input"
         },
         {
           "id": "ttranpphu.monitor"
