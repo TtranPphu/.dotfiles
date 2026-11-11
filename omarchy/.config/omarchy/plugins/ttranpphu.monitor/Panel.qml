@@ -26,6 +26,9 @@ Panel {
   property string monitorScale: ""
   property var displays: []
   property int enabledDisplayCount: 0
+  // Live per-monitor scales (monitor name -> normalized scale string), read
+  // from hyprctl so each row can show and cycle its own scale.
+  property var displayScales: ({})
 
   // Carry sub-notch touchpad deltas between wheel events.
   property real wheelAccumulator: 0
@@ -37,8 +40,8 @@ Panel {
   //   "scale"      - 6 Button scale presets; treated as a single
   //                  horizontal row from j/k's perspective. h/l moves
   //                  between presets, identical to bluetooth's header.
-  //   "monitors"   - vertical display row list for enabling/disabling displays;
-  //                  j/k walks each row.
+  //   "monitors"   - vertical display row list; j/k walks each row, h/l cycles
+  //                  the selected display's scale, Enter toggles enabled state.
   // Mouse hover on a target updates root state via the components' `hovered`
   // signal so keyboard cursor and pointer share one highlight.
   readonly property var scalePresets: ["1", "1.6", "2", "2.5"]
@@ -136,10 +139,15 @@ Panel {
     }
   }
 
-  // h/l: in the scale/width sections, walks their preset rows; everywhere else,
-  // no-op because adjustBrightness handles horizontal motion on the brightness
-  // slider.
+  // h/l: scale/width walk their preset rows; monitors cycles the selected
+  // display's own scale. Everywhere else, no-op because adjustBrightness
+  // handles horizontal motion on the brightness slider.
   function moveCursorH(delta) {
+    if (focusSection === "monitors") {
+      var display = displays[selectedIndex]
+      if (display) cycleDisplayScale(display, delta)
+      return
+    }
     if (focusSection !== "scale" && focusSection !== "width") return
     var presets = focusSection === "scale" ? scaleValues : widthPresets
     var next = selectedIndex + delta
@@ -243,6 +251,7 @@ Panel {
 
   function refresh() {
     if (!stateProc.running) stateProc.running = true
+    if (!scaleProc.running) scaleProc.running = true
     if (!widthProc.running) widthProc.running = true
   }
 
@@ -329,8 +338,38 @@ Panel {
   }
 
   function setScale(scale) {
-    actionProc.command = ["bash", "-c", "omarchy-hyprland-monitor-scaling " + scale]
+    setDisplayScale(root.focusedMonitor, scale)
+  }
+
+  // Disabled displays have no live output to scale; the script would also fail
+  // to find them in `hyprctl monitors -j`.
+  function displayIsEnabled(name) {
+    for (var i = 0; i < displays.length; i++) {
+      var display = displays[i]
+      if (display && display.name === name) return display.enabled === true
+    }
+    return false
+  }
+
+  // Scale one named output and persist it through scripts/monitor-scale.
+  function setDisplayScale(name, scale) {
+    if (!name || !displayIsEnabled(name)) return
+    actionProc.command = ["bash", "-c", "exec \"$HOME/.config/hypr/scripts/monitor-scale\" \"$1\" \"$2\"", "_", name, String(scale)]
     if (!actionProc.running) actionProc.running = true
+  }
+
+  // Step a display through the presets that are clean for its mode, wrapping at
+  // both ends.
+  function cycleDisplayScale(display, delta) {
+    if (!display || !display.name || display.enabled !== true) return
+    var presets = Model.availableScales(root.scalePresets, display.width, display.height)
+    if (!presets || presets.length === 0) return
+    var current = root.displayScales[display.name] || ""
+    var index = Model.matchingScaleIndex(presets, current, display.width, display.height)
+    var next = index < 0 ? 0 : index + delta
+    if (next < 0) next = presets.length - 1
+    if (next >= presets.length) next = 0
+    setDisplayScale(display.name, presets[next])
   }
 
   // Applies the chosen scrolling column width and remembers it so looknfeel.lua
@@ -431,6 +470,28 @@ Panel {
         root.focusedMonitor = String(lines[5] || "").trim()
         root.monitorScale = root.normalizeScale(String(lines[6] || "").trim())
         root.updateDisplays(String(lines[7] || "[]").trim())
+      }
+    }
+  }
+
+  // Per-output scales for the DISPLAYS rows. The map is replaced wholesale so
+  // the chip bindings re-evaluate on every refresh.
+  Process {
+    id: scaleProc
+    command: ["hyprctl", "monitors", "-j"]
+    stdout: StdioCollector {
+      waitForEnd: true
+      onStreamFinished: {
+        var parsed = null
+        try { parsed = JSON.parse(String(text || "")) } catch (e) { parsed = null }
+        var scales = ({})
+        if (Array.isArray(parsed)) {
+          for (var i = 0; i < parsed.length; i++) {
+            var monitor = parsed[i]
+            if (monitor && monitor.name) scales[monitor.name] = root.normalizeScale(monitor.scale)
+          }
+        }
+        root.displayScales = scales
       }
     }
   }
@@ -554,7 +615,7 @@ Panel {
         else if (dx !== 0) {
           if (root.focusSection === "brightness") root.adjustBrightness(dx * 5)
           else if (root.focusSection === "textsize") root.adjustTextSize(dx)
-          else if (root.focusSection === "scale" || root.focusSection === "width") root.moveCursorH(dx)
+          else if (root.focusSection === "scale" || root.focusSection === "width" || root.focusSection === "monitors") root.moveCursorH(dx)
         }
       }
       onActivateRequested: if (root.cursorActive) root.activateCursor()
@@ -975,6 +1036,7 @@ Panel {
 
     readonly property bool isFocused: display && display.focused
     readonly property bool canToggle: display && (!display.enabled || root.enabledDisplayCount > 1)
+    readonly property real scaleChipWidth: Style.space(26)
 
     hasCursor: root.cursorActive && root.focusSection === "monitors" && root.selectedIndex === rowIndex
     onHasCursorChanged: if (hasCursor) root.ensureCursorVisible(monitorRow)
@@ -1011,7 +1073,19 @@ Panel {
         font.family: root.bar.fontFamily
         font.pixelSize: Style.font.body
         elide: Text.ElideRight
-        width: parent.width - Style.space(22) - Style.space(14) - Style.space(16)
+        width: parent.width - Style.space(22) - Style.space(14) - Style.space(24) - monitorRow.scaleChipWidth
+        anchors.verticalCenter: parent.verticalCenter
+      }
+
+      Text {
+        id: scaleChip
+        textFormat: Text.PlainText
+        text: root.displayScales[monitorRow.display.name] || ""
+        color: Qt.darker(root.bar.foreground, 1.4)
+        font.family: root.bar.fontFamily
+        font.pixelSize: Style.font.body
+        width: monitorRow.scaleChipWidth
+        horizontalAlignment: Text.AlignRight
         anchors.verticalCenter: parent.verticalCenter
       }
 
@@ -1037,6 +1111,24 @@ Panel {
         root.selectedIndex = monitorRow.rowIndex
       }
       onClicked: if (monitorRow.canToggle) root.toggleDisplay(monitorRow.display.name, monitorRow.display.enabled)
+    }
+
+    // Scale chip sits above the row's full-width MouseArea so clicking it cycles
+    // this display's scale instead of toggling the display on/off.
+    MouseArea {
+      anchors.right: parent.right
+      anchors.rightMargin: Style.space(24)
+      anchors.verticalCenter: parent.verticalCenter
+      width: monitorRow.scaleChipWidth + Style.space(8)
+      height: monitorRow.height
+      hoverEnabled: true
+      cursorShape: monitorRow.display.enabled === true ? Qt.PointingHandCursor : Qt.ArrowCursor
+      onContainsMouseChanged: if (containsMouse && !root.reflowingText) {
+        root.cursorActive = true
+        root.focusSection = "monitors"
+        root.selectedIndex = monitorRow.rowIndex
+      }
+      onClicked: root.cycleDisplayScale(monitorRow.display, 1)
     }
   }
 }

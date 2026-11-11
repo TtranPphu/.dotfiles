@@ -1,0 +1,58 @@
+#!/bin/bash
+
+# Set one monitor's scale and persist it in monitors.lua (per-output variable).
+# The Display widget calls this; unlike omarchy-hyprland-monitor-scaling it
+# targets the named output instead of the focused one, so every row scales
+# independently.
+
+set -euo pipefail
+
+output="${1:-}"
+requested="${2:-}"
+[[ $output =~ ^[A-Za-z0-9._-]+$ ]] || { echo "invalid output" >&2; exit 1; }
+[[ $requested =~ ^[0-9]+([.][0-9]+)?$ ]] || { echo "invalid scale" >&2; exit 1; }
+awk -v scale="$requested" 'BEGIN { exit !(scale >= 1 && scale <= 4) }' ||
+  { echo "scale out of range (1-4)" >&2; exit 1; }
+
+monitor_lua="$(readlink -f "$HOME/.config/hypr/monitors.lua")"
+monitors_json="$(hyprctl monitors -j)"
+info="$(jq -c --arg name "$output" '.[] | select(.name == $name)' <<<"$monitors_json")"
+[[ -n $info ]] || { echo "no monitor $output" >&2; exit 1; }
+
+width="$(jq -r '.width' <<<"$info")"
+height="$(jq -r '.height' <<<"$info")"
+
+# Hyprland only accepts scales where the mode divides into whole logical pixels
+# (in 1/120 steps), so round the request up to a divisor of gcd(w*120, h*120),
+# exactly as omarchy-hyprland-monitor-scaling does.
+new_scale="$(awk -v scale="$requested" -v width="$width" -v height="$height" '
+  function gcd(a, b, t) { while (b) { t = a % b; a = b; b = t } return a }
+  BEGIN {
+    g = gcd(width * 120, height * 120)
+    k = int(scale * 120 + 0.5)
+    if (k > g) k = g
+    while (g % k != 0) k++
+    printf "%g\n", k / 120
+  }')"
+
+var="scale_$(printf %s "$output" | tr '.-' '__')"
+grep -q "^local ${var} = " "$monitor_lua" ||
+  { echo "no scale variable for $output" >&2; exit 1; }
+
+# GDK_SCALE is one session-wide value, so it follows the lowest enabled scale,
+# rounded to an integer (GTK only honours integers) and never below 1.
+new_gdk="$(jq -r --arg name "$output" --argjson scale "$new_scale" '
+  [.[] | select(.disabled != true) | if .name == $name then $scale else .scale end]
+  | min | . + 0.5 | floor | if . < 1 then 1 else . end' <<<"$monitors_json")"
+
+# Edit the resolved file, not the symlink: sed -i replaces the target, so a
+# stow link at ~/.config/hypr/monitors.lua stays intact.
+sed -i -E \
+  -e "s|^local ${var} = .*|local ${var} = ${new_scale}|" \
+  -e "s|^local omarchy_gdk_scale = .*|local omarchy_gdk_scale = ${new_gdk}|" \
+  "$monitor_lua"
+
+hyprctl reload >/dev/null
+
+actual="$(hyprctl monitors -j | jq -r --arg name "$output" '.[] | select(.name == $name) | .scale')"
+echo "$output scale $actual"
