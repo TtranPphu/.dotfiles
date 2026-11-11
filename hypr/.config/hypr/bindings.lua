@@ -22,6 +22,8 @@ hl.unbind("SUPER + SHIFT + LEFT")
 hl.unbind("SUPER + SHIFT + RIGHT")
 hl.unbind("SUPER + SHIFT + UP")
 hl.unbind("SUPER + SHIFT + DOWN")
+-- Input-language cycling is unused here; keep SUPER + I free.
+hl.unbind("SUPER + I")
 hl.unbind("SUPER + W")
 hl.unbind("SUPER + A")
 hl.unbind("SUPER + S")
