@@ -849,7 +849,7 @@ Panel {
               spacing: Style.space(2)
 
               Text {
-                text: Commons.I18n.t("audio.output")
+                text: root.sink ? root.nodeLabel(root.sink) : Commons.I18n.t("audio.output")
                 textFormat: Text.PlainText
                 color: root.bar.foreground
                 font.family: root.bar.fontFamily
@@ -892,11 +892,14 @@ Panel {
 
               PanelSectionHeader {
                 id: outputHeader
-                text: Commons.I18n.t("audio.output")
+                text: root.sink ? root.nodeLabel(root.sink) : Commons.I18n.t("audio.output")
                 foreground: root.bar.foreground
                 fontFamily: root.bar.fontFamily
                 anchors.left: parent.left
+                anchors.right: outputPercent.left
+                anchors.rightMargin: Style.space(8)
                 anchors.verticalCenter: parent.verticalCenter
+                elide: Text.ElideRight
               }
 
               Text {

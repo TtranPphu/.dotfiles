@@ -841,7 +841,7 @@ Panel {
               spacing: Style.space(2)
 
               Text {
-                text: Commons.I18n.t("audio.input")
+                text: root.source ? root.nodeLabel(root.source) : Commons.I18n.t("audio.input")
                 textFormat: Text.PlainText
                 color: root.bar.foreground
                 font.family: root.bar.fontFamily
@@ -978,11 +978,14 @@ Panel {
 
               PanelSectionHeader {
                 id: microphoneHeader
-                text: Commons.I18n.t("audio.input")
+                text: root.source ? root.nodeLabel(root.source) : Commons.I18n.t("audio.input")
                 foreground: root.bar.foreground
                 fontFamily: root.bar.fontFamily
                 anchors.left: parent.left
+                anchors.right: microphonePercent.left
+                anchors.rightMargin: Style.space(8)
                 anchors.verticalCenter: parent.verticalCenter
+                elide: Text.ElideRight
               }
 
               Text {
