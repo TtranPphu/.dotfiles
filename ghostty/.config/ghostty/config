@@ -39,6 +39,11 @@ keybind = super+control+shift+alt+arrow_down=resize_split:down,100
 keybind = super+control+shift+alt+arrow_up=resize_split:up,100
 keybind = super+control+shift+alt+arrow_left=resize_split:left,100
 keybind = super+control+shift+alt+arrow_right=resize_split:right,100
+# Free ctrl+alt+shift+h/j/k/l for tmux pane swaps (1.4.0 binds j to write_screen_file)
+keybind = ctrl+alt+shift+h=unbind
+keybind = ctrl+alt+shift+j=unbind
+keybind = ctrl+alt+shift+k=unbind
+keybind = ctrl+alt+shift+l=unbind
 
 # Fix general slowness on hyprland (https://github.com/ghostty-org/ghostty/discussions/3224)
 async-backend = epoll
