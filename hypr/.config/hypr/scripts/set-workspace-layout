@@ -1,0 +1,49 @@
+#!/bin/bash
+
+# Set the active workspace's layout and persist it the way
+# omarchy-hyprland-workspace-layout-toggle does. The Display widget's LAYOUT
+# selector calls this with dwindle, scrolling, or floating.
+
+MODE="${1:-}"
+
+case "$MODE" in
+  dwindle | scrolling | floating) ;;
+  *)
+    echo "Usage: $(basename "$0") {dwindle|scrolling|floating}" >&2
+    exit 1
+    ;;
+esac
+
+ACTIVE_WORKSPACE=$(hyprctl activeworkspace -j | jq -r '.id')
+# Named workspaces report a negative id, and Hyprland reads a leading "-" as a
+# selector relative to the current workspace: targeting one lands on workspace 1
+# and reconfigures that instead.
+[[ $ACTIVE_WORKSPACE =~ ^[0-9]+$ ]] || exit 1
+MODES_DIR="${XDG_STATE_HOME:-$HOME/.local/state}/omarchy/workspace-layouts"
+MODE_FILE="$MODES_DIR/$ACTIVE_WORKSPACE.lua"
+
+APPLY="o.workspace_mode({ workspace = \"$ACTIVE_WORKSPACE\", mode = \"$MODE\" })"
+
+# Saving a mode that did not apply would leave the file naming one layout while
+# the screen shows another, and restore it at the next login.
+hyprctl eval "$APPLY" >/dev/null 2>&1 || exit 1
+
+# Cycled onto the default, a workspace goes back to following it, so a later
+# change of the default reaches it too.
+if [[ $MODE == "$(omarchy-hyprland-workspace-layout-default)" ]]; then
+  rm -f "$MODE_FILE"
+else
+  mkdir -p "$MODES_DIR"
+  printf '%s\n' "$APPLY" >"$MODE_FILE"
+fi
+
+# The bar shows the focused workspace's layout, and the dock shows on floating ones.
+omarchy-shell -q omarchy.workspaces refresh
+omarchy-shell -q omarchy.dock refresh
+
+# A workspace starting to float sets up its titlebars as the mode applies. The
+# titlebar plugin itself is only loaded while the config loads, so the first
+# floating workspace of a session still needs a reload to bring it in.
+if [[ $MODE == "floating" ]] && ! hyprctl plugin list -j 2>/dev/null | jq -e 'any(.[]?; .name == "hyprbars")' >/dev/null 2>&1; then
+  omarchy-restart-hyprctl
+fi

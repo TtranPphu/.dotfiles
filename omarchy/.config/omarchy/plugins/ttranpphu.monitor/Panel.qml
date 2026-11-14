@@ -37,6 +37,8 @@ Panel {
   //   "brightness" - single slider row, selectedIndex = -1 sentinel
   //                  (mirrors Audio's slider rows). Only present if a
   //                  controllable backlight was detected.
+  //   "layout"     - 3 workspace layout pills; a single horizontal row like
+  //                  scale, h/l moves between them.
   //   "scale"      - 6 Button scale presets; treated as a single
   //                  horizontal row from j/k's perspective. h/l moves
   //                  between presets, identical to bluetooth's header.
@@ -56,6 +58,10 @@ Panel {
   // Column-width presets (fraction of screen width) for the scrolling layout.
   readonly property var widthPresets: ["0.25", "0.5", "0.75", "1.0"]
   property real columnWidth: 0
+  // Workspace layout modes, in Omarchy's cycle order, and the focused
+  // workspace's mode as reported by omarchy-hyprland-workspace-layout-current.
+  readonly property var layoutPresets: ["dwindle", "scrolling", "floating"]
+  property string workspaceLayout: ""
   property string focusSection: "scale"
   property int selectedIndex: 0
   property bool cursorActive: false
@@ -82,6 +88,7 @@ Panel {
     var list = []
     if (brightnessAvailable) list.push("brightness")
     list.push("textsize")
+    list.push("layout")
     list.push("scale")
     list.push("width")
     if (displays.length > 1) list.push("monitors")
@@ -91,6 +98,7 @@ Panel {
   function sectionCount(section) {
     if (section === "brightness") return 0  // only the slider sentinel at -1
     if (section === "textsize") return 0    // slider sentinel at -1, like brightness
+    if (section === "layout") return layoutPresets.length
     if (section === "scale") return scaleValues.length
     if (section === "width") return widthPresets.length
     if (section === "monitors") return displays.length
@@ -98,14 +106,15 @@ Panel {
   }
 
   function sectionIsSingleRow(section) {
-    // brightness and text size are lone sliders; scale/width presets sit
-    // horizontally.
+    // brightness and text size are lone sliders; layout/scale/width presets
+    // sit horizontally.
     return section === "brightness" || section === "textsize"
-      || section === "scale" || section === "width"
+      || section === "layout" || section === "scale" || section === "width"
   }
 
   function sectionFirstIndex(section) {
     if (section === "brightness" || section === "textsize") return -1
+    // layout/scale/width start on their first preset; monitors on row 0.
     return 0
   }
 
@@ -139,17 +148,19 @@ Panel {
     }
   }
 
-  // h/l: scale/width walk their preset rows; monitors cycles the selected
-  // display's own scale. Everywhere else, no-op because adjustBrightness
-  // handles horizontal motion on the brightness slider.
+  // h/l: layout/scale/width walk their preset rows; monitors cycles the
+  // selected display's own scale. Everywhere else, no-op because
+  // adjustBrightness handles horizontal motion on the brightness slider.
   function moveCursorH(delta) {
     if (focusSection === "monitors") {
       var display = displays[selectedIndex]
       if (display) cycleDisplayScale(display, delta)
       return
     }
-    if (focusSection !== "scale" && focusSection !== "width") return
-    var presets = focusSection === "scale" ? scaleValues : widthPresets
+    if (focusSection !== "scale" && focusSection !== "width" && focusSection !== "layout") return
+    var presets = focusSection === "scale" ? scaleValues
+      : focusSection === "width" ? widthPresets
+      : layoutPresets
     var next = selectedIndex + delta
     if (next < 0) next = 0
     if (next > presets.length - 1) next = presets.length - 1
@@ -163,6 +174,10 @@ Panel {
   }
 
   function activateCursor() {
+    if (focusSection === "layout" && selectedIndex >= 0 && selectedIndex < layoutPresets.length) {
+      setWorkspaceLayout(layoutPresets[selectedIndex])
+      return
+    }
     if (focusSection === "scale" && selectedIndex >= 0 && selectedIndex < scaleValues.length) {
       setScale(scaleValues[selectedIndex])
       return
@@ -232,6 +247,7 @@ Panel {
       brightness: root.brightnessPercent,
       brightnessAvailable: root.brightnessAvailable,
       focusedMonitor: root.focusedMonitor,
+      layout: root.workspaceLayout,
       scale: root.monitorScale,
       displays: root.displays
     })
@@ -253,6 +269,7 @@ Panel {
     if (!stateProc.running) stateProc.running = true
     if (!scaleProc.running) scaleProc.running = true
     if (!widthProc.running) widthProc.running = true
+    if (!layoutProc.running) layoutProc.running = true
   }
 
   function setBrightness(value) {
@@ -294,6 +311,17 @@ Panel {
         return Model.matchingScaleIndex(scaleValues, monitorScale, display.width, display.height)
     }
     return -1
+  }
+
+  function activeLayoutIndex() {
+    return layoutPresets.indexOf(workspaceLayout)
+  }
+
+  // Which preset in a row is the live one; shared by the pills' active marker.
+  function presetIsActive(section, index) {
+    if (section === "scale") return activeScaleIndex() === index
+    if (section === "layout") return activeLayoutIndex() === index
+    return activeWidthIndex() === index
   }
 
   // Index of the width preset matching the live scrolling:column_width, or -1
@@ -377,6 +405,14 @@ Panel {
   function setColumnWidth(width) {
     setWidthProc.command = [Quickshell.env("HOME") + "/.config/hypr/scripts/set-column-width", width]
     if (!setWidthProc.running) setWidthProc.running = true
+  }
+
+  // Applies a workspace layout through scripts/set-workspace-layout, which
+  // persists it the way Omarchy's toggle script does. actionProc refreshes the
+  // panel state (including the active pill) when the script exits.
+  function setWorkspaceLayout(mode) {
+    actionProc.command = [Quickshell.env("HOME") + "/.config/hypr/scripts/set-workspace-layout", mode]
+    if (!actionProc.running) actionProc.running = true
   }
 
   // ---- Text size (shell base font + GTK text-scaling, via one CLI) ----
@@ -550,6 +586,17 @@ Panel {
     }
   }
 
+  // Current workspace layout (dwindle, scrolling, or floating), used to mark
+  // the active Layout pill.
+  Process {
+    id: layoutProc
+    command: ["omarchy-hyprland-workspace-layout-current"]
+    stdout: StdioCollector {
+      waitForEnd: true
+      onStreamFinished: root.workspaceLayout = String(text || "").trim()
+    }
+  }
+
   // Applies text size via the CLI, which rewrites the shell override file;
   // Style picks the new base-size up through its own file watch, so there's
   // nothing to refresh here.
@@ -615,7 +662,7 @@ Panel {
         else if (dx !== 0) {
           if (root.focusSection === "brightness") root.adjustBrightness(dx * 5)
           else if (root.focusSection === "textsize") root.adjustTextSize(dx)
-          else if (root.focusSection === "scale" || root.focusSection === "width" || root.focusSection === "monitors") root.moveCursorH(dx)
+          else if (root.focusSection === "scale" || root.focusSection === "width" || root.focusSection === "layout" || root.focusSection === "monitors") root.moveCursorH(dx)
         }
       }
       onActivateRequested: if (root.cursorActive) root.activateCursor()
@@ -840,6 +887,47 @@ Panel {
             }
           }
 
+          // ---------- Layout ----------
+          PanelSeparator {
+            foreground: root.bar.foreground
+          }
+
+          Column {
+            width: parent.width
+            spacing: Style.space(10)
+
+            PanelSectionHeader {
+              text: "LAYOUT"
+              foreground: root.bar.foreground
+              fontFamily: root.bar.fontFamily
+            }
+
+            Grid {
+              id: layoutRow
+              width: parent.width
+              columns: root.layoutPresets.length
+              spacing: Style.spacing.xs
+
+              readonly property real cellWidth: root.layoutPresets.length > 0
+                ? (width - spacing * (columns - 1)) / columns
+                : 0
+
+              Repeater {
+                model: root.layoutPresets
+
+                PresetPill {
+                  required property string modelData
+                  required property int index
+
+                  presetValue: modelData
+                  presetIndex: index
+                  presetSection: "layout"
+                  width: layoutRow.cellWidth
+                }
+              }
+            }
+          }
+
           // ---------- Scale ----------
           PanelSeparator {
             foreground: root.bar.foreground
@@ -993,7 +1081,7 @@ Panel {
     }
   }
 
-  // Shared by the SCALE and WIDTH preset rows so both are visually and
+  // Shared by the LAYOUT, SCALE, and WIDTH preset rows so all are visually and
   // behaviourally identical: same styling, hover highlight, keyboard cursor,
   // and active-preset marking. presetSection selects which row is driven.
   component PresetPill: Button {
@@ -1002,9 +1090,13 @@ Panel {
     required property int presetIndex
     required property string presetSection
 
-    // Show the bare preset number — no unit suffix. The active marker still
-    // resolves the effective value from the live monitor scale / column width.
-    text: presetValue
+    // Layout pills label the mode in title case (Dwindle); numeric presets show
+    // their bare value.
+    readonly property string presetLabel: presetSection === "layout"
+      ? presetValue.charAt(0).toUpperCase() + presetValue.slice(1)
+      : presetValue
+
+    text: presetLabel
     fontSize: Style.font.caption
     foreground: root.bar.foreground
     fontFamily: root.bar.fontFamily
@@ -1012,13 +1104,12 @@ Panel {
     verticalPadding: Style.spacing.controlPaddingY
     bordered: true
 
-    active: presetSection === "scale"
-      ? root.activeScaleIndex() === presetIndex
-      : root.activeWidthIndex() === presetIndex
+    active: root.presetIsActive(presetSection, presetIndex)
     hasCursor: root.cursorActive && root.focusSection === presetSection && root.selectedIndex === presetIndex
 
     onClicked: {
-      if (presetSection === "scale") root.setScale(presetValue)
+      if (presetSection === "layout") root.setWorkspaceLayout(presetValue)
+      else if (presetSection === "scale") root.setScale(presetValue)
       else root.setColumnWidth(presetValue)
     }
     onHovered: function(isHovered) {
