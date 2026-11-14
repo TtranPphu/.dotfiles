@@ -7,6 +7,7 @@ import Quickshell.Services.Pipewire
 import qs.Ui
 import qs.Commons
 import qs.Commons as Commons
+import "../../components"
 import "Model.js" as Model
 
 Panel {
@@ -140,9 +141,6 @@ Panel {
   // tuning fronts") is what keeps this correct when headphones or HDMI are
   // selected while a tuning still exists.
   property string volumeSinkName: ""
-
-  // Carry sub-notch touchpad deltas between wheel events.
-  property real wheelAccumulator: 0
 
   readonly property var volumeSink: {
     if (volumeSinkName === "" || !sink) return sink
@@ -734,15 +732,6 @@ Panel {
       if (b === Qt.RightButton) root.toggleOutputMute()
       else root.toggle()
     }
-
-    onWheelMoved: function(delta) {
-      if (!root.hasOutput) return
-      var wheel = Util.wheelSteps(root.wheelAccumulator, delta)
-      root.wheelAccumulator = wheel.remainder
-      if (wheel.steps === 0) return
-      var volume = root.setOutputVolume(root.outputVolume + wheel.steps * 0.05)
-      root.showVolumeOsd(volume)
-    }
   }
 
   KeyboardPanel {
@@ -926,7 +915,7 @@ Panel {
               foreground: root.bar.foreground
               outline: true
 
-              PanelSlider {
+              NoScrollSlider {
                 id: outputSlider
                 bar: root.bar
                 anchors.fill: parent
@@ -1027,7 +1016,7 @@ Panel {
                 anchors.topMargin: root.inputLevelShown ? 0 : Style.spacing.controlGap / 2
                 spacing: Style.space(5)
 
-                PanelSlider {
+                NoScrollSlider {
                   id: inputSlider
                   bar: root.bar
                   width: parent.width
@@ -1323,7 +1312,7 @@ Panel {
         }
       }
 
-      PanelSlider {
+      NoScrollSlider {
         bar: root.bar
         width: parent.width
         minimum: 0

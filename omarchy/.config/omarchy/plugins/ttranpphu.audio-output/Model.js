@@ -146,7 +146,10 @@ function friendlyStreamLabel(label) {
   if (!label) return ""
 
   var known = {
-    "spotify": "Spotify"
+    "spotify": "Spotify",
+    "totk": "Tears of the Kingdom",
+    "savagewind": "Breath of the Wild",
+    "savage wind": "Breath of the Wild"
   }
   var normalized = label.toLowerCase()
   return known[normalized] || label

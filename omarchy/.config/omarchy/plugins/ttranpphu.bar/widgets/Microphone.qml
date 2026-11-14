@@ -45,10 +45,5 @@ BarWidget {
       if (b === Qt.MiddleButton) root.bar.run("omarchy-shell shell toggle omarchy.audio")
       else root.toggleMute()
     }
-    onWheelMoved: function(delta) {
-      if (!root.source || !root.source.audio) return
-      var step = 0.05
-      root.source.audio.volume = Math.max(0, Math.min(1, root.volume + (delta > 0 ? step : -step)))
-    }
   }
 }
