@@ -23,6 +23,7 @@ require("hypr.looknfeel")
 require("hypr.cursor")
 require("hypr.autostart")
 require("hypr.apps.telegram")
+require("hypr.apps.messenger")
 require("hypr.apps.eden")
 require("hypr.apps.no-rest-for-the-wicked")
 

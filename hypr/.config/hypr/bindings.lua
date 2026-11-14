@@ -188,3 +188,4 @@ o.bind("SUPER + SHIFT + F", "Files", { launch = "nautilus", focus = "nautilus" }
 o.bind("SUPER + SHIFT + T", "Terminal", "omarchy-launch-or-focus ghostty")
 o.bind("SUPER + SHIFT + Z", "Zsh", 'uwsm-app -- ghostty --command="/usr/bin/zsh --login"')
 o.bind("SUPER + SHIFT + M", "Telegram", "uwsm-app -- Telegram")
+o.bind("SUPER + CTRL + M", "Facebook Messenger", o.launch_webapp_sole("chrome-www.messenger.com__-Default", "https://www.messenger.com/"))
