@@ -1,0 +1,26 @@
+#!/bin/bash
+
+# Toggle the Quake console (special workspace qconsole), seeding it with a
+# Ghostty shell the first time it opens. A window already living on the console
+# is reused, and the spawn is pinned to the console so it does not flash on the
+# active workspace first.
+
+set -euo pipefail
+
+CONSOLE="special:qconsole"
+TOGGLE='hl.dsp.workspace.toggle_special("qconsole")'
+
+# A monitor reporting the console as its open special workspace means it is on
+# screen; the same toggle hides it.
+if hyprctl monitors -j | jq -e --arg ws "$CONSOLE" 'any(.[]; .specialWorkspace.name == $ws)' >/dev/null; then
+  hyprctl dispatch "$TOGGLE" >/dev/null
+  exit 0
+fi
+
+# Seed only when the console is empty: a hidden window there is reused, and a
+# second one would duplicate it.
+if ! hyprctl clients -j | jq -e --arg ws "$CONSOLE" 'any(.[]; .workspace.name == $ws)' >/dev/null; then
+  hyprctl dispatch 'hl.dsp.exec_cmd("ghostty -e zsh", { workspace = "special:qconsole silent" })' >/dev/null
+fi
+
+hyprctl dispatch "$TOGGLE" >/dev/null

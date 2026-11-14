@@ -35,6 +35,9 @@ hl.unbind("SUPER + K")
 hl.unbind("SUPER + L")
 hl.unbind("SUPER + SHIFT + W")
 hl.unbind("SUPER + SHIFT + A")
+hl.unbind("SUPER + SHIFT + CTRL + A")
+hl.unbind("SUPER + SHIFT + ALT + A")
+hl.unbind("SUPER + grave")
 hl.unbind("SUPER + SHIFT + S")
 hl.unbind("SUPER + SHIFT + D")
 hl.unbind("SUPER + SHIFT + F")
@@ -101,6 +104,7 @@ o.bind("SUPER + SHIFT + L", "Move window to next workspace", hl.dsp.window.move(
 o.bind("SUPER + Q", "Close window", hl.dsp.window.close())
 o.bind("SUPER + SEMICOLON", "Toggle window split", hl.dsp.layout("togglesplit"))
 o.bind("SUPER + BACKSLASH", "Toggle workspace layout", "omarchy-hyprland-workspace-layout-toggle")
+o.bind("SUPER + grave", "Toggle Quake console", os.getenv("HOME") .. "/.config/hypr/scripts/toggle-quake-console")
 o.bind("SUPER + SHIFT + SLASH", "Show key bindings", "omarchy-menu-keybindings")
 -- Native mouse dragging: the resize dispatcher anchors the corner the cursor
 -- grabbed, as long as `general:resize_corner` stays 0 (it does).
