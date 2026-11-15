@@ -10,6 +10,9 @@ dofile((os.getenv("OMARCHY_PATH") or "/usr/share/omarchy") .. "/default/hypr/boo
 -- keeping core window-manager bindings:
 -- omarchy_preinstalled_bindings = false
 
+-- Skip Omarchy's half-height Quake console panel; hypr.qconsole replaces it.
+package.loaded["default.hypr.qconsole"] = true
+
 -- Load Omarchy defaults.
 require("default.hypr.omarchy")
 
@@ -26,6 +29,7 @@ require("hypr.apps.telegram")
 require("hypr.apps.messenger")
 require("hypr.apps.eden")
 require("hypr.apps.no-rest-for-the-wicked")
+require("hypr.qconsole")
 
 -- Toggle config flags dynamically.
 require("default.hypr.toggles")
