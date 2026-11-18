@@ -6,4 +6,5 @@ if command -v zoxide &>/dev/null; then
 
   # Alias cd to zoxide
   alias cd='z'
+  alias cdi='zi'
 fi
