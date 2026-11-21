@@ -7,4 +7,5 @@ o.window("org.telegram.desktop", {
   center = true,
   idle_inhibit = "fullscreen",
   size = { 450, 650 },
+  suppress_event = "fullscreenoutput",
 })
