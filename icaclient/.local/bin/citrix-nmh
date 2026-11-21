@@ -1,0 +1,6 @@
+#!/bin/sh
+# Citrix native messaging host needs the X11 GDK display path, not Chromium's
+# EGL_PLATFORM=wayland, or wfica segfaults in the NVIDIA EGL probe.
+# After a Citrix update, re-point ~/.config/chromium/NativeMessagingHosts/com.citrix.workspace.native.json at this script.
+unset EGL_PLATFORM
+exec /opt/Citrix/ICAClient/NativeMessagingHost "$@"
